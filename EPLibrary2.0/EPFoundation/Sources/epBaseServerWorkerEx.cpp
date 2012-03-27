@@ -100,10 +100,11 @@ void BaseServerWorkerEx::execute()
 		int size =receive(recvSizePacket);
 		if(size>0)
 		{
-			Packet *recvPacket=new Packet(NULL,size);
+			unsigned int shouldReceive=((unsigned int*)(recvSizePacket.GetPacket()))[0];
+			Packet *recvPacket=new Packet(NULL,shouldReceive);
 			iResult = receive(*recvPacket);
 
-			if (iResult == size) {
+			if (iResult == shouldReceive) {
 				ThreadID threadID;
 				PacketPassUnit passUnit;
 				passUnit.m_packet=recvPacket;

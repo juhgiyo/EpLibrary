@@ -20,17 +20,26 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace epl;
 
-Packet::Packet(char *packet,int byteSize):SmartObject()
+Packet::Packet(char *packet, unsigned int byteSize, bool shouldAllocate):SmartObject()
 {
 	m_packet=NULL;
 	m_packetSize=0;
-	if(byteSize>0)
+	m_isAllocate=shouldAllocate;
+	if(shouldAllocate)
 	{
-		m_packet=EP_NEW char[byteSize];
-		if(packet)
-			memcpy(m_packet,packet,byteSize);
-		else
-			memset(m_packet,0,byteSize);
+		if(byteSize>0)
+		{
+			m_packet=EP_NEW char[byteSize];
+			if(packet)
+				memcpy(m_packet,packet,byteSize);
+			else
+				memset(m_packet,0,byteSize);
+			m_packetSize=byteSize;
+		}
+	}
+	else
+	{
+		m_packet=packet;
 		m_packetSize=byteSize;
 	}
 }
@@ -38,48 +47,62 @@ Packet::Packet(char *packet,int byteSize):SmartObject()
 Packet::Packet(const Packet& b):SmartObject()
 {
 	m_packet=NULL;
-	if(b.m_packetSize>0)
+	if(b.m_isAllocate)
 	{
-		m_packet=EP_NEW char[b.m_packetSize];
-		if(b.m_packet)
+		if(b.m_packetSize>0)
+		{
+			m_packet=EP_NEW char[b.m_packetSize];
 			memcpy(m_packet,b.m_packet,b.m_packetSize);
-		else
-			memset(m_packet,0,b.m_packetSize);
+		}
+		m_packetSize=b.m_packetSize;
 	}
-	m_packetSize=b.m_packetSize;
+	else
+	{
+		m_packet=b.m_packet;
+		m_packetSize=b.m_packetSize;
+	}
+	m_isAllocate=b.m_isAllocate;
 }
 Packet & Packet::operator=(const Packet&b)
 {
 	if(this!=&b)
 	{
-		if(m_packetSize<b.m_packetSize)
+		if(m_isAllocate)
 		{
 			EP_DELETE[] m_packet;
-			m_packet=NULL;
 		}
-		if(m_packet==NULL)
+		m_packet=NULL;
+
+		if(b.m_isAllocate)
 		{
-			m_packet=EP_NEW char[b.m_packetSize];
+			if(b.m_packetSize>0)
+			{
+				m_packet=EP_NEW char[b.m_packetSize];
+				EP_WASSERT(0,_T("Allocation Failed."));
+				memcpy(m_packet,b.m_packet,b.m_packetSize);
+			}
+			m_packetSize=b.m_packetSize;
 		}
-		if(b.m_packet)
-			memcpy(m_packet,b.m_packet,b.m_packetSize);
 		else
-			memset(m_packet,0,b.m_packetSize);
-		m_packetSize=b.m_packetSize;
+		{
+			m_packet=b.m_packet;
+			m_packetSize=b.m_packetSize;
+		}
+		m_isAllocate=b.m_isAllocate;
 	}
 	return *this;
 }
 
 Packet::~Packet()
 {
-	if(m_packet)
+	if(m_isAllocate && m_packet)
 	{
 		EP_DELETE[] m_packet;
 	}
 	m_packet=NULL;
 }
 
-int Packet::GetPacketByteSize() const
+unsigned int Packet::GetPacketByteSize() const
 {
 	return m_packetSize;
 }
@@ -89,21 +112,28 @@ const char *Packet::GetPacket() const
 	return m_packet;	
 }
 
-void Packet::SetPacket(char* packet, int packetByteSize)
+void Packet::SetPacket(char* packet, unsigned int packetByteSize)
 {
-	if(m_packetSize<packetByteSize)
+	if(m_isAllocate)
 	{
-		EP_DELETE[] m_packet;
+		if(m_packet)
+			EP_DELETE[] m_packet;
 		m_packet=NULL;
-	}
-	if(m_packet==NULL)
-	{
-		m_packet=EP_NEW char[packetByteSize];
-	}
-	if(packet)
-		memcpy(m_packet,packet,packetByteSize);
-	else
-		memset(m_packet,0,packetByteSize);
-	m_packetSize=packetByteSize;
+		if(packetByteSize>0)
+		{
+			m_packet=EP_NEW char[packetByteSize];
+			EP_WASSERT(0,_T("Allocation Failed."));
+		}
+		if(packet)
+			memcpy(m_packet,packet,packetByteSize);
+		else
+			memset(m_packet,0,packetByteSize);
+		m_packetSize=packetByteSize;
 
+	}
+	else
+	{
+		m_packet=packet;
+		m_packetSize=packetByteSize;
+	}
 }

@@ -234,10 +234,11 @@ DWORD BaseClient::ClientThread( LPVOID lpParam )
 		int size =pMainClass->receive(recvSizePacket);
 		if(size>0)
 		{
-			Packet recvPacket(NULL,size);
+			unsigned int shouldReceive=((unsigned int*)(recvSizePacket.GetPacket()))[0];
+			Packet recvPacket(NULL,shouldReceive);
 			iResult = pMainClass->receive(recvPacket);
 
-			if (iResult == size) {
+			if (iResult == shouldReceive) {
 				// Process Received Packet and Send Result to Client
 				if(pMainClass->parsePacket(recvPacket)<=0)
 				{

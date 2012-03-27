@@ -49,13 +49,17 @@ namespace epl{
 		Default Constructor
 
 		Initializes the Packet
+		@param[in] packet packet to copy from
+		@param[in] byteSize the byte size of the packet given
+		@param[in] shouldAllocate flag for the allocation of memory for itself
 		*/
-		Packet(char *packet=NULL,int byteSize=0);
+		Packet(char *packet=NULL, unsigned int byteSize=0, bool shouldAllocate=true);
 
 		/*!
 		Default Copy Constructor
 
 		Initializes the Packet
+		@param[in] b the original Packet object
 		*/
 		Packet(const Packet& b);
 
@@ -77,7 +81,16 @@ namespace epl{
 		Return the currently stored packet byte size
 		@return byte size of the holding packet
 		*/
-		int GetPacketByteSize() const;
+		 unsigned int GetPacketByteSize() const;
+
+		/*!
+		Get the flag whether memory is allocated or not
+		@return true if the memory is allocated by this object, otherwise false
+		*/
+		bool IsAllocate() const
+		{
+			return m_isAllocate;
+		}
 
 		/*!
 		Return the currently holding packet
@@ -90,13 +103,15 @@ namespace epl{
 		@param[in] packet the packet data
 		@param[in] packetByteSize the size of packet given
 		*/
-		void SetPacket(char* packet, int packetByteSize);
+		void SetPacket(char* packet, unsigned int packetByteSize);
 
 	private:
 		/// packet
 		char *m_packet;
 		/// packet Byte Size
-		int m_packetSize;
+		unsigned int m_packetSize;
+		/// shouldAllocate
+		bool m_isAllocate;
 	};
 }
 

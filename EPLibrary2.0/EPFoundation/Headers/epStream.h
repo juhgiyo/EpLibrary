@@ -88,7 +88,7 @@ namespace epl
 		Return the size of the stream
 		@return the size of the stream.
 		*/
-		int GetStreamSize();
+		int GetStreamSize() const;
 
 		/*!
 		Set the seek offset. 

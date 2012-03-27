@@ -53,7 +53,7 @@ void Stream::Clear()
 	m_stream.clear();
 }
 
-int Stream::GetStreamSize()
+int Stream::GetStreamSize() const
 {
 	return m_stream.size();
 }

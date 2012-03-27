@@ -52,12 +52,22 @@ namespace epl
 
 		Initializes given size of array of ArrayType addition to the PacketStruct.
 		@param[in] arraySize the size of array addition to PacketStruct
+		@param[in] shouldAllocate flag for the allocation of memory for itself
 		*/
-		PacketContainer(unsigned int arraySize=0)
+		PacketContainer(unsigned int arraySize=0, bool shouldAllocate=true)
 		{
-			m_packetContainer=(PacketContainerStruct*)EP_Malloc(sizeof(PacketContainerStruct) + (arraySize*sizeof(ArrayType)) );
-			EP_WASSERT(m_packetContainer,_T("Allocation Failed"));
-			m_length=arraySize;
+			if(shouldAllocate)
+			{
+				m_packetContainer=(PacketContainerStruct*)EP_Malloc(sizeof(PacketContainerStruct) + (arraySize*sizeof(ArrayType)) );
+				EP_WASSERT(m_packetContainer,_T("Allocation Failed"));
+				m_length=arraySize;
+			}
+			else
+			{
+				m_packetContainer=NULL;
+				m_length=arraySize;
+			}
+			m_isAllocate=shouldAllocate;
 		}
 
 		/*!
@@ -66,14 +76,57 @@ namespace epl
 		Initializes given size of array of ArrayType addition to the PacketStruct.
 		@param[in] packet the packet to copy from
 		@param[in] arraySize the size of array addition to PacketStruct
+		@param[in] shouldAllocate flag for the allocation of memory for itself
 		*/
-		PacketContainer(const PacketStruct & packet, unsigned int arraySize=0)
+		PacketContainer(const PacketStruct & packet, unsigned int arraySize=0, bool shouldAllocate=true)
 		{
-			m_packetContainer=(PacketContainerStruct*)EP_Malloc(sizeof(PacketContainerStruct) + (arraySize*sizeof(ArrayType)) );
-			EP_WASSERT(m_packetContainer,_T("Allocation Failed"));
-			m_packetContainer->m_packet=packet;
-			m_length=arraySize;
+			if(shouldAllocate)
+			{
+				m_packetContainer=(PacketContainerStruct*)EP_Malloc(sizeof(PacketContainerStruct) + (arraySize*sizeof(ArrayType)) );
+				EP_WASSERT(m_packetContainer,_T("Allocation Failed"));
+				memcpy(m_packetContainer,&packet,sizeof(PacketContainerStruct) + (arraySize*sizeof(ArrayType)));
+				m_length=arraySize;
+			}
+			else
+			{
+				m_packetContainer=(PacketContainerStruct*)&packet;
+				m_length=arraySize;
+			}
+			m_isAllocate=shouldAllocate;
 		}
+
+		/*!
+		Default Constructor
+
+		Initializes PacketContainer with the raw data given.
+		@param[in] rawData the rawData to copy from
+		@param[in] byteSize the byte size of raw data given.
+		@param[in] shouldAllocate flag for the allocation of memory for itself
+		*/
+		PacketContainer(void * rawData, unsigned int byteSize, bool shouldAllocate=true)
+		{
+
+
+			m_packetContainer=NULL;
+			m_isAllocate=shouldAllocate;
+			if(byteSize<sizeof(PacketStruct))
+			{
+				EP_WASSERT(0,_T("byteSize is smaller than PacketStruct size.\nbyteSize must be greater than sizeof(PacketStruct)."));
+			}
+			if(m_isAllocate)
+			{
+				m_packetContainer=(PacketContainerStruct*)EP_Malloc(byteSize);
+				EP_WASSERT(m_packetContainer,_T("Allocation Failed"));
+				memcpy(m_packetContainer,rawData,byteSize);
+				m_length=(byteSize-sizeof(PacketContainerStruct))/sizeof(ArrayType);
+			}
+			else
+			{
+				m_packetContainer=(PacketContainerStruct*)rawData;
+				m_length=(byteSize-sizeof(PacketContainerStruct))/sizeof(ArrayType);
+			}
+		}
+
 
 		/*!
 		Copy Constructor
@@ -83,14 +136,23 @@ namespace epl
 		*/
 		PacketContainer(const PacketContainer& orig)
 		{	
-			m_packetContainer=EP_Malloc(sizeof(PacketContainerStruct) + (orig.m_length*sizeof(ArrayType)) );
-			EP_WASSERT(m_packetContainer,_T("Allocation Failed"));
-			m_packetContainer->m_packet=orig.m_packetContainer->m_packet;
-			m_length=orig.m_length;
-			for(int trav=0;trav<m_length;trav++)
+			if(orig.m_isAllocate)
 			{
-				m_packetContainer->m_array[trav]=orig.m_packetContainer->m_array[trav];
+				m_packetContainer=EP_Malloc(sizeof(PacketContainerStruct) + (orig.m_length*sizeof(ArrayType)) );
+				EP_WASSERT(m_packetContainer,_T("Allocation Failed"));
+				m_packetContainer->m_packet=orig.m_packetContainer->m_packet;
+				m_length=orig.m_length;
+				for(int trav=0;trav<m_length;trav++)
+				{
+					m_packetContainer->m_array[trav]=orig.m_packetContainer->m_array[trav];
+				}
 			}
+			else
+			{
+				m_packetContainer=orig.m_packetContainer;
+				m_length=orig.m_length;
+			}
+			m_isAllocate=orig.m_isAllocate;
 		}
 
 		/*!
@@ -100,35 +162,95 @@ namespace epl
 		*/
 		~PacketContainer()
 		{
-			EP_Free(m_packetContainer);	
+			if(m_isAllocate && m_packetContainer)
+				EP_Free(m_packetContainer);	
 		}
-				
-		/*!
-		Get a reference to the packet
-		@return the reference to the packet
-		*/
-		PacketStruct &GetPacket()
-		{
-			return m_packetContainer->m_packet;
-		}
+		
 
 		/*!
 		Get a pointer to the packet
 		@return the pointer to the packet
 		*/
-		PacketStruct *GetPacketPtr()
+		PacketStruct *GetPacketPtr() const
 		{
 			return (PacketStruct*)m_packetContainer;
 		}
 
+		/*!
+		Get the flag whether memory is allocated or not
+		@return true if the memory is allocated by this object, otherwise false
+		*/
+		bool IsAllocate() const
+		{
+			return m_isAllocate;
+		}
+		/*!
+		Set the packet container according to the packet given
+		@param[in] packet the packet to copy from
+		@param[in] arraySize the size of variable length array of given packet
+		*/
+		void SetPacket(const PacketStruct & packet, unsigned int arraySize=0)
+		{
+			if(m_isAllocate && m_packetContainer)
+				EP_Free(m_packetContainer);
+			m_packetContainer=NULL;
+
+			if(m_isAllocate)
+			{
+				m_packetContainer=(PacketContainerStruct*)EP_Malloc(sizeof(PacketContainerStruct) + (arraySize*sizeof(ArrayType)) );
+				EP_WASSERT(m_packetContainer,_T("Allocation Failed"));
+				memcpy(m_packetContainer,&packet,sizeof(PacketContainerStruct) + (arraySize*sizeof(ArrayType)));
+				m_length=arraySize;
+			}
+			else
+			{
+				m_packetContainer=(PacketContainerStruct*)&packet;
+				m_length=arraySize;
+			}
+		}
+
+		/*!
+		Set the packet container from the raw data
+		@param[in] rawData the rawData to copy from
+		@param[in] byteSize the byte size of raw data given.
+		@return true if successful otherwise false
+		*/
+		bool SetPacket(void * rawData, unsigned int byteSize)
+		{
+			if(byteSize<sizeof(PacketStruct))
+			{
+				EP_WASSERT(0,_T("byteSize is smaller than PacketStruct size.\nbyteSize must be greater than sizeof(PacketStruct)."));
+				return false;
+			}
+
+			if(m_isAllocate && m_packetContainer)
+				EP_Free(m_packetContainer);
+			m_packetContainer=NULL;
+
+			if(m_isAllocate)
+			{
+				m_packetContainer=(PacketContainerStruct*)EP_Malloc(byteSize);
+				EP_WASSERT(m_packetContainer,_T("Allocation Failed"));
+				memcpy(m_packetContainer,rawData,byteSize);
+				m_length=(byteSize-sizeof(PacketContainerStruct))/sizeof(ArrayType);
+			}
+			else
+			{
+				m_packetContainer=(PacketContainerStruct*)rawData;
+				m_length=(byteSize-sizeof(PacketContainerStruct))/sizeof(ArrayType);
+			}
+			return true;
+		}
 
 		/*!
 		Get the pointer to the array
 		@return the pointer to the array
 		*/
-		ArrayType* GetArray()
+		ArrayType* GetArray() const
 		{
-			return m_packetContainer->m_array;
+			if(m_packetContainer && m_length>0)
+				return m_packetContainer->m_array;
+			return NULL;
 		}
 
 		/*!
@@ -136,23 +258,42 @@ namespace epl
 		@param[in] arr the array to copy from
 		@param[in] arraySize the size of given array
 		@param[in] offset the offset for start position of copying
-		@return the pointer to the array
+		@return true if successful otherwise false
 		*/
-		void SetArray(ArrayType *arr,unsigned int arraySize, unsigned int offset=0)
+		bool SetArray(ArrayType *arr,unsigned int arraySize, unsigned int offset=0)
 		{
-			if(m_length<arraySize+offset)
-				SetArraySize(arraySize+offset);
-			for(int trav=0;trav<arraySize;trav++)
+			if(m_isAllocate)
 			{
-				m_packetContainer->m_array[offset+trav]=arr[trav];
-			}			
+				if(m_length<arraySize+offset)
+				{
+					if(!SetArraySize(arraySize+offset))
+						return false;
+				}
+				for(int trav=0;trav<arraySize;trav++)
+				{
+					m_packetContainer->m_array[offset+trav]=arr[trav];
+				}			
+				return true;
+			}
+			else
+			{
+				if(m_length<arraySize+offset)
+				{
+					return false;
+				}
+				for(int trav=0;trav<arraySize;trav++)
+				{
+					m_packetContainer->m_array[offset+trav]=arr[trav];
+				}			
+				return true;
+			}
 		}
 
 		/*!
 		Get the length of the array
 		@return the length of the array
 		*/
-		unsigned int GetArrayLength()
+		unsigned int GetArrayLength() const
 		{
 			return m_length;
 		}
@@ -161,7 +302,7 @@ namespace epl
 		Get the total byte size of the packet including the array
 		@return the total byte size of the packet including the array
 		*/
-		unsigned int GetPacketByteSize()
+		unsigned int GetPacketByteSize() const
 		{
 			return (sizeof(PacketStruct)+(sizeof(ArrayType)*m_length));
 		}
@@ -169,25 +310,38 @@ namespace epl
 		/*!
 		Change the size of the array
 		* the arrSize must be larger than current array size.
+		* Should NOT be used when m_isAllocate is false.
 		@param[in] arrSize the new size of the array
+		@return true if successful otherwise false
 		*/
-		void SetArraySize(unsigned int arrSize)
+		bool SetArraySize(unsigned int arrSize)
 		{
-			if(m_length==arrSize)
-				return;
-			EP_WASSERT(m_packetContainer->m_length<arrSize,_T("Given size is smaller than the original.\nNew array size must be greater than original array size."));
-			m_packetContainer=EP_Realloc(m_packetContainer,sizeof(PacketContainerStruct)+ (arrSize*sizeof(ArrayType)));
-			EP_WASSERT(m_packetContainer,_T("Allocation Failed"));
-			m_length=arrSize;
+			if(m_isAllocate)
+			{
+				if(m_length==arrSize)
+					return true;
+				EP_WASSERT(m_packetContainer->m_length<arrSize,_T("Given size is smaller than the original.\nNew array size must be greater than original array size."));
+				m_packetContainer=EP_Realloc(m_packetContainer,sizeof(PacketContainerStruct)+ (arrSize*sizeof(ArrayType)));
+				EP_WASSERT(m_packetContainer,_T("Allocation Failed"));
+				m_length=arrSize;
+				return true;
+			}
+			else
+			{
+				EP_WASSERT(0,_T("Should not be used when m_isAllocate is false."));
+				return false;
+			}
 		}
 
 		/*!
 		return the reference to the array element at given index
 		* the arrSize must be smaller than current array size.
 		@param[in] index the index of the array to get the array element
+		@return the reference to the array element at given index
 		*/
 		ArrayType & operator[](unsigned int index)
 		{
+			EP_WASSERT(m_packetContainer,_T("Actual packet is NULL."));
 			EP_WASSERT(index<m_length,_T("The given index is greater than the memory allocated"));
 			return m_packetContainer->m_array[index];
 		}
@@ -195,31 +349,48 @@ namespace epl
 		/*!
 		Copy the given Packet Container b to this Packet Container.
 		@param[in] b the PacketContainer to copy from
+		@return this object
 		*/
 		PacketContainer& operator =(const PacketContainer& b)
 		{
 			if(this!=&b)
 			{
-				EP_Free(m_packetContainer);
-				m_packetContainer=EP_Malloc(sizeof(PacketContainerStruct) + (b.m_length*sizeof(ArrayType)) );
-				EP_WASSERT(m_packetContainer,_T("Allocation Failed."));
-				m_packetContainer->m_packet=b.m_packetContainer->m_packet;
-				m_length=b.m_length;
-				for(int trav=0;trav<m_length;trav++)
+				if(m_isAllocate && m_packetContainer)
+					EP_Free(m_packetContainer);
+				m_packetContainer=NULL;
+				if(b.m_isAllocate)
 				{
-					m_packetContainer->m_array[trav]=b.m_packetContainer->m_array[trav];
+					m_packetContainer=EP_Malloc(sizeof(PacketContainerStruct) + (b.m_length*sizeof(ArrayType)) );
+					EP_WASSERT(m_packetContainer,_T("Allocation Failed."));
+					m_packetContainer->m_packet=b.m_packetContainer->m_packet;
+					m_length=b.m_length;
+					for(int trav=0;trav<m_length;trav++)
+					{
+						m_packetContainer->m_array[trav]=b.m_packetContainer->m_array[trav];
+					}
 				}
+				else
+				{
+					m_packetContainer=b.m_packetContainer;
+					m_length=b.m_length;
+				}
+				m_isAllocate=b.m_isAllocate;
 			}
 			return *this;
 		}
 
 		/*!
 		Copy the given Packet b to this Packet Container.
+		* Should NOT be used when m_isAllocate is false.
 		@param[in] b the Packet to copy from
+		@return this object
 		*/
 		PacketContainer& operator =(const PacketStruct& b)
 		{
-			m_packetContainer->m_packet=b;
+			if(m_isAllocate)
+				m_packetContainer->m_packet=b;
+			else
+				EP_WASSERT(0,_T("Should not be used when m_isAllocate is false.\nInstead USE SetPacket Function."));
 			return *this;
 		}
 		
@@ -241,6 +412,8 @@ namespace epl
 		unsigned int m_length;
 		/// pointer to the actual packet container
 		PacketContainerStruct *m_packetContainer;
+		/// shouldAllocate
+		bool m_isAllocate;
 	};
 }
 #endif //__EP_PACKET_CONTAINER_H__
