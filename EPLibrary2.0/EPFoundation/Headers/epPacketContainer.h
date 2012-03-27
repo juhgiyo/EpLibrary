@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 @section DESCRIPTION
 
-An Interface for Packet Container.
+An Interface for Packet Container with variable length array.
 
 @secion SPECIAL THANKS TO
  
@@ -41,7 +41,7 @@ namespace epl
 {
 	/*! 
 	@class PacketContainer epPacketContainer.h
-	@brief A class for Packet Container.
+	@brief A class for Packet Container with variable length array.
 	*/
 	template<typename PacketStruct, typename ArrayType=char>
 	class PacketContainer
@@ -53,9 +53,24 @@ namespace epl
 		Initializes given size of array of ArrayType addition to the PacketStruct.
 		@param[in] arraySize the size of array addition to PacketStruct
 		*/
-		PacketContainer(int arraySize=0)
+		PacketContainer(unsigned int arraySize=0)
 		{
-			m_packetContainer=(PacketContainerStruct*)EP_Malloc(sizeof(PacketContainerStruct)+ (arraySize*sizeof(ArrayType)) );
+			m_packetContainer=(PacketContainerStruct*)EP_Malloc(sizeof(PacketContainerStruct) + (arraySize*sizeof(ArrayType)) );
+			EP_WASSERT(m_packetContainer,_T("Allocation Failed"));
+			m_length=arraySize;
+		}
+
+		/*!
+		Default Constructor
+
+		Initializes given size of array of ArrayType addition to the PacketStruct.
+		@param[in] arraySize the size of array addition to PacketStruct
+		*/
+		PacketContainer(const PacketStruct & packet, unsigned int arraySize=0)
+		{
+			m_packetContainer=(PacketContainerStruct*)EP_Malloc(sizeof(PacketContainerStruct) + (arraySize*sizeof(ArrayType)) );
+			EP_WASSERT(m_packetContainer,_T("Allocation Failed"));
+			m_packetContainer->m_packet=packet;
 			m_length=arraySize;
 		}
 
@@ -66,8 +81,9 @@ namespace epl
 		@param[in] orig the original PacketContainer
 		*/
 		PacketContainer(const PacketContainer& orig)
-		{
-			m_packetContainer=EP_Malloc(sizeof(PacketContainerStruct)+ (orig.m_length*sizeof(ArrayType)) );
+		{	
+			m_packetContainer=EP_Malloc(sizeof(PacketContainerStruct) + (orig.m_length*sizeof(ArrayType)) );
+			EP_WASSERT(m_packetContainer,_T("Allocation Failed"));
 			m_packetContainer->m_packet=orig.m_packetContainer->m_packet;
 			m_length=orig.m_length;
 			for(int trav=0;trav<m_length;trav++)
@@ -96,12 +112,39 @@ namespace epl
 		}
 
 		/*!
+		Get a pointer to the packet
+		@return the pointer to the packet
+		*/
+		PacketStruct *GetPacketPtr()
+		{
+			return (PacketStruct*)m_packetContainer;
+		}
+
+
+		/*!
 		Get the pointer to the array
 		@return the pointer to the array
 		*/
 		ArrayType* GetArray()
 		{
 			return m_packetContainer->m_array;
+		}
+
+		/*!
+		Set the array with given array
+		@param[in] arr the array to copy from
+		@param[in] arraySize the size of given array
+		@param[in] offset the offset for start position of copying
+		@return the pointer to the array
+		*/
+		void SetArray(ArrayType *arr,unsigned int arraySize, unsigned int offset=0)
+		{
+			if(m_length<arraySize+offset)
+				SetArraySize(arraySize+offset);
+			for(int trav=0;trav<arraySize;trav++)
+			{
+				m_packetContainer->m_array[offset+trav]=arr[trav];
+			}			
 		}
 
 		/*!
@@ -131,18 +174,10 @@ namespace epl
 		{
 			if(m_length==arrSize)
 				return;
-			EP_ASSERT(m_packetContainer->m_length<arrSize);
-
-			PacketContainerStruct *tempcontainer=EP_Malloc(sizeof(PacketContainerStruct)+ (arrSize*sizeof(ArrayType)) );
-			tempcontainer->m_packet=m_packetContainer;
+			EP_WASSERT(m_packetContainer->m_length<arrSize,_T("Given size is smaller than the original.\nNew array size must be greater than original array size."));
+			m_packetContainer=EP_Realloc(m_packetContainer,sizeof(PacketContainerStruct)+ (arrSize*sizeof(ArrayType)));
+			EP_WASSERT(m_packetContainer,_T("Allocation Failed"));
 			m_length=arrSize;
-			for(int trav=0;trav<m_length;trav++)
-			{
-				tempcontainer->m_array[trav]=m_packetContainer->m_array[trav];
-			}
-			EP_Free(m_packetContainer);
-			m_packetContainer=tempcontainer;
-
 		}
 
 		/*!
@@ -152,9 +187,42 @@ namespace epl
 		*/
 		ArrayType & operator[](unsigned int index)
 		{
-			EP_ASSERT(index<m_length);
+			EP_WASSERT(index<m_length,_T("The given index is greater than the memory allocated"));
 			return m_packetContainer->m_array[index];
 		}
+
+		/*!
+		Copy the given Packet Container b to this Packet Container.
+		@param[in] b the PacketContainer to copy from
+		*/
+		PacketContainer& operator =(const PacketContainer& b)
+		{
+			if(this!=&b)
+			{
+				EP_Free(m_packetContainer);
+				m_packetContainer=EP_Malloc(sizeof(PacketContainerStruct) + (b.m_length*sizeof(ArrayType)) );
+				EP_WASSERT(m_packetContainer,_T("Allocation Failed."));
+				m_packetContainer->m_packet=b.m_packetContainer->m_packet;
+				m_length=b.m_length;
+				for(int trav=0;trav<m_length;trav++)
+				{
+					m_packetContainer->m_array[trav]=b.m_packetContainer->m_array[trav];
+				}
+			}
+			return *this;
+		}
+
+		/*!
+		Copy the given Packet b to this Packet Container.
+		@param[in] b the Packet to copy from
+		*/
+		PacketContainer& operator =(const PacketStruct& b)
+		{
+			m_packetContainer->m_packet=b;
+			return *this;
+		}
+		
+	
 
 	private:
 		/*!

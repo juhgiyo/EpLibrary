@@ -50,20 +50,23 @@ Packet::Packet(const Packet& b):SmartObject()
 }
 Packet & Packet::operator=(const Packet&b)
 {
-	if(m_packetSize<b.m_packetSize)
+	if(this!=&b)
 	{
-		EP_DELETE[] m_packet;
-		m_packet=NULL;
+		if(m_packetSize<b.m_packetSize)
+		{
+			EP_DELETE[] m_packet;
+			m_packet=NULL;
+		}
+		if(m_packet==NULL)
+		{
+			m_packet=EP_NEW char[b.m_packetSize];
+		}
+		if(b.m_packet)
+			memcpy(m_packet,b.m_packet,b.m_packetSize);
+		else
+			memset(m_packet,0,b.m_packetSize);
+		m_packetSize=b.m_packetSize;
 	}
-	if(m_packet==NULL)
-	{
-		m_packet=EP_NEW char[b.m_packetSize];
-	}
-	if(b.m_packet)
-		memcpy(m_packet,b.m_packet,b.m_packetSize);
-	else
-		memset(m_packet,0,b.m_packetSize);
-	m_packetSize=b.m_packetSize;
 	return *this;
 }
 

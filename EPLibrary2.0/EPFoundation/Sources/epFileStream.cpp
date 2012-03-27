@@ -35,12 +35,15 @@ FileStream::FileStream(const FileStream& b):Stream()
 
 FileStream & FileStream::operator=(const FileStream&b)
 {
-	if(!m_fileName)
-		m_fileName=EP_NEW TCHAR[FILENAME_MAX];
-	memset(m_fileName,0,sizeof(TCHAR)*FILENAME_MAX);
-	System::StrCpy(m_fileName,b.m_fileName);
-	m_stream=b.m_stream;
-	m_offset=b.m_offset;
+	if(this!=&b)
+	{
+		if(!m_fileName)
+			m_fileName=EP_NEW TCHAR[FILENAME_MAX];
+		memset(m_fileName,0,sizeof(TCHAR)*FILENAME_MAX);
+		System::StrCpy(m_fileName,b.m_fileName);
+		m_stream=b.m_stream;
+		m_offset=b.m_offset;
+	}
 	return *this;
 }
 

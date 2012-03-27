@@ -175,9 +175,10 @@ namespace epl
 	}
 	DynamicArray::DynamicArray(const DynamicArray<FDATA> &dArr)
 	{
-		m_numOfElements=dArr.m_numOfElement;
+		m_numOfElements=dArr.m_numOfElements;
 		m_actualSize=dArr.m_actualSize;
-		m_head=malloc(sizeof(FDATA)*m_actualSize);
+		m_head=EP_Malloc(sizeof(FDATA)*m_actualSize);
+		EP_WASSERT(m_head,_T("Allocation Failed"));
 		memcpy(m_head,dArr.m_head,sizeof(FDATA)*m_actualSize);
 	}
 
@@ -220,12 +221,12 @@ namespace epl
 			return false;
 		if(m_head)
 		{
-			realloc(m_head,newSize*sizeof(FDATA));
+			m_head=EP_Realloc(m_head,newSize*sizeof(FDATA));
 			m_actualSize=newSize;
 		}
 		else
 		{
-			m_head=malloc(newSize*sizeof(FDATA));
+			m_head=EP_Malloc(newSize*sizeof(FDATA));
 			m_actualSize=newSize;
 		}
 		EP_WASSERT(m_head,_T("Allocation Failed"));
@@ -267,12 +268,16 @@ namespace epl
 
 	DynamicArray<FDATA> &DynamicArray::operator=(const DynamicArray<FDATA>& b)
 	{
-		Delete();
-		m_actualSize=b.m_actualSize;
-		m_numOfElements=b.m_numOfElements;
-		Resize(m_actualSize);
-		if(m_head&&b.m_head && b.m_actualSize)
-			memcpy(m_head,b.m_head,b.m_actualSize*sizeof(FDATA));
+		if(this != &b)
+		{
+			Delete();
+			m_actualSize=b.m_actualSize;
+			m_numOfElements=b.m_numOfElements;
+			Resize(m_actualSize);
+			if(m_head&&b.m_head && b.m_actualSize)
+				memcpy(m_head,b.m_head,b.m_actualSize*sizeof(FDATA));
+
+		}
 		return *this;
 	}
 

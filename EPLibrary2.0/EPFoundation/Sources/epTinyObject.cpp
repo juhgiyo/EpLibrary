@@ -122,8 +122,11 @@ namespace epl
 
 	StaticAllocator& StaticAllocator::operator=(const StaticAllocator& rhs)
 	{
-		StaticAllocator copy(rhs);
-		copy.Swap(*this);
+		if(this!=&rhs)
+		{
+			StaticAllocator copy(rhs);
+			copy.Swap(*this);
+		}
 		return *this;
 	}
 

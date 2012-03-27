@@ -35,10 +35,13 @@ NetworkStream::NetworkStream(const NetworkStream& b):Stream()
 
 NetworkStream & NetworkStream::operator=(const NetworkStream&b)
 {
-	m_flushType=b.m_flushType;
-	m_readOffset=b.m_readOffset;
-	m_stream=b.m_stream;
-	m_offset=b.m_offset;
+	if(this!=&b)
+	{
+		m_flushType=b.m_flushType;
+		m_readOffset=b.m_readOffset;
+		m_stream=b.m_stream;
+		m_offset=b.m_offset;
+	}
 	return *this;
 }
 

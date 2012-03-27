@@ -32,8 +32,11 @@ Stream::Stream(const Stream& b)
 
 Stream & Stream::operator=(const Stream&b)
 {
-	m_stream=b.m_stream;
-	m_offset=b.m_offset;
+	if(this!=&b)
+	{
+		m_stream=b.m_stream;
+		m_offset=b.m_offset;
+	}
 	return *this;
 }
 
