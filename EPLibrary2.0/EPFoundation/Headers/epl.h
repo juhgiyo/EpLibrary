@@ -90,6 +90,7 @@ An Interface for EP Foundation Library
 #include "epBaseServerWorker.h"
 #include "epBaseServerWorkerEx.h"
 #include "epPacket.h"
+#include "epPacketContainer.h"
 
 //System
 #include "epConsoleHelper.h"

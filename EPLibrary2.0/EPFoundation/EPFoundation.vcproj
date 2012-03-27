@@ -858,6 +858,10 @@
 					RelativePath=".\Headers\epPacket.h"
 					>
 				</File>
+				<File
+					RelativePath=".\Headers\epPacketContainer.h"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
