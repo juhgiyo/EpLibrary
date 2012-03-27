@@ -64,6 +64,7 @@ namespace epl
 		Default Constructor
 
 		Initializes given size of array of ArrayType addition to the PacketStruct.
+		@param[in] packet the packet to copy from
 		@param[in] arraySize the size of array addition to PacketStruct
 		*/
 		PacketContainer(const PacketStruct & packet, unsigned int arraySize=0)
