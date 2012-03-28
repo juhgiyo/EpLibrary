@@ -24,7 +24,7 @@ Packet::Packet(char *packet, unsigned int byteSize, bool shouldAllocate):SmartOb
 {
 	m_packet=NULL;
 	m_packetSize=0;
-	m_isAllocate=shouldAllocate;
+	m_isAllocated=shouldAllocate;
 	if(shouldAllocate)
 	{
 		if(byteSize>0)
@@ -47,7 +47,7 @@ Packet::Packet(char *packet, unsigned int byteSize, bool shouldAllocate):SmartOb
 Packet::Packet(const Packet& b):SmartObject()
 {
 	m_packet=NULL;
-	if(b.m_isAllocate)
+	if(b.m_isAllocated)
 	{
 		if(b.m_packetSize>0)
 		{
@@ -61,19 +61,19 @@ Packet::Packet(const Packet& b):SmartObject()
 		m_packet=b.m_packet;
 		m_packetSize=b.m_packetSize;
 	}
-	m_isAllocate=b.m_isAllocate;
+	m_isAllocated=b.m_isAllocated;
 }
 Packet & Packet::operator=(const Packet&b)
 {
 	if(this!=&b)
 	{
-		if(m_isAllocate)
+		if(m_isAllocated)
 		{
 			EP_DELETE[] m_packet;
 		}
 		m_packet=NULL;
 
-		if(b.m_isAllocate)
+		if(b.m_isAllocated)
 		{
 			if(b.m_packetSize>0)
 			{
@@ -88,14 +88,14 @@ Packet & Packet::operator=(const Packet&b)
 			m_packet=b.m_packet;
 			m_packetSize=b.m_packetSize;
 		}
-		m_isAllocate=b.m_isAllocate;
+		m_isAllocated=b.m_isAllocated;
 	}
 	return *this;
 }
 
 Packet::~Packet()
 {
-	if(m_isAllocate && m_packet)
+	if(m_isAllocated && m_packet)
 	{
 		EP_DELETE[] m_packet;
 	}
@@ -114,7 +114,7 @@ const char *Packet::GetPacket() const
 
 void Packet::SetPacket(char* packet, unsigned int packetByteSize)
 {
-	if(m_isAllocate)
+	if(m_isAllocated)
 	{
 		if(m_packet)
 			EP_DELETE[] m_packet;

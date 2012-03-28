@@ -87,9 +87,9 @@ namespace epl{
 		Get the flag whether memory is allocated or not
 		@return true if the memory is allocated by this object, otherwise false
 		*/
-		bool IsAllocate() const
+		bool IsAllocated() const
 		{
-			return m_isAllocate;
+			return m_isAllocated;
 		}
 
 		/*!
@@ -110,8 +110,8 @@ namespace epl{
 		char *m_packet;
 		/// packet Byte Size
 		unsigned int m_packetSize;
-		/// shouldAllocate
-		bool m_isAllocate;
+		/// flag whether memory is allocated in this object or now
+		bool m_isAllocated;
 	};
 }
 
