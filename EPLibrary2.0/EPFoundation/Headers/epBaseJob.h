@@ -73,11 +73,36 @@ namespace epl
 			JOB_STATUS_PENDING,
 		};
 
+		/*!
+		Default Copy Constructor
 
+		Initializes the Semaphore
+		@param[in] b the second object
+		*/
+		BaseJob(const BaseJob& b):SmartObject()
+		{
+			m_status=b.m_status;
+			m_priority=m_priority;
+		}
 		/*!
 		Default Destructor
 		*/
 		virtual ~BaseJob();
+
+		/*!
+		Assignment operator overloading
+		@param[in] b the second object
+		@return the new copied object
+		*/
+		BaseJob & operator=(const BaseJob&b)
+		{
+			if(this!=&b)
+			{
+				m_status=b.m_status;
+				m_priority=m_priority;
+			}
+			return *this;
+		}
 
 		/*!
 		Return the current Job Status.

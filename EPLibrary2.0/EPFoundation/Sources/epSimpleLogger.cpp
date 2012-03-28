@@ -82,7 +82,7 @@ SimpleLogManager::~SimpleLogManager()
 
 void SimpleLogManager::AddSimpleLog(const TCHAR *fileName, const TCHAR *funcName,const int lineNum,const TCHAR* format,...)
 {
-	LockObj lock(&m_nodeListLock);
+	LockObj lock(m_nodeListLock);
 
 
 	SimpleLogNode *log=EP_NEW SimpleLogNode();

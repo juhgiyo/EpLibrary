@@ -67,6 +67,8 @@ namespace epl{
 		Assignment Operator Overloading
 
 		the Packet set as given packet b
+		@param[in] b right side of packet
+		@return this object
 		*/
 		Packet & operator=(const Packet&b);
 
@@ -75,7 +77,7 @@ namespace epl{
 
 		Destroy the Packet
 		*/
-		~Packet();
+		virtual ~Packet();
 
 		/*!
 		Return the currently stored packet byte size

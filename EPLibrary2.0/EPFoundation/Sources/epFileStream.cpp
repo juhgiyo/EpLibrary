@@ -49,14 +49,14 @@ FileStream & FileStream::operator=(const FileStream&b)
 
 FileStream::~FileStream()
 {
-	m_streamLock.Lock();
+	m_streamLock->Lock();
 	EP_DELETE[] m_fileName;
-	m_streamLock.Unlock();
+	m_streamLock->Unlock();
 }
 
 void FileStream::SetFileName(const TCHAR* fileName)
 {
-	LockObj lock(&m_streamLock);
+	LockObj lock(m_streamLock);
 	memset(m_fileName,0,FILENAME_MAX);
 	System::StrCpy(m_fileName,fileName);
 }
@@ -67,7 +67,7 @@ const TCHAR *FileStream::GetFileName() const
 
 bool FileStream::LoadStreamFromFile()
 {
-	LockObj lock(&m_streamLock);
+	LockObj lock(m_streamLock);
 	m_stream.clear();
 
 	if(System::StrLen(m_fileName)==0)
@@ -87,7 +87,7 @@ bool FileStream::LoadStreamFromFile()
 }
 bool FileStream::WriteStreamToFile()
 {
-	LockObj lock(&m_streamLock);
+	LockObj lock(m_streamLock);
 	if(System::StrLen(m_fileName)==0)
 	{
 		LOG_THIS_MSG(_T("File Name Not Set!"));

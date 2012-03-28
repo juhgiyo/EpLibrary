@@ -29,6 +29,13 @@ BaseClient::BaseClient(CString hostName, CString port)
 	m_result=0;
 	m_ptr=0;
 	m_isConnected=false;
+#ifdef EP_MULTIPROCESS
+	m_sendLock=EP_NEW Mutex();
+	m_generalLock=EP_NEW Mutex();
+#else //EP_MULTIPROCESS
+	m_sendLock=EP_NEW CriticalSectionEx();
+	m_generalLock=EP_NEW CriticalSectionEx();
+#endif //EP_MULTIPROCESS
 }
 BaseClient::~BaseClient()
 {
@@ -37,11 +44,13 @@ BaseClient::~BaseClient()
 	if(m_hostName)
 		EP_DELETE[] m_hostName;
 	Disconnect();
+	EP_DELETE m_sendLock;
+	EP_DELETE m_generalLock;
 }
 
 bool BaseClient::SetHostName(CString hostName)
 {
-	LockObj lock(&m_generalLock);
+	LockObj lock(m_generalLock);
 	if(m_isConnected)
 		return false;
 	if(m_hostName==NULL)
@@ -61,7 +70,7 @@ bool BaseClient::SetHostName(CString hostName)
 
 bool BaseClient::SetPort(CString port)
 {
-	LockObj lock(&m_generalLock);
+	LockObj lock(m_generalLock);
 	if(m_isConnected)
 		return false;
 	if(m_port==NULL)
@@ -102,7 +111,7 @@ CString BaseClient::GetPort()
 
 int BaseClient::Send(const Packet &packet)
 {
-	LockObj lock(&m_sendLock);
+	LockObj lock(m_sendLock);
 	int writeLength=0;
 	const char *packetData=packet.GetPacket();
 	int length=packet.GetPacketByteSize();
@@ -147,7 +156,7 @@ int BaseClient::receive(Packet &packet)
 
 bool BaseClient::Connect()
 {
-	LockObj lock(&m_generalLock);
+	LockObj lock(m_generalLock);
 	if(m_isConnected)
 		return true;
 	if(m_port==NULL)
@@ -272,7 +281,7 @@ bool BaseClient::IsConnected()
 
 void BaseClient::Disconnect()
 {
-	LockObj lock(&m_generalLock);
+	LockObj lock(m_generalLock);
 	// No longer need server socket
 	if(m_result)
 		freeaddrinfo(m_result);

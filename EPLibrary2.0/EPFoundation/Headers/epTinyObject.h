@@ -155,8 +155,7 @@ namespace epl {
 		<
 		CacheType cacheType = CACHE_TYPE_STATIC|CACHE_TYPE_POOL,
 		unsigned int fragmentSize = DEFAULT_FRAGMENT_SIZE,
-		unsigned int maxTinyObjectSize = MAX_TINY_OBJECT_SIZE,
-		int threadPolicy = THREAD_POLICY_NONE
+		unsigned int maxTinyObjectSize = MAX_TINY_OBJECT_SIZE
 		>
 	class EP_FOUNDATION TinyObject
 	{
@@ -166,7 +165,7 @@ namespace epl {
 			MyTinyObjAllocator() : TinyObjAllocator(fragmentSize, maxTinyObjectSize)
 			{}
 		};
-		typedef ThreadSafeClass< MyTinyObjAllocator, threadPolicy > MyThreadSafeClass;
+		typedef ThreadSafeClass< MyTinyObjAllocator > MyThreadSafeClass;
 	public:
 		static void* operator new(unsigned int size)
 		{

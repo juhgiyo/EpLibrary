@@ -34,8 +34,13 @@ An Interface for Base Client.
 #include "epLib.h"
 #include "epSystem.h"
 #include "epMemory.h"
-#include "epCriticalSectionEx.h"
 #include "epPacket.h"
+#ifdef EP_MULTIPROCESS
+#include "epMutex.h"
+#else //EP_MULTIPROCESS
+#include "epCriticalSectionEx.h"
+#endif //EP_MULTIPROCESS
+
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif //WIN32_LEAN_AND_MEAN
@@ -228,9 +233,9 @@ namespace epl{
 		HANDLE m_clientThreadHandle;
 
 		/// send lock
-		CriticalSectionEx m_sendLock;
+		BaseLock *m_sendLock;
 		/// general lock
-		CriticalSectionEx m_generalLock;
+		BaseLock *m_generalLock;
 	};
 }
 

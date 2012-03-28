@@ -22,13 +22,13 @@ using namespace epl;
 #if !defined(_DEBUG)
 void SmartObject::Retain()
 {
-	LockObj lock(&m_refCounterLock);
+	LockObj lock(m_refCounterLock);
 	m_refCount++;
 }
 
 void SmartObject::Release()
 {
-	LockObj lock(&m_refCounterLock);
+	LockObj lock(m_refCounterLock);
 	m_refCount--;
 
 	if(m_refCount==0)
@@ -44,6 +44,11 @@ void SmartObject::Release()
 SmartObject::SmartObject()
 {
 	m_refCount=1;
+#ifdef EP_MULTIPROCESS
+	m_refCounterLock=EP_NEW Mutex();
+#else //EP_MULTIPROCESS
+	m_refCounterLock=EP_NEW CriticalSectionEx();
+#endif //EP_MULTIPROCESS
 }
 
 #endif //defined(_DEBUG)
@@ -53,6 +58,7 @@ SmartObject::~SmartObject()
 	m_refCount--;
 	if( m_refCount!=0)
 		EP_WASSERT(0,_T("The Reference Count is not 0!\nThe Reference Count is %d !"),m_refCount);
+	EP_DELETE m_refCounterLock;
 }
 
 

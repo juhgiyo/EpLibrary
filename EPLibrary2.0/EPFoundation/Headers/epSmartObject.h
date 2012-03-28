@@ -31,8 +31,12 @@ An Interface for the Smart Object.
 #define __EP_SMART_OBJECT_H__
 #include "epLib.h"
 #include "epSystem.h"
-#include "epCriticalSectionEx.h"
 #include "epSimpleLogger.h"
+#ifdef EP_MULTIPROCESS
+#include "epMutex.h"
+#else //EP_MULTIPROCESS
+#include "epCriticalSectionEx.h"
+#endif //EP_MULTIPROCESS
 
 namespace epl
 {
@@ -72,7 +76,7 @@ namespace epl
 		*/
 		__forceinline void Retain()
 		{
-			LockObj lock(&m_refCounterLock);
+			LockObj lock(m_refCounterLock);
 			m_refCount++;
 			LOG_THIS_MSG(_T("%s::%s(%d) Retained Object : %d (Current Refence Count = %d)"),__WFILE__,__WFUNCTION__,__LINE__,this, this->m_refCount);
 		}
@@ -83,7 +87,7 @@ namespace epl
 		*/
 		__forceinline  void Release()
 		{
-			LockObj lock(&m_refCounterLock);
+			LockObj lock(m_refCounterLock);
 			m_refCount--;
 			LOG_THIS_MSG(_T("%s::%s(%d) Released Object : %d (Current Refence Count = %d)"),__WFILE__,__WFUNCTION__,__LINE__,this, this->m_refCount);
 			if(m_refCount==0)
@@ -104,6 +108,11 @@ namespace epl
 		{
 			m_refCount=1;
 			LOG_THIS_MSG(_T("%s::%s(%d) Allocated Object : %d (Current Refence Count = %d)"),__WFILE__,__WFUNCTION__,__LINE__,this, this->m_refCount);
+#ifdef EP_MULTIPROCESS
+			m_refCounterLock=EP_NEW Mutex();
+#else //EP_MULTIPROCESS
+			m_refCounterLock=EP_NEW CriticalSectionEx();
+#endif //EP_MULTIPROCESS
 		}
 		
 	#endif //!defined(_DEBUG)
@@ -112,11 +121,30 @@ namespace epl
 		*/
 		virtual ~SmartObject();
 
+		/*!
+		Default Copy Constructor
+
+		Initializes the Semaphore
+		**Should not call this
+		@param[in] b the second object
+		*/
+		SmartObject(const SmartObject& b){EP_ASSERT(0);}
+		/*!
+		Assignment operator overloading
+		**Should not call this
+		@param[in] b the second object
+		@return the new copied object
+		*/
+		SmartObject & operator=(const SmartObject&b)
+		{
+			EP_ASSERT(0);
+			return *this;
+		}
 
 		
 	private:
 		int m_refCount;
-		CriticalSectionEx m_refCounterLock;
+		BaseLock *m_refCounterLock;
 	};
 }
 #endif //__EP_SMART_OBJECT_H__

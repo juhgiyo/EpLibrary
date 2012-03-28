@@ -28,17 +28,23 @@ BaseServer::BaseServer(CString port)
 	m_listenSocket=NULL;
 	m_result=0;
 	m_isServerStarted=false;
+#ifdef EP_MULTIPROCESS
+	m_lock=EP_NEW Mutex();
+#else //EP_MULTIPROCESS
+	m_lock=EP_NEW CriticalSectionEx();
+#endif //EP_MULTIPROCESS
 }
 BaseServer::~BaseServer()
 {
 	if(m_port)
 		EP_DELETE[] m_port;
 	StopServer();
+	EP_DELETE m_lock;
 }
 
 bool BaseServer::SetPort(CString port)
 {
-	LockObj lock(&m_lock);
+	LockObj lock(m_lock);
 	if(m_isServerStarted)
 		return false;
 	if(m_port==NULL)
@@ -111,7 +117,7 @@ DWORD BaseServer::ServerThread( LPVOID lpParam )
 
 bool BaseServer::StartServer()
 {
-	LockObj lock(&m_lock);
+	LockObj lock(m_lock);
 	if(m_isServerStarted)
 		return true;
 	if(m_port==NULL)
@@ -187,7 +193,7 @@ bool BaseServer::StartServer()
 
 void BaseServer::ShutdownAllClient()
 {
-	LockObj lock(&m_lock);
+	LockObj lock(m_lock);
 	if(!m_isServerStarted)
 		return;
 	// shutdown the connection since we're done
@@ -207,7 +213,7 @@ bool BaseServer::IsServerStarted()
 }
 void BaseServer::StopServer()
 {
-	LockObj lock(&m_lock);
+	LockObj lock(m_lock);
 	if(m_isServerStarted==true)
 	{
 		ShutdownAllClient();	

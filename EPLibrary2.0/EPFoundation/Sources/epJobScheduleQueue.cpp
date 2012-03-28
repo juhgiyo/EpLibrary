@@ -49,7 +49,7 @@ void JobScheduleQueue::Pop()
 
 bool JobScheduleQueue::Erase(BaseJob * const object)
 {
-	LockObj lock(&m_queueLock);
+	LockObj lock(m_queueLock);
 	if(m_queue.empty())
 		return false;
 	std::vector<BaseJob*>::iterator iter;
@@ -69,9 +69,9 @@ bool JobScheduleQueue::Erase(BaseJob * const object)
 void JobScheduleQueue::ReportAllJob(const BaseJob::JobStatus status)
 {
 	std::vector<BaseJob *>::iterator iter;
-	m_queueLock.Lock();
+	m_queueLock->Lock();
 	std::vector<BaseJob *> queue=m_queue;
-	m_queueLock.Unlock();
+	m_queueLock->Unlock();
 	for(iter=queue.begin();iter!=queue.end();iter++)
 	{
 		(*iter)->JobReport(BaseJob::JOB_STATUS_INCOMPLETE);

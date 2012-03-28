@@ -31,8 +31,12 @@ An Interface for Thread Safe Queue.
 #define __EP_THREAD_SAFE_QUEUE_H__
 #include "epLib.h"
 #include <vector>
-#include "epCriticalSectionEx.h"
 #include "epSimpleLogger.h"
+#ifdef EP_MULTIPROCESS
+#include "epMutex.h"
+#else //EP_MULTIPROCESS
+#include "epCriticalSectionEx.h"
+#endif //EP_MULTIPROCESS
 
 namespace epl
 {
@@ -54,11 +58,28 @@ namespace epl
 		ThreadSafeQueue();
 
 		/*!
+		Default Copy Constructor
+
+		Initializes the queue
+		@param[in] b the second object
+		*/
+		ThreadSafeQueue(const ThreadSafeQueue& b);
+
+		/*!
 		Default Destructor
 
 		Destroy the queue
 		*/
 		virtual ~ThreadSafeQueue();
+
+		/*!
+		Assignment Operator Overloading
+
+		the ThreadSafeQueue set as given ThreadSafeQueue b
+		@param[in] b right side of ThreadSafeQueue
+		@return this object
+		*/
+		ThreadSafeQueue & operator=(const ThreadSafeQueue&b);
 
 		/*!
 		Check if the queue is empty.
@@ -112,7 +133,7 @@ namespace epl
 		std::vector<FDATA> m_queue;
 
 		/// lock
-		CriticalSectionEx m_queueLock;
+		BaseLock *m_queueLock;
 	};
 
 
@@ -120,14 +141,31 @@ namespace epl
 	ThreadSafeQueue<FDATA>::ThreadSafeQueue()
 	{
 		m_queue=std::vector<FDATA>();
+#ifdef EP_MULTIPROCESS
+		m_queueLock=EP_NEW Mutex();
+#else //EP_MULTIPROCESS
+		m_queueLock=EP_NEW CriticalSectionEx();
+#endif //EP_MULTIPROCESS
+	}
+
+	template <typename FDATA>
+	ThreadSafeQueue<FDATA>::ThreadSafeQueue(const ThreadSafeQueue& b)
+	{
+		m_queue=b.m_queue;
+#ifdef EP_MULTIPROCESS
+		m_queueLock=EP_NEW Mutex();
+#else //EP_MULTIPROCESS
+		m_queueLock=EP_NEW CriticalSectionEx();
+#endif //EP_MULTIPROCESS
 	}
 
 	template <typename FDATA>
 	ThreadSafeQueue<FDATA>::~ThreadSafeQueue()
 	{
-		m_queueLock.Lock();
+		m_queueLock->Lock();
 		m_queue.clear();
-		m_queueLock.Unlock();
+		m_queueLock->Unlock();
+		EP_DELETE m_queueLock;
 	}
 
 	template <typename FDATA>
@@ -139,7 +177,7 @@ namespace epl
 	template <typename FDATA>
 	bool ThreadSafeQueue<FDATA>::IsExist(FDATA const &data)
 	{
-		LockObj lock(&m_queueLock);
+		LockObj lock(m_queueLock);
 		if(m_queue.empty())
 			return false;
 
@@ -161,7 +199,7 @@ namespace epl
 	template <typename FDATA>
 	FDATA &ThreadSafeQueue<FDATA>::Front()
 	{
-		LockObj lock(&m_queueLock);
+		LockObj lock(m_queueLock);
 		if(m_queue.empty())
 		{
 			EP_WASSERT(0,_T("Empty Queue"));
@@ -172,7 +210,7 @@ namespace epl
 	template <typename FDATA>
 	FDATA &ThreadSafeQueue<FDATA>::Back()
 	{
-		LockObj lock(&m_queueLock);
+		LockObj lock(m_queueLock);
 		if(m_queue.empty())
 		{
 			EP_WASSERT(0,_T("Empty Queue"));
@@ -183,14 +221,14 @@ namespace epl
 	template <typename FDATA>
 	void ThreadSafeQueue<FDATA>::Push(FDATA const & data)
 	{
-		LockObj lock(&m_queueLock);
+		LockObj lock(m_queueLock);
 		m_queue.push_back(data);
 	}
 
 	template <typename FDATA>
 	bool ThreadSafeQueue<FDATA>::Erase(FDATA const &data)
 	{
-		LockObj lock(&m_queueLock);
+		LockObj lock(m_queueLock);
 		std::vector<FDATA>::iterator iter;
 		for(iter=m_queue.begin();iter!=m_queue.end();iter++)
 		{
@@ -206,12 +244,22 @@ namespace epl
 	template <typename FDATA>
 	void ThreadSafeQueue<FDATA>::Pop()
 	{
-		LockObj lock(&m_queueLock);
+		LockObj lock(m_queueLock);
 		if(m_queue.empty())
 		{
 			EP_WASSERT(0,_T("Empty Queue"));
 		}
 		m_queue.erase(m_queue.begin());
+	}
+
+	template <typename FDATA>
+	ThreadSafeQueue<FDATA> & ThreadSafeQueue<FDATA>::operator=(const ThreadSafeQueue& b)
+	{
+		if(this != &b)
+		{
+			m_queue=b.m_queue;
+		}
+		return *this;
 	}
 }
 #endif //__EP_THREAD_SAFE_QUEUE_H__

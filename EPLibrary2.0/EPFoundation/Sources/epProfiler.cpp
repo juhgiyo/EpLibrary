@@ -129,7 +129,7 @@ bool ProfileManager::isProfileExist(const TCHAR *fileName,const TCHAR* funcName,
 
 void ProfileManager::AddProfile(const TCHAR *fileName,const TCHAR* funcName, const EpTime &time)
 {
-	LockObj lock(&m_nodeListLock);
+	LockObj lock(m_nodeListLock);
 	ProfileNode *existStruct=NULL;
 	int retIdx=-1;
 	if(isProfileExist(fileName,funcName,existStruct,retIdx) && existStruct && retIdx!=-1)

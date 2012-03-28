@@ -22,12 +22,22 @@ using namespace epl;
 Stream::Stream()
 {
 	m_offset=0;
+#ifdef EP_MULTIPROCESS
+	m_streamLock=EP_NEW Mutex();
+#else //EP_MULTIPROCESS
+	m_streamLock=EP_NEW CriticalSectionEx();
+#endif //EP_MULTIPROCESS
 }
 
 Stream::Stream(const Stream& b)
 {
 	m_stream=b.m_stream;
 	m_offset=b.m_offset;
+#ifdef EP_MULTIPROCESS
+	m_streamLock=EP_NEW Mutex();
+#else //EP_MULTIPROCESS
+	m_streamLock=EP_NEW CriticalSectionEx();
+#endif //EP_MULTIPROCESS
 }
 
 Stream & Stream::operator=(const Stream&b)
@@ -43,12 +53,12 @@ Stream & Stream::operator=(const Stream&b)
 
 Stream::~Stream()
 {
-
+	EP_DELETE m_streamLock;
 }
 
 void Stream::Clear()
 {
-	LockObj lock(&m_streamLock);
+	LockObj lock(m_streamLock);
 	m_offset=0;
 	m_stream.clear();
 }
@@ -60,7 +70,7 @@ int Stream::GetStreamSize() const
 
 void Stream::SetSeek(const StreamSeekType seekType,const unsigned int offset)
 {
-	LockObj lock(&m_streamLock);
+	LockObj lock(m_streamLock);
 	switch(seekType)
 	{
 	case STREAM_SEEK_TYPE_SEEK_SET:
@@ -110,158 +120,158 @@ bool Stream::read(void *value,const int byteSize)
 
 bool Stream::WriteShort(const short value)
 {
-	LockObj lock(&m_streamLock);
+	LockObj lock(m_streamLock);
 	return write(&value,sizeof(short));
 }
 
 bool Stream::WriteUShort(const unsigned short value)
 {
-	LockObj lock(&m_streamLock);
+	LockObj lock(m_streamLock);
 	return write(&value,sizeof(unsigned short));
 }
 
 bool Stream::WriteInt(const int value)
 {
-	LockObj lock(&m_streamLock);
+	LockObj lock(m_streamLock);
 	return write(&value,sizeof(int));
 }
 
 bool Stream::WriteUInt(const unsigned int value)
 {
-	LockObj lock(&m_streamLock);
+	LockObj lock(m_streamLock);
 	return write(&value,sizeof(unsigned int));
 }
 
 bool Stream::WriteFloat(const float value)
 {
-	LockObj lock(&m_streamLock);
+	LockObj lock(m_streamLock);
 	return write(&value,sizeof(float));
 }
 
 bool Stream::WriteDouble(const double value)
 {
-	LockObj lock(&m_streamLock);
+	LockObj lock(m_streamLock);
 	return write(&value,sizeof(double));
 }
 bool Stream::WriteByte(const unsigned char value)
 {
-	LockObj lock(&m_streamLock);
+	LockObj lock(m_streamLock);
 	return write(&value,sizeof(unsigned char));
 }
 
 bool Stream::WriteShorts(const short *shortList, const unsigned int listSize)
 {
-	LockObj lock(&m_streamLock);
+	LockObj lock(m_streamLock);
 	return write(shortList,sizeof(short)*listSize);
 }
 bool Stream::WriteUShorts(const unsigned short *ushortList, const unsigned int listSize)
 {
-	LockObj lock(&m_streamLock);
+	LockObj lock(m_streamLock);
 	return write(ushortList,sizeof(unsigned short)*listSize);
 }
 bool Stream::WriteInts(const int *intList, const unsigned int listSize)
 {
-	LockObj lock(&m_streamLock);
+	LockObj lock(m_streamLock);
 	return write(intList,sizeof(int)*listSize);
 }
 bool Stream::WriteUInts(const unsigned int *uintList, const unsigned int listSize)
 {
-	LockObj lock(&m_streamLock);
+	LockObj lock(m_streamLock);
 	return write(uintList,sizeof(unsigned int)*listSize);
 }
 bool Stream::WriteFloats(const float *floatList, const unsigned int listSize)
 {
-	LockObj lock(&m_streamLock);
+	LockObj lock(m_streamLock);
 	return write(floatList,sizeof(float)*listSize);
 }
 bool Stream::WriteDoubles(const double *doubleList,const unsigned int listSize)
 {
-	LockObj lock(&m_streamLock);
+	LockObj lock(m_streamLock);
 	return write(doubleList,sizeof(double)*listSize);
 }
 bool Stream::WriteBytes(const unsigned char* byteList,const unsigned int listSize)
 {
-	LockObj lock(&m_streamLock);
+	LockObj lock(m_streamLock);
 	return write(byteList,sizeof(unsigned char)*listSize);
 }
 
 
 bool Stream::ReadShort(short &retVal)
 {
-	LockObj lock(&m_streamLock);
+	LockObj lock(m_streamLock);
 	return read(&retVal,sizeof(short));
 }
 bool Stream::ReadUShort(unsigned short &retVal)
 {
-	LockObj lock(&m_streamLock);
+	LockObj lock(m_streamLock);
 	return read(&retVal,sizeof(unsigned short));
 }
 bool Stream::ReadInt(int &retVal)
 {
-	LockObj lock(&m_streamLock);
+	LockObj lock(m_streamLock);
 	return read(&retVal,sizeof(int));
 }
 bool Stream::ReadUInt(unsigned int &retVal)
 {
-	LockObj lock(&m_streamLock);
+	LockObj lock(m_streamLock);
 	return read(&retVal,sizeof(unsigned int));
 }
 bool Stream::ReadFloat(float &retVal)
 {
-	LockObj lock(&m_streamLock);
+	LockObj lock(m_streamLock);
 	return read(&retVal,sizeof(float));
 }
 bool Stream::ReadDouble(double &retVal)
 {
-	LockObj lock(&m_streamLock);
+	LockObj lock(m_streamLock);
 	return read(&retVal,sizeof(double));
 }
 bool Stream::ReadByte(unsigned char &retVal)
 {
-	LockObj lock(&m_streamLock);
+	LockObj lock(m_streamLock);
 	return read(&retVal,sizeof(unsigned char));
 }
 
 bool Stream::ReadShorts(short *retShortList, const unsigned int listSize)
 {
-	LockObj lock(&m_streamLock);
+	LockObj lock(m_streamLock);
 	return read(retShortList,sizeof(short)*listSize);
 }
 bool Stream::ReadUShorts(unsigned short *retUshortList, const unsigned int listSize)
 {
-	LockObj lock(&m_streamLock);
+	LockObj lock(m_streamLock);
 	return read(retUshortList,sizeof(unsigned short)*listSize);
 }
 bool Stream::ReadInts(int *retIntList, const unsigned int listSize)
 {
-	LockObj lock(&m_streamLock);
+	LockObj lock(m_streamLock);
 	return read(retIntList,sizeof(int)*listSize);
 }
 bool Stream::ReadUInts(unsigned int *retUintList, const unsigned int listSize)
 {
-	LockObj lock(&m_streamLock);
+	LockObj lock(m_streamLock);
 	return read(retUintList,sizeof(unsigned int)*listSize);
 }
 bool Stream::ReadFloats(float *retFloatList, const unsigned int listSize)
 {
-	LockObj lock(&m_streamLock);
+	LockObj lock(m_streamLock);
 	return read(retFloatList,sizeof(float)*listSize);
 }
 bool Stream::ReadDoubles(double *retDoubleList, const unsigned int listSize)
 {
-	LockObj lock(&m_streamLock);
+	LockObj lock(m_streamLock);
 	return read(retDoubleList,sizeof(float)*listSize);
 }
 bool Stream::ReadBytes(unsigned char* retByteList, const unsigned int listSize)
 {
-	LockObj lock(&m_streamLock);
+	LockObj lock(m_streamLock);
 	return read(retByteList,sizeof(unsigned char)*listSize);
 }
 
 
 bool Stream::WriteStreamToFile(const TCHAR *fileName)
 {
-	LockObj lock(&m_streamLock);
+	LockObj lock(m_streamLock);
 	if(System::StrLen(fileName)==0)
 	{
 		LOG_THIS_MSG(_T("File Name Not Set!"));

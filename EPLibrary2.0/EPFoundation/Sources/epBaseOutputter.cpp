@@ -29,18 +29,23 @@ BaseOutputter::OutputNode::~OutputNode()
 
 BaseOutputter::BaseOutputter()
 {
-
+#ifdef EP_MULTIPROCESS
+	m_nodeListLock=EP_NEW Mutex();
+#else //EP_MULTIPROCESS
+	m_nodeListLock=EP_NEW CriticalSectionEx();
+#endif //EP_MULTIPROCESS
 }
 
 BaseOutputter::~BaseOutputter()
 {
 	Clear();
+	EP_DELETE m_nodeListLock;
 }
 
 
 void BaseOutputter::Clear()
 {
-	LockObj lock(&m_nodeListLock);
+	LockObj lock(m_nodeListLock);
 	std::vector<OutputNode*>::iterator iter;
 	for(iter=m_list.begin();iter!=m_list.end();iter++)
 	{
@@ -51,7 +56,7 @@ void BaseOutputter::Clear()
 
 void BaseOutputter::Print()
 {
-	LockObj lock(&m_nodeListLock);
+	LockObj lock(m_nodeListLock);
 	std::vector<OutputNode*>::iterator iter;
 	for(iter=m_list.begin();iter!=m_list.end();iter++)
 	{
@@ -63,7 +68,7 @@ void BaseOutputter::WriteToFile(EpFile* const file)
 {
 	if(file)
 	{
-		LockObj lock(&m_nodeListLock);
+		LockObj lock(m_nodeListLock);
 		std::vector<OutputNode*>::iterator iter;
 		for(iter=m_list.begin();iter!=m_list.end();iter++)
 		{

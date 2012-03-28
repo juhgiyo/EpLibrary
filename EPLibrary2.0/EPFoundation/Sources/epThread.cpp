@@ -32,8 +32,12 @@ Thread::Thread()
 	m_threadHandle=0;
 	m_arg=NULL;
 	m_status=THREAD_STATUS_TERMINATED;
+#ifdef EP_MULTIPROCESS
+	m_threadLock=EP_NEW Mutex();
+#else //EP_MULTIPROCESS
+	m_threadLock=EP_NEW CriticalSectionEx();
+#endif //EP_MULTIPROCESS
 }
-
 
 Thread::~Thread()
 {
@@ -41,12 +45,13 @@ Thread::~Thread()
 	{
 		TerminateThread(m_threadHandle,0);
 	}
+	EP_DELETE m_threadLock;
 }
 
 
 bool Thread::Start(void * arg,const ThreadOpCode opCode, const ThreadType threadType, const int stackSize)
 {
-	LockObj lock(&m_threadLock);
+	LockObj lock(m_threadLock);
 	if(m_status==THREAD_STATUS_TERMINATED && !m_threadHandle)
 	{
 		SetArg(arg);
@@ -86,7 +91,7 @@ bool Thread::Start(void * arg,const ThreadOpCode opCode, const ThreadType thread
 
 bool Thread::Resume()
 {
-	LockObj lock(&m_threadLock);
+	LockObj lock(m_threadLock);
 	if(m_status==THREAD_STATUS_SUSPENDED && m_threadHandle)	
 	{
 		ResumeThread(m_threadHandle);
@@ -105,7 +110,7 @@ bool Thread::Resume()
 
 bool Thread::Suspend()
 {
-	LockObj lock(&m_threadLock);
+	LockObj lock(m_threadLock);
 	if(m_status==THREAD_STATUS_STARTED && m_threadHandle)
 	{
 		m_status=THREAD_STATUS_SUSPENDED;
@@ -124,7 +129,7 @@ bool Thread::Suspend()
 
 bool Thread::Terminate()
 {
-	LockObj lock(&m_threadLock);
+	LockObj lock(m_threadLock);
 	if(m_status!=THREAD_STATUS_TERMINATED && m_threadHandle)
 	{
 		DWORD exitCode=0;
@@ -251,11 +256,11 @@ void Thread::execute()
 
 void Thread::successTerminate()
 {
-	m_threadLock.Lock();
+	m_threadLock->Lock();
 	m_status=THREAD_STATUS_TERMINATED;
 	m_threadHandle=0;
 	m_threadId=0;
-	m_threadLock.Unlock();
+	m_threadLock->Unlock();
 	unsigned long exitCode=0;
 	if(m_type==THREAD_TYPE_BEGIN_THREAD)
 		_endthreadex(exitCode);

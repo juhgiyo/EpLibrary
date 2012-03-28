@@ -51,11 +51,28 @@ namespace epl
 		ThreadSafePQueue();
 
 		/*!
+		Default Copy Constructor
+
+		Initializes the queue
+		@param[in] b the second object
+		*/
+		ThreadSafePQueue(const ThreadSafePQueue& b);
+
+		/*!
 		Default Destructor
 
 		Destroy the priority queue
 		*/
 		virtual ~ThreadSafePQueue();
+
+		/*!
+		Assignment Operator Overloading
+
+		the ThreadSafeQueue set as given ThreadSafeQueue b
+		@param[in] b right side of ThreadSafeQueue
+		@return this object
+		*/
+		ThreadSafePQueue & operator=(const ThreadSafePQueue&b);
 
 		/*!
 		Insert the new item into the priority queue.
@@ -69,16 +86,35 @@ namespace epl
 	ThreadSafePQueue<FDATA,Compare>::ThreadSafePQueue() :ThreadSafeQueue<FDATA>()
 	{
 	}
-
+	template <typename FDATA, typename Compare>
+	ThreadSafePQueue<FDATA,Compare>::ThreadSafePQueue(const ThreadSafePQueue& b)
+	{
+		m_queue=b.m_queue;
+#ifdef EP_MULTIPROCESS
+		m_queueLock=EP_NEW Mutex();
+#else //EP_MULTIPROCESS
+		m_queueLock=EP_NEW CriticalSectionEx();
+#endif //EP_MULTIPROCESS
+	}
 	template <typename FDATA, typename Compare>
 	ThreadSafePQueue<FDATA,Compare>::~ThreadSafePQueue()
 	{
+	}
+	
+	template <typename FDATA, typename Compare>
+	ThreadSafePQueue<FDATA,Compare> & ThreadSafePQueue<FDATA,Compare>::operator=(const ThreadSafePQueue&b)
+	{
+		if(this != &b)
+		{
+			m_queue=b.m_queue;
+		}
+		return *this;
 	}
 
 	template <typename FDATA, typename Compare>
 	void ThreadSafePQueue<FDATA,Compare>::Push(FDATA const & data)
 	{
-		LockObj lock(&m_queueLock);
+		LockObj lock(m_queueLock);
 		FDATA* retVal=NULL;
 		if(m_queue.size())
 		{

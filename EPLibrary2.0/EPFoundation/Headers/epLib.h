@@ -41,6 +41,10 @@ An Interface for EP Library.
 #endif  //EP_FOUNDATION_DLL_EXPORT
 #endif  //EP_FOUNDATION_DLL_EXPORT
 
+#ifdef EP_USING_MULTI_PROCESS
+#define EP_MULTIPROCESS
+#endif //EP_USING_MULTI_PROCESS
+
 namespace epl{
 	#define WIDEN2(x) L ## x
 	#define WIDEN(x) WIDEN2(x)

@@ -21,6 +21,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using namespace epl;
 BaseServerWorker::BaseServerWorker(): Thread(), SmartObject()
 {
+#ifdef EP_MULTIPROCESS
+	m_sendLock=EP_NEW Mutex();
+#else //EP_MULTIPROCESS
+	m_sendLock=EP_NEW CriticalSectionEx();
+#endif //EP_MULTIPROCESS
 }
 
 BaseServerWorker::~BaseServerWorker()
@@ -31,6 +36,7 @@ BaseServerWorker::~BaseServerWorker()
 		printf("shutdown failed with error\n"); // TODO:: Log
 		closesocket(m_clientSocket);
 	}
+	EP_DELETE m_sendLock;
 }
 
 void BaseServerWorker::SetArg(void* a)
@@ -42,7 +48,7 @@ void BaseServerWorker::SetArg(void* a)
 int BaseServerWorker::Send(const Packet &packet)
 {
 	
-	LockObj lock(&m_sendLock);
+	LockObj lock(m_sendLock);
 	int writeLength=0;
 	const char *packetData=packet.GetPacket();
 	int length=packet.GetPacketByteSize();

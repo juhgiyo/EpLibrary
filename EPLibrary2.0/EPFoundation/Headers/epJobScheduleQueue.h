@@ -48,12 +48,34 @@ namespace epl
 		*/
 		JobScheduleQueue();
 		/*!
+		Default Copy Constructor
+
+		Initializes the Semaphore
+		@param[in] b the second object
+		*/
+		JobScheduleQueue(const JobScheduleQueue& b):ThreadSafePQueue<BaseJob*, BaseJob>((const ThreadSafePQueue<BaseJob*, BaseJob>&)b)
+		{
+		}
+		/*!
 		Default Destructor
 
 		Destroy the schedule queue
 		*/
 		virtual ~JobScheduleQueue();
 
+		/*!
+		Assignment operator overloading
+		@param[in] b the second object
+		@return the new copied object
+		*/
+		JobScheduleQueue & operator=(const JobScheduleQueue&b)
+		{
+			if(this!=&b)
+			{
+				ThreadSafePQueue::operator =((const ThreadSafePQueue<BaseJob*, BaseJob>&)b);
+			}
+			return *this;
+		}
 		/*!
 		Insert the new item into the schedule queue.
 		@param[in] data The inserting data.'

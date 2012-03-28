@@ -160,7 +160,7 @@ namespace epl
 
 		Destroy the Packet
 		*/
-		~PacketContainer()
+		virtual ~PacketContainer()
 		{
 			if(m_isAllocated && m_packetContainer)
 				EP_Free(m_packetContainer);	

@@ -60,7 +60,7 @@ NetworkStream::NetworkStreamFlushType NetworkStream::GetFlushType() const
 
 void NetworkStream::Flush()
 {
-	LockObj lock(&m_streamLock);
+	LockObj lock(m_streamLock);
 	if(m_readOffset==0)
 		return;
 
@@ -82,7 +82,7 @@ unsigned int NetworkStream::GetWriteSeek() const
 
 void NetworkStream::SetReadSeek(const StreamSeekType seekType,const unsigned int offset)
 {
-	LockObj lock(&m_streamLock);
+	LockObj lock(m_streamLock);
 	switch(seekType)
 	{
 	case STREAM_SEEK_TYPE_SEEK_SET:
@@ -121,7 +121,7 @@ bool NetworkStream::read(void *value,const int byteSize)
 		m_readOffset+=byteSize;
 		retVal=true;
 	}
-	m_streamLock.Unlock();	
+	m_streamLock->Unlock();	
 	if(m_flushType==NETWORK_STREAM_FLUSH_TYPE_AUTO)
 		Flush();
 	return retVal;

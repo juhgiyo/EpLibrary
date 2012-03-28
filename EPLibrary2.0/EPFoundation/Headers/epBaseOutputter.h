@@ -31,8 +31,12 @@ An Interface for Outputting data Template class.
 #define __EP_OUTPUTTER_H__
 #include "epLib.h"
 #include "epSystem.h"
-#include "epCriticalSectionEx.h"
 #include "epThreadPolicy.h"
+#ifdef EP_MULTIPROCESS
+#include "epMutex.h"
+#else //EP_MULTIPROCESS
+#include "epCriticalSectionEx.h"
+#endif //EP_MULTIPROCESS
 
 namespace epl
 {
@@ -99,7 +103,7 @@ namespace epl
 		/// Log List
 		std::vector<OutputNode*> m_list;
 		/// Lock
-		CriticalSectionEx m_nodeListLock;
+		BaseLock* m_nodeListLock;
 	};
 }
 #endif //__EP_OUTPUTTER_H__

@@ -38,14 +38,7 @@ An Interface for Thread Policy Class.
 @brief Macro for declaring Thread Safe class
 */
 #define DECLARE_THREAD_SAFE_CLASS(classname) \
-	typedef epl::ThreadSafeClass< classname,THREAD_POLICY_CRITICALSECTION> MyThreadSafeClass
-
-/*!
-@def DECLARE_PROCESS_SAFE_CLASS
-@brief Macro for declaring Process Safe class
-*/
-#define DECLARE_PROCESS_SAFE_CLASS(classname) \
-	typedef epl::ThreadSafeClass< classname,THREAD_POLICY_MUTEX> MyThreadSafeClass
+	typedef epl::ThreadSafeClass< classname> MyThreadSafeClass
 
 /*!
 @def CRITICAL_SECTION_BLOCK
@@ -57,23 +50,11 @@ An Interface for Thread Policy Class.
 
 namespace epl
 {
-	/// Thread Policy Enumeration
-	typedef enum _threadPolicy{
-		/// Not a multi thread environment
-		THREAD_POLICY_NONE=0,
-		/// a multi thread environment
-		THREAD_POLICY_CRITICALSECTION,
-		/// a multi process environment
-		THREAD_POLICY_MUTEX,
-
-		
-	}ThreadPolicy;
-
 	/*! 
 	@class ThreadSafeClass epThreadPolicy.h
 	@brief A template class for Thread Safe classes.
 	*/
-	template <typename SafeClass, ThreadPolicy policyType=THREAD_POLICY_CRITICALSECTION>
+	template <typename SafeClass>
 	class ThreadSafeClass
 	{
 		friend class ThreadSafeObj;
@@ -86,10 +67,11 @@ namespace epl
 		ThreadSafeClass()
 		{
 			m_lock=NULL;
-			if(policyType==THREAD_POLICY_MUTEX)
-				m_lock=EP_NEW Mutex();
-			else if(policyType==THREAD_POLICY_CRITICALSECTION)
-				m_lock=EP_NEW CriticalSectionEx();
+#ifdef EP_MULTIPROCESS
+			m_lock=EP_NEW Mutex();
+#else //EP_MULTIPROCESS
+			m_lock=EP_NEW CriticalSectionEx();
+#endif //EP_MULTIPROCESS
 		}
 
 		/*!
@@ -112,10 +94,11 @@ namespace epl
 		ThreadSafeClass(const ThreadSafeClass& b)
 		{
 			m_lock=NULL;
-			if(policyType==THREAD_POLICY_MUTEX)
-				m_lock=EP_NEW Mutex();
-			else if(policyType==THREAD_POLICY_CRITICALSECTION)
-				m_lock=EP_NEW CriticalSectionEx();
+#ifdef EP_MULTIPROCESS
+			m_lock=EP_NEW Mutex();
+#else //EP_MULTIPROCESS
+			m_lock=EP_NEW CriticalSectionEx();
+#endif //EP_MULTIPROCESS
 		}
 		
 
@@ -151,7 +134,7 @@ namespace epl
 			*/
 			ThreadSafeObj()
 			{
-				m_lockPtr=ThreadSafeClass<SafeClass, policyType>::GetInstance()->getLock();
+				m_lockPtr=ThreadSafeClass<SafeClass>::GetInstance()->getLock();
 				if(m_lockPtr)
 					m_lockPtr->Lock();
 			}
@@ -165,8 +148,27 @@ namespace epl
 				if(m_lockPtr)
 					m_lockPtr->Unlock();
 			}
-
 		private:
+			/*!
+			Default Copy Constructor
+
+			Initializes the Semaphore
+			**Should not call this
+			@param[in] b the second object
+			*/
+			ThreadSafeObj(const ThreadSafeObj& b){EP_ASSERT(0);}
+			/*!
+			Assignment operator overloading
+			**Should not call this
+			@param[in] b the second object
+			@return the new copied object
+			*/
+			ThreadSafeObj & operator=(const ThreadSafeObj&b)
+			{
+				EP_ASSERT(0);
+				return *this;
+			}
+
 			/// the pointer to the actual lock member.
 			BaseLock *m_lockPtr;
 		};

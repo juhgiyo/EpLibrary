@@ -30,7 +30,12 @@ An Interface for Stream Class.
 #ifndef __EP_STREAM_H__
 #define __EP_STREAM_H__
 #include "epLib.h"
+#ifdef EP_MULTIPROCESS
+#include "epMutex.h"
+#else //EP_MULTIPROCESS
 #include "epCriticalSectionEx.h"
+#endif //EP_MULTIPROCESS
+
 namespace epl
 {
 
@@ -343,7 +348,7 @@ namespace epl
 		/// The offset for the seek
 		unsigned int m_offset;
 		/// The Stream Lock
-		CriticalSectionEx m_streamLock;
+		BaseLock *m_streamLock;
 		
 	};
 }

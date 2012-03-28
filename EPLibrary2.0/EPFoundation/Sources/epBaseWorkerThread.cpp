@@ -85,13 +85,13 @@ void BaseWorkerThread::SetArg(void* a)
 }
 void BaseWorkerThread::SetCallBackClass(void *callBackClass)
 {
-	LockObj lock(&m_threadLock);
+	LockObj lock(m_threadLock);
 	m_callBackClass=callBackClass;
 }
 
 void BaseWorkerThread::callCallBack()
 {
-	LockObj lock(&m_threadLock);
+	LockObj lock(m_threadLock);
 	if(m_callBackClass)	
 		((WorkerThreadDelegate*)m_callBackClass)->CallBackFunc(this);
 	m_callBackClass=NULL;

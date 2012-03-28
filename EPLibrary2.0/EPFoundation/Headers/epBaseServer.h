@@ -44,8 +44,12 @@ An Interface for Base Server.
 #include "epLib.h"
 #include "epSystem.h"
 #include "epMemory.h"
-#include "epCriticalSectionEx.h"
 #include "epBaseServerWorker.h"
+#ifdef EP_MULTIPROCESS
+#include "epMutex.h"
+#else //EP_MULTIPROCESS
+#include "epCriticalSectionEx.h"
+#endif //EP_MULTIPROCESS
 
 // Need to link with Ws2_32.lib
 #pragma comment (lib, "Ws2_32.lib")
@@ -193,7 +197,7 @@ namespace epl{
 		bool m_isServerStarted;
 
 		/// general lock 
-		CriticalSectionEx m_lock;
+		BaseLock *m_lock;
 	};
 }
 #endif //__EP_BASE_SERVER_H__

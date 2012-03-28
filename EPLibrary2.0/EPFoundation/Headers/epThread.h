@@ -31,7 +31,11 @@ A Frame Interface for Thread Class.
 #define __EP_THREAD_H__
 
 #include <process.h>
+#ifdef EP_MULTIPROCESS
+#include "epMutex.h"
+#else //EP_MULTIPROCESS
 #include "epCriticalSectionEx.h"
+#endif //EP_MULTIPROCESS
 
 namespace epl
 {
@@ -90,6 +94,7 @@ namespace epl
 		*/
 		Thread();
 
+		
 		/*!
 		Default Destructor
 
@@ -97,6 +102,7 @@ namespace epl
 		*/
 		virtual ~Thread();
 
+		
 		/*!
 		Start the Thread according to parameters given.
 		@param[in] arg The argument list for thread parameter.
@@ -174,6 +180,25 @@ namespace epl
 
 	private:
 		/*!
+		Default Copy Constructor
+
+		*Cannot be Used.
+		*/
+		Thread(const Thread & b){EP_ASSERT(0);}
+
+		/*!
+		Assignment operator overloading
+
+		*Cannot be Used.
+		@param[in] b the second object
+		@return the new copied object
+		*/
+		Thread &operator=(const Thread & b)
+		{
+			EP_ASSERT(0);
+			return *this;
+		}
+		/*!
 		Terminate the thread successfully.
 		*/
 		void successTerminate();
@@ -229,7 +254,7 @@ namespace epl
 		/// Thread Type
 		ThreadType m_type;
 		/// Lock
-		CriticalSectionEx m_threadLock;
+		BaseLock *m_threadLock;
 
 
 	};

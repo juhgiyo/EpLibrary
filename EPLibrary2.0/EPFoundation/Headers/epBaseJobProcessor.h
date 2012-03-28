@@ -67,7 +67,9 @@ namespace epl
 		Default Destructor
 		*/
 		virtual ~BaseJobProcessor();
-		
+
+
+
 		/*!
 		Process the job given, subclasses must implement this function.
 		@param[in] threadId The Thread Id which doing the job.
@@ -89,6 +91,31 @@ namespace epl
 		Default Constructor
 		*/
 		BaseJobProcessor();
+
+		/*!
+		Default Copy Constructor
+
+		Initializes the Semaphore
+		@param[in] b the second object
+		*/
+		BaseJobProcessor(const BaseJobProcessor& b):SmartObject()
+		{
+			m_status=b.m_status;
+		}
+
+		/*!
+		Assignment operator overloading
+		@param[in] b the second object
+		@return the new copied object
+		*/
+		BaseJobProcessor & operator=(const BaseJobProcessor&b)
+		{
+			if(this!=&b)
+			{
+				m_status=b.m_status;
+			}
+			return *this;
+		}
 	
 	private:
 		/*!

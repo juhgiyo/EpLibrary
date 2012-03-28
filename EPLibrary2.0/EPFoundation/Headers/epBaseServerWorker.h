@@ -35,9 +35,13 @@ An Interface for Account Worker.
 #include "epSystem.h"
 #include "epMemory.h"
 #include "epThread.h"
-#include "epCriticalSectionEx.h"
 #include "epSmartObject.h"
 #include "epPacket.h"
+#ifdef EP_MULTIPROCESS
+#include "epMutex.h"
+#else //EP_MULTIPROCESS
+#include "epCriticalSectionEx.h"
+#endif //EP_MULTIPROCESS
 
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
@@ -92,6 +96,25 @@ namespace epl
 		virtual int parsePacket(const Packet &packet)=0;
 
 	private:
+		/*!
+		Default Copy Constructor
+
+		Initializes the BaseServer
+		**Should not call this
+		@param[in] b the second object
+		*/
+		BaseServerWorker(const BaseServerWorker& b){EP_ASSERT(0);}
+		/*!
+		Assignment operator overloading
+		**Should not call this
+		@param[in] b the second object
+		@return the new copied object
+		*/
+		BaseServerWorker & operator=(const BaseServerWorker&b)
+		{
+			EP_ASSERT(0);
+			return *this;
+		}
 
 		/*!
 		Receive the packet from the client
@@ -116,7 +139,7 @@ namespace epl
 		SOCKET m_clientSocket;
 
 		/// send lock
-		CriticalSectionEx m_sendLock;
+		BaseLock *m_sendLock;
 	};
 
 }
