@@ -32,6 +32,12 @@ An Interface for C# Style Delegate Class.
 #include "epLib.h"
 #include "epSystem.h"
 #include <vector>
+#ifdef EP_MULTIPROCESS
+#include "epMutex.h"
+#else //EP_MULTIPROCESS
+#include "epCriticalSectionEx.h"
+#endif //EP_MULTIPROCESS
+
 using namespace std;
 
 namespace epl
@@ -52,7 +58,13 @@ namespace epl
 		Initializes the delegate
 		*/
 		Delegate()
-		{}
+		{
+#ifdef EP_MULTIPROCESS
+			m_lock=EP_NEW Mutex();
+#else //EP_MULTIPROCESS
+			m_lock=EP_NEW CriticalSectionEx();
+#endif //EP_MULTIPROCESS
+		}
 
 		/*!
 		Default Constructor
@@ -63,6 +75,11 @@ namespace epl
 		Delegate(RetType (*func)(ArgType))
 		{
 			m_funcList.push_back(func);
+#ifdef EP_MULTIPROCESS
+			m_lock=EP_NEW Mutex();
+#else //EP_MULTIPROCESS
+			m_lock=EP_NEW CriticalSectionEx();
+#endif //EP_MULTIPROCESS
 		}
 
 		/*!
@@ -74,6 +91,11 @@ namespace epl
 		Delegate(const Delegate<RetType,ArgType> &orig)
 		{
 			m_funcList=orig.m_funcList;
+#ifdef EP_MULTIPROCESS
+			m_lock=EP_NEW Mutex();
+#else //EP_MULTIPROCESS
+			m_lock=EP_NEW CriticalSectionEx();
+#endif //EP_MULTIPROCESS
 		}
 
 		/*!
@@ -83,7 +105,25 @@ namespace epl
 		*/
 		virtual ~Delegate()
 		{
-			
+			if(m_lock)
+				EP_DELETE m_lock;
+		}	
+
+		/*!
+		Assignment Operator Overloading
+
+		the Packet set as given packet b
+		@param[in] b right side of packet
+		@return this object
+		*/
+		Delegate & operator=(const Delegate&b)
+		{
+			if(this!=&b)
+			{
+				LockObj lock(m_lock);
+				m_funcList=b.m_funcList;
+			}
+			return *this;
 		}
 
 		/*!
@@ -93,6 +133,7 @@ namespace epl
 		*/
 		virtual Delegate<RetType,ArgType> & operator =(RetType (*func)(ArgType))
 		{
+			LockObj lock(m_lock);
 			m_funcList.clear();
 			m_funcList.push_back(func);
 			return *this;
@@ -105,6 +146,7 @@ namespace epl
 		*/
 		virtual Delegate<RetType,ArgType> & operator +=(RetType (*func)(ArgType))
 		{
+			LockObj lock(m_lock);
 			m_funcList.push_back(func);
 			return *this;
 		}
@@ -128,6 +170,7 @@ namespace epl
 		*/
 		virtual Delegate<RetType,ArgType> & operator +=(const Delegate<RetType,ArgType> &right)
 		{
+			LockObj lock(m_lock);
 			vector<RetType (*)(ArgType)>::iterator iter;
 			for(iter=right.m_funcList.begin();iter!=right.m_funcList.end();iter++)
 			{
@@ -155,6 +198,7 @@ namespace epl
 		*/
 		virtual Delegate<RetType,ArgType> & operator -=(RetType (*func)(ArgType))
 		{
+			LockObj lock(m_lock);
 			vector<RetType (*)(ArgType)>::iterator iter;
 			for(iter=m_funcList.begin();iter!=m_funcList.end();)
 			{
@@ -188,6 +232,7 @@ namespace epl
 		*/
 		virtual Delegate<RetType,ArgType> & operator -=(const Delegate<RetType,ArgType> &right)
 		{
+			LockObj lock(m_lock);
 			vector<RetType (*)(ArgType)>::iterator rightIter;
 			vector<RetType (*)(ArgType)>::iterator iter;
 			for(rightIter=right.m_funcList.begin();rightIter!=right.m_funcList.end();rightIter++)
@@ -255,6 +300,8 @@ namespace epl
 	private:
 		/// function pointer list
 		vector<RetType (*)(ArgType)> m_funcList;
+		/// lock
+		BaseLock *m_lock;
 	};
 
 	/*! 
@@ -273,7 +320,13 @@ namespace epl
 		Initializes the delegate
 		*/
 		Delegate()
-		{}
+		{
+#ifdef EP_MULTIPROCESS
+			m_lock=EP_NEW Mutex();
+#else //EP_MULTIPROCESS
+			m_lock=EP_NEW CriticalSectionEx();
+#endif //EP_MULTIPROCESS
+		}
 
 		/*!
 		Default Constructor
@@ -284,6 +337,11 @@ namespace epl
 		Delegate(RetType (*func)(void))
 		{
 			m_funcList.push_back(func);
+#ifdef EP_MULTIPROCESS
+			m_lock=EP_NEW Mutex();
+#else //EP_MULTIPROCESS
+			m_lock=EP_NEW CriticalSectionEx();
+#endif //EP_MULTIPROCESS
 		}
 
 		/*!
@@ -295,6 +353,11 @@ namespace epl
 		Delegate(const Delegate<RetType,void> &orig)
 		{
 			m_funcList=orig.m_funcList;
+#ifdef EP_MULTIPROCESS
+			m_lock=EP_NEW Mutex();
+#else //EP_MULTIPROCESS
+			m_lock=EP_NEW CriticalSectionEx();
+#endif //EP_MULTIPROCESS
 		}
 
 		/*!
@@ -304,7 +367,25 @@ namespace epl
 		*/
 		virtual ~Delegate()
 		{
+			if(m_lock)
+				EP_DELETE m_lock;
+		}
 
+		/*!
+		Assignment Operator Overloading
+
+		the Packet set as given packet b
+		@param[in] b right side of packet
+		@return this object
+		*/
+		Packet & operator=(const Packet&b)
+		{
+			if(this!=&b)
+			{
+				LockObj lock(m_lock);
+				m_funcList=orig.m_funcList;
+			}
+			return *this;
 		}
 
 		/*!
@@ -314,6 +395,7 @@ namespace epl
 		*/
 		virtual Delegate<RetType,void> & operator =(RetType (*func)(void))
 		{
+			LockObj lock(m_lock);
 			m_funcList.clear();
 			m_funcList.push_back(func);
 			return *this;
@@ -326,6 +408,7 @@ namespace epl
 		*/
 		virtual Delegate<RetType,void> & operator +=(RetType (*func)(void))
 		{
+			LockObj lock(m_lock);
 			m_funcList.push_back(func);
 			return *this;
 		}
@@ -349,6 +432,7 @@ namespace epl
 		*/
 		virtual Delegate<RetType,void> & operator +=(const Delegate<RetType,void> &right)
 		{
+			LockObj lock(m_lock);
 			vector<RetType (*)(void)>::iterator iter;
 			for(iter=right.m_funcList.begin();iter!=right.m_funcList.end();iter++)
 			{
@@ -376,6 +460,7 @@ namespace epl
 		*/
 		virtual Delegate<RetType,void> & operator -=(RetType (*func)(void))
 		{
+			LockObj lock(m_lock);
 			vector<RetType (*)(void)>::iterator iter;
 			for(iter=m_funcList.begin();iter!=m_funcList.end();)
 			{
@@ -409,6 +494,7 @@ namespace epl
 		*/
 		virtual Delegate<RetType,void> & operator -=(const Delegate<RetType,void> &right)
 		{
+			LockObj lock(m_lock);
 			vector<RetType (*)(void)>::iterator rightIter;
 			vector<RetType (*)(void)>::iterator iter;
 			for(rightIter=right.m_funcList.begin();rightIter!=right.m_funcList.end();rightIter++)
@@ -474,6 +560,8 @@ namespace epl
 	private:
 		/// function pointer list
 		vector<RetType (*)(void)> m_funcList;
+		/// lock
+		BaseLock *m_lock;
 	};
 }
 template<typename RetType,typename ArgType>

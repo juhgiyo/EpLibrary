@@ -36,6 +36,11 @@ Sang Yong Yoon <flyingshiri@gmail.com>
 #define __EP_PACKET_CONTAINER_H__
 
 #include "epLib.h"
+#ifdef EP_MULTIPROCESS
+#include "epMutex.h"
+#else //EP_MULTIPROCESS
+#include "epCriticalSectionEx.h"
+#endif //EP_MULTIPROCESS
 
 namespace epl
 {
@@ -68,6 +73,11 @@ namespace epl
 				m_length=arraySize;
 			}
 			m_isAllocated=shouldAllocate;
+#ifdef EP_MULTIPROCESS
+			m_lock=EP_NEW Mutex();
+#else //EP_MULTIPROCESS
+			m_lock=EP_NEW CriticalSectionEx();
+#endif //EP_MULTIPROCESS
 		}
 
 		/*!
@@ -93,6 +103,11 @@ namespace epl
 				m_length=arraySize;
 			}
 			m_isAllocated=shouldAllocate;
+#ifdef EP_MULTIPROCESS
+			m_lock=EP_NEW Mutex();
+#else //EP_MULTIPROCESS
+			m_lock=EP_NEW CriticalSectionEx();
+#endif //EP_MULTIPROCESS
 		}
 
 		/*!
@@ -125,6 +140,11 @@ namespace epl
 				m_packetContainer=(PacketContainerStruct*)rawData;
 				m_length=(byteSize-sizeof(PacketContainerStruct))/sizeof(ArrayType);
 			}
+#ifdef EP_MULTIPROCESS
+			m_lock=EP_NEW Mutex();
+#else //EP_MULTIPROCESS
+			m_lock=EP_NEW CriticalSectionEx();
+#endif //EP_MULTIPROCESS
 		}
 
 
@@ -153,6 +173,11 @@ namespace epl
 				m_length=orig.m_length;
 			}
 			m_isAllocated=orig.m_isAllocated;
+#ifdef EP_MULTIPROCESS
+			m_lock=EP_NEW Mutex();
+#else //EP_MULTIPROCESS
+			m_lock=EP_NEW CriticalSectionEx();
+#endif //EP_MULTIPROCESS
 		}
 
 		/*!
@@ -164,6 +189,8 @@ namespace epl
 		{
 			if(m_isAllocated && m_packetContainer)
 				EP_Free(m_packetContainer);	
+			if(m_lock)
+				EP_DELETE m_lock;
 		}
 		
 
@@ -191,6 +218,7 @@ namespace epl
 		*/
 		void SetPacket(const PacketStruct & packet, unsigned int arraySize=0)
 		{
+			LockObj lock(m_lock);
 			if(m_isAllocated && m_packetContainer)
 				EP_Free(m_packetContainer);
 			m_packetContainer=NULL;
@@ -217,6 +245,7 @@ namespace epl
 		*/
 		bool SetPacket(void * rawData, unsigned int byteSize)
 		{
+			LockObj lock(m_lock);
 			if(byteSize<sizeof(PacketStruct))
 			{
 				EP_WASSERT(0,_T("byteSize is smaller than PacketStruct size.\nbyteSize must be greater than sizeof(PacketStruct)."));
@@ -262,11 +291,12 @@ namespace epl
 		*/
 		bool SetArray(ArrayType *arr,unsigned int arraySize, unsigned int offset=0)
 		{
+			LockObj lock(m_lock);
 			if(m_isAllocated)
 			{
 				if(m_length<arraySize+offset)
 				{
-					if(!SetArraySize(arraySize+offset))
+					if(!setArraySize(arraySize+offset))
 						return false;
 				}
 				for(int trav=0;trav<arraySize;trav++)
@@ -316,21 +346,8 @@ namespace epl
 		*/
 		bool SetArraySize(unsigned int arrSize)
 		{
-			if(m_isAllocated)
-			{
-				if(m_length==arrSize)
-					return true;
-				EP_WASSERT(m_packetContainer->m_length<arrSize,_T("Given size is smaller than the original.\nNew array size must be greater than original array size."));
-				m_packetContainer=EP_Realloc(m_packetContainer,sizeof(PacketContainerStruct)+ (arrSize*sizeof(ArrayType)));
-				EP_WASSERT(m_packetContainer,_T("Allocation Failed"));
-				m_length=arrSize;
-				return true;
-			}
-			else
-			{
-				EP_WASSERT(0,_T("Should not be used when m_isAllocated is false."));
-				return false;
-			}
+			LockObj lock(m_lock);
+			return setArraySize(arrSize);
 		}
 
 		/*!
@@ -355,6 +372,7 @@ namespace epl
 		{
 			if(this!=&b)
 			{
+				LockObj lock(m_lock);
 				if(m_isAllocated && m_packetContainer)
 					EP_Free(m_packetContainer);
 				m_packetContainer=NULL;
@@ -387,6 +405,7 @@ namespace epl
 		*/
 		PacketContainer& operator =(const PacketStruct& b)
 		{
+			LockObj lock(m_lock);
 			if(m_isAllocated)
 				m_packetContainer->m_packet=b;
 			else
@@ -397,6 +416,32 @@ namespace epl
 	
 
 	private:
+
+		/*!
+		Actual change the size of the array
+		* the arrSize must be larger than current array size.
+		* Should NOT be used when m_isAllocated is false.
+		@param[in] arrSize the new size of the array
+		@return true if successful otherwise false
+		*/
+		bool setArraySize(unsigned int arrSize)
+		{
+			if(m_isAllocated)
+			{
+				if(m_length==arrSize)
+					return true;
+				EP_WASSERT(m_packetContainer->m_length<arrSize,_T("Given size is smaller than the original.\nNew array size must be greater than original array size."));
+				m_packetContainer=EP_Realloc(m_packetContainer,sizeof(PacketContainerStruct)+ (arrSize*sizeof(ArrayType)));
+				EP_WASSERT(m_packetContainer,_T("Allocation Failed"));
+				m_length=arrSize;
+				return true;
+			}
+			else
+			{
+				EP_WASSERT(0,_T("Should not be used when m_isAllocated is false."));
+				return false;
+			}
+		}
 		/*!
 		@struct PacketContainerStruct epPacketContainer.h
 		@brief the actual Packet Container Class.	
@@ -414,6 +459,8 @@ namespace epl
 		PacketContainerStruct *m_packetContainer;
 		/// flag whether memory is allocated in this object or now
 		bool m_isAllocated;
+		/// lock
+		BaseLock *m_lock;
 	};
 }
 #endif //__EP_PACKET_CONTAINER_H__

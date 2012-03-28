@@ -42,6 +42,11 @@ Packet::Packet(char *packet, unsigned int byteSize, bool shouldAllocate):SmartOb
 		m_packet=packet;
 		m_packetSize=byteSize;
 	}
+#ifdef EP_MULTIPROCESS
+	m_lock=EP_NEW Mutex();
+#else //EP_MULTIPROCESS
+	m_lock=EP_NEW CriticalSectionEx();
+#endif //EP_MULTIPROCESS
 }
 
 Packet::Packet(const Packet& b):SmartObject()
@@ -62,6 +67,11 @@ Packet::Packet(const Packet& b):SmartObject()
 		m_packetSize=b.m_packetSize;
 	}
 	m_isAllocated=b.m_isAllocated;
+#ifdef EP_MULTIPROCESS
+	m_lock=EP_NEW Mutex();
+#else //EP_MULTIPROCESS
+	m_lock=EP_NEW CriticalSectionEx();
+#endif //EP_MULTIPROCESS
 }
 Packet & Packet::operator=(const Packet&b)
 {
@@ -100,6 +110,8 @@ Packet::~Packet()
 		EP_DELETE[] m_packet;
 	}
 	m_packet=NULL;
+	if(m_lock)
+		EP_DELETE m_lock;
 }
 
 unsigned int Packet::GetPacketByteSize() const
@@ -114,6 +126,7 @@ const char *Packet::GetPacket() const
 
 void Packet::SetPacket(char* packet, unsigned int packetByteSize)
 {
+	LockObj lock(m_lock);
 	if(m_isAllocated)
 	{
 		if(m_packet)

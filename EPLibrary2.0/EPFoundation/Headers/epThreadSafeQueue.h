@@ -140,7 +140,6 @@ namespace epl
 	template <typename FDATA>
 	ThreadSafeQueue<FDATA>::ThreadSafeQueue()
 	{
-		m_queue=std::vector<FDATA>();
 #ifdef EP_MULTIPROCESS
 		m_queueLock=EP_NEW Mutex();
 #else //EP_MULTIPROCESS

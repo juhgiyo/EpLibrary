@@ -65,6 +65,20 @@ namespace epl
 		*/
 		virtual void execute();
 
+	private:
+
+		/*!
+		Assignment operator overloading
+
+		*Cannot be Used.
+		@param[in] b the second object
+		@return the new copied object
+		*/
+		WorkerThreadSingle &operator=(const WorkerThreadSingle & b)
+		{
+			EP_ASSERT(0);
+			return *this;
+		}
 		
 	};
 

@@ -104,6 +104,27 @@ namespace epl
 		std::vector<OutputNode*> m_list;
 		/// Lock
 		BaseLock* m_nodeListLock;
+
+	private:
+		/*!
+		Default Copy Constructor
+
+		Initializes the BaseClient
+		**Should not call this
+		@param[in] b the second object
+		*/
+		BaseOutputter(const BaseOutputter& b){EP_ASSERT(0);}
+		/*!
+		Assignment operator overloading
+		**Should not call this
+		@param[in] b the second object
+		@return the new copied object
+		*/
+		BaseOutputter & operator=(const BaseOutputter&b)
+		{
+			EP_ASSERT(0);
+			return *this;
+		}
 	};
 }
 #endif //__EP_OUTPUTTER_H__

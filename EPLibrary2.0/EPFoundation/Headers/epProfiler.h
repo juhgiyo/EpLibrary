@@ -114,9 +114,31 @@ namespace epl
 		ProfileManager();
 
 		/*!
+		Default Copy Constructor
+
+		Initializes the BaseClient
+		**Should not call this
+		@param[in] b the second object
+		*/
+		ProfileManager(const ProfileManager& b){EP_ASSERT(0);}
+
+		/*!
 		Default Destructor
 		*/
 		virtual ~ProfileManager();
+
+
+		/*!
+		Assignment operator overloading
+		**Should not call this
+		@param[in] b the second object
+		@return the new copied object
+		*/
+		ProfileManager & operator=(const ProfileManager&b)
+		{
+			EP_ASSERT(0);
+			return *this;
+		}
 
 		/*! 
 		@class ProfileNode epProfiler.h

@@ -87,14 +87,8 @@ namespace epl
 	{
 	}
 	template <typename FDATA, typename Compare>
-	ThreadSafePQueue<FDATA,Compare>::ThreadSafePQueue(const ThreadSafePQueue& b)
+	ThreadSafePQueue<FDATA,Compare>::ThreadSafePQueue(const ThreadSafePQueue& b):ThreadSafeQueue<FDATA>((const ThreadSafeQueue&)b)
 	{
-		m_queue=b.m_queue;
-#ifdef EP_MULTIPROCESS
-		m_queueLock=EP_NEW Mutex();
-#else //EP_MULTIPROCESS
-		m_queueLock=EP_NEW CriticalSectionEx();
-#endif //EP_MULTIPROCESS
 	}
 	template <typename FDATA, typename Compare>
 	ThreadSafePQueue<FDATA,Compare>::~ThreadSafePQueue()

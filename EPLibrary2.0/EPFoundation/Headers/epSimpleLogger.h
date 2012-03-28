@@ -138,10 +138,32 @@ namespace epl
 		Default Constructor
 		*/
 		SimpleLogManager();
+
+		/*!
+		Default Copy Constructor
+
+		Initializes the BaseClient
+		**Should not call this
+		@param[in] b the second object
+		*/
+		SimpleLogManager(const SimpleLogManager& b){EP_ASSERT(0);}
+
 		/*!
 		Default Destructor
 		*/
 		virtual ~SimpleLogManager();
+
+		/*!
+		Assignment operator overloading
+		**Should not call this
+		@param[in] b the second object
+		@return the new copied object
+		*/
+		SimpleLogManager & operator=(const SimpleLogManager&b)
+		{
+			EP_ASSERT(0);
+			return *this;
+		}
 
 
 	};

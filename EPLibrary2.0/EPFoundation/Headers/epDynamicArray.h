@@ -31,7 +31,11 @@ An Interface for Dynamic Array Data Structure.
 #define __EP_DYNAMIC_ARRAY_H__
 
 #include "epLib.h"
-
+#ifdef EP_MULTIPROCESS
+#include "epMutex.h"
+#else //EP_MULTIPROCESS
+#include "epCriticalSectionEx.h"
+#endif //EP_MULTIPROCESS
 
 namespace epl
 {
@@ -158,12 +162,41 @@ namespace epl
 		*/
 		DynamicArray<FDATA> operator+(const FDATA& b) const;
 	private:
+		/*!
+		Actual resize the given array to given size.
+		@param[in] newSize The new size to resize.
+		*/
+		bool resize(unsigned int newSize);
+
+		/*!
+		Actual append the element given to the dynamic array given.
+		@param[in] data The data to append at the end.
+		@return the result dynamic array
+		*/
+		DynamicArray<FDATA> &append(const FDATA &data);
+
+		/*!
+		Actual append the given dynamic array to the this dynamic array.
+		@param[in] dArr The dynamic array structure to append.
+		@return the result dynamic array
+		*/
+		DynamicArray<FDATA> &append(const DynamicArray<FDATA> &dArr);
+
+		/*!
+		Actual delete the given array.
+		(Frees the memory)
+		@param[in] dArr The dynamic array structure to delete.
+		*/
+		void deleteArr();
+
 		/// the actual dynamic array
 		FDATA *m_head;
 		/// the number of item in array
 		unsigned int m_numOfElements;
 		/// the actual array size
 		unsigned int m_actualSize;
+		/// lock
+		BaseLock *m_lock;
 
 	};
 
@@ -172,6 +205,11 @@ namespace epl
 		m_head=NULL;
 		m_numOfElements=0;
 		m_actualSize=0;
+#ifdef EP_MULTIPROCESS
+		m_lock=EP_NEW Mutex();
+#else //EP_MULTIPROCESS
+		m_lock=EP_NEW CriticalSectionEx();
+#endif //EP_MULTIPROCESS
 	}
 	DynamicArray::DynamicArray(const DynamicArray<FDATA> &dArr)
 	{
@@ -180,15 +218,28 @@ namespace epl
 		m_head=EP_Malloc(sizeof(FDATA)*m_actualSize);
 		EP_WASSERT(m_head,_T("Allocation Failed"));
 		memcpy(m_head,dArr.m_head,sizeof(FDATA)*m_actualSize);
+#ifdef EP_MULTIPROCESS
+		m_lock=EP_NEW Mutex();
+#else //EP_MULTIPROCESS
+		m_lock=EP_NEW CriticalSectionEx();
+#endif //EP_MULTIPROCESS
 	}
 
 	DynamicArray::~DynamicArray()
 	{
 		if(m_head)
-			free(m_head);
+			EP_Free(m_head);
+		if(m_lock)
+			EP_DELETE m_lock;
 	}
 
 	void DynamicArray::Delete()
+	{
+		LockObj lock(m_lock);
+		deleteArr();
+	}
+
+	void DynamicArray::deleteArr()
 	{
 		if(m_head)
 			free(m_head);
@@ -199,6 +250,7 @@ namespace epl
 
 	void DynamicArray::Clear()
 	{
+		LockObj lock(m_lock);
 		m_numOfElements=0;
 		memset(m_head,0,sizeof(FDATA)*m_actualSize);
 	}
@@ -216,6 +268,12 @@ namespace epl
 	}
 
 	bool DynamicArray::Resize(unsigned int newSize)
+	{
+		LockObj lock(m_lock);
+		return resize(newSize);
+	}
+
+	bool DynamicArray::resize(unsigned int newSize)
 	{
 		if(m_actualSize>=newSize)
 			return false;
@@ -246,19 +304,31 @@ namespace epl
 
 	DynamicArray<FDATA> &DynamicArray::Append(const FDATA &data)
 	{
+		LockObj lock(m_lock);
+		append(data);
+	}
+
+	DynamicArray<FDATA> &DynamicArray::Append(const DynamicArray<FDATA> &dArr)
+	{
+		LockObj lock(m_lock);
+		return append(dArr);
+	}
+
+	DynamicArray<FDATA> &DynamicArray::append(const FDATA &data)
+	{
 		if(m_actualSize<m_numOfElements+1)
 		{
-			Resize(m_numOfElements+1);
+			resize(m_numOfElements+1);
 		}
 		*(m_head+m_numOfElements)=data;
 		m_numOfElements++;
 	}
 
-	DynamicArray<FDATA> &DynamicArray::Append(const DynamicArray<FDATA> &dArr)
+	DynamicArray<FDATA> &DynamicArray::append(const DynamicArray<FDATA> &dArr)
 	{
 		if(m_actualSize < m_numOfElements+dArr.m_numOfElements)
 		{
-			Resize(m_numOfElements+dArr.m_numOfElements);
+			resize(m_numOfElements+dArr.m_numOfElements);
 		}
 		if(m_head && dArr.m_head && dArr.m_actualSize)
 			memcpy(m_head+m_numOfElements,dArr.m_head,dArr.m_numOfElements*sizeof(FDATA));
@@ -270,10 +340,11 @@ namespace epl
 	{
 		if(this != &b)
 		{
-			Delete();
+			LockObj lock(m_lock);
+			deleteArr();
 			m_actualSize=b.m_actualSize;
 			m_numOfElements=b.m_numOfElements;
-			Resize(m_actualSize);
+			resize(m_actualSize);
 			if(m_head&&b.m_head && b.m_actualSize)
 				memcpy(m_head,b.m_head,b.m_actualSize*sizeof(FDATA));
 
@@ -288,7 +359,8 @@ namespace epl
 
 	DynamicArray<FDATA>& DynamicArray::operator+=(const DynamicArray<FDATA>& b)
 	{
-		return Append(b);
+		LockObj lock(m_lock);
+		return append(b);
 	}
 
 	DynamicArray<FDATA> DynamicArray::operator+(const DynamicArray<FDATA>& b) const
@@ -302,7 +374,8 @@ namespace epl
 
 	DynamicArray<FDATA>& DynamicArray::operator+=(const FDATA& b)
 	{
-		return Append(b);
+		LockObj lock(m_lock);
+		return append(b);
 	}
 
 	DynamicArray<FDATA> DynamicArray::operator+(const FDATA& b) const

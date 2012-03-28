@@ -53,7 +53,8 @@ Stream & Stream::operator=(const Stream&b)
 
 Stream::~Stream()
 {
-	EP_DELETE m_streamLock;
+	if(m_streamLock)
+		EP_DELETE m_streamLock;
 }
 
 void Stream::Clear()

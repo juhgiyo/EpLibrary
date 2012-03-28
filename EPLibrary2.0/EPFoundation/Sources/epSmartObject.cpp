@@ -58,7 +58,8 @@ SmartObject::~SmartObject()
 	m_refCount--;
 	if( m_refCount!=0)
 		EP_WASSERT(0,_T("The Reference Count is not 0!\nThe Reference Count is %d !"),m_refCount);
-	EP_DELETE m_refCounterLock;
+	if(m_refCounterLock)
+		EP_DELETE m_refCounterLock;
 }
 
 

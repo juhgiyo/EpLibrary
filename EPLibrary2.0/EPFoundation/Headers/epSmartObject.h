@@ -121,6 +121,8 @@ namespace epl
 		*/
 		virtual ~SmartObject();
 
+		
+	private:
 		/*!
 		Default Copy Constructor
 
@@ -141,8 +143,6 @@ namespace epl
 			return *this;
 		}
 
-		
-	private:
 		int m_refCount;
 		BaseLock *m_refCounterLock;
 	};

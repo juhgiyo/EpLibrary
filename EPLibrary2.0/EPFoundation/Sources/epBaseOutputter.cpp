@@ -39,7 +39,8 @@ BaseOutputter::BaseOutputter()
 BaseOutputter::~BaseOutputter()
 {
 	Clear();
-	EP_DELETE m_nodeListLock;
+	if(m_nodeListLock)
+		EP_DELETE m_nodeListLock;
 }
 
 

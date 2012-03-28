@@ -75,17 +75,6 @@ namespace epl
 		}
 
 		/*!
-		Default Destructor
-
-		Deletes the lock
-		*/
-		virtual ~ThreadSafeClass()
-		{	
-			if(m_lock)
-				EP_DELETE m_lock;
-		}
-
-		/*!
 		Default Copy Constructor
 
 		Initializes the ThreadSafeClass
@@ -100,7 +89,27 @@ namespace epl
 			m_lock=EP_NEW CriticalSectionEx();
 #endif //EP_MULTIPROCESS
 		}
+
+		/*!
+		Default Destructor
+
+		Deletes the lock
+		*/
+		virtual ~ThreadSafeClass()
+		{	
+			if(m_lock)
+				EP_DELETE m_lock;
+		}
 		
+		/*!
+		Assignment operator overloading
+		@param[in] b the second object
+		@return the new copied object
+		*/
+		ThreadSafeClass & operator=(const ThreadSafeClass&b)
+		{
+			return *this;
+		}
 
 		/*!
 		Return the reference to the Thread Safe class.
@@ -174,18 +183,7 @@ namespace epl
 		};
 
 	private:
-		/*!
-		Assignment operator overloading
-		** Should not be able to call this
-		@param[in] b the second object
-		@return the new copied object
-		*/
-		ThreadSafeClass & operator=(const ThreadSafeClass&b)
-		{
-			EP_ASSERT(0);
-			return *this;
-		}
-		
+	
 		/*!
 		Return the pointer to the lock
 		*/

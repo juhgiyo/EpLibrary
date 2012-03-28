@@ -33,8 +33,12 @@ An Interface for Packet.
 #include "epLib.h"
 #include "epSystem.h"
 #include "epMemory.h"
-#include "epCriticalSectionEx.h"
 #include "epSmartObject.h"
+#ifdef EP_MULTIPROCESS
+#include "epMutex.h"
+#else //EP_MULTIPROCESS
+#include "epCriticalSectionEx.h"
+#endif //EP_MULTIPROCESS
 
 namespace epl{
 
@@ -114,6 +118,8 @@ namespace epl{
 		unsigned int m_packetSize;
 		/// flag whether memory is allocated in this object or now
 		bool m_isAllocated;
+		/// lock
+		BaseLock *m_lock;
 	};
 }
 

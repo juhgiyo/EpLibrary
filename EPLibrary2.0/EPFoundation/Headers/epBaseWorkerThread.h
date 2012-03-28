@@ -138,6 +138,27 @@ namespace epl
 		ThreadLifePolicy m_lifePolicy;
 		/// the call back class
 		void *m_callBackClass;
+
+	private:
+		/*!
+		Default Copy Constructor
+
+		*Cannot be Used.
+		*/
+		BaseWorkerThread(const BaseWorkerThread & b){EP_ASSERT(0);}
+
+		/*!
+		Assignment operator overloading
+
+		*Cannot be Used.
+		@param[in] b the second object
+		@return the new copied object
+		*/
+		BaseWorkerThread &operator=(const BaseWorkerThread & b)
+		{
+			EP_ASSERT(0);
+			return *this;
+		}
 	};
 }
 #endif //__EP_BASE_WORKER_THREAD_H__
