@@ -8,20 +8,22 @@ It's developed in Visual C++ 2008.
 FEATURES
 
 * Math Framework
-  1. Log Operation
-  2. SquareRoot Operation
+  1. Enhanced Log Operation
+  2. Enhanced SquareRoot Operation
   3. Prime Number Operation
 
 * Sort
-  1. Merge Sort
-  2. Insertion Sort
-  3. Quick Sort
+  1. Enhanced Merge Sort
+  2. Enhanced Insertion Sort
+  3. Enhanced Quick Sort
 
-* Enhanced Binary Search
+* Search
+  1. Enhanced Binary Search
 
 * Stream Framework
-  1. File Stream
-  2. Network Stream
+  1. Stream
+  2. File Stream
+  3. Network Stream
 
 * Container Framework
   1. ThreadSafeQueue
@@ -31,6 +33,7 @@ FEATURES
 * Simple Debugger Framework
   1. Profiler
   2. Log Outputter
+  3. Simple Logger
 
 * FileSystem Framework
   1. Folder Operation
