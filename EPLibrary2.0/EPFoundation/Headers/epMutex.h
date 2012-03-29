@@ -74,6 +74,17 @@ namespace epl
 		virtual ~Mutex();
 
 		/*!
+		Assignment operator overloading
+		@param[in] b the second object
+		@return the new copied object
+		*/
+		Mutex & operator=(const Mutex&b)
+		{
+			return *this;
+		}
+
+
+		/*!
 		Locks the Critical Section
 		*/
 		virtual void Lock();
@@ -112,17 +123,6 @@ namespace epl
 		@param[in] b the second object
 		*/
 		Mutex(const Mutex& b){EP_ASSERT(0);}
-		/*!
-		Assignment operator overloading
-		**Should not call this
-		@param[in] b the second object
-		@return the new copied object
-		*/
-		Mutex & operator=(const Mutex&b)
-		{
-			EP_ASSERT(0);
-			return *this;
-		}
 
 #if TEST_NEW
 		/// Mutex

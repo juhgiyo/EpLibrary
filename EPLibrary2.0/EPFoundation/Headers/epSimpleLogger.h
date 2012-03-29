@@ -86,6 +86,20 @@ namespace epl
 		@param[in] format The user inputted message
 		*/
 		void AddSimpleLog(const TCHAR *fileName, const TCHAR *funcName,const int lineNum,const TCHAR *format,...);
+
+		/*!
+		Assignment operator overloading
+		@param[in] b the second object
+		@return the new copied object
+		*/
+		SimpleLogManager & operator=(const SimpleLogManager&b)
+		{
+			if(this!=&b)
+			{
+				BaseOutputter::operator =(b);
+			}
+			return *this;
+		}
 		
 	private:
 		/*! 
@@ -152,19 +166,6 @@ namespace epl
 		Default Destructor
 		*/
 		virtual ~SimpleLogManager();
-
-		/*!
-		Assignment operator overloading
-		**Should not call this
-		@param[in] b the second object
-		@return the new copied object
-		*/
-		SimpleLogManager & operator=(const SimpleLogManager&b)
-		{
-			EP_ASSERT(0);
-			return *this;
-		}
-
 
 	};
 

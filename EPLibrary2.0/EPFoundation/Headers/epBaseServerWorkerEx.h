@@ -80,6 +80,21 @@ namespace epl
 		virtual ~BaseServerWorkerEx();
 		
 		/*!
+		Assignment operator overloading
+		@param[in] b the second object
+		@return the new copied object
+		*/
+		BaseServerWorkerEx & operator=(const BaseServerWorkerEx&b)
+		{
+			if(this!=&b)
+			{
+				LockObj lock(m_sendLock);
+				m_clientSocket=b.m_clientSocket;
+			}
+			return *this;
+		}
+
+		/*!
 		Send the packet to the client
 		@param[in] packet the packet to be sent
 		@return sent byte size
@@ -104,18 +119,7 @@ namespace epl
 		@param[in] b the second object
 		*/
 		BaseServerWorkerEx(const BaseServerWorkerEx& b){EP_ASSERT(0);}
-		/*!
-		Assignment operator overloading
-		**Should not call this
-		@param[in] b the second object
-		@return the new copied object
-		*/
-		BaseServerWorkerEx & operator=(const BaseServerWorkerEx&b)
-		{
-			EP_ASSERT(0);
-			return *this;
-		}
-
+	
 		/*!
 		Receive the packet from the client
 		@param[out] packet the packet received

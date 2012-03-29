@@ -71,6 +71,22 @@ namespace epl
 		virtual ~BaseWorkerThread();
 
 		/*!
+		Assignment operator overloading
+		@param[in] b the second object
+		@return the new copied object
+		*/
+		BaseWorkerThread &operator=(const BaseWorkerThread & b)
+		{
+			if(this!=&b)
+			{
+				m_workPool=b.m_workPool;
+				m_lifePolicy=b.m_lifePolicy;
+				m_callBackClass=b.m_callBackClass;
+				Thread::operator =(b);
+			}
+			return *this;
+		}
+		/*!
 		Push in the new work to the work pool.
 		@param[in] work the new work to put into the work pool.
 		*/
@@ -146,19 +162,6 @@ namespace epl
 		*Cannot be Used.
 		*/
 		BaseWorkerThread(const BaseWorkerThread & b){EP_ASSERT(0);}
-
-		/*!
-		Assignment operator overloading
-
-		*Cannot be Used.
-		@param[in] b the second object
-		@return the new copied object
-		*/
-		BaseWorkerThread &operator=(const BaseWorkerThread & b)
-		{
-			EP_ASSERT(0);
-			return *this;
-		}
 	};
 }
 #endif //__EP_BASE_WORKER_THREAD_H__

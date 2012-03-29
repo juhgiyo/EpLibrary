@@ -108,6 +108,17 @@ namespace epl
 			*/
 			virtual ~BaseLockObj();
 
+			/*!
+			Assignment operator overloading
+
+			@param[in] b the second object
+			@return the new copied object
+			*/
+			BaseLockObj &operator=(const BaseLockObj & b)
+			{
+				return *this;
+			}
+
 		private:
 			/*!
 			Default Constructor
@@ -122,19 +133,6 @@ namespace epl
 			*Cannot be Used.
 			*/
 			BaseLockObj(const BaseLockObj & b){EP_ASSERT(0);m_lock=NULL;}
-
-			/*!
-			Assignment operator overloading
-
-			*Cannot be Used.
-			@param[in] b the second object
-			@return the new copied object
-			*/
-			BaseLockObj &operator=(const BaseLockObj & b)
-			{
-				EP_ASSERT(0);
-				return *this;
-			}
 
 			/// The pointer to the lock used.
 			BaseLock *m_lock;

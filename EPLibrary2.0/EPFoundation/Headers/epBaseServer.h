@@ -104,6 +104,17 @@ namespace epl{
 		virtual ~BaseServer();
 
 		/*!
+		Assignment operator overloading
+		@param[in] b the second object
+		@return the new copied object
+		*/
+		BaseServer & operator=(const BaseServer&b)
+		{
+			return *this;
+		}
+
+
+		/*!
 		Get Client List
 		@return the reference to the list of the client
 		*/
@@ -152,17 +163,6 @@ namespace epl{
 		@param[in] b the second object
 		*/
 		BaseServer(const BaseServer& b){EP_ASSERT(0);}
-		/*!
-		Assignment operator overloading
-		**Should not call this
-		@param[in] b the second object
-		@return the new copied object
-		*/
-		BaseServer & operator=(const BaseServer&b)
-		{
-			EP_ASSERT(0);
-			return *this;
-		}
 
 		/*!
 		Listening Loop Function

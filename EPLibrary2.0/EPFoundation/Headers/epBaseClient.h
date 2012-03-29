@@ -120,6 +120,17 @@ namespace epl{
 		virtual ~BaseClient();
 
 		/*!
+		Assignment operator overloading
+		@param[in] b the second object
+		@return the new copied object
+		*/
+		BaseClient & operator=(const BaseClient&b)
+		{
+			return *this;
+		}
+
+
+		/*!
 		Set the hostname for the server.
 		**Cannot be changed while connected to server
 		@param[in] hostName The hostname to set.
@@ -187,17 +198,6 @@ namespace epl{
 		@param[in] b the second object
 		*/
 		BaseClient(const BaseClient& b){EP_ASSERT(0);}
-		/*!
-		Assignment operator overloading
-		**Should not call this
-		@param[in] b the second object
-		@return the new copied object
-		*/
-		BaseClient & operator=(const BaseClient&b)
-		{
-			EP_ASSERT(0);
-			return *this;
-		}
 
 		/*!
 		Receive the packet from the server

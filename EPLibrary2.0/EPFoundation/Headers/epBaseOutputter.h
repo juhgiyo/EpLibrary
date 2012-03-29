@@ -63,6 +63,21 @@ namespace epl
 		*/
 		virtual void Clear();
 
+		/*!
+		Assignment operator overloading
+		@param[in] b the second object
+		@return the new copied object
+		*/
+		BaseOutputter & operator=(const BaseOutputter&b)
+		{
+			if(this!=&b)
+			{
+				LockObj lock(m_nodeListLock);
+				m_list=b.m_list;
+			}
+			return *this;
+		}
+
 	protected:
 		/*! 
 		@class OutputNode epBaseOutputter.h
@@ -114,17 +129,7 @@ namespace epl
 		@param[in] b the second object
 		*/
 		BaseOutputter(const BaseOutputter& b){EP_ASSERT(0);}
-		/*!
-		Assignment operator overloading
-		**Should not call this
-		@param[in] b the second object
-		@return the new copied object
-		*/
-		BaseOutputter & operator=(const BaseOutputter&b)
-		{
-			EP_ASSERT(0);
-			return *this;
-		}
+
 	};
 }
 #endif //__EP_OUTPUTTER_H__

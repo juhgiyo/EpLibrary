@@ -60,26 +60,26 @@ namespace epl
 		*/
 		virtual ~WorkerThreadInfinite(){};
 
-	protected:
-		/*!
-		Actual infinite-looping Thread Code.
-		*/
-		virtual void execute();
-	
-	private:
-
 		/*!
 		Assignment operator overloading
-
-		*Cannot be Used.
 		@param[in] b the second object
 		@return the new copied object
 		*/
 		WorkerThreadInfinite &operator=(const WorkerThreadInfinite & b)
 		{
-			EP_ASSERT(0);
+			if(this!=&b)
+			{
+				BaseWorkerThread::operator =(b);
+			}
 			return *this;
 		}
+
+	protected:
+		/*!
+		Actual infinite-looping Thread Code.
+		*/
+		virtual void execute();
+
 	};
 
 }

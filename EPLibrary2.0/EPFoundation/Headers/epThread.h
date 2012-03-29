@@ -101,7 +101,16 @@ namespace epl
 		Destroy the Thread Class
 		*/
 		virtual ~Thread();
-
+		
+		/*!
+		Assignment operator overloading
+		@param[in] b the second object
+		@return the new copied object
+		*/
+		Thread &operator=(const Thread & b)
+		{
+			return *this;
+		}
 		
 		/*!
 		Start the Thread according to parameters given.
@@ -186,18 +195,7 @@ namespace epl
 		*/
 		Thread(const Thread & b){EP_ASSERT(0);}
 
-		/*!
-		Assignment operator overloading
 
-		*Cannot be Used.
-		@param[in] b the second object
-		@return the new copied object
-		*/
-		Thread &operator=(const Thread & b)
-		{
-			EP_ASSERT(0);
-			return *this;
-		}
 		/*!
 		Terminate the thread successfully.
 		*/

@@ -61,6 +61,16 @@ namespace epl
 		virtual ~NoLock();
 
 		/*!
+		Assignment operator overloading
+		@param[in] b the second object
+		@return the new copied object
+		*/
+		NoLock & operator=(const NoLock&b)
+		{
+			return *this;
+		}
+
+		/*!
 		Locks the NoLock
 		*/
 		virtual void Lock();
@@ -96,17 +106,7 @@ namespace epl
 		@param[in] b the second object
 		*/
 		NoLock(const NoLock& b){EP_ASSERT(0);}
-		/*!
-		Assignment operator overloading
-		**Should not call this
-		@param[in] b the second object
-		@return the new copied object
-		*/
-		NoLock & operator=(const NoLock&b)
-		{
-			EP_ASSERT(0);
-			return *this;
-		}
+
 
 		/// the actual lock member.
 		CRITICAL_SECTION m_criticalSection;

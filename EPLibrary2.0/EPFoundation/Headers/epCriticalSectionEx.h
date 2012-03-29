@@ -60,6 +60,16 @@ namespace epl
 		*/
 		virtual ~CriticalSectionEx();
 
+		/*!	
+		Assignment operator overloading
+		@param[in] b the second object
+		@return the new copied object
+		*/
+		CriticalSectionEx & operator=(const CriticalSectionEx&b)
+		{
+			return *this;
+		}
+
 		/*!
 		Locks the Critical Section
 		*/
@@ -99,17 +109,6 @@ namespace epl
 		@param[in] b the second object
 		*/
 		CriticalSectionEx(const CriticalSectionEx& b){EP_ASSERT(0);}
-		/*!
-		Assignment operator overloading
-		**Should not call this
-		@param[in] b the second object
-		@return the new copied object
-		*/
-		CriticalSectionEx & operator=(const CriticalSectionEx&b)
-		{
-			EP_ASSERT(0);
-			return *this;
-		}
 
 		/// the actual lock member.
 		CRITICAL_SECTION m_criticalSection;

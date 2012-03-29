@@ -157,6 +157,16 @@ namespace epl
 				if(m_lockPtr)
 					m_lockPtr->Unlock();
 			}
+
+			/*!
+			Assignment operator overloading
+			@param[in] b the second object
+			@return the new copied object
+			*/
+			ThreadSafeObj & operator=(const ThreadSafeObj&b)
+			{
+				return *this;
+			}
 		private:
 			/*!
 			Default Copy Constructor
@@ -166,17 +176,7 @@ namespace epl
 			@param[in] b the second object
 			*/
 			ThreadSafeObj(const ThreadSafeObj& b){EP_ASSERT(0);}
-			/*!
-			Assignment operator overloading
-			**Should not call this
-			@param[in] b the second object
-			@return the new copied object
-			*/
-			ThreadSafeObj & operator=(const ThreadSafeObj&b)
-			{
-				EP_ASSERT(0);
-				return *this;
-			}
+
 
 			/// the pointer to the actual lock member.
 			BaseLock *m_lockPtr;

@@ -75,6 +75,21 @@ namespace epl
 		*/
 		void AddProfile(const TCHAR *fileName,const TCHAR* funcName, const EpTime &time);
 
+		
+		/*!
+		Assignment operator overloading
+		@param[in] b the second object
+		@return the new copied object
+		*/
+		ProfileManager & operator=(const ProfileManager&b)
+		{
+			if(this!=&b)
+			{
+				BaseOutputter::operator =(b);
+			}
+			return *this;
+		}
+
 		/*! 
 		@class Profiler epProfiler.h
 		@brief This is a class for handling the profiling
@@ -128,17 +143,6 @@ namespace epl
 		virtual ~ProfileManager();
 
 
-		/*!
-		Assignment operator overloading
-		**Should not call this
-		@param[in] b the second object
-		@return the new copied object
-		*/
-		ProfileManager & operator=(const ProfileManager&b)
-		{
-			EP_ASSERT(0);
-			return *this;
-		}
 
 		/*! 
 		@class ProfileNode epProfiler.h

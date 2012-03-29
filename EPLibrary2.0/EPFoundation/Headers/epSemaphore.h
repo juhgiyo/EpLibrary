@@ -67,6 +67,16 @@ namespace epl
 		virtual ~Semaphore();
 
 		/*!
+		Assignment operator overloading
+		@param[in] b the second object
+		@return the new copied object
+		*/
+		Semaphore & operator=(const Semaphore&b)
+		{
+			return *this;
+		}
+
+		/*!
 		Locks the Critical Section
 		*/
 		virtual void Lock();
@@ -105,17 +115,7 @@ namespace epl
 		@param[in] b the second object
 		*/
 		Semaphore(const Semaphore& b){EP_ASSERT(0);}
-		/*!
-		Assignment operator overloading
-		**Should not call this
-		@param[in] b the second object
-		@return the new copied object
-		*/
-		Semaphore & operator=(const Semaphore&b)
-		{
-			EP_ASSERT(0);
-			return *this;
-		}
+	
 
 		CSemaphore *m_sem;
 		CSingleLock *m_singleLock;

@@ -50,7 +50,15 @@ namespace epl
 	class EP_FOUNDATION SmartObject
 	{
 	public:
-
+		/*!
+		Assignment operator overloading
+		@param[in] b the second object
+		@return the new copied object
+		*/
+		SmartObject & operator=(const SmartObject&b)
+		{
+			return *this;
+		}
 
 	#if !defined(_DEBUG)
 		/*!
@@ -131,17 +139,6 @@ namespace epl
 		@param[in] b the second object
 		*/
 		SmartObject(const SmartObject& b){EP_ASSERT(0);}
-		/*!
-		Assignment operator overloading
-		**Should not call this
-		@param[in] b the second object
-		@return the new copied object
-		*/
-		SmartObject & operator=(const SmartObject&b)
-		{
-			EP_ASSERT(0);
-			return *this;
-		}
 
 		int m_refCount;
 		BaseLock *m_refCounterLock;
