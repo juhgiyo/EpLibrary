@@ -51,6 +51,7 @@ namespace epl{
 
 		Initializes the Properties File 
 		@param[in] encodingType the encoding type for this file
+		@param[in] lockPolicyType The lock policy
 		*/
 		PropertiesFile(FileEncodingType encodingType=FILE_ENCODING_TYPE_UTF16, LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
@@ -122,14 +123,14 @@ namespace epl{
 
 		/*!
 		Save the list of the properties from the given file
-		@param[in] fileName the name of the file to save the list of properties
+		@param[in] filename the name of the file to save the list of properties
 		@return true if successfully saved, otherwise false
 		*/
 		bool SaveToFile(CString filename);
 		
 		/*!
 		Load the list of the properties from the given file
-		@param[in] fileName the name of the file to load the list of properties
+		@param[in] filename the name of the file to load the list of properties
 		@return true if successfully loaded, otherwise false
 		*/
 		bool LoadFromFile(CString filename);
