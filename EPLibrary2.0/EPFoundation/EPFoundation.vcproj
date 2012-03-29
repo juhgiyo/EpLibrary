@@ -360,6 +360,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\Sources\epNoLock.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\Sources\epSemaphore.cpp"
 						>
 					</File>
@@ -691,6 +695,10 @@
 					</File>
 					<File
 						RelativePath=".\Headers\epMutex.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Headers\epNoLock.h"
 						>
 					</File>
 					<File

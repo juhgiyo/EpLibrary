@@ -85,6 +85,7 @@ namespace epl
 		if other thread is already in the Critical Section,
 		and if it fails to lock in given time, it returns false, otherwise lock and return true.
 		@param[in] dwMilliSecond the wait time.
+		@return true if the lock is succeeded, otherwise false.
 		*/
 		virtual long TryLockFor(const unsigned int dwMilliSecond);
 
