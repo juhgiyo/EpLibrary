@@ -34,12 +34,9 @@ An Interface for the XML File Class.
 #include "epXMLite.h"
 #include "epBaseFile.h"
 
-#ifndef TEST_NEW
-#define TEST_NEW 1
-#endif //TEST_NEW
 namespace epl
 {
-#if TEST_NEW
+
 	/*!
 	@class XMLFile epXMLFile.h
 	@brief A class for XML File.
@@ -52,7 +49,30 @@ namespace epl
 		Initializes the XML File 
 		@param[in] encodingType the encoding type for this file
 		*/
-		XMLFile(FileEncodingType encodingType=FILE_ENCODING_TYPE_UTF16);
+		XMLFile(FileEncodingType encodingType=FILE_ENCODING_TYPE_UTF16, LockPolicy lockPolicyType=EP_LOCK_POLICY);
+
+		/*!
+		Default Copy Constructor
+
+		Initializes the XML File  
+		@param[in] b the second object
+		*/
+		XMLFile(const XMLFile& b);
+
+		/*!
+		Assignment operator overloading
+		@param[in] b the second object
+		@return the new copied object
+		*/
+		XMLFile & operator=(const XMLFile&b)
+		{
+			if(this!=&b)
+			{
+				BaseFile::operator =(b);
+				XNode::operator =(const_cast<XMLFile&>(b));
+			}
+			return *this;
+		}
 
 		/*!
 		Default Destructor
@@ -110,72 +130,6 @@ namespace epl
 		*/
 		XNodes findAllNode(XNode *node, CString nodeName);
 	};
-#else
-	/*!
-	@class XMLFile epXMLFile.h
-	@brief A class for XML File.
-	*/
-	class EP_FOUNDATION XMLFile:public XNode{
-	public:
-		/*!
-		Default Constructor
-
-		Initializes the XML File 
-		@param[in] encodingType the encoding type for this file
-		*/
-		XMLFile(FileEncodingType encodingType=FILE_ENCODING_TYPE_UTF16);
-
-		/*!
-		Default Destructor
-
-		Destroy the XML File 
-		*/
-		virtual ~XMLFile();
-
-		/*!
-		Recursively set all nodes of the given node name with the node value given
-		@param[in] nodeName the name of the node to replace
-		@param[in] attrName the attribute name of the node
-		@param[in] attrVal the attribute value of the node with given attribute name
-		@param[in] nodeVal the value for replacement when found
-		*/
-		void SetNodeValue(CString nodeName, CString attrName, CString attrVal, CString nodeVal);
-
-		/*!
-		Clear the list of the xml
-		*/
-		void Clear();
-
-		/*!
-		Save the xml to the given file
-		@param[in] fileName the name of the file to save the xml
-		@return true if successfully saved, otherwise false
-		*/
-		bool SaveToFile(CString fileName);
-
-		/*!
-		Load the xml from the given file
-		@param[in] fileName the name of the file to load the xml
-		@return true if successfully loaded, otherwise false
-		*/
-		bool LoadFromFile(CString fileName);
-
-	protected:
-
-		/*!
-		Recursively find all nodes with the given node name
-		@param[in] node the root of the xml
-		@param[in] nodeName the node name to find the nodes
-		@return the list of the nodes with the given node name
-		*/
-		XNodes findAllNode(XNode *node, CString nodeName);
-
-		/// Encoding type of the file
-		FileEncodingType m_encodingType;
-	};
-
-#endif 
-
 }
 
 #endif //__EP_XML_FILE_H__

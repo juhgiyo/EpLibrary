@@ -41,8 +41,9 @@ FEATURES
   1. Mutex
   2. Semaphore
   3. CiriticalSectionEx
-  4. Singleton Holder
-  5. Smart Object
+  4. NoLock
+  5. Singleton Holder
+  6. Smart Object
 
 * Server/Client Template Framework
 

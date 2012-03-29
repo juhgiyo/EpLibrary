@@ -40,14 +40,6 @@ An Interface for Mutex Class.
 
 namespace epl
 {
-#ifndef TEST_NEW
-#define TEST_NEW 1
-#endif //TEST_NEW
-
-#if !TEST_NEW
-	/// time to wait to acquire lock in milliseconds
-#define MUTEX_WAIT_TIME_IN_MILLI_SEC 5
-#endif //!TEST_NEW
 
 	/*! 
 	@class Mutex epMutex.h

@@ -37,13 +37,8 @@ An Interface for the Properties File Class.
 
 using namespace std;
 
-#ifndef TEST_NEW
-#define TEST_NEW 1
-#endif //TEST_NEW
-
 namespace epl{
 
-#if TEST_NEW
 	/*!
 	@class PropertiesFile epPropertiesFile.h
 	@brief A class for Peroperties File.
@@ -57,7 +52,30 @@ namespace epl{
 		Initializes the Properties File 
 		@param[in] encodingType the encoding type for this file
 		*/
-		PropertiesFile(FileEncodingType encodingType=FILE_ENCODING_TYPE_UTF16);
+		PropertiesFile(FileEncodingType encodingType=FILE_ENCODING_TYPE_UTF16, LockPolicy lockPolicyType=EP_LOCK_POLICY);
+
+		/*!
+		Default Copy Constructor
+
+		Initializes the PropertiesFile 
+		@param[in] b the second object
+		*/
+		PropertiesFile(const PropertiesFile& b);
+
+		/*!
+		Assignment operator overloading
+		@param[in] b the second object
+		@return the new copied object
+		*/
+		PropertiesFile & operator=(const PropertiesFile&b)
+		{
+			if(this!=&b)
+			{
+				m_propertyList=b.m_propertyList;
+				BaseFile::operator =(b);
+			}
+			return *this;
+		}
 
 		/*!
 		Default Destructor
@@ -142,105 +160,6 @@ namespace epl{
 		/// The list of the properties
 		list<pair<CString,CString> > m_propertyList;
 	};
-#else
-	/*!
-	@class PropertiesFile epPropertiesFile.h
-	@brief A class for Peroperties File.
-	*/
-	class EP_FOUNDATION PropertiesFile{
-	public:
-
-		/*!
-		Default Constructor
-
-		Initializes the Properties File 
-		@param[in] encodingType the encoding type for this file
-		*/
-		PropertiesFile(FileEncodingType encodingType=FILE_ENCODING_TYPE_UTF16);
-
-		/*!
-		Default Destructor
-
-		Destroy the Properties File 
-		*/
-		virtual ~PropertiesFile();
-
-		/*!
-		Set the property with the given key with the value given
-		@param[in] key the key of the property to change the value
-		@param[in] val the value to change the property
-		@return true if changed, otherwise false
-		*/
-		bool SetProperty(CString key, CString val);
-
-		/*!
-		Get the value of the property with the given key
-		@param[in] key the key of the property to get the value
-		@param[in] retVal the value of the property of given key
-		@return true if found, otherwise false
-		*/
-		bool GetProperty(CString key,CString &retVal);
-
-		/*!
-		Add new property with the given key and value
-		@param[in] key the key of the property to add
-		@param[in] val the value of the new property
-		@return true if successfully added, otherwise false
-		*/
-		bool AddProperty(CString key, CString val);
-
-		/*!
-		Remove the property with the given key
-		@param[in] key the key of the property to remove
-		@return true if successfully removed, otherwise false
-		*/
-		bool RemoveProperty(CString key);
-
-		/*!
-		Clear the list of the properties
-		*/
-		void Clear();
-
-		/*!
-		Save the list of the properties from the given file
-		@param[in] filename the name of the file to save the list of properties
-		@return true if successfully saved, otherwise false
-		*/
-		bool SaveToFile(CString filename);
-		
-		/*!
-		Load the list of the properties from the given file
-		@param[in] filename the name of the file to load the list of properties
-		@return true if successfully loaded, otherwise false
-		*/
-		bool LoadFromFile(CString filename);
-
-	private:
-		/*!
-		Get a single line from the given buffer
-		@param[in] buf the buffer that holds all lines
-		@param[out] retLine the first line that found in the given buffer
-		@param[out] retRest the rest of the buffer without the found line
-		@return true if successfully parsed the line, otherwise false
-		*/
-		bool getLine(CString buf, CString &retLine, CString &retRest);
-
-		/*!
-		Parse the key and value from the line buffer
-		@param[in] buf the buffer that holds a line
-		@param[out] retKey the key part of the given line
-		@param[out] retVal the value part of the given line
-		@return true if successfully parsed the key and value, otherwise false
-		*/
-		bool getValueKeyFromLine(CString buf, CString &retKey, CString &retVal);
-
-		/// The list of the properties
-		list<pair<CString,CString> > m_propertyList;
-
-		/// Encoding type of the file
-		FileEncodingType m_encodingType;
-	};
-#endif
 }
 
 

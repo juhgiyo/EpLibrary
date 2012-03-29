@@ -33,6 +33,9 @@ An Interface for the Base File Class.
 #include "epSystem.h"
 #include "epMemory.h"
 #include <list>
+#include "epCriticalSectionEx.h"
+#include "epMutex.h"
+#include "epNoLock.h"
 
 using namespace std;
 
@@ -49,8 +52,32 @@ namespace epl{
 
 		Initializes the Base File 
 		@param[in] encodingType the encoding type for this file
+		@param[in] lockPolicyType The lock policy
 		*/
-		BaseFile(FileEncodingType encodingType=FILE_ENCODING_TYPE_UTF16);
+		BaseFile(FileEncodingType encodingType=FILE_ENCODING_TYPE_UTF16, LockPolicy lockPolicyType=EP_LOCK_POLICY);
+
+		/*!
+		Default Copy Constructor
+
+		Initializes the Base File 
+		@param[in] b the second object
+		*/
+		BaseFile(const BaseFile& b);
+
+		/*!
+		Assignment operator overloading
+		@param[in] b the second object
+		@return the new copied object
+		*/
+		BaseFile & operator=(const BaseFile&b)
+		{
+			if(this!=&b)
+			{
+				m_encodingType=b.m_encodingType;
+				m_file=b.m_file;
+			}
+			return *this;
+		}
 
 		/*!
 		Default Destructor
@@ -106,6 +133,10 @@ namespace epl{
 		FileEncodingType m_encodingType;
 		/// File Pointer
 		CStdioFile *m_file;
+		/// the lock
+		BaseLock * m_lock;
+		/// Lock Policy
+		LockPolicy m_lockPolicy;
 	};
 
 }

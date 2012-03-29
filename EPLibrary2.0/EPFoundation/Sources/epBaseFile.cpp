@@ -19,19 +19,58 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace epl;
 
-BaseFile::BaseFile(FileEncodingType encodingType)
+BaseFile::BaseFile(FileEncodingType encodingType,LockPolicy lockPolicyType)
 {
 	m_encodingType=encodingType;
 	m_file=NULL;
+	m_lockPolicy=lockPolicyType;
+	switch(lockPolicyType)
+	{
+	case LOCK_POLICY_CRITICALSECTION:
+		m_lock=EP_NEW CriticalSectionEx();
+		break;
+	case LOCK_POLICY_MUTEX:
+		m_lock=EP_NEW Mutex();
+		break;
+	case LOCK_POLICY_NONE:
+		m_lock=EP_NEW NoLock();
+		break;
+	default:
+		m_lock=NULL;
+		break;
+	}
 }
-
+BaseFile::BaseFile(const BaseFile& b)
+{
+	m_encodingType=b.m_encodingType;
+	m_file=b.m_file;
+	m_lockPolicy=b.m_lockPolicy;
+	switch(m_lockPolicy)
+	{
+	case LOCK_POLICY_CRITICALSECTION:
+		m_lock=EP_NEW CriticalSectionEx();
+		break;
+	case LOCK_POLICY_MUTEX:
+		m_lock=EP_NEW Mutex();
+		break;
+	case LOCK_POLICY_NONE:
+		m_lock=EP_NEW NoLock();
+		break;
+	default:
+		m_lock=NULL;
+		break;
+	}
+}
 BaseFile::~BaseFile()
 {
+	if(m_lock)
+		EP_DELETE m_lock;
 }
 
 
 void BaseFile::WriteToFile(CString toFileString)
 {
+	LockObj lock(m_lock);
 	if(m_encodingType==FILE_ENCODING_TYPE_UTF8||m_encodingType==FILE_ENCODING_TYPE_UTF16)
 	{	
 
@@ -53,7 +92,7 @@ void BaseFile::WriteToFile(CString toFileString)
 
 bool BaseFile::SaveToFile(CString filename)
 {
-
+	LockObj lock(m_lock);
 	if(filename.GetLength()<=0)
 		return false;
 
@@ -83,6 +122,7 @@ bool BaseFile::SaveToFile(CString filename)
 
 bool BaseFile::LoadFromFile(CString filename)
 {
+	LockObj lock(m_lock);
 	if(filename.GetLength()<=0)
 		return false;
 
