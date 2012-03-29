@@ -19,13 +19,43 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epBaseServerWorker.h"
 
 using namespace epl;
-BaseServerWorker::BaseServerWorker(): Thread(), SmartObject()
+BaseServerWorker::BaseServerWorker(LockPolicy lockPolicyType): Thread(lockPolicyType), SmartObject(lockPolicyType)
 {
-#ifdef EP_MULTIPROCESS
-	m_sendLock=EP_NEW Mutex();
-#else //EP_MULTIPROCESS
-	m_sendLock=EP_NEW CriticalSectionEx();
-#endif //EP_MULTIPROCESS
+	m_lockPolicy=lockPolicyType;
+	switch(lockPolicyType)
+	{
+	case LOCK_POLICY_CRITICALSECTION:
+		m_sendLock=EP_NEW CriticalSectionEx();
+		break;
+	case LOCK_POLICY_MUTEX:
+		m_sendLock=EP_NEW Mutex();
+		break;
+	case LOCK_POLICY_NONE:
+		m_sendLock=EP_NEW NoLock();
+		break;
+	default:
+		m_sendLock=NULL;
+		break;
+	}
+}
+BaseServerWorker::BaseServerWorker(const BaseServerWorker& b) : Thread(b),SmartObject(b)
+{
+	m_lockPolicy=b.m_lockPolicy;
+	switch(m_lockPolicy)
+	{
+	case LOCK_POLICY_CRITICALSECTION:
+		m_sendLock=EP_NEW CriticalSectionEx();
+		break;
+	case LOCK_POLICY_MUTEX:
+		m_sendLock=EP_NEW Mutex();
+		break;
+	case LOCK_POLICY_NONE:
+		m_sendLock=EP_NEW NoLock();
+		break;
+	default:
+		m_sendLock=NULL;
+		break;
+	}
 }
 
 BaseServerWorker::~BaseServerWorker()
@@ -36,7 +66,8 @@ BaseServerWorker::~BaseServerWorker()
 		printf("shutdown failed with error\n"); // TODO:: Log
 		closesocket(m_clientSocket);
 	}
-	EP_DELETE m_sendLock;
+	if(m_sendLock)
+		EP_DELETE m_sendLock;
 }
 
 void BaseServerWorker::SetArg(void* a)

@@ -19,18 +19,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epSimpleLogger.h"
 using namespace epl;
 
-FileStream::FileStream(TCHAR *fileName) :Stream()
+FileStream::FileStream(TCHAR *fileName,LockPolicy lockPolicyType) :Stream(lockPolicyType)
 {
 	m_fileName=EP_NEW TCHAR[FILENAME_MAX ];
 	System::StrCpy(m_fileName,fileName);
 }
 
-FileStream::FileStream(const FileStream& b):Stream()
+FileStream::FileStream(const FileStream& b):Stream(b)
 {
 	m_fileName=EP_NEW TCHAR[FILENAME_MAX ];
 	System::StrCpy(m_fileName,b.m_fileName);
-	m_stream=b.m_stream;
-	m_offset=b.m_offset;
 }
 
 FileStream & FileStream::operator=(const FileStream&b)
@@ -41,8 +39,7 @@ FileStream & FileStream::operator=(const FileStream&b)
 			m_fileName=EP_NEW TCHAR[FILENAME_MAX];
 		memset(m_fileName,0,sizeof(TCHAR)*FILENAME_MAX);
 		System::StrCpy(m_fileName,b.m_fileName);
-		m_stream=b.m_stream;
-		m_offset=b.m_offset;
+		Stream::operator =(b);
 	}
 	return *this;
 }

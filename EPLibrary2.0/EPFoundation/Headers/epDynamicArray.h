@@ -31,11 +31,9 @@ An Interface for Dynamic Array Data Structure.
 #define __EP_DYNAMIC_ARRAY_H__
 
 #include "epLib.h"
-#ifdef EP_MULTIPROCESS
-#include "epMutex.h"
-#else //EP_MULTIPROCESS
 #include "epCriticalSectionEx.h"
-#endif //EP_MULTIPROCESS
+#include "epMutex.h"
+#include "epNoLock.h"
 
 namespace epl
 {
@@ -50,13 +48,15 @@ namespace epl
 		Default Constructor
 
 		Initializes the Dynamic Array
+		@param[in] lockPolicyType The lock policy
 		*/
-		DynamicArray();
+		DynamicArray(LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Constructor
 
 		Initializes the Dynamic Array with given array
+		@param[in] dArr the Dynamic Array Object to copy from
 		*/
 		DynamicArray(const DynamicArray<FDATA> &dArr);
 
@@ -197,32 +197,56 @@ namespace epl
 		unsigned int m_actualSize;
 		/// lock
 		BaseLock *m_lock;
+		/// Lock Policy
+		LockPolicy m_lockPolicy;
 
 	};
 
-	DynamicArray::DynamicArray()
+	DynamicArray::DynamicArray(LockPolicy lockPolicyType)
 	{
 		m_head=NULL;
 		m_numOfElements=0;
 		m_actualSize=0;
-#ifdef EP_MULTIPROCESS
-		m_lock=EP_NEW Mutex();
-#else //EP_MULTIPROCESS
-		m_lock=EP_NEW CriticalSectionEx();
-#endif //EP_MULTIPROCESS
+		m_lockPolicy=lockPolicyType;
+		switch(lockPolicyType)
+		{
+		case LOCK_POLICY_CRITICALSECTION:
+			m_lock=EP_NEW CriticalSectionEx();
+			break;
+		case LOCK_POLICY_MUTEX:
+			m_lock=EP_NEW Mutex();
+			break;
+		case LOCK_POLICY_NONE:
+			m_lock=EP_NEW NoLock();
+			break;
+		default:
+			m_lock=NULL;
+			break;
+		}
 	}
 	DynamicArray::DynamicArray(const DynamicArray<FDATA> &dArr)
 	{
+		m_lockPolicy=dArr.m_lockPolicy;
 		m_numOfElements=dArr.m_numOfElements;
 		m_actualSize=dArr.m_actualSize;
 		m_head=EP_Malloc(sizeof(FDATA)*m_actualSize);
 		EP_WASSERT(m_head,_T("Allocation Failed"));
 		memcpy(m_head,dArr.m_head,sizeof(FDATA)*m_actualSize);
-#ifdef EP_MULTIPROCESS
-		m_lock=EP_NEW Mutex();
-#else //EP_MULTIPROCESS
-		m_lock=EP_NEW CriticalSectionEx();
-#endif //EP_MULTIPROCESS
+		switch(m_lockPolicy)
+		{
+		case LOCK_POLICY_CRITICALSECTION:
+			m_lock=EP_NEW CriticalSectionEx();
+			break;
+		case LOCK_POLICY_MUTEX:
+			m_lock=EP_NEW Mutex();
+			break;
+		case LOCK_POLICY_NONE:
+			m_lock=EP_NEW NoLock();
+			break;
+		default:
+			m_lock=NULL;
+			break;
+		}
 	}
 
 	DynamicArray::~DynamicArray()

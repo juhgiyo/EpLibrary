@@ -60,9 +60,18 @@ namespace epl
 
 		Initializes the thread class
 		@param[in] policy the life policy of this worker thread.
+		@param[in] lockPolicyType The lock policy
 		*/
-		BaseWorkerThread(const ThreadLifePolicy policy);
+		BaseWorkerThread(const ThreadLifePolicy policy,LockPolicy lockPolicyType=EP_LOCK_POLICY);
 		
+		/*!
+		Default Copy Constructor
+
+		Initializes the Thread class
+		@param[in] b the second object
+		*/
+		BaseWorkerThread(const BaseWorkerThread & b);
+
 		/*!
 		Default Destructor
 
@@ -155,13 +164,6 @@ namespace epl
 		/// the call back class
 		void *m_callBackClass;
 
-	private:
-		/*!
-		Default Copy Constructor
-
-		*Cannot be Used.
-		*/
-		BaseWorkerThread(const BaseWorkerThread & b){EP_ASSERT(0);}
 	};
 }
 #endif //__EP_BASE_WORKER_THREAD_H__

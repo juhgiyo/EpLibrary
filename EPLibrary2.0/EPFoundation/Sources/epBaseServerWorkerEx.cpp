@@ -19,13 +19,44 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epBaseServerWorkerEx.h"
 
 using namespace epl;
-BaseServerWorkerEx::BaseServerWorkerEx(): Thread(), SmartObject()
+BaseServerWorkerEx::BaseServerWorkerEx(LockPolicy lockPolicyType): Thread(lockPolicyType), SmartObject(lockPolicyType)
 {
-#ifdef EP_MULTIPROCESS
-	m_sendLock=EP_NEW Mutex();
-#else //EP_MULTIPROCESS
-	m_sendLock=EP_NEW CriticalSectionEx();
-#endif //EP_MULTIPROCESS
+	m_lockPolicy=lockPolicyType;
+	switch(lockPolicyType)
+	{
+	case LOCK_POLICY_CRITICALSECTION:
+		m_sendLock=EP_NEW CriticalSectionEx();
+		break;
+	case LOCK_POLICY_MUTEX:
+		m_sendLock=EP_NEW Mutex();
+		break;
+	case LOCK_POLICY_NONE:
+		m_sendLock=EP_NEW NoLock();
+		break;
+	default:
+		m_sendLock=NULL;
+		break;
+	}
+}
+
+BaseServerWorkerEx::BaseServerWorkerEx(const BaseServerWorkerEx& b) : Thread(b),SmartObject(b)
+{
+	m_lockPolicy=b.m_lockPolicy;
+	switch(b.m_lockPolicy)
+	{
+	case LOCK_POLICY_CRITICALSECTION:
+		m_sendLock=EP_NEW CriticalSectionEx();
+		break;
+	case LOCK_POLICY_MUTEX:
+		m_sendLock=EP_NEW Mutex();
+		break;
+	case LOCK_POLICY_NONE:
+		m_sendLock=EP_NEW NoLock();
+		break;
+	default:
+		m_sendLock=NULL;
+		break;
+	}
 }
 
 BaseServerWorkerEx::~BaseServerWorkerEx()

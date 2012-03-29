@@ -21,12 +21,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace epl;
 
-BaseWorkerThread::BaseWorkerThread(const ThreadLifePolicy policy) :Thread()
+BaseWorkerThread::BaseWorkerThread(const ThreadLifePolicy policy,LockPolicy lockPolicyType) :Thread(lockPolicyType)
 {
 	m_lifePolicy=policy;
 	m_callBackClass=NULL;
 }
 
+BaseWorkerThread::BaseWorkerThread(const BaseWorkerThread & b):Thread(b)
+{
+	m_lifePolicy=b.m_lifePolicy;
+	m_callBackClass=b.m_callBackClass;
+}
 BaseWorkerThread::~BaseWorkerThread()
 {
 	if(m_arg)

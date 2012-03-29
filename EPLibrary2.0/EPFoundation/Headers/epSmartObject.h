@@ -32,11 +32,9 @@ An Interface for the Smart Object.
 #include "epLib.h"
 #include "epSystem.h"
 #include "epSimpleLogger.h"
-#ifdef EP_MULTIPROCESS
-#include "epMutex.h"
-#else //EP_MULTIPROCESS
 #include "epCriticalSectionEx.h"
-#endif //EP_MULTIPROCESS
+#include "epMutex.h"
+#include "epNoLock.h"
 
 namespace epl
 {
@@ -75,8 +73,15 @@ namespace epl
 	protected:
 		/*!
 		Default Contructor
+		@param[in] lockPolicyType The lock policy
 		*/
-		SmartObject();
+		SmartObject(LockPolicy lockPolicyType=EP_LOCK_POLICY);
+		 
+		/*!
+		Default Copy Constructor
+		@param[in] b the second object
+		*/
+		SmartObject(const SmartObject& b);
 		
 	#else //!defined(_DEBUG)
 		/*!
@@ -111,18 +116,55 @@ namespace epl
 	protected:
 		/*!
 		Default Contructor
+		@param[in] lockPolicyType The lock policy
 		*/
-		__forceinline SmartObject()
+		__forceinline SmartObject(LockPolicy lockPolicyType=EP_LOCK_POLICY)
 		{
 			m_refCount=1;
 			LOG_THIS_MSG(_T("%s::%s(%d) Allocated Object : %d (Current Refence Count = %d)"),__WFILE__,__WFUNCTION__,__LINE__,this, this->m_refCount);
-#ifdef EP_MULTIPROCESS
-			m_refCounterLock=EP_NEW Mutex();
-#else //EP_MULTIPROCESS
-			m_refCounterLock=EP_NEW CriticalSectionEx();
-#endif //EP_MULTIPROCESS
+			m_lockPolicy=lockPolicyType;
+			switch(lockPolicyType)
+			{
+			case LOCK_POLICY_CRITICALSECTION:
+				m_refCounterLock=EP_NEW CriticalSectionEx();
+				break;
+			case LOCK_POLICY_MUTEX:
+				m_refCounterLock=EP_NEW Mutex();
+				break;
+			case LOCK_POLICY_NONE:
+				m_refCounterLock=EP_NEW NoLock();
+				break;
+			default:
+				m_refCounterLock=NULL;
+				break;
+			}
 		}
-		
+
+		/*!
+		Default Copy Constructor
+		@param[in] b the second object
+		*/
+		__forceinline SmartObject(const SmartObject& b)
+		{
+			m_refCount=1;
+			LOG_THIS_MSG(_T("%s::%s(%d) Allocated Object : %d (Current Refence Count = %d)"),__WFILE__,__WFUNCTION__,__LINE__,this, this->m_refCount);
+			m_lockPolicy=b.m_lockPolicy;
+			switch(m_lockPolicy)
+			{
+			case LOCK_POLICY_CRITICALSECTION:
+				m_refCounterLock=EP_NEW CriticalSectionEx();
+				break;
+			case LOCK_POLICY_MUTEX:
+				m_refCounterLock=EP_NEW Mutex();
+				break;
+			case LOCK_POLICY_NONE:
+				m_refCounterLock=EP_NEW NoLock();
+				break;
+			default:
+				m_refCounterLock=NULL;
+				break;
+			}
+		}
 	#endif //!defined(_DEBUG)
 		/*!
 		Default Destructor
@@ -131,17 +173,13 @@ namespace epl
 
 		
 	private:
-		/*!
-		Default Copy Constructor
 
-		Initializes the Semaphore
-		**Should not call this
-		@param[in] b the second object
-		*/
-		SmartObject(const SmartObject& b){EP_ASSERT(0);}
-
+		/// Reference Counter
 		int m_refCount;
+		/// Lock
 		BaseLock *m_refCounterLock;
+		/// Lock Policy
+		LockPolicy m_lockPolicy;
 	};
 }
 #endif //__EP_SMART_OBJECT_H__

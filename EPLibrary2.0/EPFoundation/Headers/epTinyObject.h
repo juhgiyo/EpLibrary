@@ -44,7 +44,7 @@ An Interface for Tiny Object.
 #define __EP_TINY_OBJECT_H__
 #include "epLib.h"
 #include "epSingletonHolder.h"
-#include "epThreadPolicy.h"
+#include "epThreadSafeClass.h"
 
 
 namespace epl {

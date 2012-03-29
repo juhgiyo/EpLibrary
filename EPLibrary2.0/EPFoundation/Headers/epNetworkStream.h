@@ -49,8 +49,9 @@ namespace epl
 		Default Constructor
 
 		Initializes the Network Stream
+		@param[in] lockPolicyType The lock policy
 		*/
-		NetworkStream(const NetworkStreamFlushType type=NETWORK_STREAM_FLUSH_TYPE_MANUAL);
+		NetworkStream(const NetworkStreamFlushType type=NETWORK_STREAM_FLUSH_TYPE_MANUAL, LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Copy Constructor

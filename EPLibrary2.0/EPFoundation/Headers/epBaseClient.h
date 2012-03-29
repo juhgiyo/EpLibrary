@@ -35,11 +35,9 @@ An Interface for Base Client.
 #include "epSystem.h"
 #include "epMemory.h"
 #include "epPacket.h"
-#ifdef EP_MULTIPROCESS
-#include "epMutex.h"
-#else //EP_MULTIPROCESS
 #include "epCriticalSectionEx.h"
-#endif //EP_MULTIPROCESS
+#include "epMutex.h"
+#include "epNoLock.h"
 
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
@@ -110,8 +108,19 @@ namespace epl{
 		Default Constructor
 
 		Initializes the Client
+		@param[in] hostName the hostname string
+		@param[in] port the port string
+		@param[in] lockPolicyType The lock policy
 		*/
-		BaseClient(CString hostName=_T(DEFAULT_HOSTNAME), CString port=_T(DEFAULT_PORT));
+		BaseClient(CString hostName=_T(DEFAULT_HOSTNAME), CString port=_T(DEFAULT_PORT),LockPolicy lockPolicyType=EP_LOCK_POLICY);
+
+		/*!
+		Default Copy Constructor
+
+		Initializes the BaseClient
+		@param[in] b the second object
+		*/
+		BaseClient(const BaseClient& b);
 		/*!
 		Default Destructor
 
@@ -150,13 +159,13 @@ namespace epl{
 		Get the hostname of server
 		@return the hostname in string
 		*/
-		CString GetHostName();
+		CString GetHostName() const;
 
 		/*!
 		Get the port number of server
 		@return the port number in string
 		*/
-		CString GetPort();
+		CString GetPort() const;
 
 		/*!
 		Connect to the server
@@ -172,7 +181,7 @@ namespace epl{
 		Check if the connection is established
 		@return true if the connection is established otherwise false
 		*/
-		bool IsConnected();
+		bool IsConnected() const;
 
 		/*!
 		Send the packet to the server
@@ -190,15 +199,6 @@ namespace epl{
 		*/
 		virtual int parsePacket(const Packet &packet )=0;
 	private:
-		/*!
-		Default Copy Constructor
-
-		Initializes the BaseClient
-		**Should not call this
-		@param[in] b the second object
-		*/
-		BaseClient(const BaseClient& b){EP_ASSERT(0);}
-
 		/*!
 		Receive the packet from the server
 		@param[out] packet the packet received
@@ -236,6 +236,8 @@ namespace epl{
 		BaseLock *m_sendLock;
 		/// general lock
 		BaseLock *m_generalLock;
+		/// Lock Policy
+		LockPolicy m_lockPolicy;
 	};
 }
 

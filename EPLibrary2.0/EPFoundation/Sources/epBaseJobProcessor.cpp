@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace epl;
 
-BaseJobProcessor::BaseJobProcessor():SmartObject(){
+BaseJobProcessor::BaseJobProcessor(LockPolicy lockPolicyType):SmartObject(lockPolicyType){
 	m_status=JOB_PROCESSOR_STATUS_NONE;
 }
 

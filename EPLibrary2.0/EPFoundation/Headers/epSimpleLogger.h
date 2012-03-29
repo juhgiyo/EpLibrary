@@ -150,17 +150,17 @@ namespace epl
 
 		/*!
 		Default Constructor
+		@param[in] lockPolicyType The lock policy
 		*/
-		SimpleLogManager();
+		SimpleLogManager(LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Copy Constructor
 
 		Initializes the BaseClient
-		**Should not call this
 		@param[in] b the second object
 		*/
-		SimpleLogManager(const SimpleLogManager& b){EP_ASSERT(0);}
+		SimpleLogManager(const SimpleLogManager& b);
 
 		/*!
 		Default Destructor

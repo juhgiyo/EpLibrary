@@ -26,26 +26,60 @@ HANDLE Thread::CreateThread(LPTHREAD_START_ROUTINE routineFunc,LPVOID param)
 	return ::CreateThread(NULL, 0,routineFunc,param,0,&threadID);
 }
 
-Thread::Thread()
+Thread::Thread(LockPolicy lockPolicyType)
 {
 	m_threadId=0;
 	m_threadHandle=0;
 	m_arg=NULL;
 	m_status=THREAD_STATUS_TERMINATED;
-#ifdef EP_MULTIPROCESS
-	m_threadLock=EP_NEW Mutex();
-#else //EP_MULTIPROCESS
-	m_threadLock=EP_NEW CriticalSectionEx();
-#endif //EP_MULTIPROCESS
+	m_lockPolicy=lockPolicyType;
+	switch(lockPolicyType)
+	{
+	case LOCK_POLICY_CRITICALSECTION:
+		m_threadLock=EP_NEW CriticalSectionEx();
+		break;
+	case LOCK_POLICY_MUTEX:
+		m_threadLock=EP_NEW Mutex();
+		break;
+	case LOCK_POLICY_NONE:
+		m_threadLock=EP_NEW NoLock();
+		break;
+	default:
+		m_threadLock=NULL;
+		break;
+	}
 }
-
+Thread::Thread(const Thread & b)
+{
+	m_threadId=0;
+	m_threadHandle=0;
+	m_arg=NULL;
+	m_status=THREAD_STATUS_TERMINATED;
+	m_lockPolicy=b.m_lockPolicy;
+	switch(m_lockPolicy)
+	{
+	case LOCK_POLICY_CRITICALSECTION:
+		m_threadLock=EP_NEW CriticalSectionEx();
+		break;
+	case LOCK_POLICY_MUTEX:
+		m_threadLock=EP_NEW Mutex();
+		break;
+	case LOCK_POLICY_NONE:
+		m_threadLock=EP_NEW NoLock();
+		break;
+	default:
+		m_threadLock=NULL;
+		break;
+	}
+}
 Thread::~Thread()
 {
 	if(m_status!=THREAD_STATUS_TERMINATED)
 	{
 		TerminateThread(m_threadHandle,0);
 	}
-	EP_DELETE m_threadLock;
+	if(m_threadLock)
+		EP_DELETE m_threadLock;
 }
 
 

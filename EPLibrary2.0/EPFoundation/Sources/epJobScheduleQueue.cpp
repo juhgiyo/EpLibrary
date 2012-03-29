@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epJobScheduleQueue.h"
 #include "epQuickSort.h"
 using namespace epl;
-JobScheduleQueue::JobScheduleQueue() :ThreadSafePQueue<BaseJob*, BaseJob>()
+JobScheduleQueue::JobScheduleQueue(LockPolicy lockPolicyType) :ThreadSafePQueue<BaseJob*, BaseJob>(lockPolicyType)
 {
 }
 

@@ -54,6 +54,15 @@ namespace epl
 		}
 
 		/*!
+		Default Copy Constructor
+
+		Initializes the Thread class
+		@param[in] b the second object
+		*/
+		WorkerThreadInfinite(const WorkerThreadInfinite & b):BaseWorkerThread(b)
+		{}
+
+		/*!
 		Default Destructor
 
 		Destroy the Thread Class

@@ -60,6 +60,14 @@ namespace epl
 		Semaphore(unsigned int count=1,TCHAR *semName=NULL, LPSECURITY_ATTRIBUTES lpsaAttributes = NULL);
 
 		/*!
+		Default Copy Constructor
+
+		Initializes the Semaphore
+		@param[in] b the second object
+		*/
+		Semaphore(const Semaphore& b);
+
+		/*!
 		Default Destructor
 
 		Deletes the lock
@@ -107,18 +115,14 @@ namespace epl
 		virtual void Unlock();
 
 	private:
-		/*!
-		Default Copy Constructor
-
-		Initializes the Semaphore
-		**Should not call this
-		@param[in] b the second object
-		*/
-		Semaphore(const Semaphore& b){EP_ASSERT(0);}
-	
-
+		/// Actual Semaphore		
 		CSemaphore *m_sem;
+		/// Single Lock
 		CSingleLock *m_singleLock;
+		/// Creation Info
+		LPSECURITY_ATTRIBUTES m_lpsaAttributes;
+		/// Semaphore Flag
+		unsigned int m_count;
 #if _DEBUG
 		std::vector<int> m_threadList;
 #endif //_DEBUG

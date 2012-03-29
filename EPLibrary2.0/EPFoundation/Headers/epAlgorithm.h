@@ -163,6 +163,16 @@ namespace epl
 		NUM_OF_FILE_ENCODING_TYPE
 
 	}FileEncodingType;
+
+	/// Lock Policy Enumeration
+	typedef enum _lockPolicy{
+		/// Not a multi thread environment
+		LOCK_POLICY_NONE=0,
+		/// a multi thread environment
+		LOCK_POLICY_CRITICALSECTION,
+		/// a multi process environment
+		LOCK_POLICY_MUTEX,
+	}LockPolicy;
 }
 
 #endif //__EP_ALGORITHM_H__

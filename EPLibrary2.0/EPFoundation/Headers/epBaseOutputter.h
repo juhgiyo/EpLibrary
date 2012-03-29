@@ -31,12 +31,10 @@ An Interface for Outputting data Template class.
 #define __EP_OUTPUTTER_H__
 #include "epLib.h"
 #include "epSystem.h"
-#include "epThreadPolicy.h"
-#ifdef EP_MULTIPROCESS
-#include "epMutex.h"
-#else //EP_MULTIPROCESS
+#include "epThreadSafeClass.h"
 #include "epCriticalSectionEx.h"
-#endif //EP_MULTIPROCESS
+#include "epMutex.h"
+#include "epNoLock.h"
 
 namespace epl
 {
@@ -108,8 +106,17 @@ namespace epl
 
 		/*!
 		Default Constructor
+		@param[in] lockPolicyType The lock policy
 		*/
-		BaseOutputter();
+		BaseOutputter(LockPolicy lockPolicyType=EP_LOCK_POLICY);
+
+		/*!
+		Default Copy Constructor
+
+		Initializes the BaseClient
+		@param[in] b the second object
+		*/
+		BaseOutputter(const BaseOutputter& b);
 		/*!
 		Default Destructor
 		*/
@@ -119,17 +126,8 @@ namespace epl
 		std::vector<OutputNode*> m_list;
 		/// Lock
 		BaseLock* m_nodeListLock;
-
-	private:
-		/*!
-		Default Copy Constructor
-
-		Initializes the BaseClient
-		**Should not call this
-		@param[in] b the second object
-		*/
-		BaseOutputter(const BaseOutputter& b){EP_ASSERT(0);}
-
+		/// Lock Policy
+		LockPolicy m_lockPolicy;
 	};
 }
 #endif //__EP_OUTPUTTER_H__

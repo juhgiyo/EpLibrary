@@ -79,10 +79,11 @@ ProfileManager::Profiler::~Profiler()
 
 
 
-ProfileManager::ProfileManager():BaseOutputter()
+ProfileManager::ProfileManager(LockPolicy lockPolicyType):BaseOutputter(lockPolicyType)
 {
-
 }
+ProfileManager::ProfileManager(const ProfileManager& b):BaseOutputter(b)
+{}
 
 ProfileManager::~ProfileManager()
 {

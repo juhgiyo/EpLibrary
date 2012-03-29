@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace epl;
 
-Packet::Packet(char *packet, unsigned int byteSize, bool shouldAllocate):SmartObject()
+Packet::Packet(char *packet, unsigned int byteSize, bool shouldAllocate, LockPolicy lockPolicyType):SmartObject(lockPolicyType)
 {
 	m_packet=NULL;
 	m_packetSize=0;
@@ -42,14 +42,25 @@ Packet::Packet(char *packet, unsigned int byteSize, bool shouldAllocate):SmartOb
 		m_packet=packet;
 		m_packetSize=byteSize;
 	}
-#ifdef EP_MULTIPROCESS
-	m_lock=EP_NEW Mutex();
-#else //EP_MULTIPROCESS
-	m_lock=EP_NEW CriticalSectionEx();
-#endif //EP_MULTIPROCESS
+	m_lockPolicy=lockPolicyType;
+	switch(lockPolicyType)
+	{
+	case LOCK_POLICY_CRITICALSECTION:
+		m_lock=EP_NEW CriticalSectionEx();
+		break;
+	case LOCK_POLICY_MUTEX:
+		m_lock=EP_NEW Mutex();
+		break;
+	case LOCK_POLICY_NONE:
+		m_lock=EP_NEW NoLock();
+		break;
+	default:
+		m_lock=NULL;
+		break;
+	}
 }
 
-Packet::Packet(const Packet& b):SmartObject()
+Packet::Packet(const Packet& b):SmartObject(b)
 {
 	m_packet=NULL;
 	if(b.m_isAllocated)
@@ -67,11 +78,22 @@ Packet::Packet(const Packet& b):SmartObject()
 		m_packetSize=b.m_packetSize;
 	}
 	m_isAllocated=b.m_isAllocated;
-#ifdef EP_MULTIPROCESS
-	m_lock=EP_NEW Mutex();
-#else //EP_MULTIPROCESS
-	m_lock=EP_NEW CriticalSectionEx();
-#endif //EP_MULTIPROCESS
+	m_lockPolicy=b.m_lockPolicy;
+	switch(m_lockPolicy)
+	{
+	case LOCK_POLICY_CRITICALSECTION:
+		m_lock=EP_NEW CriticalSectionEx();
+		break;
+	case LOCK_POLICY_MUTEX:
+		m_lock=EP_NEW Mutex();
+		break;
+	case LOCK_POLICY_NONE:
+		m_lock=EP_NEW NoLock();
+		break;
+	default:
+		m_lock=NULL;
+		break;
+	}
 }
 Packet & Packet::operator=(const Packet&b)
 {
@@ -99,6 +121,7 @@ Packet & Packet::operator=(const Packet&b)
 			m_packetSize=b.m_packetSize;
 		}
 		m_isAllocated=b.m_isAllocated;
+		SmartObject::operator =(b);
 	}
 	return *this;
 }

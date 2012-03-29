@@ -48,8 +48,18 @@ namespace epl
 
 		Initializes the thread class
 		@param[in] policy the life policy of this worker thread.
+		@param[in] lockPolicyType The lock policy
 		*/
-		WorkerThreadSingle(const ThreadLifePolicy policy):BaseWorkerThread(policy)
+		WorkerThreadSingle(const ThreadLifePolicy policy,LockPolicy lockPolicyType=EP_LOCK_POLICY):BaseWorkerThread(policy,lockPolicyType)
+		{}
+
+		/*!
+		Default Copy Constructor
+
+		Initializes the Thread class
+		@param[in] b the second object
+		*/
+		WorkerThreadSingle(const WorkerThreadSingle & b):BaseWorkerThread(b)
 		{}
 		
 		/*!

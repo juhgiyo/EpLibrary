@@ -45,15 +45,16 @@ namespace epl
 		Default Constructor
 
 		Initializes the schedule queue
+		@param[in] lockPolicyType The lock policy
 		*/
-		JobScheduleQueue();
+		JobScheduleQueue(LockPolicy lockPolicyType=EP_LOCK_POLICY);
 		/*!
 		Default Copy Constructor
 
 		Initializes the Semaphore
 		@param[in] b the second object
 		*/
-		JobScheduleQueue(const JobScheduleQueue& b):ThreadSafePQueue<BaseJob*, BaseJob>((const ThreadSafePQueue<BaseJob*, BaseJob>&)b)
+		JobScheduleQueue(const JobScheduleQueue& b):ThreadSafePQueue<BaseJob*, BaseJob>(b)
 		{
 		}
 		/*!

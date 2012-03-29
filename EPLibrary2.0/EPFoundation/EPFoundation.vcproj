@@ -166,7 +166,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\.\EPFoundation\Headers"
-				PreprocessorDefinitions="EP_FOUNDATION_DLL_EXPORT"
+				PreprocessorDefinitions="EP_FOUNDATION_DLL_EXPORT;EP_USING_MULTI_PROCESS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -242,7 +242,7 @@
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
 				AdditionalIncludeDirectories="..\.\EPFoundation\Headers"
-				PreprocessorDefinitions="EP_FOUNDATION_DLL_EXPORT"
+				PreprocessorDefinitions="EP_FOUNDATION_DLL_EXPORT;EP_USING_MULTI_PROCESS"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
@@ -679,7 +679,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\Headers\epThreadPolicy.h"
+					RelativePath=".\Headers\epThreadSafeClass.h"
 					>
 				</File>
 				<Filter

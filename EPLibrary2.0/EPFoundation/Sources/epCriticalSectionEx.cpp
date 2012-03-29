@@ -25,6 +25,11 @@ CriticalSectionEx::CriticalSectionEx() :BaseLock()
 	InitializeCriticalSection(&m_criticalSection);
 }
 
+CriticalSectionEx::CriticalSectionEx(const CriticalSectionEx& b):BaseLock()
+{
+	InitializeCriticalSection(&m_criticalSection);
+}
+
 CriticalSectionEx::~CriticalSectionEx()
 {
 	DeleteCriticalSection(&m_criticalSection);

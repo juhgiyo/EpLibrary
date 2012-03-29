@@ -30,11 +30,9 @@ An Interface for Stream Class.
 #ifndef __EP_STREAM_H__
 #define __EP_STREAM_H__
 #include "epLib.h"
-#ifdef EP_MULTIPROCESS
-#include "epMutex.h"
-#else //EP_MULTIPROCESS
 #include "epCriticalSectionEx.h"
-#endif //EP_MULTIPROCESS
+#include "epMutex.h"
+#include "epNoLock.h"
 
 namespace epl
 {
@@ -60,8 +58,9 @@ namespace epl
 		Default Constructor
 
 		Initializes the Stream
+		@param[in] lockPolicyType The lock policy
 		*/
-		Stream();
+		Stream(LockPolicy lockPolicyType=EP_LOCK_POLICY);
 		
 		/*!
 		Default Copy Constructor
@@ -349,6 +348,8 @@ namespace epl
 		unsigned int m_offset;
 		/// The Stream Lock
 		BaseLock *m_streamLock;
+		/// Lock Policy
+		LockPolicy m_lockPolicy;
 		
 	};
 }

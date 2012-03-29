@@ -46,8 +46,9 @@ namespace epl
 
 		Initializes the File Stream
 		@param[in] fileName The File Name to load or write the stream
+		@param[in] lockPolicyType The lock policy
 		*/
-		FileStream(TCHAR *fileName=NULL);
+		FileStream(TCHAR *fileName=NULL,LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Copy Constructor

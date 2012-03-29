@@ -74,17 +74,6 @@ namespace epl
 		};
 
 		/*!
-		Default Copy Constructor
-
-		Initializes the Semaphore
-		@param[in] b the second object
-		*/
-		BaseJob(const BaseJob& b):SmartObject()
-		{
-			m_status=b.m_status;
-			m_priority=m_priority;
-		}
-		/*!
 		Default Destructor
 		*/
 		virtual ~BaseJob();
@@ -100,6 +89,7 @@ namespace epl
 			{
 				m_status=b.m_status;
 				m_priority=m_priority;
+				SmartObject::operator =(b);
 			}
 			return *this;
 		}
@@ -126,8 +116,23 @@ namespace epl
 	protected:
 		/*!
 		Default Constructor
+		@param[in] priority the priority of the job
+		@param[in] lockPolicyType The lock policy
 		*/
-		BaseJob(Priority priority=PRIORITY_NORMAL);
+		BaseJob(Priority priority=PRIORITY_NORMAL,LockPolicy lockPolicyType=EP_LOCK_POLICY);
+
+		
+		/*!
+		Default Copy Constructor
+
+		Initializes the Semaphore
+		@param[in] b the second object
+		*/
+		BaseJob(const BaseJob& b):SmartObject(b)
+		{
+			m_status=b.m_status;
+			m_priority=m_priority;
+		}
 
 		/*!
 		Handles when Job Status Changed

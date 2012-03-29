@@ -61,11 +61,11 @@ void SimpleLogManager::SimpleLogNode::Write(EpFile* const file)
 }
 
 
-SimpleLogManager::SimpleLogManager()
+SimpleLogManager::SimpleLogManager(LockPolicy lockPolicyType):BaseOutputter(lockPolicyType)
 {
-
 }
-
+SimpleLogManager::SimpleLogManager(const SimpleLogManager& b):BaseOutputter(b)
+{}
 SimpleLogManager::~SimpleLogManager()
 {	
 	EpFile *file=NULL;

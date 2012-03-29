@@ -45,11 +45,9 @@ An Interface for Base Server.
 #include "epSystem.h"
 #include "epMemory.h"
 #include "epBaseServerWorker.h"
-#ifdef EP_MULTIPROCESS
-#include "epMutex.h"
-#else //EP_MULTIPROCESS
 #include "epCriticalSectionEx.h"
-#endif //EP_MULTIPROCESS
+#include "epMutex.h"
+#include "epNoLock.h"
 
 // Need to link with Ws2_32.lib
 #pragma comment (lib, "Ws2_32.lib")
@@ -93,9 +91,18 @@ namespace epl{
 		Default Constructor
 
 		Initializes the Server
+		@param[in] port the port string
+		@param[in] lockPolicyType The lock policy
 		*/
-		BaseServer(CString port=_T(DEFAULT_PORT));
+		BaseServer(CString port=_T(DEFAULT_PORT), LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
+		/*!
+		Default Copy Constructor
+
+		Initializes the BaseServer
+		@param[in] b the second object
+		*/
+		BaseServer(const BaseServer& b);
 		/*!
 		Default Destructor
 
@@ -118,7 +125,7 @@ namespace epl{
 		Get Client List
 		@return the reference to the list of the client
 		*/
-		vector<BaseServerWorker*> GetClientList();
+		vector<BaseServerWorker*> GetClientList() const;
 		
 		/*!
 		Set the port for the server.
@@ -132,7 +139,7 @@ namespace epl{
 		Get the port number of server
 		@return the port number in string
 		*/
-		CString GetPort();
+		CString GetPort() const;
 
 		/*!
 		Start the server
@@ -147,7 +154,7 @@ namespace epl{
 		Check if the server is started
 		@return true if the server is started otherwise false
 		*/
-		bool IsServerStarted();
+		bool IsServerStarted() const;
 
 		/*!
 		Terminate all clients' socket connected.
@@ -155,15 +162,6 @@ namespace epl{
 		void ShutdownAllClient();
 
 	private:
-		/*!
-		Default Copy Constructor
-
-		Initializes the BaseServer
-		**Should not call this
-		@param[in] b the second object
-		*/
-		BaseServer(const BaseServer& b){EP_ASSERT(0);}
-
 		/*!
 		Listening Loop Function
 		@param[in] lpParam self class object
@@ -198,6 +196,8 @@ namespace epl{
 
 		/// general lock 
 		BaseLock *m_lock;
+		/// Lock Policy
+		LockPolicy m_lockPolicy;
 	};
 }
 #endif //__EP_BASE_SERVER_H__

@@ -29,13 +29,11 @@ A Frame Interface for Thread Class.
 */
 #ifndef __EP_THREAD_H__
 #define __EP_THREAD_H__
-
+#include "epLib.h"
 #include <process.h>
-#ifdef EP_MULTIPROCESS
-#include "epMutex.h"
-#else //EP_MULTIPROCESS
 #include "epCriticalSectionEx.h"
-#endif //EP_MULTIPROCESS
+#include "epMutex.h"
+#include "epNoLock.h"
 
 namespace epl
 {
@@ -91,8 +89,17 @@ namespace epl
 		Default Constructor
 
 		Initializes the thread class
+		@param[in] lockPolicyType The lock policy
 		*/
-		Thread();
+		Thread(LockPolicy lockPolicyType=EP_LOCK_POLICY);
+
+		/*!
+		Default Copy Constructor
+
+		Initializes the Thread class
+		@param[in] b the second object
+		*/
+		Thread(const Thread & b);
 
 		
 		/*!
@@ -189,14 +196,6 @@ namespace epl
 
 	private:
 		/*!
-		Default Copy Constructor
-
-		*Cannot be Used.
-		*/
-		Thread(const Thread & b){EP_ASSERT(0);}
-
-
-		/*!
 		Terminate the thread successfully.
 		*/
 		void successTerminate();
@@ -253,6 +252,8 @@ namespace epl
 		ThreadType m_type;
 		/// Lock
 		BaseLock *m_threadLock;
+		/// Thread Lock Policy
+		LockPolicy m_lockPolicy;
 
 
 	};

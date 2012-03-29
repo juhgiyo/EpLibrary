@@ -54,6 +54,14 @@ namespace epl
 		NoLock();
 
 		/*!
+		Default Copy Constructor
+
+		Initializes the CriticalSectionEx
+		@param[in] b the second object
+		*/
+		NoLock(const NoLock& b);
+
+		/*!
 		Default Destructor
 
 		Deletes the lock
@@ -98,15 +106,6 @@ namespace epl
 		virtual void Unlock();
 
 	private:
-		/*!
-		Default Copy Constructor
-
-		Initializes the CriticalSectionEx
-		**Should not call this
-		@param[in] b the second object
-		*/
-		NoLock(const NoLock& b){EP_ASSERT(0);}
-
 
 		/// the actual lock member.
 		CRITICAL_SECTION m_criticalSection;

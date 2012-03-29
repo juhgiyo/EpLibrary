@@ -37,11 +37,9 @@ An Interface for Account Worker.
 #include "epThread.h"
 #include "epSmartObject.h"
 #include "epPacket.h"
-#ifdef EP_MULTIPROCESS
-#include "epMutex.h"
-#else //EP_MULTIPROCESS
 #include "epCriticalSectionEx.h"
-#endif //EP_MULTIPROCESS
+#include "epMutex.h"
+#include "epNoLock.h"
 
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
@@ -69,8 +67,17 @@ namespace epl
 		Default Constructor
 
 		Initializes the Worker
+		@param[in] lockPolicyType The lock policy
 		*/
-		BaseServerWorker();
+		BaseServerWorker(LockPolicy lockPolicyType=EP_LOCK_POLICY);
+
+		/*!
+		Default Copy Constructor
+
+		Initializes the BaseServer
+		@param[in] b the second object
+		*/
+		BaseServerWorker(const BaseServerWorker& b);
 
 		/*!
 		Default Destructor
@@ -90,6 +97,8 @@ namespace epl
 			{
 				LockObj lock(m_sendLock);
 				m_clientSocket=b.m_clientSocket;
+				Thread::operator =(b);
+				SmartObject::operator =(b);
 			}
 			return *this;
 		}
@@ -111,16 +120,6 @@ namespace epl
 		virtual int parsePacket(const Packet &packet)=0;
 
 	private:
-		/*!
-		Default Copy Constructor
-
-		Initializes the BaseServer
-		**Should not call this
-		@param[in] b the second object
-		*/
-		BaseServerWorker(const BaseServerWorker& b){EP_ASSERT(0);}
-
-
 		/*!
 		Receive the packet from the client
 		@param[out] packet the packet received
@@ -145,6 +144,9 @@ namespace epl
 
 		/// send lock
 		BaseLock *m_sendLock;
+
+		/// Lock Policy
+		LockPolicy m_lockPolicy;
 	};
 
 }

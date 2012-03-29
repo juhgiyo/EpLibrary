@@ -32,11 +32,9 @@ An Interface for Thread Safe Queue.
 #include "epLib.h"
 #include <vector>
 #include "epSimpleLogger.h"
-#ifdef EP_MULTIPROCESS
-#include "epMutex.h"
-#else //EP_MULTIPROCESS
 #include "epCriticalSectionEx.h"
-#endif //EP_MULTIPROCESS
+#include "epMutex.h"
+#include "epNoLock.h"
 
 namespace epl
 {
@@ -54,8 +52,9 @@ namespace epl
 		Default Constructor
 
 		Initializes the queue
+		@param[in] lockPolicyType The lock policy
 		*/
-		ThreadSafeQueue();
+		ThreadSafeQueue(LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Copy Constructor
@@ -134,28 +133,53 @@ namespace epl
 
 		/// lock
 		BaseLock *m_queueLock;
+
+		/// Lock Policy
+		LockPolicy m_lockPolicy;
 	};
 
 
 	template <typename FDATA>
-	ThreadSafeQueue<FDATA>::ThreadSafeQueue()
+	ThreadSafeQueue<FDATA>::ThreadSafeQueue(LockPolicy lockPolicyType)
 	{
-#ifdef EP_MULTIPROCESS
-		m_queueLock=EP_NEW Mutex();
-#else //EP_MULTIPROCESS
-		m_queueLock=EP_NEW CriticalSectionEx();
-#endif //EP_MULTIPROCESS
+		m_lockPolicy=lockPolicyType;
+		switch(lockPolicyType)
+		{
+		case LOCK_POLICY_CRITICALSECTION:
+			m_queueLock=EP_NEW CriticalSectionEx();
+			break;
+		case LOCK_POLICY_MUTEX:
+			m_queueLock=EP_NEW Mutex();
+			break;
+		case LOCK_POLICY_NONE:
+			m_queueLock=EP_NEW NoLock();
+			break;
+		default:
+			m_queueLock=NULL;
+			break;
+		}
 	}
 
 	template <typename FDATA>
 	ThreadSafeQueue<FDATA>::ThreadSafeQueue(const ThreadSafeQueue& b)
 	{
 		m_queue=b.m_queue;
-#ifdef EP_MULTIPROCESS
-		m_queueLock=EP_NEW Mutex();
-#else //EP_MULTIPROCESS
-		m_queueLock=EP_NEW CriticalSectionEx();
-#endif //EP_MULTIPROCESS
+		m_lockPolicy=b.m_lockPolicy;
+		switch(m_lockPolicy)
+		{
+		case LOCK_POLICY_CRITICALSECTION:
+			m_queueLock=EP_NEW CriticalSectionEx();
+			break;
+		case LOCK_POLICY_MUTEX:
+			m_queueLock=EP_NEW Mutex();
+			break;
+		case LOCK_POLICY_NONE:
+			m_queueLock=EP_NEW NoLock();
+			break;
+		default:
+			m_queueLock=NULL;
+			break;
+		}
 	}
 
 	template <typename FDATA>
@@ -164,7 +188,8 @@ namespace epl
 		m_queueLock->Lock();
 		m_queue.clear();
 		m_queueLock->Unlock();
-		EP_DELETE m_queueLock;
+		if(m_queueLock)
+			EP_DELETE m_queueLock;
 	}
 
 	template <typename FDATA>

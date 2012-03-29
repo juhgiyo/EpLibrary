@@ -89,8 +89,9 @@ namespace epl
 		
 		/*!
 		Default Constructor
+		@param[in] lockPolicyType The lock policy
 		*/
-		BaseJobProcessor();
+		BaseJobProcessor(LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Copy Constructor
@@ -98,7 +99,7 @@ namespace epl
 		Initializes the Semaphore
 		@param[in] b the second object
 		*/
-		BaseJobProcessor(const BaseJobProcessor& b):SmartObject()
+		BaseJobProcessor(const BaseJobProcessor& b):SmartObject(b)
 		{
 			m_status=b.m_status;
 		}
@@ -113,6 +114,7 @@ namespace epl
 			if(this!=&b)
 			{
 				m_status=b.m_status;
+				SmartObject::operator =(b);
 			}
 			return *this;
 		}

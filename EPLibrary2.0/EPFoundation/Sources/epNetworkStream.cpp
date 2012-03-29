@@ -19,18 +19,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace epl;
 
-NetworkStream::NetworkStream(const NetworkStreamFlushType type) :Stream()
+NetworkStream::NetworkStream(const NetworkStreamFlushType type, LockPolicy lockPolicyType) :Stream(lockPolicyType)
 {
 	m_flushType=type;
 	m_readOffset=0;
 }
 
-NetworkStream::NetworkStream(const NetworkStream& b):Stream()
+NetworkStream::NetworkStream(const NetworkStream& b):Stream(b)
 {
 	m_flushType=b.m_flushType;
 	m_readOffset=b.m_readOffset;
-	m_stream=b.m_stream;
-	m_offset=b.m_offset;
 }
 
 NetworkStream & NetworkStream::operator=(const NetworkStream&b)
@@ -39,8 +37,7 @@ NetworkStream & NetworkStream::operator=(const NetworkStream&b)
 	{
 		m_flushType=b.m_flushType;
 		m_readOffset=b.m_readOffset;
-		m_stream=b.m_stream;
-		m_offset=b.m_offset;
+		Stream::operator =(b);
 	}
 	return *this;
 }

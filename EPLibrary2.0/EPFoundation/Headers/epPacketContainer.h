@@ -36,11 +36,9 @@ Sang Yong Yoon <flyingshiri@gmail.com>
 #define __EP_PACKET_CONTAINER_H__
 
 #include "epLib.h"
-#ifdef EP_MULTIPROCESS
-#include "epMutex.h"
-#else //EP_MULTIPROCESS
 #include "epCriticalSectionEx.h"
-#endif //EP_MULTIPROCESS
+#include "epMutex.h"
+#include "epNoLock.h"
 
 namespace epl
 {
@@ -58,8 +56,9 @@ namespace epl
 		Initializes given size of array of ArrayType addition to the PacketStruct.
 		@param[in] arraySize the size of array addition to PacketStruct
 		@param[in] shouldAllocate flag for the allocation of memory for itself
+		@param[in] lockPolicyType The lock policy
 		*/
-		PacketContainer(unsigned int arraySize=0, bool shouldAllocate=true)
+		PacketContainer(unsigned int arraySize=0, bool shouldAllocate=true, LockPolicy lockPolicyType=EP_LOCK_POLICY)
 		{
 			if(shouldAllocate)
 			{
@@ -73,11 +72,22 @@ namespace epl
 				m_length=arraySize;
 			}
 			m_isAllocated=shouldAllocate;
-#ifdef EP_MULTIPROCESS
-			m_lock=EP_NEW Mutex();
-#else //EP_MULTIPROCESS
-			m_lock=EP_NEW CriticalSectionEx();
-#endif //EP_MULTIPROCESS
+			m_lockPolicy=lockPolicyType;
+			switch(lockPolicyType)
+			{
+			case LOCK_POLICY_CRITICALSECTION:
+				m_lock=EP_NEW CriticalSectionEx();
+				break;
+			case LOCK_POLICY_MUTEX:
+				m_lock=EP_NEW Mutex();
+				break;
+			case LOCK_POLICY_NONE:
+				m_lock=EP_NEW NoLock();
+				break;
+			default:
+				m_lock=NULL;
+				break;
+			}
 		}
 
 		/*!
@@ -87,8 +97,9 @@ namespace epl
 		@param[in] packet the packet to copy from
 		@param[in] arraySize the size of array addition to PacketStruct
 		@param[in] shouldAllocate flag for the allocation of memory for itself
+		@param[in] lockPolicyType The lock policy
 		*/
-		PacketContainer(const PacketStruct & packet, unsigned int arraySize=0, bool shouldAllocate=true)
+		PacketContainer(const PacketStruct & packet, unsigned int arraySize=0, bool shouldAllocate=true, LockPolicy lockPolicyType=EP_LOCK_POLICY)
 		{
 			if(shouldAllocate)
 			{
@@ -103,11 +114,22 @@ namespace epl
 				m_length=arraySize;
 			}
 			m_isAllocated=shouldAllocate;
-#ifdef EP_MULTIPROCESS
-			m_lock=EP_NEW Mutex();
-#else //EP_MULTIPROCESS
-			m_lock=EP_NEW CriticalSectionEx();
-#endif //EP_MULTIPROCESS
+			m_lockPolicy=lockPolicyType;
+			switch(lockPolicyType)
+			{
+			case LOCK_POLICY_CRITICALSECTION:
+				m_lock=EP_NEW CriticalSectionEx();
+				break;
+			case LOCK_POLICY_MUTEX:
+				m_lock=EP_NEW Mutex();
+				break;
+			case LOCK_POLICY_NONE:
+				m_lock=EP_NEW NoLock();
+				break;
+			default:
+				m_lock=NULL;
+				break;
+			}
 		}
 
 		/*!
@@ -117,8 +139,9 @@ namespace epl
 		@param[in] rawData the rawData to copy from
 		@param[in] byteSize the byte size of raw data given.
 		@param[in] shouldAllocate flag for the allocation of memory for itself
+		@param[in] lockPolicyType The lock policy
 		*/
-		PacketContainer(void * rawData, unsigned int byteSize, bool shouldAllocate=true)
+		PacketContainer(void * rawData, unsigned int byteSize, bool shouldAllocate=true, LockPolicy lockPolicyType=EP_LOCK_POLICY)
 		{
 
 
@@ -140,11 +163,22 @@ namespace epl
 				m_packetContainer=(PacketContainerStruct*)rawData;
 				m_length=(byteSize-sizeof(PacketContainerStruct))/sizeof(ArrayType);
 			}
-#ifdef EP_MULTIPROCESS
-			m_lock=EP_NEW Mutex();
-#else //EP_MULTIPROCESS
-			m_lock=EP_NEW CriticalSectionEx();
-#endif //EP_MULTIPROCESS
+			m_lockPolicy=lockPolicyType;
+			switch(lockPolicyType)
+			{
+			case LOCK_POLICY_CRITICALSECTION:
+				m_lock=EP_NEW CriticalSectionEx();
+				break;
+			case LOCK_POLICY_MUTEX:
+				m_lock=EP_NEW Mutex();
+				break;
+			case LOCK_POLICY_NONE:
+				m_lock=EP_NEW NoLock();
+				break;
+			default:
+				m_lock=NULL;
+				break;
+			}
 		}
 
 
@@ -173,11 +207,22 @@ namespace epl
 				m_length=orig.m_length;
 			}
 			m_isAllocated=orig.m_isAllocated;
-#ifdef EP_MULTIPROCESS
-			m_lock=EP_NEW Mutex();
-#else //EP_MULTIPROCESS
-			m_lock=EP_NEW CriticalSectionEx();
-#endif //EP_MULTIPROCESS
+			m_lockPolicy=orig.m_lockPolicy;
+			switch(m_lockPolicy)
+			{
+			case LOCK_POLICY_CRITICALSECTION:
+				m_lock=EP_NEW CriticalSectionEx();
+				break;
+			case LOCK_POLICY_MUTEX:
+				m_lock=EP_NEW Mutex();
+				break;
+			case LOCK_POLICY_NONE:
+				m_lock=EP_NEW NoLock();
+				break;
+			default:
+				m_lock=NULL;
+				break;
+			}
 		}
 
 		/*!
@@ -461,6 +506,8 @@ namespace epl
 		bool m_isAllocated;
 		/// lock
 		BaseLock *m_lock;
+		/// Lock Policy
+		LockPolicy m_lockPolicy;
 	};
 }
 #endif //__EP_PACKET_CONTAINER_H__

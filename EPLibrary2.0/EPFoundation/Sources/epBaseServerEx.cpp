@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace epl;
 
-BaseServerEx::BaseServerEx(CString port)
+BaseServerEx::BaseServerEx(CString port, LockPolicy lockPolicyType)
 {
 	m_port=NULL;
 	SetPort(port);
@@ -28,18 +28,55 @@ BaseServerEx::BaseServerEx(CString port)
 	m_listenSocket=NULL;
 	m_result=0;
 	m_isServerStarted=false;
-#ifdef EP_MULTIPROCESS
-	m_lock=EP_NEW Mutex();
-#else //EP_MULTIPROCESS
-	m_lock=EP_NEW CriticalSectionEx();
-#endif //EP_MULTIPROCESS
+	switch(lockPolicyType)
+	{
+	case LOCK_POLICY_CRITICALSECTION:
+		m_lock=EP_NEW CriticalSectionEx();
+		break;
+	case LOCK_POLICY_MUTEX:
+		m_lock=EP_NEW Mutex();
+		break;
+	case LOCK_POLICY_NONE:
+		m_lock=EP_NEW NoLock();
+		break;
+	default:
+		m_lock=NULL;
+		break;
+	}
+}
+
+BaseServerEx::BaseServerEx(const BaseServerEx& b)
+{
+	m_port=NULL;
+	m_serverThreadHandle=0;
+	m_listenSocket=NULL;
+	m_result=0;
+	m_isServerStarted=false;
+	m_lockPolicy=b.m_lockPolicy;
+	switch(m_lockPolicy)
+	{
+	case LOCK_POLICY_CRITICALSECTION:
+		m_lock=EP_NEW CriticalSectionEx();
+		break;
+	case LOCK_POLICY_MUTEX:
+		m_lock=EP_NEW Mutex();
+		break;
+	case LOCK_POLICY_NONE:
+		m_lock=EP_NEW NoLock();
+		break;
+	default:
+		m_lock=NULL;
+		break;
+	}
+	SetPort(b.GetPort());
 }
 BaseServerEx::~BaseServerEx()
 {
 	if(m_port)
 		EP_DELETE[] m_port;
 	StopServer();
-	EP_DELETE m_lock;
+	if(m_lock)
+		EP_DELETE m_lock;
 }
 
 bool BaseServerEx::SetPort(CString port)
@@ -62,7 +99,7 @@ bool BaseServerEx::SetPort(CString port)
 	return true;
 }
 
-CString BaseServerEx::GetPort()
+CString BaseServerEx::GetPort() const
 {
 	if(!m_port)
 		return _T("");
@@ -73,7 +110,7 @@ CString BaseServerEx::GetPort()
 	return retString;
 }
 
-vector<BaseServerWorkerEx*> BaseServerEx::GetClientList()
+vector<BaseServerWorkerEx*> BaseServerEx::GetClientList() const
 {
 	return m_clientList;
 }
@@ -207,7 +244,7 @@ void BaseServerEx::ShutdownAllClient()
 
 }
 
-bool BaseServerEx::IsServerStarted()
+bool BaseServerEx::IsServerStarted() const
 {
 	return m_isServerStarted;
 }

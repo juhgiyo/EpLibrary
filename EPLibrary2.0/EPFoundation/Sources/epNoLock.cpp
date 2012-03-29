@@ -23,6 +23,8 @@ using namespace epl;
 NoLock::NoLock() :BaseLock()
 {
 }
+NoLock::NoLock(const NoLock& b):BaseLock()
+{}
 
 NoLock::~NoLock()
 {

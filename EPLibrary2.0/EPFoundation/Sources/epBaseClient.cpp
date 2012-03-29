@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epBaseClient.h"
 using namespace epl;
 
-BaseClient::BaseClient(CString hostName, CString port)
+BaseClient::BaseClient(CString hostName, CString port,LockPolicy lockPolicyType)
 {
 	m_port=NULL;
 	m_hostName=NULL;
@@ -29,13 +29,58 @@ BaseClient::BaseClient(CString hostName, CString port)
 	m_result=0;
 	m_ptr=0;
 	m_isConnected=false;
-#ifdef EP_MULTIPROCESS
-	m_sendLock=EP_NEW Mutex();
-	m_generalLock=EP_NEW Mutex();
-#else //EP_MULTIPROCESS
-	m_sendLock=EP_NEW CriticalSectionEx();
-	m_generalLock=EP_NEW CriticalSectionEx();
-#endif //EP_MULTIPROCESS
+	m_lockPolicy=lockPolicyType;
+	switch(lockPolicyType)
+	{
+	case LOCK_POLICY_CRITICALSECTION:
+		m_sendLock=EP_NEW CriticalSectionEx();
+		m_generalLock=EP_NEW CriticalSectionEx();
+		break;
+	case LOCK_POLICY_MUTEX:
+		m_sendLock=EP_NEW Mutex();
+		m_generalLock=EP_NEW Mutex();
+		break;
+	case LOCK_POLICY_NONE:
+		m_sendLock=EP_NEW NoLock();
+		m_generalLock=EP_NEW NoLock();
+		break;
+	default:
+		m_sendLock=NULL;
+		m_generalLock=NULL;
+		break;
+	}
+}
+
+BaseClient::BaseClient(const BaseClient& b)
+{
+	m_port=NULL;
+	m_hostName=NULL;
+	m_connectSocket=NULL;
+	m_result=0;
+	m_ptr=0;
+	m_isConnected=false;
+	m_lockPolicy=b.m_lockPolicy;
+	switch(m_lockPolicy)
+	{
+	case LOCK_POLICY_CRITICALSECTION:
+		m_sendLock=EP_NEW CriticalSectionEx();
+		m_generalLock=EP_NEW CriticalSectionEx();
+		break;
+	case LOCK_POLICY_MUTEX:
+		m_sendLock=EP_NEW Mutex();
+		m_generalLock=EP_NEW Mutex();
+		break;
+	case LOCK_POLICY_NONE:
+		m_sendLock=EP_NEW NoLock();
+		m_generalLock=EP_NEW NoLock();
+		break;
+	default:
+		m_sendLock=NULL;
+		m_generalLock=NULL;
+		break;
+	}
+	SetHostName(b.GetHostName());
+	SetPort(b.GetPort());
 }
 BaseClient::~BaseClient()
 {
@@ -44,8 +89,10 @@ BaseClient::~BaseClient()
 	if(m_hostName)
 		EP_DELETE[] m_hostName;
 	Disconnect();
-	EP_DELETE m_sendLock;
-	EP_DELETE m_generalLock;
+	if(m_sendLock)
+		EP_DELETE m_sendLock;
+	if(m_generalLock)
+		EP_DELETE m_generalLock;
 }
 
 bool BaseClient::SetHostName(CString hostName)
@@ -88,7 +135,7 @@ bool BaseClient::SetPort(CString port)
 	return true;
 
 }
-CString BaseClient::GetHostName()
+CString BaseClient::GetHostName() const
 {
 	if(!m_hostName)
 		return _T("");
@@ -98,7 +145,7 @@ CString BaseClient::GetHostName()
 	retString=hostName;
 	return retString;
 }
-CString BaseClient::GetPort()
+CString BaseClient::GetPort() const
 {
 	if(!m_port)
 		return _T("");
@@ -273,7 +320,7 @@ DWORD BaseClient::ClientThread( LPVOID lpParam )
 	return 0; 
 }
 
-bool BaseClient::IsConnected()
+bool BaseClient::IsConnected() const
 {
 	return m_isConnected;
 }

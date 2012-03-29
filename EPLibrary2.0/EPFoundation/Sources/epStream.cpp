@@ -19,25 +19,47 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epSimpleLogger.h"
 using namespace epl;
 
-Stream::Stream()
+Stream::Stream(LockPolicy lockPolicyType)
 {
 	m_offset=0;
-#ifdef EP_MULTIPROCESS
-	m_streamLock=EP_NEW Mutex();
-#else //EP_MULTIPROCESS
-	m_streamLock=EP_NEW CriticalSectionEx();
-#endif //EP_MULTIPROCESS
+	m_lockPolicy=lockPolicyType;
+	switch(lockPolicyType)
+	{
+	case LOCK_POLICY_CRITICALSECTION:
+		m_streamLock=EP_NEW CriticalSectionEx();
+		break;
+	case LOCK_POLICY_MUTEX:
+		m_streamLock=EP_NEW Mutex();
+		break;
+	case LOCK_POLICY_NONE:
+		m_streamLock=EP_NEW NoLock();
+		break;
+	default:
+		m_streamLock=NULL;
+		break;
+	}
 }
 
 Stream::Stream(const Stream& b)
 {
 	m_stream=b.m_stream;
 	m_offset=b.m_offset;
-#ifdef EP_MULTIPROCESS
-	m_streamLock=EP_NEW Mutex();
-#else //EP_MULTIPROCESS
-	m_streamLock=EP_NEW CriticalSectionEx();
-#endif //EP_MULTIPROCESS
+	m_lockPolicy=b.m_lockPolicy;
+	switch(m_lockPolicy)
+	{
+	case LOCK_POLICY_CRITICALSECTION:
+		m_streamLock=EP_NEW CriticalSectionEx();
+		break;
+	case LOCK_POLICY_MUTEX:
+		m_streamLock=EP_NEW Mutex();
+		break;
+	case LOCK_POLICY_NONE:
+		m_streamLock=EP_NEW NoLock();
+		break;
+	default:
+		m_streamLock=NULL;
+		break;
+	}
 }
 
 Stream & Stream::operator=(const Stream&b)

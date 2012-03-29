@@ -34,11 +34,9 @@ An Interface for Packet.
 #include "epSystem.h"
 #include "epMemory.h"
 #include "epSmartObject.h"
-#ifdef EP_MULTIPROCESS
-#include "epMutex.h"
-#else //EP_MULTIPROCESS
 #include "epCriticalSectionEx.h"
-#endif //EP_MULTIPROCESS
+#include "epMutex.h"
+#include "epNoLock.h"
 
 namespace epl{
 
@@ -56,8 +54,9 @@ namespace epl{
 		@param[in] packet packet to copy from
 		@param[in] byteSize the byte size of the packet given
 		@param[in] shouldAllocate flag for the allocation of memory for itself
+		@param[in] lockPolicyType The lock policy
 		*/
-		Packet(char *packet=NULL, unsigned int byteSize=0, bool shouldAllocate=true);
+		Packet(char *packet=NULL, unsigned int byteSize=0, bool shouldAllocate=true, LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Copy Constructor
@@ -120,6 +119,8 @@ namespace epl{
 		bool m_isAllocated;
 		/// lock
 		BaseLock *m_lock;
+		/// Lock Policy
+		LockPolicy m_lockPolicy;
 	};
 }
 

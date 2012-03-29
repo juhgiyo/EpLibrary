@@ -47,8 +47,9 @@ namespace epl
 		Default Constructor
 
 		Initializes the priority queue
+		@param[in] lockPolicyType The lock policy
 		*/
-		ThreadSafePQueue();
+		ThreadSafePQueue(LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Copy Constructor
@@ -83,11 +84,11 @@ namespace epl
 	};
 
 	template <typename FDATA, typename Compare>
-	ThreadSafePQueue<FDATA,Compare>::ThreadSafePQueue() :ThreadSafeQueue<FDATA>()
+	ThreadSafePQueue<FDATA,Compare>::ThreadSafePQueue(LockPolicy lockPolicyType) :ThreadSafeQueue<FDATA>(lockPolicyType)
 	{
 	}
 	template <typename FDATA, typename Compare>
-	ThreadSafePQueue<FDATA,Compare>::ThreadSafePQueue(const ThreadSafePQueue& b):ThreadSafeQueue<FDATA>((const ThreadSafeQueue&)b)
+	ThreadSafePQueue<FDATA,Compare>::ThreadSafePQueue(const ThreadSafePQueue& b):ThreadSafeQueue<FDATA>(b)
 	{
 	}
 	template <typename FDATA, typename Compare>
@@ -100,7 +101,7 @@ namespace epl
 	{
 		if(this != &b)
 		{
-			m_queue=b.m_queue;
+			ThreadSafeQueue::operator =(b);
 		}
 		return *this;
 	}

@@ -22,22 +22,24 @@ using namespace epl;
 
 Mutex::Mutex(TCHAR *mutexName, LPSECURITY_ATTRIBUTES lpsaAttributes) :BaseLock()
 {
-#if TEST_NEW
+	m_lpsaAttributes=lpsaAttributes;
 	m_mutex=EP_NEW CMutex(FALSE,mutexName,lpsaAttributes);
 	m_singleLock=EP_NEW CSingleLock(m_mutex,FALSE);
-#else //TEST_NEW
-	InitializeCriticalSection(&m_criticalSection);
-#endif //TEST_NEW
+}
+
+Mutex::Mutex(const Mutex& b)
+{
+	m_lpsaAttributes=b.m_lpsaAttributes;
+	m_mutex=EP_NEW CMutex(FALSE,NULL,m_lpsaAttributes);
+	m_singleLock=EP_NEW CSingleLock(m_mutex,FALSE);
 }
 
 Mutex::~Mutex()
 {
-#if TEST_NEW
-	EP_DELETE m_singleLock;
-	EP_DELETE m_mutex;
-#else //TEST_NEW
-	DeleteCriticalSection(&m_criticalSection);
-#endif //TEST_NEW
+	if(m_singleLock)
+		EP_DELETE m_singleLock;
+	if(m_mutex)	
+		EP_DELETE m_mutex;
 }
 
 void Mutex::Lock()
@@ -53,41 +55,13 @@ void Mutex::Lock()
 	}
 #endif //_DEBUG
 
-#if TEST_NEW
 	m_singleLock->Lock();
-#else //TEST_NEW
-	EnterCriticalSection (&m_criticalSection);	
-	while (m_lockCnt)
-	{
-		LeaveCriticalSection(&m_criticalSection);
-		Sleep(MUTEX_WAIT_TIME_IN_MILLI_SEC);
-		EnterCriticalSection(&m_criticalSection);
-	}
-	m_lockCnt = 1;
-	LeaveCriticalSection(&m_criticalSection);
-#endif //TEST_NEW
 }
 
 long Mutex::TryLock()
 {
 	long ret=0;
-#if TEST_NEW
 	ret=(long)m_singleLock->Lock(0);
-#else //TEST_NEW
-	EnterCriticalSection (&m_criticalSection);	
-	if (m_lockCnt)
-	{
-		LeaveCriticalSection(&m_criticalSection);
-		ret=0;
-	}
-	else
-	{
-		m_lockCnt = 1;
-		LeaveCriticalSection(&m_criticalSection);
-		ret=1;
-	}
-#endif //TEST_NEW
-
 #if _DEBUG
 	if(ret)
 	{
@@ -108,31 +82,8 @@ long Mutex::TryLock()
 long Mutex::TryLockFor(const unsigned int dwMilliSecond)
 {
 	long ret=0;
-#if TEST_NEW
+
 	ret=(long)m_singleLock->Lock(dwMilliSecond);
-#else //TEST_NEW
-	
-	if(ret=TryLock())
-	{
-	}
-	else
-	{
-		unsigned int startTime,timeUsed;
-		unsigned int waitTime=dwMilliSecond;
-		startTime=System::GetTickCount();
-		while(waitTime>0)
-		{
-			if(ret=TryLock())
-			{
-				break;
-			}		
-			Sleep(MUTEX_WAIT_TIME_IN_MILLI_SEC);
-			timeUsed=System::GetTickCount()-startTime;
-			waitTime=waitTime-(unsigned int)timeUsed;
-			startTime=System::GetTickCount();
-		}
-	}
-#endif //TEST_NEW
 
 #if _DEBUG
 	if(ret)
@@ -165,11 +116,5 @@ void Mutex::Unlock()
 	}
 #endif //_DEBUG
 
-#if TEST_NEW
 	m_singleLock->Unlock();
-#else //TEST_NEW
-	EnterCriticalSection(&m_criticalSection);
-	m_lockCnt= 0;
-	LeaveCriticalSection(&m_criticalSection);	
-#endif //TEST_NEW
 }

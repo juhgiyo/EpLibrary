@@ -41,14 +41,46 @@ void SmartObject::Release()
 		EP_WASSERT(0, _T("Reference Count is negative Value!"));
 }
 
-SmartObject::SmartObject()
+SmartObject::SmartObject(LockPolicy lockPolicyType)
 {
 	m_refCount=1;
-#ifdef EP_MULTIPROCESS
-	m_refCounterLock=EP_NEW Mutex();
-#else //EP_MULTIPROCESS
-	m_refCounterLock=EP_NEW CriticalSectionEx();
-#endif //EP_MULTIPROCESS
+	m_lockPolicy=lockPolicyType;
+	switch(lockPolicyType)
+	{
+	case LOCK_POLICY_CRITICALSECTION:
+		m_refCounterLock=EP_NEW CriticalSectionEx();
+		break;
+	case LOCK_POLICY_MUTEX:
+		m_refCounterLock=EP_NEW Mutex();
+		break;
+	case LOCK_POLICY_NONE:
+		m_refCounterLock=EP_NEW NoLock();
+		break;
+	default:
+		m_refCounterLock=NULL;
+		break;
+	}
+}
+
+SmartObject::SmartObject(const SmartObject& b)
+{
+	m_refCount=1;
+	m_lockPolicy=b.m_lockPolicy;
+	switch(m_lockPolicy)
+	{
+	case LOCK_POLICY_CRITICALSECTION:
+		m_refCounterLock=EP_NEW CriticalSectionEx();
+		break;
+	case LOCK_POLICY_MUTEX:
+		m_refCounterLock=EP_NEW Mutex();
+		break;
+	case LOCK_POLICY_NONE:
+		m_refCounterLock=EP_NEW NoLock();
+		break;
+	default:
+		m_refCounterLock=NULL;
+		break;
+	}
 }
 
 #endif //defined(_DEBUG)

@@ -67,6 +67,14 @@ namespace epl
 		Mutex(TCHAR *mutexName=NULL, LPSECURITY_ATTRIBUTES lpsaAttributes = NULL);
 
 		/*!
+		Default Copy Constructor
+
+		Initializes the Mutex
+		@param[in] b the second object
+		*/
+		Mutex(const Mutex& b);
+
+		/*!
 		Default Destructor
 
 		Deletes the lock
@@ -115,27 +123,13 @@ namespace epl
 		virtual void Unlock();
 
 	private:
-		/*!
-		Default Copy Constructor
 
-		Initializes the Mutex
-		**Should not call this
-		@param[in] b the second object
-		*/
-		Mutex(const Mutex& b){EP_ASSERT(0);}
-
-#if TEST_NEW
 		/// Mutex
 		CMutex *m_mutex;
 		/// Lock Object
 		CSingleLock *m_singleLock;
-#else //TEST_NEW
-		/// lock count
-		int m_lockCnt;
-
-		/// the actual lock member.
-		CRITICAL_SECTION m_criticalSection;
-#endif //TEST_NEW
+		/// Creation Security Info
+		LPSECURITY_ATTRIBUTES m_lpsaAttributes;
 
 #if _DEBUG
 		std::vector<int> m_threadList;

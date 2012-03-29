@@ -22,10 +22,18 @@ using namespace epl;
 
 Semaphore::Semaphore(unsigned int count,TCHAR *semName, LPSECURITY_ATTRIBUTES lpsaAttributes) :BaseLock()
 {
+	m_lpsaAttributes=lpsaAttributes;
+	m_count=count;
 	m_sem=EP_NEW CSemaphore(count,count,semName,lpsaAttributes);
 	m_singleLock=EP_NEW CSingleLock(m_sem,FALSE);
 }
-
+Semaphore::Semaphore(const Semaphore& b) :BaseLock()
+{
+	m_lpsaAttributes=b.m_lpsaAttributes;
+	m_count=b.m_count;
+	m_sem=EP_NEW CSemaphore(m_count,m_count,NULL,m_lpsaAttributes);
+	m_singleLock=EP_NEW CSingleLock(m_sem,FALSE);
+}
 Semaphore::~Semaphore()
 {
 	EP_DELETE m_singleLock;

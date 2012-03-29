@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace epl;
 
-BaseJob::BaseJob(Priority priority):SmartObject(){
+BaseJob::BaseJob(Priority priority,LockPolicy lockPolicyType):SmartObject(lockPolicyType){
 	//SingletonHolder<JobPool>::Instance().insert(this);	
 	m_status=JOB_STATUS_NONE;
 	m_priority=priority;

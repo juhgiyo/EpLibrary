@@ -27,15 +27,44 @@ BaseOutputter::OutputNode::~OutputNode()
 {}
 
 
-BaseOutputter::BaseOutputter()
+BaseOutputter::BaseOutputter(LockPolicy lockPolicyType)
 {
-#ifdef EP_MULTIPROCESS
-	m_nodeListLock=EP_NEW Mutex();
-#else //EP_MULTIPROCESS
-	m_nodeListLock=EP_NEW CriticalSectionEx();
-#endif //EP_MULTIPROCESS
+	m_lockPolicy=lockPolicyType;
+	switch(lockPolicyType)
+	{
+	case LOCK_POLICY_CRITICALSECTION:
+		m_nodeListLock=EP_NEW CriticalSectionEx();
+		break;
+	case LOCK_POLICY_MUTEX:
+		m_nodeListLock=EP_NEW Mutex();
+		break;
+	case LOCK_POLICY_NONE:
+		m_nodeListLock=EP_NEW NoLock();
+		break;
+	default:
+		m_nodeListLock=NULL;
+		break;
+	}
 }
-
+BaseOutputter::BaseOutputter(const BaseOutputter& b)
+{
+	m_lockPolicy=b.m_lockPolicy;
+	switch(m_lockPolicy)
+	{
+	case LOCK_POLICY_CRITICALSECTION:
+		m_nodeListLock=EP_NEW CriticalSectionEx();
+		break;
+	case LOCK_POLICY_MUTEX:
+		m_nodeListLock=EP_NEW Mutex();
+		break;
+	case LOCK_POLICY_NONE:
+		m_nodeListLock=EP_NEW NoLock();
+		break;
+	default:
+		m_nodeListLock=NULL;
+		break;
+	}
+}
 BaseOutputter::~BaseOutputter()
 {
 	Clear();
