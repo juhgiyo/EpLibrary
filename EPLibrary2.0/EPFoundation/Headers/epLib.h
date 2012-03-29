@@ -32,20 +32,24 @@ An Interface for EP Library.
 #define __EP_LIB_H__
 
 #ifdef EP_FOUNDATION_DLL_EXPORT
-#define EP_FOUNDATION __declspec(dllexport)
-#else   //EP_FOUNDATION_DLL_EXPORT
-#ifdef EP_FOUNDATION_DLL_EXPORT
-#define EP_FOUNDATION __declspec(dllimport)
-#else   //EP_FOUNDATION_DLL_EXPORT
-#define EP_FOUNDATION
-#endif  //EP_FOUNDATION_DLL_EXPORT
-#endif  //EP_FOUNDATION_DLL_EXPORT
 
-#ifdef EP_USING_MULTI_PROCESS
+#define EP_FOUNDATION __declspec(dllexport)
 #define EP_LOCK_POLICY LOCK_POLICY_MUTEX
-#else // //EP_USING_MULTI_PROCESS
+
+#else   //EP_FOUNDATION_DLL_EXPORT
+
+#ifdef EP_FOUNDATION_DLL_EXPORT
+
+#define EP_FOUNDATION __declspec(dllimport)
+#define EP_LOCK_POLICY LOCK_POLICY_MUTEX
+
+#else   //EP_FOUNDATION_DLL_EXPORT
+
+#define EP_FOUNDATION
 #define EP_LOCK_POLICY LOCK_POLICY_CRITICALSECTION
-#endif //EP_USING_MULTI_PROCESS
+
+#endif  //EP_FOUNDATION_DLL_EXPORT
+#endif  //EP_FOUNDATION_DLL_EXPORT
 
 namespace epl{
 	#define WIDEN2(x) L ## x

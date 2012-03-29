@@ -8,8 +8,8 @@ It's developed in Visual C++ 2008.
 FEATURES
 
 * Math Framework
-  1. Enhanced Log Operation
-  2. Enhanced SquareRoot Operation
+  1. Enhanced Log Approximation
+  2. Enhanced SquareRoot Approximation
   3. Prime Number Operation
 
 * Sort
