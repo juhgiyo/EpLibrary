@@ -170,7 +170,7 @@ void WinProcessHelper::GetProcessID(LPCTSTR pProcessName, std::vector<DWORD>& re
             pPerfInst = NextInstance( pPerfInst );
         }
     }
-	free(pPerfData);
+	EP_Free(pPerfData);
 	RegCloseKey(HKEY_PERFORMANCE_DATA);
 }
 bool WinProcessHelper::TerminateProcess(DWORD processID)

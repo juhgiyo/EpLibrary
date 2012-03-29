@@ -266,7 +266,7 @@ namespace epl
 	void DynamicArray::deleteArr()
 	{
 		if(m_head)
-			free(m_head);
+			EP_Free(m_head);
 		m_head=NULL;
 		m_actualSize=0;
 		m_numOfElements=0;
