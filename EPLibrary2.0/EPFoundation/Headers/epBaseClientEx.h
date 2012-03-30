@@ -35,11 +35,9 @@ An Interface for Base Client Extension.
 #include "epSystem.h"
 #include "epMemory.h"
 #include "epPacket.h"
-#ifdef EP_MULTIPROCESS
-#include "epMutex.h"
-#else //EP_MULTIPROCESS
 #include "epCriticalSectionEx.h"
-#endif //EP_MULTIPROCESS
+#include "epMutex.h"
+#include "epNoLock.h"
 
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
