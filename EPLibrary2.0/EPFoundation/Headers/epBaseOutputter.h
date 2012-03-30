@@ -54,7 +54,7 @@ namespace epl
 		/*!
 		Print the data to command line.
 		*/
-		virtual void Print();
+		virtual void Print() const;
 
 		/*!
 		Clear all the data.
@@ -96,7 +96,7 @@ namespace epl
 			/*!
 			Print the data in format,
 			*/
-			virtual void Print()=0;
+			virtual void Print() const=0;
 			/*!
 			Write the data to file in format,
 			@param[in] file the file to output the data.

@@ -48,10 +48,10 @@ bool PropertiesFile::SetProperty(CString key, CString val)
 	return false;
 }
 
-bool PropertiesFile::GetProperty(CString key,CString &retVal)
+bool PropertiesFile::GetProperty(CString key,CString &retVal) const
 {
 	key.Append(_T("="));
-	list<pair<CString, CString> >::iterator iter;
+	list<pair<CString, CString> >::const_iterator iter;
 	for(iter=m_propertyList.begin();iter != m_propertyList.end();iter++)
 	{
 		if(iter->first.Compare(key)==0)

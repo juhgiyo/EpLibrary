@@ -106,11 +106,11 @@ namespace epl {
 			return GetBlockSize() < rhs; 
 		}
 
-		unsigned int Size()
+		unsigned int Size() const
 		{
 			return m_fragments.size();
 		}
-		bool IsEmpty()
+		bool IsEmpty() const
 		{
 			return m_fragments.empty();
 		}

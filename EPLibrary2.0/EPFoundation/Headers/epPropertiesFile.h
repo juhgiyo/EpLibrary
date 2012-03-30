@@ -99,7 +99,7 @@ namespace epl{
 		@param[in] retVal the value of the property of given key
 		@return true if found, otherwise false
 		*/
-		bool GetProperty(CString key,CString &retVal);
+		bool GetProperty(CString key,CString &retVal) const;
 
 		/*!
 		Add new property with the given key and value

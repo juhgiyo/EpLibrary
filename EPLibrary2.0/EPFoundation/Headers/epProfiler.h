@@ -166,7 +166,7 @@ namespace epl
 			/*!
 			It prints the data in format,
 			*/
-			virtual void Print();
+			virtual void Print() const;
 
 			/*!
 			Write the data to file in format,

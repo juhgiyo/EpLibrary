@@ -31,7 +31,7 @@ ProfileManager::ProfileNode::ProfileNode() :OutputNode()
 ProfileManager::ProfileNode::~ProfileNode()
 {
 }
-void ProfileManager::ProfileNode::Print()
+void ProfileManager::ProfileNode::Print() const
 {
 	System::Printf(_T("%s::%s %d ms %d ms %d\n"),m_fileName,m_funcName,m_totalTime/m_cnt,m_totalTime,m_cnt);
 }

@@ -189,7 +189,7 @@ namespace epl
 		@param[in] func The function pointer to append
 		@return the delegate with the function pointers from this delegate and given function pointer
 		*/
-		virtual Delegate<RetType,ArgType> operator +(RetType (*func)(ArgType))
+		virtual Delegate<RetType,ArgType> operator +(RetType (*func)(ArgType)) const
 		{
 			Delegate<RetType,ArgType> ret(*this);
 			ret+=func;
@@ -217,7 +217,7 @@ namespace epl
 		@param[in] right The delegate to append
 		@return the delegate with the function pointers from this delegate and given delegate
 		*/
-		virtual Delegate<RetType,ArgType> operator +(const Delegate<RetType,ArgType> &right)
+		virtual Delegate<RetType,ArgType> operator +(const Delegate<RetType,ArgType> &right) const
 		{
 			Delegate<RetType,ArgType> ret(*this);
 			ret+=right;
@@ -251,7 +251,7 @@ namespace epl
 		@param[in] func The function pointer to remove
 		@return the delegate with given function pointer extracted from this delegate
 		*/
-		virtual Delegate<RetType,ArgType> operator -(RetType (*func)(ArgType))
+		virtual Delegate<RetType,ArgType> operator -(RetType (*func)(ArgType)) const
 		{
 			Delegate<RetType,ArgType> ret(*this);
 			ret-=func;
@@ -288,7 +288,7 @@ namespace epl
 		@param[in] right The delegate to remove
 		@return the delegate with the function pointers of given delegate extracted from this delegate
 		*/
-		virtual Delegate<RetType,ArgType> operator -(const Delegate<RetType,ArgType> &right)
+		virtual Delegate<RetType,ArgType> operator -(const Delegate<RetType,ArgType> &right) const
 		{
 			Delegate<RetType,ArgType> ret(*this);
 			ret-=right;
@@ -300,7 +300,7 @@ namespace epl
 		@param[in] idx the index to return the function pointer
 		@return the function pointer at given index
 		*/
-		virtual FuncType operator [](unsigned int idx)
+		virtual FuncType operator [](unsigned int idx) const
 		{
 			ASSERT(idx<m_funcList.size());
 			vector<RetType (*)(ArgType)>::iterator iter=m_funcList.begin();
@@ -488,7 +488,7 @@ namespace epl
 		@param[in] func The function pointer to append
 		@return the delegate with the function pointers from this delegate and given function pointer
 		*/
-		virtual Delegate<RetType,void> operator +(RetType (*func)(void))
+		virtual Delegate<RetType,void> operator +(RetType (*func)(void)) const
 		{
 			Delegate<RetType,void> ret(*this);
 			ret+=func;
@@ -516,7 +516,7 @@ namespace epl
 		@param[in] right The delegate to append
 		@return the delegate with the function pointers from this delegate and given delegate
 		*/
-		virtual Delegate<RetType,void> operator +(const Delegate<RetType,void> &right)
+		virtual Delegate<RetType,void> operator +(const Delegate<RetType,void> &right) const
 		{
 			Delegate<RetType,void> ret(*this);
 			ret+=right;
@@ -550,7 +550,7 @@ namespace epl
 		@param[in] func The function pointer to remove
 		@return the delegate with given function pointer extracted from this delegate
 		*/
-		virtual Delegate<RetType,void> operator -(RetType (*func)(void))
+		virtual Delegate<RetType,void> operator -(RetType (*func)(void)) const
 		{
 			Delegate<RetType,void> ret(*this);
 			ret-=func;
@@ -587,7 +587,7 @@ namespace epl
 		@param[in] right The delegate to remove
 		@return the delegate with the function pointers of given delegate extracted from this delegate
 		*/
-		virtual Delegate<RetType,void> operator -(const Delegate<RetType,void> &right)
+		virtual Delegate<RetType,void> operator -(const Delegate<RetType,void> &right) const
 		{
 			Delegate<RetType,void> ret(*this);
 			ret-=right;
@@ -599,7 +599,7 @@ namespace epl
 		@param[in] idx the index to return the function pointer
 		@return the function pointer at given index
 		*/
-		virtual FuncType operator [](unsigned int idx)
+		virtual FuncType operator [](unsigned int idx) const
 		{
 			ASSERT(idx<m_funcList.size());
 			vector<RetType (*)(void)>::iterator iter=m_funcList.begin();

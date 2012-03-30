@@ -35,7 +35,7 @@ SimpleLogManager::SimpleLogNode::~SimpleLogNode()
 		EP_DELETE[] m_userStr;
 }
 
-void SimpleLogManager::SimpleLogNode::Print()
+void SimpleLogManager::SimpleLogNode::Print() const
 {
 	if(m_userStr)
 		System::Printf(_T("%s::%s(%d) %s %s - %s\n"),m_fileName,m_funcName,m_lineNum,m_dateStr,m_timeStr,m_userStr);

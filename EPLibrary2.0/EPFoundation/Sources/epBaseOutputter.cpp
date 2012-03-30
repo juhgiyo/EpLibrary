@@ -84,10 +84,10 @@ void BaseOutputter::Clear()
 	m_list.clear();
 }
 
-void BaseOutputter::Print()
+void BaseOutputter::Print() const
 {
 	LockObj lock(m_nodeListLock);
-	std::vector<OutputNode*>::iterator iter;
+	std::vector<OutputNode*>::const_iterator iter;
 	for(iter=m_list.begin();iter!=m_list.end();iter++)
 	{
 		(*iter)->Print();

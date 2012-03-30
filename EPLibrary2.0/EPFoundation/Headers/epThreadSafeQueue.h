@@ -90,7 +90,7 @@ namespace epl
 		Check if the given obj exists in the queue.
 		@returns Returns true if exists, otherwise false.
 		*/
-		bool IsExist(FDATA const &data);
+		bool IsExist(FDATA const &data) const;
 
 		/*!
 		Return the size of the queue.
@@ -199,7 +199,7 @@ namespace epl
 	}
 	
 	template <typename FDATA>
-	bool ThreadSafeQueue<FDATA>::IsExist(FDATA const &data)
+	bool ThreadSafeQueue<FDATA>::IsExist(FDATA const &data) const
 	{
 		LockObj lock(m_queueLock);
 		if(m_queue.empty())
