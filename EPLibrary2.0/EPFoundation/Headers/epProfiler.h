@@ -29,7 +29,7 @@ An Interface for the Debugging Profiler.
 */
 #ifndef __EP_PROFILER_H__
 #define __EP_PROFILER_H__
-#include "epLib.h"
+#include "epFoundationLib.h"
 #include "epBaseOutputter.h"
 #include "epSingletonHolder.h"
 
@@ -73,7 +73,7 @@ namespace epl
 		@param[in] funcName the Function Name for the profiling log.
 		@param[in] time The ellapsed time of the profiling.
 		*/
-		void AddProfile(const TCHAR *fileName,const TCHAR* funcName, const EpTime &time);
+		void AddProfile(const TCHAR *fileName,const TCHAR * funcName, const EpTime &time);
 
 		
 		/*!
@@ -116,9 +116,9 @@ namespace epl
 			/// The start time that profiling started
 			EpTime m_startTime;
 			/// The Profiling File Name
-			const TCHAR *m_fileName;
+			EpString m_fileName;
 			/// The Profiling Function Name
-			const TCHAR *m_funcName;
+			EpString m_funcName;
 
 		};
 
@@ -186,9 +186,9 @@ namespace epl
 
 		private:
 			/// Profiling File Name
-			const TCHAR *m_fileName;
+			EpString m_fileName;
 			/// Profiling Function Name
-			const TCHAR *m_funcName;
+			EpString m_funcName;
 			/// The Quantity of Profiling occurred
 			int m_cnt;
 			/// The Total Profiling Time elapsed.
@@ -209,7 +209,7 @@ namespace epl
 		@param[out] retIdx The index of the found profiling log.
 		@return true if found, otherwise false.
 		*/
-		bool isProfileExist(const TCHAR *fileName,const TCHAR* funcName,ProfileNode * &retIter, int &retIdx );
+		bool isProfileExist(const TCHAR *fileName,const TCHAR * funcName,ProfileNode * &retIter, int &retIdx );
 
 	};
 }

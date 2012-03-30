@@ -68,43 +68,44 @@ BaseFile::~BaseFile()
 }
 
 
-void BaseFile::WriteToFile(CString toFileString)
+void BaseFile::WriteToFile(const TCHAR *toFileString)
 {
 	LockObj lock(m_lock);
+	unsigned int strLength=System::StrLen(toFileString);
 	if(m_encodingType==FILE_ENCODING_TYPE_UTF8||m_encodingType==FILE_ENCODING_TYPE_UTF16)
 	{	
+		char *multiByteToFile = EP_NEW char[strLength+1];
 
-		char *multiByteToFile = EP_NEW char[toFileString.GetLength()+1];
-
-		memset(multiByteToFile,0,toFileString.GetLength()+1);
-		wcstombs(multiByteToFile,toFileString.GetString(),toFileString.GetLength());
+		memset(multiByteToFile,0,strLength+1);
+		wcstombs(multiByteToFile,toFileString,strLength);
 
 		if(m_file)
-			m_file->Write(multiByteToFile,toFileString.GetLength());
+			m_file->Write(multiByteToFile,strLength);
 		EP_DELETE[] multiByteToFile;
 	}
 	else
 	{
 		if(m_file)
-			m_file->Write(toFileString,(toFileString.GetLength())*sizeof(TCHAR));
+			m_file->Write(toFileString,(strLength)*sizeof(TCHAR));
 	}
 }
 
-bool BaseFile::SaveToFile(CString filename)
+bool BaseFile::SaveToFile(const TCHAR *filename)
 {
 	LockObj lock(m_lock);
-	if(filename.GetLength()<=0)
+	unsigned int strLength=System::StrLen(filename);
+	if(strLength<=0)
 		return false;
 
 	FILE *fStream;
 	errno_t e;
 
 	if(m_encodingType==FILE_ENCODING_TYPE_UTF8)
-		e= _tfopen_s(&fStream,filename.GetString(),_T("wt,ccs=UTF-8"));
+		e= _tfopen_s(&fStream,filename,_T("wt,ccs=UTF-8"));
 	else if(m_encodingType==FILE_ENCODING_TYPE_UNICODE)
-		e= _tfopen_s(&fStream,filename.GetString(),_T("wt,ccs=UNICODE"));
+		e= _tfopen_s(&fStream,filename,_T("wt,ccs=UNICODE"));
 	else if(m_encodingType==FILE_ENCODING_TYPE_UTF16)
-		e= _tfopen_s(&fStream,filename.GetString(),_T("wt,ccs=UTF-16LE"));
+		e= _tfopen_s(&fStream,filename,_T("wt,ccs=UTF-16LE"));
 	else
 		return false;
 	if (e != 0) 
@@ -120,21 +121,22 @@ bool BaseFile::SaveToFile(CString filename)
 }
 
 
-bool BaseFile::LoadFromFile(CString filename)
+bool BaseFile::LoadFromFile(const TCHAR *filename)
 {
 	LockObj lock(m_lock);
-	if(filename.GetLength()<=0)
+	unsigned int strLength=System::StrLen(filename);
+	if(strLength<=0)
 		return false;
 
 	FILE *fStream;
 	errno_t e;
 
 	if(m_encodingType==FILE_ENCODING_TYPE_UTF8)
-		e= _tfopen_s(&fStream,filename.GetString(),_T("rt,ccs=UTF-8"));
+		e= _tfopen_s(&fStream,filename,_T("rt,ccs=UTF-8"));
 	else if(m_encodingType==FILE_ENCODING_TYPE_UNICODE)
-		e= _tfopen_s(&fStream,filename.GetString(),_T("rt,ccs=UNICODE"));
+		e= _tfopen_s(&fStream,filename,_T("rt,ccs=UNICODE"));
 	else if(m_encodingType==FILE_ENCODING_TYPE_UTF16)
-		e= _tfopen_s(&fStream,filename.GetString(),_T("rt,ccs=UTF-16LE"));
+		e= _tfopen_s(&fStream,filename,_T("rt,ccs=UTF-16LE"));
 	else
 		return false;
 
@@ -143,7 +145,7 @@ bool BaseFile::LoadFromFile(CString filename)
 	CStdioFile propertyFile(fStream);  // open the file from this stream
 	m_file=&propertyFile;
 
-	CString rest;
+	EpString rest;
 	if(m_encodingType==FILE_ENCODING_TYPE_UTF8||m_encodingType==FILE_ENCODING_TYPE_UTF16)
 	{		
 		//Find the actual length of file
@@ -184,26 +186,26 @@ bool BaseFile::LoadFromFile(CString filename)
 }
 
 
-bool BaseFile::getLine(CString buf, CString &retLine, CString &retRest)
+bool BaseFile::getLine(EpString buf, EpString &retLine, EpString &retRest)
 {
-	if(buf.GetLength()<=0)
+	if(buf.length()<=0)
 		return false;
 	TCHAR splitChar=0;
-	CString lineSTring=_T("");
+	EpString lineSTring=_T("");
 	int bufTrav=0;
 
 	do{
-		splitChar=buf.GetAt(bufTrav);
+		splitChar=buf.at(bufTrav);
 		if(splitChar!=_T('\r') && splitChar!=_T('\n') && splitChar!=_T('\0'))
 		{
-			lineSTring.AppendChar(splitChar);
+			lineSTring.append(&splitChar,1);
 		}
 		bufTrav++;
-	}while(splitChar!=_T('\n') && splitChar!=_T('\0') && bufTrav<buf.GetLength());
-	if(bufTrav<buf.GetLength())
-		buf.Delete(0,bufTrav);
+	}while(splitChar!=_T('\n') && splitChar!=_T('\0') && bufTrav<buf.length());
+	if(bufTrav<buf.length())
+		buf.erase(0,bufTrav);
 	else
-		buf.Delete(0,buf.GetLength());
+		buf.erase(0,buf.length());
 	retRest=buf;
 	retLine=lineSTring;
 	return true;

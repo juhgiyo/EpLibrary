@@ -43,7 +43,7 @@ __int64 DateTimeHelper::Diff(const SYSTEMTIME time1, const SYSTEMTIME time2)
 	return (ft2.ul.QuadPart - ft1.ul.QuadPart)/10; 
 }
 
-CString DateTimeHelper::DateToString(const SYSTEMTIME date)
+EpString DateTimeHelper::DateToString(const SYSTEMTIME date)
 {
 	int nDateStringLength = GetDateFormat(LOCALE_USER_DEFAULT, 0, &date, NULL, NULL, 0);
 	if(nDateStringLength == 0)
@@ -61,12 +61,12 @@ CString DateTimeHelper::DateToString(const SYSTEMTIME date)
 	}
 
 	// Append date to the output stream and free resources
-	CString retString=pszDate;
+	EpString retString=pszDate;
 	EP_DELETE[] pszDate;
 	return retString;
 }
 
-CString DateTimeHelper::TimeToString(const SYSTEMTIME time)
+EpString DateTimeHelper::TimeToString(const SYSTEMTIME time)
 {
 	int nTimeStringLength = GetTimeFormat(LOCALE_USER_DEFAULT, 0, &time, NULL, NULL, 0);
 	if(nTimeStringLength == 0)
@@ -84,12 +84,12 @@ CString DateTimeHelper::TimeToString(const SYSTEMTIME time)
 	}
 
 	// Append time to the output stream and free resources
-	CString retString=pszTime;
+	EpString retString=pszTime;
 	EP_DELETE[] pszTime;
 	return retString;
 }
 
-CString DateTimeHelper::DateTimeToString(const SYSTEMTIME dateTime)
+EpString DateTimeHelper::DateTimeToString(const SYSTEMTIME dateTime)
 {
 	int nDateStringLength = GetDateFormat(LOCALE_USER_DEFAULT, 0, &dateTime, NULL, NULL, 0);
 	if(nDateStringLength == 0)
@@ -107,7 +107,7 @@ CString DateTimeHelper::DateTimeToString(const SYSTEMTIME dateTime)
 	}
 
 	// Append date to the output stream and free resources
-	CString retString=pszDate;
+	EpString retString=pszDate;
 	EP_DELETE[] pszDate;
 
 	int nTimeStringLength = GetTimeFormat(LOCALE_USER_DEFAULT, 0, &dateTime, NULL, NULL, 0);
@@ -126,8 +126,8 @@ CString DateTimeHelper::DateTimeToString(const SYSTEMTIME dateTime)
 	}
 
 	// Append time to the output stream and free resources
-	retString.Append(_T(" "));
-	retString.Append(pszTime);
+	retString.append(_T(" "));
+	retString.append(pszTime);
 	EP_DELETE[] pszTime;
 
 	return retString;

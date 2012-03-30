@@ -30,12 +30,12 @@ An Interface for System Class.
 #ifndef __EP_SYSTEM_H__
 #define __EP_SYSTEM_H__
 
-#include "epLib.h"
-#include "epPlatform.h"
+#include "epFoundationLib.h"
 #include "epAlgorithm.h"
 
 #include <assert.h>
 #include <vector>
+#include <string.h>
 
 #include "epMemory.h"
 
@@ -82,8 +82,15 @@ An Interface for System Class.
 #define EP_NOTICEBOX(formatString,...) epl::System::NoticeBox(__WFILE__,__WFUNCTION__,__LINE__,formatString,__VA_ARGS__)
 
 
+
 namespace epl
 {
+	/// A type definition for EpString Type
+#ifdef _UNICODE
+	typedef std::wstring EpString;
+#else
+	typedef std::string EpString;
+#endif
 
 	/// A type definition for EpTime Type
 	typedef double EpTime;
@@ -300,7 +307,7 @@ namespace epl
 		@param[in] maxElementCount the number of element in the buffer
 		@return if succeeds, the number of TCHARs stored in the output buffer, excluding the terminating null character otherwise zero.
 		*/
-		static DWORD FormatLastErrorMessage(TCHAR *retBuff, const unsigned int maxElementCount);
+		static unsigned long FormatLastErrorMessage(TCHAR *retBuff, const unsigned int maxElementCount);
 
 		/*!
 		Show Notice Message Box with message given including File Name, Function Name, and Line Number.
@@ -313,20 +320,20 @@ namespace epl
 		static int NoticeBox(const TCHAR* fileName, const TCHAR* funcName,const unsigned int lineNum,const TCHAR* format,...);
 
 		/*!
-		Convert hexadecimal value of given array to CString.
+		Convert hexadecimal value of given array to EpString.
 		@param[in] buff pointer to array.
 		@param[in] len length of given array.
-		@return CString that contains hexadecimal value.
+		@return EpString that contains hexadecimal value.
 		*/
-		static CString HexToString(const BYTE *buff, unsigned int len);
+		static EpString HexToString(const unsigned char *buff, unsigned int len);
 
 		/*!
 		Convert MultiByte String to WideChar String.
 		@param[in] multiByteCharString the string to convert to to WideChar string.
 		@param[in] stringLength length of the MultiByte string excluding the terminating NULL.
-		@return CString that contains converted WideChar String.
+		@return EpString that contains converted WideChar String.
 		*/
-		static CString MultiByteToWideChar(const char *multiByteCharString, unsigned int stringLength);
+		static EpString MultiByteToWideChar(const char *multiByteCharString, unsigned int stringLength);
 
 		/*!
 		Convert MultiByte String to WideChar String.
@@ -339,21 +346,11 @@ namespace epl
 
 		/*!
 		Convert WideChar String to MultiByte String.
-		@param[in] wideCharString the WideChar CString to convert to MultiByte string.
+		@param[in] wideCharString the WideChar TCHAR String to convert to MultiByte string.
 		@param[out] retMultiByteString string that contains converted MultiByte String.
 		@return the number of bytes written into the MultiByte output string, excluding the terminating NULL .
 		*/
-		static unsigned int  WideCharToMultiByte(CString wideCharString, char *retMultiByteString);
-	
-		/*!
-		Convert WideChar String to MultiByte String.
-		@param[in] wideCharString the WideChar string to convert to MultiByte string.
-		@param[in] stringLength length of the WideChar string excluding the terminating NULL.
-		@param[out] retMultiByteString string that contains converted MultiByte String.
-		@return the number of bytes written into the MultiByte output string, excluding the terminating NULL .
-		*/	
-		static unsigned int  WideCharToMultiByte(const TCHAR* wideCharString, unsigned int stringLength, char *retMultiByteString);
-
+		static unsigned int  WideCharToMultiByte(const TCHAR* wideCharString, char *retMultiByteString);
 	};
 
 }

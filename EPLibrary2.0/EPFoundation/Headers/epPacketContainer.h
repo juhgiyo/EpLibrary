@@ -35,7 +35,7 @@ Sang Yong Yoon <flyingshiri@gmail.com>
 #ifndef __EP_PACKET_CONTAINER_H__
 #define __EP_PACKET_CONTAINER_H__
 
-#include "epLib.h"
+#include "epFoundationLib.h"
 #include "epCriticalSectionEx.h"
 #include "epMutex.h"
 #include "epNoLock.h"

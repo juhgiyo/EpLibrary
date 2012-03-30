@@ -22,18 +22,17 @@ using namespace epl;
 
 
 
-bool FolderHelper::ChooseFolder(HWND hParent, LPCTSTR title, CString &retFolderPath)
+bool FolderHelper::ChooseFolder(HWND hParent, const TCHAR * title, EpString &retFolderPath)
 {
 	bool success = false;
-	CString inputTitle=title;
-
 	BROWSEINFO bi;
 	::ZeroMemory(&bi, sizeof(bi));
-	LPTSTR pBuffer = retFolderPath.GetBuffer(MAX_PATH);
+	retFolderPath.reserve(MAX_PATH);
+	LPTSTR pBuffer = const_cast<TCHAR*>(retFolderPath.data());
 
 	bi.hwndOwner = hParent;
 	bi.pszDisplayName = pBuffer;
-	bi.lpszTitle = inputTitle;
+	bi.lpszTitle = title;
 	bi.pidlRoot = 0;
 	bi.ulFlags = BIF_RETURNONLYFSDIRS | 
 		BIF_NEWDIALOGSTYLE;
@@ -49,30 +48,30 @@ bool FolderHelper::ChooseFolder(HWND hParent, LPCTSTR title, CString &retFolderP
 			pMalloc->Free(pItem);
 	}
 
-	retFolderPath.ReleaseBuffer();
-	if(retFolderPath.GetAt(retFolderPath.GetLength()-1)!=_T('\\'))
+	//folderPath.ReleaseBuffer();
+	if(retFolderPath.at(retFolderPath.length()-1)!=_T('\\'))
 	{
-		retFolderPath.Append(_T("\\"));
+		retFolderPath.append(_T("\\"));
 	}
 	return success;
 }
 
-void FolderHelper::removeDir(LPCTSTR strPath)  
+void FolderHelper::removeDir( const TCHAR * strPath)  
 
 {  
 
 	CFileFind searchFile;  
-	CString strFile;  
-	BOOL bRet;  
-	CString inputPath=strPath;
+	EpString strFile;  
+	long bRet;  
+	EpString inputPath=strPath;
 
-	if(_waccess(inputPath.GetString(),00) != 0)  
+	if(_waccess(inputPath.c_str(),00) != 0)  
 		return;  
 
-	strFile.Append(inputPath);
-	strFile.Append(_T("\\*.*"));  
+	strFile.append(inputPath);
+	strFile.append(_T("\\*.*"));  
 
-	bRet = searchFile.FindFile(strFile);  
+	bRet = searchFile.FindFile(strFile.c_str());  
 
 	while(bRet)  
 	{  
@@ -81,51 +80,51 @@ void FolderHelper::removeDir(LPCTSTR strPath)
 			continue;  
 
 		if(searchFile.IsDirectory())  
-			removeDir(searchFile.GetFilePath());  
+			removeDir(searchFile.GetFilePath().GetString());  
 		else  
 			DeleteFile(searchFile.GetFilePath());  
 	}  
 }
-bool FolderHelper::CreateFolder(LPCTSTR strPath)
+bool FolderHelper::CreateFolder(const TCHAR * strPath)
 {
 	if(SHCreateDirectory(NULL,strPath)==ERROR_SUCCESS)
 		return true;
 	return false;
 }
 
-void FolderHelper::DeleteFolder(LPCTSTR strPath)
+void FolderHelper::DeleteFolder(const TCHAR * strPath)
 {
-	if(strPath==NULL)
+	if(!System::StrLen(strPath))
 		return;
-	CString path=strPath;
-	CString path2=strPath;
-	int length=path.GetLength();
+	EpString path=strPath;
+	EpString path2=strPath;
+	int length=path.length();
 	int count=0;
 	for(int trav=length-1;trav>=0;trav--)
 	{
 		count++;
-		if(path.GetAt(trav)==_T(' ')||path.GetAt(trav)==_T('\0'))
+		if(path.at(trav)==_T(' ')||path.at(trav)==_T('\0'))
 			continue;
-		if(path.GetAt(trav)==_T('\\'))
+		if(path.at(trav)==_T('\\'))
 		{
-			path.Delete(trav,count);
+			path.erase(trav,count);
 			break;	
 		}
 		else
 		{
-			path2.Append(_T("\\"));
+			path2.append(_T("\\"));
 			break;
 		}
 	}
-	removeDir(path.GetString());
-	RemoveDirectory(path2);
+	removeDir(path.c_str());
+	RemoveDirectory(path2.c_str());
 }
 
-bool FolderHelper::IsPathExist(LPCTSTR path)
+bool FolderHelper::IsPathExist(const TCHAR * path)
 {
 	return  PathFileExists(path);
 }
-bool FolderHelper::GetSpecialFolderPath(int csidl,bool isCreateIfNotExist,CString &retPath)
+bool FolderHelper::GetSpecialFolderPath(int csidl,bool isCreateIfNotExist,EpString &retPath)
 {
 	TCHAR pathString[MAX_PATH]={0};
 	if(SHGetSpecialFolderPath(NULL,pathString,csidl,isCreateIfNotExist))
@@ -137,7 +136,7 @@ bool FolderHelper::GetSpecialFolderPath(int csidl,bool isCreateIfNotExist,CStrin
 }
 
 
-bool FolderHelper::CopyTheFile(LPCTSTR strFromFile, LPCTSTR strToFile,bool failIfExist)
+bool FolderHelper::CopyTheFile(const TCHAR *strFromFile, const TCHAR * strToFile,bool failIfExist)
 {
 	if(CopyFile(strFromFile,strToFile,failIfExist))
 		return true;
@@ -152,30 +151,31 @@ unsigned int FolderHelper::GetActualFileLength(CFile &file)
 	return length;
 }
 
-CString FolderHelper::GetPathOnly(CString filePath)
+EpString FolderHelper::GetPathOnly(const TCHAR * filePath)
 {
-	for(int stringTrav=filePath.GetLength()-1;stringTrav>=0;stringTrav--)
+	unsigned int strLength=System::StrLen(filePath);
+	EpString retString=filePath;
+	for(int stringTrav=strLength-1;stringTrav>=0;stringTrav--)
 	{
-		if(filePath.GetAt(stringTrav)!=_T('\\'))
-			filePath.Delete(stringTrav,1);
+		if(retString.at(stringTrav)!=_T('\\'))
+			retString.erase(stringTrav,1);
 		else
-			return filePath;
+			return retString;
 	}
-	return filePath;
+	return retString;
 }
 
-CString FolderHelper::GetModuleFileName()
+EpString FolderHelper::GetModuleFileName()
 {
 	TCHAR pathName[MAX_PATH];
 	memset(pathName,0,sizeof(TCHAR)*MAX_PATH);
 	::GetModuleFileName(NULL, pathName,MAX_PATH);
-	CString retString=pathName;
+	EpString retString=pathName;
 	return retString;
 }
 
-CString FolderHelper::GetModuleFileDirectory()
+EpString FolderHelper::GetModuleFileDirectory()
 {
-	CString retString=GetModuleFileName();
-	retString=GetPathOnly(retString);
-	return retString;
+	EpString retString=GetModuleFileName();
+	return GetPathOnly(retString.c_str());
 }

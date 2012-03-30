@@ -16,7 +16,7 @@ An Interface for XMLite Class.
 #ifndef __EP_XMLITE_H__
 #define __EP_XMLITE_H__
 
-#include "epLib.h"
+#include "epFoundationLib.h"
 #include "epSystem.h"
 #include "epMemory.h"
 #include <vector>
@@ -47,19 +47,19 @@ namespace epl
 	{
 		LPXENTITY GetEntity( int entity );
 		LPXENTITY GetEntity( LPTSTR entity );	
-		int GetEntityCount( LPCTSTR str );
-		int Ref2Entity( LPCTSTR estr, LPTSTR str, int strlen );
-		int Entity2Ref( LPCTSTR str, LPTSTR estr, int estrlen );
-		CString Ref2Entity( LPCTSTR estr );
-		CString Entity2Ref( LPCTSTR str );	
+		int GetEntityCount( const TCHAR * str );
+		int Ref2Entity( const TCHAR * estr, LPTSTR str, int strlen );
+		int Entity2Ref( const TCHAR * str, LPTSTR estr, int estrlen );
+		CString Ref2Entity( const TCHAR * estr );
+		CString Entity2Ref( const TCHAR * str );	
 
 		_tagXMLEntitys(){};
 		_tagXMLEntitys( LPXENTITY entities, int count );
 		static _tagXMLEntitys entityDefault;
 	}XENTITYS,*LPXENTITYS;
 	
-	CString XRef2Entity( LPCTSTR estr );
-	CString XEntity2Ref( LPCTSTR str );	
+	CString XRef2Entity( const TCHAR * estr );
+	CString XEntity2Ref( const TCHAR * str );	
 
 	typedef enum 
 	{
@@ -141,41 +141,41 @@ namespace epl
 		LPXDoc	m_doc;		// document
 
 		// Load/Save XML
-		LPTSTR	Load( LPCTSTR pszXml, LPPARSEINFO pi = &PARSEINFO::piDefault );
+		LPTSTR	Load( const TCHAR * pszXml, LPPARSEINFO pi = &PARSEINFO::piDefault );
 		CString GetXML( LPDISP_OPT opt = &DISP_OPT::optDefault );
 		CString GetText( LPDISP_OPT opt = &DISP_OPT::optDefault );
 
 		// internal load functions
-		LPTSTR	LoadAttributes( LPCTSTR pszAttrs, LPPARSEINFO pi = &PARSEINFO::piDefault );
-		LPTSTR	LoadAttributes( LPCTSTR pszAttrs, LPCTSTR pszEnd, LPPARSEINFO pi = &PARSEINFO::piDefault );
-		LPTSTR	LoadProcessingInstrunction( LPCTSTR pszXml, LPPARSEINFO pi = &PARSEINFO::piDefault );
-		LPTSTR	LoadComment( LPCTSTR pszXml, LPPARSEINFO pi = &PARSEINFO::piDefault ); 
-		LPTSTR	LoadCDATA( LPCTSTR pszXml, LPPARSEINFO pi = &PARSEINFO::piDefault ); 
+		LPTSTR	LoadAttributes( const TCHAR * pszAttrs, LPPARSEINFO pi = &PARSEINFO::piDefault );
+		LPTSTR	LoadAttributes( const TCHAR * pszAttrs, const TCHAR * pszEnd, LPPARSEINFO pi = &PARSEINFO::piDefault );
+		LPTSTR	LoadProcessingInstrunction( const TCHAR * pszXml, LPPARSEINFO pi = &PARSEINFO::piDefault );
+		LPTSTR	LoadComment( const TCHAR * pszXml, LPPARSEINFO pi = &PARSEINFO::piDefault ); 
+		LPTSTR	LoadCDATA( const TCHAR * pszXml, LPPARSEINFO pi = &PARSEINFO::piDefault ); 
 
 		// in own attribute list
-		LPXAttr	GetAttr( LPCTSTR attrname ); 
-		LPCTSTR	GetAttrValue( LPCTSTR attrname ); 
-		XAttrs	GetAttrs( LPCTSTR name ); 
+		LPXAttr	GetAttr( const TCHAR * attrname ); 
+		const TCHAR *	GetAttrValue( const TCHAR * attrname ); 
+		XAttrs	GetAttrs( const TCHAR * name ); 
 
 		// in one level child nodes
-		LPXNode	GetChild( LPCTSTR name ); 
-		LPCTSTR	GetChildValue( LPCTSTR name ); 
-		CString	GetChildText( LPCTSTR name, LPDISP_OPT opt = &DISP_OPT::optDefault );
-		XNodes	GetChilds( LPCTSTR name ); 
+		LPXNode	GetChild( const TCHAR * name ); 
+		const TCHAR *	GetChildValue( const TCHAR * name ); 
+		CString	GetChildText( const TCHAR * name, LPDISP_OPT opt = &DISP_OPT::optDefault );
+		XNodes	GetChilds( const TCHAR * name ); 
 		XNodes	&GetChilds(); 
 
-		LPXAttr GetChildAttr( LPCTSTR name, LPCTSTR attrname );
-		LPCTSTR GetChildAttrValue( LPCTSTR name, LPCTSTR attrname );
+		LPXAttr GetChildAttr( const TCHAR * name, const TCHAR * attrname );
+		const TCHAR * GetChildAttrValue( const TCHAR * name, const TCHAR * attrname );
 		
 		// search node
-		LPXNode	Find( LPCTSTR name );
+		LPXNode	Find( const TCHAR * name );
 
 		// modify DOM 
 		int		GetChildCount();
 		LPXNode GetChild( int i );
 		XNodes::iterator GetChildIterator( LPXNode node );
-		LPXNode CreateNode( LPCTSTR name = NULL, LPCTSTR value = NULL );
-		LPXNode	AppendChild( LPCTSTR name = NULL, LPCTSTR value = NULL );
+		LPXNode CreateNode( const TCHAR * name = NULL, const TCHAR * value = NULL );
+		LPXNode	AppendChild( const TCHAR * name = NULL, const TCHAR * value = NULL );
 		LPXNode	AppendChild( LPXNode node );
 		bool	RemoveChild( LPXNode node );
 		LPXNode DetachChild( LPXNode node );
@@ -189,8 +189,8 @@ namespace epl
 		// modify attribute
 		LPXAttr GetAttr( int i );
 		XAttrs::iterator GetAttrIterator( LPXAttr node );
-		LPXAttr CreateAttr( LPCTSTR anem = NULL, LPCTSTR value = NULL );
-		LPXAttr AppendAttr( LPCTSTR name = NULL, LPCTSTR value = NULL );
+		LPXAttr CreateAttr( const TCHAR * anem = NULL, const TCHAR * value = NULL );
+		LPXAttr AppendAttr( const TCHAR * name = NULL, const TCHAR * value = NULL );
 		LPXAttr	AppendAttr( LPXAttr attr );
 		bool	RemoveAttr( LPXAttr attr );
 		LPXAttr DetachAttr( LPXAttr attr );
@@ -212,18 +212,18 @@ namespace epl
 
 		_tagXMLDocument() { m_parent = NULL; m_doc = this; m_type = XNODE_DOC; }
 		
-		LPTSTR	Load( LPCTSTR pszXml, LPPARSEINFO pi = NULL );
+		LPTSTR	Load( const TCHAR * pszXml, LPPARSEINFO pi = NULL );
 		LPXNode	GetRoot();
 
 	}XDoc, *LPXDoc;
 
 	// Helper Funtion
-	inline long XStr2Int( LPCTSTR str, long default_value = 0 )
+	inline long XStr2Int( const TCHAR * str, long default_value = 0 )
 	{
 		return ( str && *str ) ? _ttol(str) : default_value;
 	}
 
-	inline bool XIsEmptyString( LPCTSTR str )
+	inline bool XIsEmptyString( const TCHAR * str )
 	{
 		CString s(str);
 		s.TrimLeft();

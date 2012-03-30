@@ -35,19 +35,18 @@ An Interface for Base Server.
 #define WIN32_LEAN_AND_MEAN
 #endif //WIN32_LEAN_AND_MEAN
 
-#include <windows.h>
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <vector>
-#include "epLib.h"
+#include "epFoundationLib.h"
 #include "epSystem.h"
 #include "epMemory.h"
 #include "epBaseServerWorker.h"
 #include "epCriticalSectionEx.h"
 #include "epMutex.h"
 #include "epNoLock.h"
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <vector>
 
 // Need to link with Ws2_32.lib
 #pragma comment (lib, "Ws2_32.lib")
@@ -68,14 +67,6 @@ namespace epl{
 	Macro for the default port.
 	*/
 	#define DEFAULT_PORT "80808"
-	
-	/*!
-	@def PORT_MAX_SIZE
-	@brief Maximum size of the port string
-
-	Macro for the maximum size of the port string.
-	*/
-	#define PORT_MAX_SIZE 8
 #endif //DEFAULT_PORT
 
 
@@ -94,7 +85,7 @@ namespace epl{
 		@param[in] port the port string
 		@param[in] lockPolicyType The lock policy
 		*/
-		BaseServer(CString port=_T(DEFAULT_PORT), LockPolicy lockPolicyType=EP_LOCK_POLICY);
+		BaseServer(const TCHAR * port=_T(DEFAULT_PORT), LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Copy Constructor
@@ -133,13 +124,13 @@ namespace epl{
 		@param[in] port The port to set.
 		@return true if succeeded otherwise false
 		*/
-		bool SetPort(CString port);
+		bool SetPort(const TCHAR *  port);
 
 		/*!
 		Get the port number of server
 		@return the port number in string
 		*/
-		CString GetPort() const;
+		EpString GetPort() const;
 
 		/*!
 		Start the server
@@ -167,7 +158,7 @@ namespace epl{
 		@param[in] lpParam self class object
 		@return the thread terminating status
 		*/
-		static DWORD ServerThread( LPVOID lpParam ) ;
+		static unsigned long ServerThread( LPVOID lpParam ) ;
 	protected:
 
 		/*!
@@ -179,7 +170,7 @@ namespace epl{
 		virtual BaseServerWorker* createNewWorker()=0;
 
 		/// port number
-		char *m_port;
+		std::string m_port;
 		/// listening socket
 		SOCKET m_listenSocket;
 		/// internal use variable

@@ -29,7 +29,7 @@ An Interface for Thread Safe Class.
 */
 #ifndef __EP_THREAD_SAFE_CLASS_H__
 #define __EP_THREAD_SAFE_CLASS_H__
-#include "epLib.h"
+#include "epFoundationLib.h"
 #include "epSystem.h"
 #include "epCriticalSectionEx.h"
 #include "epMutex.h"

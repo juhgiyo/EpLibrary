@@ -29,7 +29,7 @@ An Interface for File Stream Class.
 */
 #ifndef __EP_FILE_STREAM_H__
 #define __EP_FILE_STREAM_H__
-#include "epLib.h"
+#include "epFoundationLib.h"
 #include "epStream.h"
 
 namespace epl
@@ -48,7 +48,7 @@ namespace epl
 		@param[in] fileName The File Name to load or write the stream
 		@param[in] lockPolicyType The lock policy
 		*/
-		FileStream(TCHAR *fileName=NULL,LockPolicy lockPolicyType=EP_LOCK_POLICY);
+		FileStream(const TCHAR *fileName=_T(""),LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Copy Constructor
@@ -77,13 +77,13 @@ namespace epl
 		Set the file name of this stream as given string
 		@param[in] fileName the name of the file to set.
 		*/
-		void SetFileName(const TCHAR* fileName);
+		void SetFileName(const TCHAR *fileName);
 
 		/*!
 		Return the file name set for this stream
 		@return the file name set for this stream.
 		*/
-		const TCHAR *GetFileName() const;
+		EpString GetFileName() const;
 
 		/*!
 		Load the stream from the file
@@ -115,7 +115,7 @@ namespace epl
 		virtual bool read(void * value,const int byteSize);
 
 		/// The file name to load/write the stream
-		TCHAR *m_fileName;
+		EpString m_fileName;
 
 	};
 }

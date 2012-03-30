@@ -61,7 +61,7 @@ int CTaskbarNotifier::Create(CWnd *pWndParent)
 	return CreateEx(0,strWndClass,NULL,WS_POPUP,0,0,0,0,pWndParent->m_hWnd,NULL);
 }
 
-void CTaskbarNotifier::SetTextFont(LPCTSTR szFont,int nSize,int nNormalStyle,int nSelectedStyle)
+void CTaskbarNotifier::SetTextFont(const TCHAR * szFont,int nSize,int nNormalStyle,int nSelectedStyle)
 {
 	LOGFONT lf;
 	m_myNormalFont.DeleteObject();
@@ -135,14 +135,14 @@ BOOL CTaskbarNotifier::SetSkin(UINT nBitmapID,short red,short green,short blue)
 	if (red!=-1 && green!=-1 && blue!=-1)
 	{
 		// No need to delete the HRGN,  SetWindowRgn() owns it after being called
-		m_hSkinRegion=GenerateRegion((HBITMAP)m_biSkinBackground.GetSafeHandle(),(BYTE) red,(BYTE) green,(BYTE) blue);
+		m_hSkinRegion=GenerateRegion((HBITMAP)m_biSkinBackground.GetSafeHandle(),(unsigned char) red,(unsigned char) green,(unsigned char) blue);
 		SetWindowRgn(m_hSkinRegion, true);
 	}
 
 	return TRUE;
 }
 
-BOOL CTaskbarNotifier::SetSkin(LPCTSTR szFileName,short red,short green,short blue)
+BOOL CTaskbarNotifier::SetSkin(const TCHAR * szFileName,short red,short green,short blue)
 {
 	BITMAP bm;
 	HBITMAP hBmp;
@@ -161,14 +161,14 @@ BOOL CTaskbarNotifier::SetSkin(LPCTSTR szFileName,short red,short green,short bl
 	if (red!=-1 && green!=-1 && blue!=-1)
 	{
 		// No need to delete the HRGN,  SetWindowRgn() owns it after being called
-		m_hSkinRegion=GenerateRegion((HBITMAP)m_biSkinBackground.GetSafeHandle(),(BYTE) red,(BYTE) green,(BYTE) blue);
+		m_hSkinRegion=GenerateRegion((HBITMAP)m_biSkinBackground.GetSafeHandle(),(unsigned char) red,(unsigned char) green,(unsigned char) blue);
 		SetWindowRgn(m_hSkinRegion, true);
 	}
 
 	return TRUE;
 }
 
-void CTaskbarNotifier::Show(LPCTSTR szCaption,DWORD dwTimeToShow,DWORD dwTimeToLive,DWORD dwTimeToHide,int nIncrement)
+void CTaskbarNotifier::Show(const TCHAR * szCaption,unsigned long dwTimeToShow,unsigned long dwTimeToLive,unsigned long dwTimeToHide,int nIncrement)
 {
 	unsigned int nDesktopHeight;
 	unsigned int nDesktopWidth;
@@ -283,27 +283,27 @@ void CTaskbarNotifier::Hide()
 	m_nAnimStatus=IDT_HIDDEN;
 }
 
-HRGN CTaskbarNotifier::GenerateRegion(HBITMAP hBitmap, BYTE red, BYTE green, BYTE blue)
+HRGN CTaskbarNotifier::GenerateRegion(HBITMAP hBitmap, unsigned char red, unsigned char green, unsigned char blue)
 {
 	WORD wBmpWidth,wBmpHeight;
 	HRGN hRgn, hTmpRgn;
 
 	// 24bit pixels from the bitmap
-	BYTE *pPixels = Get24BitPixels(hBitmap, &wBmpWidth, &wBmpHeight);
+	unsigned char *pPixels = Get24BitPixels(hBitmap, &wBmpWidth, &wBmpHeight);
 	if (!pPixels) return NULL;
 
 	// create our working region
 	hRgn = CreateRectRgn(0,0,wBmpWidth,wBmpHeight);
 	if (!hRgn) { EP_DELETE pPixels; return NULL; }
 
-	DWORD p=0;
+	unsigned long p=0;
 	for (WORD y=0; y<wBmpHeight; y++)
 	{
 		for (WORD x=0; x<wBmpWidth; x++)
 		{
-			BYTE jRed   = pPixels[p+2];
-			BYTE jGreen = pPixels[p+1];
-			BYTE jBlue  = pPixels[p+0];
+			unsigned char jRed   = pPixels[p+2];
+			unsigned char jGreen = pPixels[p+1];
+			unsigned char jBlue  = pPixels[p+0];
 
 			if (jRed==red && jGreen==green && jBlue==blue)
 			{
@@ -325,7 +325,7 @@ HRGN CTaskbarNotifier::GenerateRegion(HBITMAP hBitmap, BYTE red, BYTE green, BYT
 	return hRgn;
 }
 
-BYTE* CTaskbarNotifier::Get24BitPixels(HBITMAP pBitmap, WORD *pwWidth, WORD *pwHeight)
+unsigned char* CTaskbarNotifier::Get24BitPixels(HBITMAP pBitmap, WORD *pwWidth, WORD *pwHeight)
 {
 	BITMAP bmpBmp;
 	LPBITMAPINFO pbmiInfo;
@@ -342,7 +342,7 @@ BYTE* CTaskbarNotifier::Get24BitPixels(HBITMAP pBitmap, WORD *pwWidth, WORD *pwH
 	*pwWidth  = wBmpWidth;
 	*pwHeight = wBmpHeight;
 	
-	BYTE *pPixels = EP_NEW BYTE[wBmpWidth*wBmpHeight*3];
+	unsigned char *pPixels = EP_NEW unsigned char[wBmpWidth*wBmpHeight*3];
 	if (!pPixels) return NULL;
 
 	HDC hDC =::GetWindowDC(NULL);

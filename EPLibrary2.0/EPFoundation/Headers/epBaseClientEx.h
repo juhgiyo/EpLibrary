@@ -31,7 +31,7 @@ An Interface for Base Client Extension.
 #ifndef __EP_BASE_CLIENT_EX_H__
 #define __EP_BASE_CLIENT_EX_H__
 
-#include "epLib.h"
+#include "epFoundationLib.h"
 #include "epSystem.h"
 #include "epMemory.h"
 #include "epPacket.h"
@@ -63,6 +63,8 @@ using namespace std;
 
 
 namespace epl{
+
+#ifndef DEFAULT_HOSTNAME
 	/*!
 	@def DEFAULT_HOSTNAME
 	@brief default hostname
@@ -70,14 +72,7 @@ namespace epl{
 	Macro for the default hostname.
 	*/
 	#define DEFAULT_HOSTNAME "localhost"
-
-	/*!
-	@def HOSTNAME_MAX_SIZE
-	@brief Maximum size of the hostname string
-
-	Macro for the maximum size of the hostname string.
-	*/
-	#define HOSTNAME_MAX_SIZE 40
+#endif //DEFAULT_HOSTNAME
 
 #ifndef DEFAULT_PORT
 	/*!
@@ -87,14 +82,7 @@ namespace epl{
 	Macro for the default port.
 	*/
 	#define DEFAULT_PORT "80808"
-	
-	/*!
-	@def PORT_MAX_SIZE
-	@brief Maximum size of the port string
 
-	Macro for the maximum size of the port string.
-	*/
-	#define PORT_MAX_SIZE 8
 #endif //DEFAULT_PORT
 
 	/*! 
@@ -112,7 +100,7 @@ namespace epl{
 		@param[in] port the port string
 		@param[in] lockPolicyType The lock policy
 		*/
-		BaseClientEx(CString hostName=_T(DEFAULT_HOSTNAME), CString port=_T(DEFAULT_PORT),LockPolicy lockPolicyType=EP_LOCK_POLICY);
+		BaseClientEx(const TCHAR * hostName=_T(DEFAULT_HOSTNAME), const TCHAR * port=_T(DEFAULT_PORT),LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Copy Constructor
@@ -144,7 +132,7 @@ namespace epl{
 		@param[in] hostName The hostname to set.
 		@return true if succeeded otherwise false
 		*/
-		bool SetHostName(CString hostName);
+		bool SetHostName(const TCHAR * hostName);
 
 		/*!
 		Set the port for the server.
@@ -152,19 +140,19 @@ namespace epl{
 		@param[in] port The port to set.
 		@return true if succeeded otherwise false
 		*/
-		bool SetPort(CString port);
+		bool SetPort(const TCHAR * port);
 
 		/*!
 		Get the hostname of server
 		@return the hostname in string
 		*/
-		CString GetHostName()  const;
+		EpString GetHostName()  const;
 
 		/*!
 		Get the port number of server
 		@return the port number in string
 		*/
-		CString GetPort()  const;
+		EpString GetPort()  const;
 
 		/*!
 		Connect to the server
@@ -230,12 +218,12 @@ namespace epl{
 		@param[in] lpParam self class object
 		@return the thread terminating status
 		*/
-		static DWORD ClientThread( LPVOID lpParam ) ;
+		static unsigned long ClientThread( LPVOID lpParam ) ;
 
 		/// port
-		char *m_port;
+		std::string m_port;
 		/// hostname
-		char *m_hostName;
+		std::string m_hostName;
 		/// connection socket
 		SOCKET m_connectSocket;
 		/// internal variable

@@ -29,7 +29,7 @@ An Interface for Thread Safe Queue.
 */
 #ifndef __EP_THREAD_SAFE_QUEUE_H__
 #define __EP_THREAD_SAFE_QUEUE_H__
-#include "epLib.h"
+#include "epFoundationLib.h"
 #include <vector>
 #include "epSimpleLogger.h"
 #include "epCriticalSectionEx.h"
@@ -205,7 +205,7 @@ namespace epl
 		if(m_queue.empty())
 			return false;
 
-		std::vector<FDATA>::iterator iter;
+		std::vector<FDATA>::const_iterator iter;
 		for(iter=m_queue.begin();iter!=m_queue.end();iter++)
 		{
 			if((*iter)==data)

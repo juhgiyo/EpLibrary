@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using namespace epl;
 
 
-Semaphore::Semaphore(unsigned int count,TCHAR *semName, LPSECURITY_ATTRIBUTES lpsaAttributes) :BaseLock()
+Semaphore::Semaphore(unsigned int count,const TCHAR *semName, LPSECURITY_ATTRIBUTES lpsaAttributes) :BaseLock()
 {
 	m_lpsaAttributes=lpsaAttributes;
 	m_count=count;

@@ -29,7 +29,7 @@ An Interface for the Registry Processing Operation.
 */
 #ifndef __EP_REGISTRY_HELPER_H__
 #define __EP_REGISTRY_HELPER_H__
-#include "epLib.h"
+#include "epFoundationLib.h"
 #include "epSystem.h"
 
 namespace epl
@@ -51,7 +51,7 @@ namespace epl
 		@param[in] regData the string data to write
 		@return true if successful, otherwise false
 		*/
-		static bool SetRegistryData(HKEY key,CString subKey,CString regName,CString regData);
+		static bool SetRegistryData(HKEY key,const TCHAR * subKey,const TCHAR *regName,const TCHAR *regData);
 
 		/*!
 		Set the given registry data to given registry name
@@ -63,7 +63,7 @@ namespace epl
 		@param[in] sizeInByte the size of data in Byte
 		@return true if successful, otherwise false
 		*/
-		static bool SetRegistryData(HKEY key,CString subKey,CString regName,DWORD regType,void * regData,unsigned int sizeInByte);
+		static bool SetRegistryData(HKEY key,const TCHAR *subKey,const TCHAR * regName,unsigned long regType,void * regData,unsigned int sizeInByte);
 
 		/*!
 		Get the given registry string data of given registry name
@@ -73,7 +73,7 @@ namespace epl
 		@param[out] retString the string data read
 		@return true if successful, otherwise false
 		*/
-		static bool GetRegistryData(HKEY key,CString subKey,CString regName, CString &retString);
+		static bool GetRegistryData(HKEY key,const TCHAR * subKey,const TCHAR * regName, EpString &retString);
 
 
 		/*!
@@ -87,7 +87,7 @@ namespace epl
 		@param[out] retRegType the type of the data read ex. (REG_SZ)
 		@return true if successful, otherwise false
 		*/
-		static bool GetRegistryData(HKEY key,CString subKey,CString regName,unsigned int sizeInByte,void *retBuf, unsigned int &retSizeReadInByte, DWORD &retRegType);
+		static bool GetRegistryData(HKEY key,const TCHAR * subKey,const TCHAR * regName,unsigned int sizeInByte,void *retBuf, unsigned int &retSizeReadInByte, unsigned long &retRegType);
 
 		/*!
 		Get the approximately larger size of the data in Registry
@@ -96,7 +96,7 @@ namespace epl
 		@param[in] regName the name of the registry to get the data size
 		@return the data size of the given registry name
 		*/
-		static unsigned int GetRegistryDataSize(HKEY key,CString subKey,CString regName);
+		static unsigned int GetRegistryDataSize(HKEY key,const TCHAR * subKey,const TCHAR * regName);
 
 		/*!
 		Delete the given registry value
@@ -104,21 +104,21 @@ namespace epl
 		@param[in] subkey the subkey within the registry mode
 		@param[in] regValue the registry value to be deleted
 		*/
-		static void DeleteRegistryValue(HKEY key, LPCWSTR subkey, LPCWSTR regValue);
+		static void DeleteRegistryValue(HKEY key, const TCHAR *subkey,const TCHAR * regValue);
 
 		/*!
 		Delete the given registry key
 		@param[in] key the registry mode
 		@param[in] subkey the subkey within the registry mode to be deleted
 		*/
-		static void DeleteRegistryKey(HKEY key, LPCWSTR subkey);
+		static void DeleteRegistryKey(HKEY key, const TCHAR * subkey);
 
 		/*!
 		Return the registry mode of given registry path
 		@param[in] strRegPath the complete registry path
 		@return the registry mode
 		*/
-		static HKEY GetRegistryMode(LPCWSTR strRegPath);
+		static HKEY GetRegistryMode(const TCHAR *strRegPath);
 	};
 }
 

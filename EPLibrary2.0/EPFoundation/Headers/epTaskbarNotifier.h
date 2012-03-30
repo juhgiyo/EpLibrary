@@ -18,7 +18,7 @@ An Interface for TaskbarNotifier Class.
 #ifndef __EP_TASKBAR_NOTIFIER_H__
 #define __EP_TASKBAR_NOTIFIER_H__
 
-#include "epLib.h"
+#include "epFoundationLib.h"
 #include "epSystem.h"
 #include "epMemory.h"
 
@@ -43,11 +43,11 @@ namespace epl
 		virtual ~CTaskbarNotifier();
 
 		int Create(CWnd *pWndParent);
-		void Show(LPCTSTR szCaption,DWORD dwTimeToShow=500,DWORD dwTimeToStay=3000,DWORD dwTimeToHide=500,int nIncrement=1);
+		void Show(const TCHAR * szCaption,unsigned long dwTimeToShow=500,unsigned long dwTimeToStay=3000,unsigned long dwTimeToHide=500,int nIncrement=1);
 		void Hide();
 		BOOL SetSkin(UINT nBitmapID,short red=-1,short green=-1,short blue=-1);
-		BOOL SetSkin(LPCTSTR szFileName,short red=-1,short green=-1,short blue=-1);
-		void SetTextFont(LPCTSTR szFont,int nSize,int nNormalStyle,int nSelectedStyle);
+		BOOL SetSkin(const TCHAR * szFileName,short red=-1,short green=-1,short blue=-1);
+		void SetTextFont(const TCHAR * szFont,int nSize,int nNormalStyle,int nSelectedStyle);
 		void SetTextColor(COLORREF crNormalTextColor,COLORREF crSelectedTextColor);
 		void SetTextRect(RECT rcText);
 		
@@ -69,11 +69,11 @@ namespace epl
 		BOOL m_bMouseIsOver;
 		int m_nAnimStatus;
 
- 		DWORD m_dwTimeToShow;
-		DWORD m_dwTimeToLive;
-		DWORD m_dwTimeToHide;
-		DWORD m_dwDelayBetweenShowEvents;
-		DWORD m_dwDelayBetweenHideEvents;
+ 		unsigned long m_dwTimeToShow;
+		unsigned long m_dwTimeToLive;
+		unsigned long m_dwTimeToHide;
+		unsigned long m_dwDelayBetweenShowEvents;
+		unsigned long m_dwDelayBetweenHideEvents;
 		int m_nStartPosX;
 		int m_nStartPosY;
 		int m_nCurrentPosX;
@@ -82,8 +82,8 @@ namespace epl
 		int m_nIncrement;
 		
 	protected:
-		BYTE* Get24BitPixels(HBITMAP pBitmap, WORD *pwWidth, WORD *pwHeight);
-		HRGN GenerateRegion(HBITMAP hBitmap, BYTE red, BYTE green, BYTE blue);
+		unsigned char* Get24BitPixels(HBITMAP pBitmap, WORD *pwWidth, WORD *pwHeight);
+		HRGN GenerateRegion(HBITMAP hBitmap, unsigned char red, unsigned char green, unsigned char blue);
 
 	protected:
 		DECLARE_MESSAGE_MAP()

@@ -19,26 +19,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epSimpleLogger.h"
 using namespace epl;
 
-FileStream::FileStream(TCHAR *fileName,LockPolicy lockPolicyType) :Stream(lockPolicyType)
+FileStream::FileStream(const TCHAR *fileName,LockPolicy lockPolicyType) :Stream(lockPolicyType)
 {
-	m_fileName=EP_NEW TCHAR[FILENAME_MAX ];
-	System::StrCpy(m_fileName,fileName);
+	m_fileName=fileName;
 }
 
 FileStream::FileStream(const FileStream& b):Stream(b)
 {
-	m_fileName=EP_NEW TCHAR[FILENAME_MAX ];
-	System::StrCpy(m_fileName,b.m_fileName);
+	m_fileName=b.m_fileName;
 }
 
 FileStream & FileStream::operator=(const FileStream&b)
 {
 	if(this!=&b)
 	{
-		if(!m_fileName)
-			m_fileName=EP_NEW TCHAR[FILENAME_MAX];
-		memset(m_fileName,0,sizeof(TCHAR)*FILENAME_MAX);
-		System::StrCpy(m_fileName,b.m_fileName);
+		LockObj lock(m_streamLock);
+		m_fileName=b.m_fileName;
 		Stream::operator =(b);
 	}
 	return *this;
@@ -46,18 +42,14 @@ FileStream & FileStream::operator=(const FileStream&b)
 
 FileStream::~FileStream()
 {
-	m_streamLock->Lock();
-	EP_DELETE[] m_fileName;
-	m_streamLock->Unlock();
 }
 
-void FileStream::SetFileName(const TCHAR* fileName)
+void FileStream::SetFileName(const TCHAR *fileName)
 {
 	LockObj lock(m_streamLock);
-	memset(m_fileName,0,FILENAME_MAX);
-	System::StrCpy(m_fileName,fileName);
+	m_fileName=fileName;
 }
-const TCHAR *FileStream::GetFileName() const
+EpString FileStream::GetFileName() const
 {
 	return m_fileName;
 }
@@ -67,14 +59,14 @@ bool FileStream::LoadStreamFromFile()
 	LockObj lock(m_streamLock);
 	m_stream.clear();
 
-	if(System::StrLen(m_fileName)==0)
+	if(m_fileName.length()==0)
 	{
 		LOG_THIS_MSG(_T("File Name Not Set!"));
 		return false;
 	}
 	EpFile *file;
 	int fileSize;
-	System::FOpen(file,m_fileName,_T("rt"));
+	System::FOpen(file,m_fileName.c_str(),_T("rt"));
 	fileSize=System::FSize(file);
 	m_stream.resize(fileSize);
 	System::FRead(&m_stream.at(0),sizeof(unsigned char), fileSize,file);
@@ -85,7 +77,7 @@ bool FileStream::LoadStreamFromFile()
 bool FileStream::WriteStreamToFile()
 {
 	LockObj lock(m_streamLock);
-	if(System::StrLen(m_fileName)==0)
+	if(m_fileName.length()==0)
 	{
 		LOG_THIS_MSG(_T("File Name Not Set!"));
 		return false;
@@ -96,7 +88,7 @@ bool FileStream::WriteStreamToFile()
 		return false;
 	}
 	EpFile *file;
-	System::FOpen(file,m_fileName,_T("wt"));
+	System::FOpen(file,m_fileName.c_str(),_T("wt"));
 	System::FWrite(&m_stream.at(0),sizeof(unsigned char),m_stream.size(),file);
 	System::FClose(file);
 	return true;

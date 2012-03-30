@@ -29,7 +29,7 @@ An Interface for the XML File Class.
 */
 #ifndef __EP_XML_FILE_H__
 #define __EP_XML_FILE_H__
-#include "epLib.h"
+#include "epFoundationLib.h"
 #include "epSystem.h"
 #include "epXMLite.h"
 #include "epBaseFile.h"
@@ -89,26 +89,12 @@ namespace epl
 		@param[in] attrVal the attribute value of the node with given attribute name
 		@param[in] nodeVal the value for replacement when found
 		*/
-		void SetNodeValue(CString nodeName, CString attrName, CString attrVal, CString nodeVal);
+		void SetNodeValue(const TCHAR * nodeName, const TCHAR * attrName, const TCHAR *attrVal, const TCHAR * nodeVal);
 
 		/*!
 		Clear the list of the xml
 		*/
 		void Clear();
-
-		/*!
-		Save the xml to the given file
-		@param[in] fileName the name of the file to save the xml
-		@return true if successfully saved, otherwise false
-		*/
-		bool SaveToFile(CString fileName);
-
-		/*!
-		Load the xml from the given file
-		@param[in] fileName the name of the file to load the xml
-		@return true if successfully loaded, otherwise false
-		*/
-		bool LoadFromFile(CString fileName);
 
 	protected:
 		/*!
@@ -121,7 +107,7 @@ namespace epl
 		Actual load Function that loads values from the file
 		** Sub classes should implement this function
 		*/
-		virtual void loadFromFile(CString line);
+		virtual void loadFromFile(EpString line);
 
 		/*!
 		Recursively find all nodes with the given node name
@@ -129,7 +115,7 @@ namespace epl
 		@param[in] nodeName the node name to find the nodes
 		@return the list of the nodes with the given node name
 		*/
-		XNodes findAllNode(XNode *node, CString nodeName);
+		XNodes findAllNode(XNode *node, const EpString &  nodeName);
 	};
 }
 

@@ -27,7 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 An Interface for the Fast Square Root Approximation.
 
 */
-#include "epLib.h"
+#include "epFoundationLib.h"
 
 #ifndef __EP_FAST_SQRT_H__
 #define __EP_FAST_SQRT_H__

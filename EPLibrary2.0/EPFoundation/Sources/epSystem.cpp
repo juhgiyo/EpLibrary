@@ -116,7 +116,7 @@ int System::StrLen(const TCHAR *format,...)
 	va_list args; 
 	int retVal; 
 	va_start(args, format); 
-	retVal=_vsctprintf(format,args)+1;
+	retVal=_vsctprintf(format,args);
 	va_end(args); 
 	return retVal;
 }
@@ -227,7 +227,7 @@ int System::GetLastError()
 {
 	return ::GetLastError();
 }
-DWORD System::FormatLastErrorMessage(TCHAR *retBuff, const unsigned int maxElementCount) 
+unsigned long System::FormatLastErrorMessage(TCHAR *retBuff, const unsigned int maxElementCount) 
 {
 	int err=System::GetLastError();
 	return FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,
@@ -264,16 +264,16 @@ int System::NoticeBox(const TCHAR* fileName, const TCHAR* funcName, const unsign
 
 }
 
-CString System::HexToString(const BYTE *buff, unsigned int len)
+EpString System::HexToString(const unsigned char *buff, unsigned int len)
 {
 
-	CString result;
+	EpString result;
 
 	for (size_t i = 0; i < len; i++)
 	{
-		BYTE c ;
+		unsigned char c ;
 
-		BYTE b = buff[i] >> 4;
+		unsigned char b = buff[i] >> 4;
 
 		if (9 >= b)
 		{
@@ -304,13 +304,13 @@ CString System::HexToString(const BYTE *buff, unsigned int len)
 }
 
 
-CString System::MultiByteToWideChar(const char *multiByteCharString, unsigned int stringLength)
+EpString System::MultiByteToWideChar(const char *multiByteCharString, unsigned int stringLength)
 {
 	TCHAR *tString=EP_NEW TCHAR[stringLength+1];
 	memset(tString,0,sizeof(TCHAR)*stringLength);
 	::MultiByteToWideChar(CP_ACP,0,multiByteCharString,-1,tString,stringLength);
 	tString[stringLength]=_T('\0');
-	CString retString=tString;
+	EpString retString=tString;
 	EP_DELETE[] tString;
 	return retString;
 }
@@ -325,18 +325,11 @@ int System::MultiByteToWideChar(const char *multiByteCharString, unsigned int st
 	EP_DELETE[] tString;
 	return result;
 }
-unsigned int System::WideCharToMultiByte(CString wideCharString, char *retMultiByteString)
+unsigned int System::WideCharToMultiByte(const TCHAR* wideCharString, char *retMultiByteString)
 {
 	unsigned int result;
-	result=wcstombs(retMultiByteString,wideCharString.GetString(),wideCharString.GetLength());
-	retMultiByteString[wideCharString.GetLength()]='\0';
-	return result;
-}
-
-unsigned int WideCharToMultiByte(const TCHAR* wideCharString, unsigned int stringLength, char *retMultiByteString)
-{
-	unsigned int result;
-	result=wcstombs(retMultiByteString,wideCharString,stringLength);
-	retMultiByteString[stringLength]='\0';
+	unsigned int strLength=System::StrLen(wideCharString);
+	result=wcstombs(retMultiByteString,wideCharString,strLength);
+	retMultiByteString[strLength]='\0';
 	return result;
 }

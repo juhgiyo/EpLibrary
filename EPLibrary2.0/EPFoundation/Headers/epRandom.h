@@ -30,7 +30,7 @@ An Interface for the Random Number Generator.
 #ifndef __EP_RANDOM_H__
 #define __EP_RANDOM_H__
 
-#include "epLib.h"
+#include "epFoundationLib.h"
 #include "epSingletonHolder.h"
 
 #define RANDOM_INSTANCE epl::SingletonHolder<Random>::Instance()

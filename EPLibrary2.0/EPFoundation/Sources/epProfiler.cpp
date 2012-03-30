@@ -22,8 +22,6 @@ using namespace epl;
 
 ProfileManager::ProfileNode::ProfileNode() :OutputNode()
 {
-	m_fileName=NULL;
-	m_funcName=NULL;
 	m_cnt=0;
 	m_totalTime=0;
 }
@@ -52,11 +50,11 @@ CompResultType ProfileManager::ProfileNode::Compare(const void * a, const void *
 	ProfileNode *_a=*reinterpret_cast<ProfileNode**>(const_cast<void*>(a));
 	ProfileNode *_b=*reinterpret_cast<ProfileNode**>(const_cast<void*>(b));
 
-	if ( _a->m_fileName >  _b->m_fileName ) return COMP_RESULT_GREATERTHAN;
-	else if ( _a->m_fileName == _b->m_fileName )
+	if ( &(_a->m_fileName) >  &(_b->m_fileName) ) return COMP_RESULT_GREATERTHAN;
+	else if ( &(_a->m_fileName) == &(_b->m_fileName) )
 	{
-		if ( _a->m_funcName >  _b->m_funcName ) return COMP_RESULT_GREATERTHAN;
-		else if ( _a->m_funcName ==  _b->m_funcName )return COMP_RESULT_EQUAL;
+		if ( &(_a->m_funcName) >  &(_b->m_funcName) ) return COMP_RESULT_GREATERTHAN;
+		else if ( &(_a->m_funcName) ==  &(_b->m_funcName) )return COMP_RESULT_EQUAL;
 		else return COMP_RESULT_LESSTHAN;
 	}
 	else return COMP_RESULT_LESSTHAN;		
@@ -74,7 +72,7 @@ ProfileManager::Profiler::~Profiler()
 	EpTime endTime=0;
 	endTime=System::GetTime();
 	// Logging Comes here
-	PROFILE_INSTANCE.AddProfile(m_fileName,m_funcName,endTime-m_startTime);
+	PROFILE_INSTANCE.AddProfile(m_fileName.c_str(),m_funcName.c_str(),endTime-m_startTime);
 }
 
 
@@ -97,7 +95,7 @@ ProfileManager::~ProfileManager()
 	else
 		EP_WASSERT(0,_T("Cannot open the file(%s)!"),_T("profile.dat"));
 }
-bool ProfileManager::isProfileExist(const TCHAR *fileName,const TCHAR* funcName,ProfileNode *&retIter, int &retIdx )
+bool ProfileManager::isProfileExist(const TCHAR *fileName,const TCHAR * funcName,ProfileNode *&retIter, int &retIdx )
 {
 	if(!m_list.size())
 		return false;
@@ -128,7 +126,7 @@ bool ProfileManager::isProfileExist(const TCHAR *fileName,const TCHAR* funcName,
 
 
 
-void ProfileManager::AddProfile(const TCHAR *fileName,const TCHAR* funcName, const EpTime &time)
+void ProfileManager::AddProfile(const TCHAR *fileName,const TCHAR * funcName, const EpTime &time)
 {
 	LockObj lock(m_nodeListLock);
 	ProfileNode *existStruct=NULL;

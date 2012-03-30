@@ -21,8 +21,6 @@ using namespace epl;
 
 SimpleLogManager::SimpleLogNode::SimpleLogNode() :OutputNode()
 {
-	m_fileName=NULL;
-	m_funcName=NULL;
 	m_lineNum=0;
 	memset(m_dateStr,0,sizeof(TCHAR)*9);
 	memset(m_timeStr,0,sizeof(TCHAR)*9);
@@ -80,7 +78,7 @@ SimpleLogManager::~SimpleLogManager()
 }
 
 
-void SimpleLogManager::AddSimpleLog(const TCHAR *fileName, const TCHAR *funcName,const int lineNum,const TCHAR* format,...)
+void SimpleLogManager::AddSimpleLog(const TCHAR *fileName, const TCHAR *funcName,const int lineNum,const TCHAR *format,...)
 {
 	LockObj lock(m_nodeListLock);
 

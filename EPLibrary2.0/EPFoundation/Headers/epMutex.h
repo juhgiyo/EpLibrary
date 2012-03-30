@@ -29,8 +29,8 @@ An Interface for Mutex Class.
 */
 #ifndef __EP_MUTEX_H__
 #define __EP_MUTEX_H__
+#include "epFoundationLib.h"
 #include <afxmt.h>
-#include "epLib.h"
 #include "epSystem.h"
 #include "epBaseLock.h"
 
@@ -56,7 +56,7 @@ namespace epl
 		@param[in] mutexName name of the semaphore to distinguish
 		@param[in] lpsaAttributes the security attribute
 		*/
-		Mutex(TCHAR *mutexName=NULL, LPSECURITY_ATTRIBUTES lpsaAttributes = NULL);
+		Mutex(const TCHAR *mutexName=NULL, LPSECURITY_ATTRIBUTES lpsaAttributes = NULL);
 
 		/*!
 		Default Copy Constructor

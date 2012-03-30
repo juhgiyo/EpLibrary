@@ -21,29 +21,29 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace epl;
 
-bool RegistryHelper::SetRegistryData(HKEY key,CString subKey,CString regName,CString regData)
+bool RegistryHelper::SetRegistryData(HKEY key,const TCHAR * subKey,const TCHAR * regName,const TCHAR * regData)
 {
-	if(SHSetValue(key,subKey.GetString(),regName.GetString(),REG_SZ,regData.GetString(),(regData.GetLength()+1)*sizeof(TCHAR))==ERROR_SUCCESS)
+	if(SHSetValue(key,subKey,regName,REG_SZ,regData,(System::StrLen(regData)+1)*sizeof(TCHAR))==ERROR_SUCCESS)
 		return true;
 	return false;
 }
 
-bool RegistryHelper::SetRegistryData(HKEY key,CString subKey,CString regName,DWORD regType,void * regData,unsigned int sizeInByte)
+bool RegistryHelper::SetRegistryData(HKEY key,const TCHAR *subKey,const TCHAR * regName,unsigned long regType,void * regData,unsigned int sizeInByte)
 {
-	if(SHSetValue(key,subKey.GetString(),regName.GetString(),regType,regData,sizeInByte)==ERROR_SUCCESS)
+	if(SHSetValue(key,subKey,regName,regType,regData,sizeInByte)==ERROR_SUCCESS)
 		return true;
 	return false;
 }
 
-bool RegistryHelper::GetRegistryData(HKEY key,CString subKey,CString regName, CString &retString)
+bool RegistryHelper::GetRegistryData(HKEY key,const TCHAR *subKey,const TCHAR * regName, EpString &retString)
 {
-	DWORD size;
+	unsigned long size;
 	retString=_T("");
-	SHGetValue(key,subKey.GetString(),regName.GetString(),NULL,NULL,&size);
+	SHGetValue(key,subKey,regName,NULL,NULL,&size);
 	if(size)
 	{
 		TCHAR *buf=EP_NEW TCHAR[size];
-		if(SHGetValue(key,subKey.GetString(),regName.GetString(),NULL,buf,&size)==ERROR_SUCCESS)
+		if(SHGetValue(key,subKey,regName,NULL,buf,&size)==ERROR_SUCCESS)
 		{
 			retString=buf;
 			EP_DELETE[] buf;
@@ -54,10 +54,10 @@ bool RegistryHelper::GetRegistryData(HKEY key,CString subKey,CString regName, CS
 	return false;
 }
 
-bool RegistryHelper::GetRegistryData(HKEY key,CString subKey,CString regName,unsigned int sizeInByte,void *retBuf, unsigned int &retSizeReadInByte, DWORD &retRegType)
+bool RegistryHelper::GetRegistryData(HKEY key,const TCHAR *subKey,const TCHAR *regName,unsigned int sizeInByte,void *retBuf, unsigned int &retSizeReadInByte, unsigned long &retRegType)
 {
-	DWORD size=sizeInByte;
-	if(SHGetValue(key,subKey.GetString(),regName.GetString(),&retRegType,retBuf,&size)==ERROR_SUCCESS)
+	unsigned long size=sizeInByte;
+	if(SHGetValue(key,subKey,regName,&retRegType,retBuf,&size)==ERROR_SUCCESS)
 	{
 		retSizeReadInByte=size;
 		return true;
@@ -66,24 +66,24 @@ bool RegistryHelper::GetRegistryData(HKEY key,CString subKey,CString regName,uns
 
 }
 
-unsigned int RegistryHelper::GetRegistryDataSize(HKEY key,CString subKey,CString regName)
+unsigned int RegistryHelper::GetRegistryDataSize(HKEY key,const TCHAR *subKey,const TCHAR * regName)
 {
 	unsigned long size;
-	SHGetValue(key,subKey.GetString(),regName.GetString(),NULL,NULL,&size);
+	SHGetValue(key,subKey,regName,NULL,NULL,&size);
 	return size;
 }
 
 
-void RegistryHelper::DeleteRegistryValue(HKEY key, LPCWSTR subkey, LPCWSTR regValue)
+void RegistryHelper::DeleteRegistryValue(HKEY key, const TCHAR * subkey, const TCHAR * regValue)
 {
 	SHDeleteValue(key,subkey,regValue);
 }
-void RegistryHelper::DeleteRegistryKey(HKEY key, LPCWSTR subkey)
+void RegistryHelper::DeleteRegistryKey(HKEY key, const TCHAR * subkey)
 {
 	SHDeleteKey(key,subkey);
 }
 
-HKEY RegistryHelper::GetRegistryMode(LPCWSTR strRegPath)
+HKEY RegistryHelper::GetRegistryMode(const TCHAR * strRegPath)
 {
 	if(_tcsstr(strRegPath,_T("HKEY_CLASSES_ROOT"))!=NULL)
 	{

@@ -29,7 +29,7 @@ An Interface for the Console Processing Operation.
 */
 #ifndef __EP_CONSOLE_HELPER_H__
 #define __EP_CONSOLE_HELPER_H__
-#include "epLib.h"
+#include "epFoundationLib.h"
 #include "epSystem.h"
 
 namespace epl
@@ -48,13 +48,13 @@ namespace epl
 		@param[in] command the command to execute
 		@return the result of the console command
 		*/
-		static CString ExecuteConsoleCommand(CString command);
+		static EpString ExecuteConsoleCommand(const TCHAR * command);
 
 		/*!
 		Execute the given executable file
 		@param[in] execFilePath the program file path to execute
 		*/
-		static void ExecuteProgram(CString execFilePath);
+		static void ExecuteProgram(const TCHAR *execFilePath);
 	};
 }
 

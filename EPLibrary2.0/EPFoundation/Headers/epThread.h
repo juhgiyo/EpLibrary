@@ -29,7 +29,7 @@ A Frame Interface for Thread Class.
 */
 #ifndef __EP_THREAD_H__
 #define __EP_THREAD_H__
-#include "epLib.h"
+#include "epFoundationLib.h"
 #include <process.h>
 #include "epCriticalSectionEx.h"
 #include "epMutex.h"

@@ -29,7 +29,7 @@ An Interface for Managing the Logs.
 */
 #ifndef __EP_SIMPLE_LOGGER_H__
 #define __EP_SIMPLE_LOGGER_H__
-#include "epLib.h"
+#include "epFoundationLib.h"
 #include "epBaseOutputter.h"
 #include "epSingletonHolder.h"
 
@@ -133,9 +133,9 @@ namespace epl
 
 		private:
 			/// The name of file where the log is called.
-			const TCHAR *m_fileName;
+			EpString m_fileName;
 			/// The name of function where the log is called.
-			const TCHAR *m_funcName;
+			EpString m_funcName;
 			/// The line number where the log is called.
 			int m_lineNum;
 			/// The date when the log is called.

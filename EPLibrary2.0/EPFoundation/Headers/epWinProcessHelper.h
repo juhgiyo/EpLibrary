@@ -29,9 +29,10 @@ An Interface for the Window Processing Operation.
 */
 #ifndef __EP_WIN_PROCESS_HELPER_H__
 #define __EP_WIN_PROCESS_HELPER_H__
-#include "epLib.h"
+#include "epFoundationLib.h"
+#include "epSystem.h"
 #include <vector>
-#include <windows.h>
+
 
 namespace epl
 {
@@ -50,42 +51,42 @@ namespace epl
 		@param[in] pProcessName the name of the window process
 		@param[out] retSetOfPID the set of process id with given name
 		*/
-		static void GetProcessID(LPCTSTR pProcessName, std::vector<DWORD>& retSetOfPID);
+		static void GetProcessID(const TCHAR * pProcessName, std::vector<unsigned long>& retSetOfPID);
 
 		/*!
 		Terminate the all process with the given name
 		@param[in] pProcessName the name of the window process to terminate
 		@return true if terminated, otherwise false
 		*/
-		static bool TerminateProcess(LPCTSTR pProcessName);
+		static bool TerminateProcess(const TCHAR * pProcessName);
 
 		/*!
 		Terminate the process with the given process ID
 		@param[in] processID the id of the window process to terminate
 		@return true if terminated, otherwise false
 		*/
-		static bool TerminateProcess(DWORD processID);
+		static bool TerminateProcess(unsigned long processID);
 
 		/*!
 		Switch the focus to the process with the given process ID
 		@param[in] pProcessName the name of the window process to switch
 		@return true if switched, otherwise false
 		*/
-		static bool SwitchToProcess(LPCTSTR pProcessName);
+		static bool SwitchToProcess(const TCHAR *pProcessName);
 		
 		/*!
 		Switch the focus to the process with the given process ID
 		@param[in] processID the id of the window process to switch
 		@return true if switched, otherwise false
 		*/
-		static bool SwitchToProcess(DWORD processID);
+		static bool SwitchToProcess(unsigned long processID);
 		
 		/*!
 		Get the number of process with the given name
 		@param[in] pProcessName the name of the window process
 		@return the number of process with the given name
 		*/
-		static unsigned int GetNumberOfProcess(LPCTSTR pProcessName);
+		static unsigned int GetNumberOfProcess(const TCHAR * pProcessName);
 	};
 }
 #endif //__EP_WIN_PROCESS_HELPER_H__

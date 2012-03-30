@@ -29,7 +29,7 @@ An Interface for the Properties File Class.
 */
 #ifndef __EP_PROPERTIES_FILE_H__
 #define __EP_PROPERTIES_FILE_H__
-#include "epLib.h"
+#include "epFoundationLib.h"
 #include "epSystem.h"
 #include "epMemory.h"
 #include "epBaseFile.h"
@@ -91,7 +91,7 @@ namespace epl{
 		@param[in] val the value to change the property
 		@return true if changed, otherwise false
 		*/
-		bool SetProperty(CString key, CString val);
+		bool SetProperty(const TCHAR * key, const TCHAR * val);
 
 		/*!
 		Get the value of the property with the given key
@@ -99,7 +99,7 @@ namespace epl{
 		@param[in] retVal the value of the property of given key
 		@return true if found, otherwise false
 		*/
-		bool GetProperty(CString key,CString &retVal) const;
+		bool GetProperty(const TCHAR * key,EpString &retVal) const;
 
 		/*!
 		Add new property with the given key and value
@@ -107,33 +107,19 @@ namespace epl{
 		@param[in] val the value of the new property
 		@return true if successfully added, otherwise false
 		*/
-		bool AddProperty(CString key, CString val);
+		bool AddProperty(const TCHAR * key, const TCHAR *val);
 
 		/*!
 		Remove the property with the given key
 		@param[in] key the key of the property to remove
 		@return true if successfully removed, otherwise false
 		*/
-		bool RemoveProperty(CString key);
+		bool RemoveProperty(const TCHAR * key);
 
 		/*!
 		Clear the list of the properties
 		*/
 		void Clear();
-
-		/*!
-		Save the list of the properties from the given file
-		@param[in] filename the name of the file to save the list of properties
-		@return true if successfully saved, otherwise false
-		*/
-		bool SaveToFile(CString filename);
-		
-		/*!
-		Load the list of the properties from the given file
-		@param[in] filename the name of the file to load the list of properties
-		@return true if successfully loaded, otherwise false
-		*/
-		bool LoadFromFile(CString filename);
 
 	private:
 
@@ -147,7 +133,7 @@ namespace epl{
 		Actual Load Function that loads values from the file
 		** Sub classes should implement this function
 		*/
-		virtual void loadFromFile(CString line);
+		virtual void loadFromFile(EpString line);
 
 		/*!
 		Parse the key and value from the line buffer
@@ -156,10 +142,10 @@ namespace epl{
 		@param[out] retVal the value part of the given line
 		@return true if successfully parsed the key and value, otherwise false
 		*/
-		bool getValueKeyFromLine(CString buf, CString &retKey, CString &retVal);
+		bool getValueKeyFromLine(EpString buf, EpString &retKey, EpString &retVal);
 
 		/// The list of the properties
-		list<pair<CString,CString> > m_propertyList;
+		list<pair<EpString,EpString> > m_propertyList;
 	};
 }
 

@@ -29,7 +29,7 @@ An Interface for CriticalSectionEx Class.
 */
 #ifndef __EP_CRITICAL_SECTION_EX_H__
 #define __EP_CRITICAL_SECTION_EX_H__
-#include "epLib.h"
+#include "epFoundationLib.h"
 #include "epSystem.h"
 #include "epBaseLock.h"
 

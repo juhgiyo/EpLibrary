@@ -42,7 +42,7 @@ An Interface for Tiny Object.
 */
 #ifndef __EP_TINY_OBJECT_H__
 #define __EP_TINY_OBJECT_H__
-#include "epLib.h"
+#include "epFoundationLib.h"
 #include "epSingletonHolder.h"
 #include "epThreadSafeClass.h"
 

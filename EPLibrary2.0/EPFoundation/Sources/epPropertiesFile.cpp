@@ -33,13 +33,14 @@ PropertiesFile::~PropertiesFile()
 {
 }
 
-bool PropertiesFile::SetProperty(CString key, CString val)
+bool PropertiesFile::SetProperty(const TCHAR *  key, const TCHAR * val)
 {
-	key.Append(_T("="));
-	list<pair<CString, CString> >::iterator iter;
+	EpString opKey=key;
+	opKey.append(_T("="));
+	list<pair<EpString, EpString> >::iterator iter;
 	for(iter=m_propertyList.begin();iter != m_propertyList.end();iter++)
 	{
-		if(iter->first.Compare(key)==0)
+		if(iter->first.compare(opKey)==0)
 		{
 			iter->second=val;
 			return true;
@@ -48,13 +49,14 @@ bool PropertiesFile::SetProperty(CString key, CString val)
 	return false;
 }
 
-bool PropertiesFile::GetProperty(CString key,CString &retVal) const
+bool PropertiesFile::GetProperty(const TCHAR * key,EpString &retVal) const
 {
-	key.Append(_T("="));
-	list<pair<CString, CString> >::const_iterator iter;
+	EpString opKey=key;
+	opKey.append(_T("="));
+	list<pair<EpString, EpString> >::const_iterator iter;
 	for(iter=m_propertyList.begin();iter != m_propertyList.end();iter++)
 	{
-		if(iter->first.Compare(key)==0)
+		if(iter->first.compare(opKey)==0)
 		{
 			retVal=iter->second;
 			return true;
@@ -63,31 +65,33 @@ bool PropertiesFile::GetProperty(CString key,CString &retVal) const
 	return false;
 }
 
-bool PropertiesFile::AddProperty(CString key, CString val)
+bool PropertiesFile::AddProperty(const TCHAR * key, const TCHAR * val)
 {
-	key.Append(_T("="));
-	list<pair<CString, CString> >::iterator iter;
+	EpString opKey=key;
+	opKey.append(_T("="));
+	list<pair<EpString, EpString> >::iterator iter;
 	for(iter=m_propertyList.begin();iter != m_propertyList.end();iter++)
 	{
-		if(iter->first.Compare(key)==0)
+		if(iter->first.compare(opKey)==0)
 		{
 			return false;
 		}
 	}
-	pair<CString,CString> insertPair;
+	pair<EpString,EpString> insertPair;
 	insertPair.first=key;
 	insertPair.second=val;
 	m_propertyList.push_back(insertPair);
 	return true;
 }
 
-bool PropertiesFile::RemoveProperty(CString key)
+bool PropertiesFile::RemoveProperty(const TCHAR * key)
 {
-	key.Append(_T("="));
-	list<pair<CString, CString> >::iterator iter;
+	EpString opKey=key;
+	opKey.append(_T("="));
+	list<pair<EpString, EpString> >::iterator iter;
 	for(iter=m_propertyList.begin();iter != m_propertyList.end();iter++)
 	{
-		if(iter->first.Compare(key)==0)
+		if(iter->first.compare(opKey)==0)
 		{
 			m_propertyList.erase(iter);
 			return true;
@@ -102,35 +106,35 @@ void PropertiesFile::Clear()
 }
 void PropertiesFile::writeLoop()
 {
-	list<pair<CString,CString> >::iterator iter;
-	CString toFileString;
+	list<pair<EpString,EpString> >::iterator iter;
+	EpString toFileString;
 	for(iter=m_propertyList.begin();iter!=m_propertyList.end();iter++)
 	{
 		toFileString=_T("");
-		toFileString.Append(iter->first);
-		toFileString.Append(iter->second);
-		toFileString.Append(_T("\r\n"));
-		WriteToFile(toFileString);
+		toFileString.append(iter->first);
+		toFileString.append(iter->second);
+		toFileString.append(_T("\r\n"));
+		WriteToFile(toFileString.c_str());
 	}
 
 }
-void PropertiesFile::loadFromFile(CString rest)
+void PropertiesFile::loadFromFile(EpString rest)
 {
-	CString line=_T("");
+	EpString line=_T("");
 	while(getLine(rest,line,rest))
 	{
-		CString key;
-		CString val;
+		EpString key;
+		EpString val;
 		if(getValueKeyFromLine(line,key,val))
 		{
-			pair<CString,CString> inputPair;
+			pair<EpString,EpString> inputPair;
 			inputPair.first=key;
 			inputPair.second=val;
 			m_propertyList.push_back(inputPair);
 		}
 		else
 		{
-			pair<CString,CString> inputPair;
+			pair<EpString,EpString> inputPair;
 			inputPair.first=line;
 			inputPair.second=_T("");
 			m_propertyList.push_back(inputPair);
@@ -140,29 +144,29 @@ void PropertiesFile::loadFromFile(CString rest)
 }
 
 
-bool PropertiesFile::getValueKeyFromLine(CString buf, CString &retKey, CString &retVal)
+bool PropertiesFile::getValueKeyFromLine(EpString buf, EpString &retKey, EpString &retVal)
 {
 	TCHAR splitChar=0;
 	int bufTrav=0;
-	if(buf.GetLength()<=0)
+	if(buf.length()<=0)
 		return false;
 
 	retKey=_T("");
 	retVal=_T("");
 
-	for(int testTrav=0; testTrav<buf.GetLength();testTrav++)
+	for(int testTrav=0; testTrav<buf.length();testTrav++)
 	{
-		if(buf.GetAt(testTrav)==_T('#'))
+		if(buf.at(testTrav)==_T('#'))
 			return false;
 	}
 
-	while(splitChar!=_T('=') && bufTrav<buf.GetLength())
+	while(splitChar!=_T('=') && bufTrav<buf.length())
 	{
-		splitChar=buf.GetAt(bufTrav);
-		retKey.AppendChar(splitChar);
+		splitChar=buf.at(bufTrav);
+		retKey.append(&splitChar,1);
 		bufTrav++;
 	}
-	buf.Delete(0,bufTrav);
+	buf.erase(0,bufTrav);
 	retVal=buf;
 	return true;
 }

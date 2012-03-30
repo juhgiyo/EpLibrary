@@ -29,8 +29,9 @@ An Interface for Semaphore Class.
 */
 #ifndef __EP_SEMAPHORE_H__
 #define __EP_SEMAPHORE_H__
+
+#include "epFoundationLib.h"
 #include <afxmt.h>
-#include "epLib.h"
 #include "epSystem.h"
 #include "epBaseLock.h"
 
@@ -57,7 +58,7 @@ namespace epl
 		@param[in] semName name of the semaphore to distinguish
 		@param[in] lpsaAttributes the security attribute
 		*/
-		Semaphore(unsigned int count=1,TCHAR *semName=NULL, LPSECURITY_ATTRIBUTES lpsaAttributes = NULL);
+		Semaphore(unsigned int count=1,const TCHAR *semName=_T(""), LPSECURITY_ATTRIBUTES lpsaAttributes = NULL);
 
 		/*!
 		Default Copy Constructor

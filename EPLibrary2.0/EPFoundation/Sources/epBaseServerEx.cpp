@@ -15,14 +15,12 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "stdafx.h"
 #include "epBaseServerEx.h"
 
 using namespace epl;
 
-BaseServerEx::BaseServerEx(CString port, LockPolicy lockPolicyType)
+BaseServerEx::BaseServerEx(const TCHAR * port, LockPolicy lockPolicyType)
 {
-	m_port=NULL;
 	SetPort(port);
 	m_serverThreadHandle=0;
 	m_listenSocket=NULL;
@@ -47,11 +45,11 @@ BaseServerEx::BaseServerEx(CString port, LockPolicy lockPolicyType)
 
 BaseServerEx::BaseServerEx(const BaseServerEx& b)
 {
-	m_port=NULL;
 	m_serverThreadHandle=0;
 	m_listenSocket=NULL;
 	m_result=0;
 	m_isServerStarted=false;
+	m_port=b.m_port;
 	m_lockPolicy=b.m_lockPolicy;
 	switch(m_lockPolicy)
 	{
@@ -68,45 +66,42 @@ BaseServerEx::BaseServerEx(const BaseServerEx& b)
 		m_lock=NULL;
 		break;
 	}
-	SetPort(b.GetPort());
 }
 BaseServerEx::~BaseServerEx()
 {
-	if(m_port)
-		EP_DELETE[] m_port;
 	StopServer();
 	if(m_lock)
 		EP_DELETE m_lock;
 }
 
-bool BaseServerEx::SetPort(CString port)
+bool BaseServerEx::SetPort(const TCHAR * port)
 {
 	LockObj lock(m_lock);
 	if(m_isServerStarted)
 		return false;
-	if(m_port==NULL)
-		m_port=EP_NEW char[PORT_MAX_SIZE];
-
-	memset(m_port,0,PORT_MAX_SIZE);
-
-	if(port.GetLength()==0)
-		memcpy(m_port,DEFAULT_PORT,sizeof(DEFAULT_PORT));
+	unsigned int strLength=System::StrLen(port);
+	if(strLength==0)
+		m_port=DEFAULT_PORT;
 	else
 	{
-		wcstombs(m_port,port.GetString(),port.GetLength());
-		m_port[port.GetLength()]='\0';
+		char *tmpString=EP_NEW char[strLength+1];
+		wcstombs(tmpString,port,strLength);
+		m_port[strLength]='\0';
+		m_port=tmpString;
+		EP_DELETE[] tmpString;
 	}
 	return true;
 }
 
-CString BaseServerEx::GetPort() const
+EpString BaseServerEx::GetPort() const
 {
-	if(!m_port)
+	if(!m_port.length())
 		return _T("");
-	CString retString;
-	TCHAR port[PORT_MAX_SIZE];
-	System::MultiByteToWideChar(m_port,PORT_MAX_SIZE,port);
+	EpString retString;
+	TCHAR *port=EP_NEW TCHAR[m_port.length()+1];
+	System::MultiByteToWideChar(m_port.c_str(),m_port.length(),port);
 	retString=port;
+	EP_DELETE[] port;
 	return retString;
 }
 
@@ -114,7 +109,7 @@ vector<BaseServerWorkerEx*> BaseServerEx::GetClientList() const
 {
 	return m_clientList;
 }
-DWORD BaseServerEx::ServerThread( LPVOID lpParam ) 
+unsigned long BaseServerEx::ServerThread( LPVOID lpParam ) 
 {
 	BaseServerEx *pMainClass=reinterpret_cast<BaseServerEx*>(lpParam);
 
@@ -157,10 +152,9 @@ bool BaseServerEx::StartServer()
 	LockObj lock(m_lock);
 	if(m_isServerStarted)
 		return true;
-	if(m_port==NULL)
+	if(!m_port.length())
 	{
-		m_port=EP_NEW char[PORT_MAX_SIZE];
-		memcpy(m_port,DEFAULT_PORT,sizeof(DEFAULT_PORT));
+		m_port=DEFAULT_PORT;
 	}
 
 	WSADATA wsaData;
@@ -187,7 +181,7 @@ bool BaseServerEx::StartServer()
 
 
 	// Resolve the server address and port
-	iResult = getaddrinfo(NULL, m_port, &m_hints, &m_result);
+	iResult = getaddrinfo(NULL, m_port.c_str(), &m_hints, &m_result);
 	if ( iResult != 0 ) {
 		MessageBox(NULL,_T("getaddrinfo failed with error\n"),_T("Error"),MB_OK);
 		WSACleanup();

@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using namespace epl;
 
 
-Mutex::Mutex(TCHAR *mutexName, LPSECURITY_ATTRIBUTES lpsaAttributes) :BaseLock()
+Mutex::Mutex(const TCHAR *mutexName, LPSECURITY_ATTRIBUTES lpsaAttributes) :BaseLock()
 {
 	m_lpsaAttributes=lpsaAttributes;
 	m_mutex=EP_NEW CMutex(FALSE,mutexName,lpsaAttributes);

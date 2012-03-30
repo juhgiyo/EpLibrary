@@ -30,7 +30,7 @@ An Interface for the Fast Natural Log Approximation.
 #ifndef __EP_FAST_LOG_H__
 #define __EP_FAST_LOG_H__
 
-#include "epLib.h"
+#include "epFoundationLib.h"
 
 namespace epl{
 #define FLOG_ERROR 0xff

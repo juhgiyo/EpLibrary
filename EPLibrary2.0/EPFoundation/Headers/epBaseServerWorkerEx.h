@@ -31,7 +31,7 @@ An Interface for Server Worker Extension.
 #ifndef __EP_BASE_SERVER_WORKER_EX_H__
 #define __EP_BASE_SERVER_WORKER_EX_H__
 
-#include "epLib.h"
+#include "epFoundationLib.h"
 #include "epSystem.h"
 #include "epMemory.h"
 #include "epThread.h"

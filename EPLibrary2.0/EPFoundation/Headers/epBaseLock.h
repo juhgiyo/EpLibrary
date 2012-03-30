@@ -29,7 +29,7 @@ An Interface for Virtual Lock Class.
 */
 #ifndef __EP_BASE_LOCK_H__
 #define __EP_BASE_LOCK_H__
-#include "epLib.h"
+#include "epFoundationLib.h"
 #include "epSystem.h"
 
 namespace epl

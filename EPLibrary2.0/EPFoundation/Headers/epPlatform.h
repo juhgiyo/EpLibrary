@@ -30,13 +30,25 @@ An Interface for the Platform Dependencies.
 #ifndef __EP_PLATFORM_H__
 #define __EP_PLATFORM_H__
 
-#include "epLib.h"
+#include "epFoundationLib.h"
 
+#if defined(_WIN32) || defined(_WIN64)
+
+#if _MSC_VER > 1400
+// 0x0600 -> Windows Vista
+// 0x0502 -> Windows Server 2003
+// 0x0501 -> Windows XP
+// 0x0500 -> Windows 2000
+// 0x0601 -> Windows 7
+#ifndef WINVER
+#define WINVER 0x0601
+#define _WIN32_WINNT 0x0601
+#endif
+#endif
 
 #ifndef _SECURE_ATL
 #define _SECURE_ATL 1
 #endif
-
 
 #ifndef VC_EXTRALEAN
 #define VC_EXTRALEAN            // 거의 사용되지 않는 내용은 Windows 헤더에서 제외합니다.
@@ -66,7 +78,7 @@ An Interface for the Platform Dependencies.
 #endif
 
 
-#define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS      // some CString constructors will be explicit
+#define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS      // some EpString constructors will be explicit
 
 // turns off MFC's hiding of some common and often safely ignored warning messages
 #define _AFX_ALL_WARNINGS
@@ -82,5 +94,24 @@ An Interface for the Platform Dependencies.
 #endif // _AFX_NO_AFXCMN_SUPPORT
 
 #pragma warning( disable : 4018 4244 4251 4291 4786 4800 4996 4275)
+
+#else //_WIN32
+
+#ifndef TCHAR
+#ifdef _UNICODE
+typedef unsigned short TCHAR 
+#else// _UNICODE
+#define char TCHAR 
+#endif// _UNICODE
+#endif// TCHAR
+
+#ifndef _T
+#ifdef _UNICODE
+#define _T(x) L ## x
+#else// _UNICODE
+#define _T(x) x
+#endif// _UNICODE
+#endif// _T(x)
+#endif //_WIN32
 
 #endif //__EP_PLATFORM_H__

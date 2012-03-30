@@ -29,7 +29,7 @@ An Interface for Stream Class.
 */
 #ifndef __EP_STREAM_H__
 #define __EP_STREAM_H__
-#include "epLib.h"
+#include "epFoundationLib.h"
 #include "epCriticalSectionEx.h"
 #include "epMutex.h"
 #include "epNoLock.h"

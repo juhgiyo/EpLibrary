@@ -19,9 +19,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace epl;
 
-CString ConsoleHelper::ExecuteConsoleCommand(CString command)
+EpString ConsoleHelper::ExecuteConsoleCommand(const TCHAR * command)
 {
-	CString csExecute;
+	EpString csExecute;
 	csExecute=command;
 
 	SECURITY_ATTRIBUTES secattr;
@@ -43,24 +43,24 @@ CString ConsoleHelper::ExecuteConsoleCommand(CString command)
 	sInfo.hStdOutput=wPipe;
 	sInfo.hStdError=wPipe;
 
-	CreateProcess(0,reinterpret_cast<LPWSTR>(const_cast<wchar_t*>(csExecute.GetString())),0,0,TRUE,NORMAL_PRIORITY_CLASS|CREATE_NO_WINDOW,0,0,&sInfo,&pInfo);
+	CreateProcess(0,reinterpret_cast<LPWSTR>(const_cast<wchar_t*>(csExecute.c_str())),0,0,TRUE,NORMAL_PRIORITY_CLASS|CREATE_NO_WINDOW,0,0,&sInfo,&pInfo);
 	CloseHandle(wPipe);
 
-	char buf[100];
-	DWORD reDword;
-	CString m_csOutput,csTemp;
-	BOOL res;
+	TCHAR buf[100];
+	unsigned long reDword;
+	EpString m_csOutput,csTemp;
+	long res;
 	do
 	{
 		res=::ReadFile(rPipe,buf,100,&reDword,0);
 		csTemp=buf;
-		m_csOutput+=csTemp.Left(reDword);
+		m_csOutput+=csTemp.substr(0,reDword);
 	}while(res);
 	return m_csOutput;
 
 }
 
-void ConsoleHelper::ExecuteProgram(CString execFilePath)
+void ConsoleHelper::ExecuteProgram(const TCHAR * execFilePath)
 {
-	ShellExecute(0,0,execFilePath.GetString(),0,0,SW_SHOWNORMAL);
+	ShellExecute(0,0,execFilePath,0,0,SW_SHOWNORMAL);
 }

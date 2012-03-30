@@ -16,6 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "epWinProcessHelper.h"
+#include <WinPerf.h>
 #include <comdef.h>
 #include <tchar.h>
 #include "epMemory.h"
@@ -79,15 +80,15 @@ PPERF_COUNTER_BLOCK CounterBlock(PPERF_INSTANCE_DEFINITION PerfInst)
 #define PROC_ID_COUNTER			784
 
 
-void WinProcessHelper::GetProcessID(LPCTSTR pProcessName, std::vector<DWORD>& retSetOfPID)
+void WinProcessHelper::GetProcessID(const TCHAR *pProcessName, std::vector<unsigned long>& retSetOfPID)
 {
     PPERF_DATA_BLOCK pPerfData = NULL;
     PPERF_OBJECT_TYPE pPerfObj;
     PPERF_INSTANCE_DEFINITION pPerfInst;
     PPERF_COUNTER_DEFINITION pPerfCntr, pCurCntr;
     PPERF_COUNTER_BLOCK PtrToCntr;
-    DWORD BufferSize = TOTALBYTES;
-    DWORD i, j;
+    unsigned long BufferSize = TOTALBYTES;
+    unsigned long i, j;
 	LONG k;
 
 // Allocate the buffer for the performance data.
@@ -144,7 +145,7 @@ void WinProcessHelper::GetProcessID(LPCTSTR pProcessName, std::vector<DWORD>& re
 			pCurCntr = pPerfCntr;
 			bstrInput = pProcessName;
 			bstrProcessName = reinterpret_cast<wchar_t *>(reinterpret_cast<PBYTE>(pPerfInst) + pPerfInst->NameOffset);
-			if (!_tcscmp(static_cast<LPCTSTR>(bstrProcessName), static_cast<LPCTSTR>(bstrInput)))
+			if (!_tcscmp(static_cast<const TCHAR *>(bstrProcessName), static_cast<const TCHAR *>(bstrInput)))
 			{
 			
 				// Retrieve all counters.
@@ -154,7 +155,7 @@ void WinProcessHelper::GetProcessID(LPCTSTR pProcessName, std::vector<DWORD>& re
 					if (pCurCntr->CounterNameTitleIndex == PROC_ID_COUNTER)
 					{
 						PtrToCntr = CounterBlock(pPerfInst);
-						DWORD *pdwValue = reinterpret_cast<DWORD*>(reinterpret_cast<LPBYTE>(PtrToCntr) + pCurCntr->CounterOffset);
+						unsigned long *pdwValue = reinterpret_cast<unsigned long*>(reinterpret_cast<LPBYTE>(PtrToCntr) + pCurCntr->CounterOffset);
 						retSetOfPID.push_back(*pdwValue);
 						break;
 					}
@@ -174,7 +175,7 @@ void WinProcessHelper::GetProcessID(LPCTSTR pProcessName, std::vector<DWORD>& re
 	EP_Free(pPerfData);
 	RegCloseKey(HKEY_PERFORMANCE_DATA);
 }
-bool WinProcessHelper::TerminateProcess(DWORD processID)
+bool WinProcessHelper::TerminateProcess(unsigned long processID)
 {
 	HANDLE pProcess = OpenProcess(PROCESS_ALL_ACCESS,FALSE,processID);
 	if(pProcess)
@@ -186,9 +187,9 @@ bool WinProcessHelper::TerminateProcess(DWORD processID)
 	return false;
 }
 
-bool WinProcessHelper::SwitchToProcess(LPCTSTR pProcessName)
+bool WinProcessHelper::SwitchToProcess(const TCHAR * pProcessName)
 {
-	std::vector<DWORD> setOfPID;
+	std::vector<unsigned long> setOfPID;
 	epl::WinProcessHelper::GetProcessID(pProcessName,setOfPID);
 	if(!setOfPID.empty())
 	{
@@ -196,8 +197,8 @@ bool WinProcessHelper::SwitchToProcess(LPCTSTR pProcessName)
 
 		while(hwnd)
 		{
-			DWORD pid;
-			DWORD dwThreadID= ::GetWindowThreadProcessId(hwnd,&pid);
+			unsigned long pid;
+			unsigned long dwThreadID= ::GetWindowThreadProcessId(hwnd,&pid);
 			if(pid==setOfPID[0])
 			{
 				::SwitchToThisWindow(hwnd,TRUE);
@@ -208,14 +209,14 @@ bool WinProcessHelper::SwitchToProcess(LPCTSTR pProcessName)
 	}
 	return false;
 }
-bool WinProcessHelper::SwitchToProcess(DWORD processID)
+bool WinProcessHelper::SwitchToProcess(unsigned long processID)
 {
 	HWND hwnd= ::GetTopWindow(0);
 
 	while(hwnd)
 	{
-		DWORD pid;
-		DWORD dwThreadID= ::GetWindowThreadProcessId(hwnd,&pid);
+		unsigned long pid;
+		unsigned long dwThreadID= ::GetWindowThreadProcessId(hwnd,&pid);
 		if(pid==processID)
 		{
 			::SwitchToThisWindow(hwnd,TRUE);
@@ -226,9 +227,9 @@ bool WinProcessHelper::SwitchToProcess(DWORD processID)
 	return false;
 }
 
-bool WinProcessHelper::TerminateProcess(LPCTSTR pProcessName)
+bool WinProcessHelper::TerminateProcess(const TCHAR *pProcessName)
 {
-	std::vector<DWORD> setOfPid;
+	std::vector<unsigned long> setOfPid;
 	epl::WinProcessHelper::GetProcessID(pProcessName,setOfPid);
 	if(!setOfPid.empty())
 	{
@@ -246,9 +247,9 @@ bool WinProcessHelper::TerminateProcess(LPCTSTR pProcessName)
 	return true;
 }
 
-unsigned int WinProcessHelper::GetNumberOfProcess(LPCTSTR pProcessName)
+unsigned int WinProcessHelper::GetNumberOfProcess(const TCHAR * pProcessName)
 {
-	std::vector<DWORD> setOfPid;
+	std::vector<unsigned long> setOfPid;
 	epl::WinProcessHelper::GetProcessID(pProcessName,setOfPid);
 	return setOfPid.size();
 }

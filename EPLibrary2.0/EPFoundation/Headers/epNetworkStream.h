@@ -29,7 +29,7 @@ An Interface for Network Stream Class.
 */
 #ifndef __EP_NETWORK_STREAM_H__
 #define __EP_NETWORK_STREAM_H__
-#include "epLib.h"
+#include "epFoundationLib.h"
 #include "epStream.h"
 
 namespace epl

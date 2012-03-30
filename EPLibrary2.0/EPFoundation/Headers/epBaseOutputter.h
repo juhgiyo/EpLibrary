@@ -29,7 +29,7 @@ An Interface for Outputting data Template class.
 */
 #ifndef __EP_OUTPUTTER_H__
 #define __EP_OUTPUTTER_H__
-#include "epLib.h"
+#include "epFoundationLib.h"
 #include "epSystem.h"
 #include "epThreadSafeClass.h"
 #include "epCriticalSectionEx.h"

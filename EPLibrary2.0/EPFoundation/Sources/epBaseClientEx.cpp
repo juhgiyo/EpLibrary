@@ -15,16 +15,13 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "stdafx.h"
 #include "epBaseClientEx.h"
 #include "epThread.h"
 
 using namespace epl;
 
-BaseClientEx::BaseClientEx(CString hostName, CString port,LockPolicy lockPolicyType)
+BaseClientEx::BaseClientEx(const TCHAR * hostName, const TCHAR * port,LockPolicy lockPolicyType)
 {
-	m_port=NULL;
-	m_hostName=NULL;
 	SetHostName(hostName);
 	SetPort(port);
 	m_connectSocket=NULL;
@@ -54,12 +51,12 @@ BaseClientEx::BaseClientEx(CString hostName, CString port,LockPolicy lockPolicyT
 
 BaseClientEx::BaseClientEx(const BaseClientEx& b)
 {
-	m_port=NULL;
-	m_hostName=NULL;
 	m_connectSocket=NULL;
 	m_result=0;
 	m_ptr=0;
 	m_isConnected=false;
+	m_hostName=b.m_hostName;
+	m_port=b.m_port;
 	m_lockPolicy=b.m_lockPolicy;
 	switch(m_lockPolicy)
 	{
@@ -80,15 +77,9 @@ BaseClientEx::BaseClientEx(const BaseClientEx& b)
 		m_generalLock=NULL;
 		break;
 	}
-	SetHostName(b.GetHostName());
-	SetPort(b.GetPort());
 }
 BaseClientEx::~BaseClientEx()
 {
-	if(m_port)
-		EP_DELETE[] m_port;
-	if(m_hostName)
-		EP_DELETE[] m_hostName;
 	Disconnect();
 	if(m_sendLock)
 		EP_DELETE m_sendLock;
@@ -96,65 +87,68 @@ BaseClientEx::~BaseClientEx()
 		EP_DELETE m_generalLock;
 }
 
-bool BaseClientEx::SetHostName(CString hostName)
+bool BaseClientEx::SetHostName(const TCHAR * hostName)
 {
 	LockObj lock(m_generalLock);
 	if(m_isConnected)
 		return false;
-	if(m_hostName==NULL)
-		m_hostName=EP_NEW char[HOSTNAME_MAX_SIZE];
 
-	memset(m_hostName,0,HOSTNAME_MAX_SIZE);
-
-	if(hostName.GetLength()==0)
-		memcpy(m_hostName,DEFAULT_HOSTNAME,sizeof(DEFAULT_HOSTNAME));
+	unsigned int strLength=System::StrLen(hostName);
+	if(strLength==0)
+		m_hostName=DEFAULT_HOSTNAME;
 	else
 	{
-		wcstombs(m_hostName,hostName.GetString(),hostName.GetLength());
-		m_hostName[hostName.GetLength()]='\0';
+
+		char *tmpString=EP_NEW char[strLength+1];
+		wcstombs(tmpString,hostName,strLength);
+		tmpString[strLength]='\0';
+		m_hostName=tmpString;
+		EP_DELETE[] tmpString;
 	}
 	return true;
 
 }
-bool BaseClientEx::SetPort(CString port)
+bool BaseClientEx::SetPort(const TCHAR * port)
 {
 	LockObj lock(m_generalLock);
 	if(m_isConnected)
 		return false;
-	if(m_port==NULL)
-		m_port=EP_NEW char[PORT_MAX_SIZE];
 
-	memset(m_port,0,PORT_MAX_SIZE);
-
-	if(port.GetLength()==0)
-		memcpy(m_port,DEFAULT_PORT,sizeof(DEFAULT_PORT));
+	unsigned int strLength=System::StrLen(port);
+	if(strLength==0)
+		m_port=DEFAULT_PORT;
 	else
 	{
-		wcstombs(m_port,port.GetString(),port.GetLength());
-		m_port[port.GetLength()]='\0';
+		char *tmpString=EP_NEW char[strLength+1];
+		wcstombs(tmpString,port,strLength);
+		m_port[strLength]='\0';
+		m_port=tmpString;
+		EP_DELETE[] tmpString;
 	}
 	return true;
 
 }
 
-CString BaseClientEx::GetHostName() const
+EpString BaseClientEx::GetHostName() const
 {
-	if(!m_hostName)
+	if(!m_hostName.length())
 		return _T("");
-	CString retString;
-	TCHAR hostName[HOSTNAME_MAX_SIZE];
-	System::MultiByteToWideChar(m_hostName,HOSTNAME_MAX_SIZE,hostName);
+	EpString retString;
+	TCHAR *hostName=EP_NEW TCHAR[m_hostName.length()+1];
+	System::MultiByteToWideChar(m_hostName.c_str(),m_hostName.length(),hostName);
 	retString=hostName;
+	EP_DELETE[] hostName;
 	return retString;
 }
-CString BaseClientEx::GetPort() const
+EpString BaseClientEx::GetPort() const
 {
-	if(!m_port)
+	if(!m_port.length())
 		return _T("");
-	CString retString;
-	TCHAR port[PORT_MAX_SIZE];
-	System::MultiByteToWideChar(m_port,PORT_MAX_SIZE,port);
+	EpString retString;
+	TCHAR *port=EP_NEW TCHAR[m_port.length()+1];
+	System::MultiByteToWideChar(m_port.c_str(),m_port.length(),port);
 	retString=port;
+	EP_DELETE[] port;
 	return retString;
 }
 
@@ -207,17 +201,16 @@ bool BaseClientEx::Connect()
 	LockObj lock(m_generalLock);
 	if(m_isConnected)
 		return true;
-	if(m_port==NULL)
+	if(!m_port.length())
 	{
-		m_port=EP_NEW char[PORT_MAX_SIZE];
-		memcpy(m_port,DEFAULT_PORT,sizeof(DEFAULT_PORT));
+		m_port=DEFAULT_PORT;
 	}
 
-	if(m_hostName==NULL)
+	if(!m_hostName.length())
 	{
-		m_hostName=EP_NEW char[HOSTNAME_MAX_SIZE];
-		memcpy(m_hostName,DEFAULT_HOSTNAME,sizeof(DEFAULT_HOSTNAME));
+		m_hostName=DEFAULT_HOSTNAME;
 	}
+
 
 
 	WSADATA wsaData;
@@ -238,7 +231,7 @@ bool BaseClientEx::Connect()
 	hints.ai_protocol = IPPROTO_TCP;
 
 	// Resolve the server address and port
-	iResult = getaddrinfo(m_hostName, m_port, &hints, &m_result);
+	iResult = getaddrinfo(m_hostName.c_str(), m_port.c_str(), &hints, &m_result);
 	if ( iResult != 0 ) {
 		MessageBox(NULL,_T("getaddrinfo failed with error\n"),_T("Error"),MB_OK);
 		WSACleanup();
@@ -287,7 +280,7 @@ unsigned long BaseClientEx::passPacket(void *param)
 	return 0;
 }
 
-DWORD BaseClientEx::ClientThread( LPVOID lpParam ) 
+unsigned long BaseClientEx::ClientThread( LPVOID lpParam ) 
 {
 	BaseClientEx *pMainClass=reinterpret_cast<BaseClientEx*>(lpParam);
 	int iResult;

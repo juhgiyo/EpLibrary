@@ -29,7 +29,7 @@ An Interface for the Smart Object.
 */
 #ifndef __EP_SMART_OBJECT_H__
 #define __EP_SMART_OBJECT_H__
-#include "epLib.h"
+#include "epFoundationLib.h"
 #include "epSystem.h"
 #include "epSimpleLogger.h"
 #include "epCriticalSectionEx.h"

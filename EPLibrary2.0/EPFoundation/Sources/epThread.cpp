@@ -22,7 +22,7 @@ using namespace epl;
 
 HANDLE Thread::CreateThread(LPTHREAD_START_ROUTINE routineFunc,LPVOID param)
 {
-	DWORD threadID=0;
+	unsigned long threadID=0;
 	return ::CreateThread(NULL, 0,routineFunc,param,0,&threadID);
 }
 
@@ -166,7 +166,7 @@ bool Thread::Terminate()
 	LockObj lock(m_threadLock);
 	if(m_status!=THREAD_STATUS_TERMINATED && m_threadHandle)
 	{
-		DWORD exitCode=0;
+		unsigned long exitCode=0;
 		m_status=THREAD_STATUS_TERMINATED;
 		m_threadHandle=0;
 		m_threadId=0;

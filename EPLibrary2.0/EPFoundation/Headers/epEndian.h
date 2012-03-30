@@ -30,7 +30,7 @@ An Interface for Endian Class.
 #ifndef __EP_ENDIAN_H__
 #define __EP_ENDIAN_H__
 
-#include "epLib.h"
+#include "epFoundationLib.h"
 
 
 namespace epl

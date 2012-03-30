@@ -29,7 +29,7 @@ An Interface for the File System Folder Processing Operation.
 */
 #ifndef __EP_FOLDER_HELPER_H__
 #define __EP_FOLDER_HELPER_H__
-#include "epLib.h"
+#include "epFoundationLib.h"
 #include "epSystem.h"
 namespace epl
 {
@@ -52,14 +52,14 @@ namespace epl
 		@param[out] retFolderPath the chosen folder path
 		@return true if the folder is successfully chosen, otherwise false
 		*/
-		static bool ChooseFolder(HWND hParent, LPCTSTR title, CString &retFolderPath);
+		static bool ChooseFolder(HWND hParent, const TCHAR * title, EpString &retFolderPath);
 
 		/*!
 		Check if the given path exists
 		@param[in] path the file path to check
 		@return true if the folder exists, otherwise false
 		*/
-		static bool IsPathExist(LPCTSTR path);
+		static bool IsPathExist(const TCHAR * path);
 
 
 		/*!
@@ -67,14 +67,14 @@ namespace epl
 		@param[in] strPath the file path to create
 		@return true if the folder is created successfully, otherwise false
 		*/
-		static bool CreateFolder(LPCTSTR strPath);
+		static bool CreateFolder(const TCHAR * strPath);
 
 		/*!
 		Delete given folder path from file system
 		@param[in] strPath the file path to delete
 		@return true if the folder is deleted successfully, otherwise false
 		*/
-		static void DeleteFolder(LPCTSTR strPath);
+		static void DeleteFolder(const TCHAR *strPath);
 
 		/*!
 		Get Special Folder Path String
@@ -83,7 +83,7 @@ namespace epl
 		@param[out] retPath the returning path string
 		@return true if the folder exists, otherwise false
 		*/
-		static bool GetSpecialFolderPath(int csidl,bool isCreateIfNotExist,CString &retPath);
+		static bool GetSpecialFolderPath(int csidl,bool isCreateIfNotExist,EpString &retPath);
 
 		/*!
 		Copy the source file to the destination file
@@ -92,7 +92,7 @@ namespace epl
 		@param[in] failIfExist if this is true and the destination file exist then fail copy
 		@return true if the copied successfully, otherwise false
 		*/
-		static bool CopyTheFile(LPCTSTR strFromFile, LPCTSTR strToFile,bool failIfExist);
+		static bool CopyTheFile(const TCHAR * strFromFile, const TCHAR *strToFile,bool failIfExist);
 
 		/*!
 		Return actual file length of the given file
@@ -106,27 +106,27 @@ namespace epl
 		Return the full path with file name for the current executable file
 		@return the full path of the current module
 		*/
-		static CString GetModuleFileName();
+		static EpString GetModuleFileName();
 
 		/*!
 		Return only the directory which contains the current executable file
 		@return the directory, which contains the current module
 		*/
-		static CString GetModuleFileDirectory();
+		static EpString GetModuleFileDirectory();
 
 		/*!
 		Return only the directory of given file path with file name
 		@param[in] filePath the full path of the file with file name
 		@return the directory, which contains the given file
 		*/
-		static CString GetPathOnly(CString filePath);
+		static EpString GetPathOnly(const TCHAR * filePath);
 
 	private:
 		/*!
 		Recursively delete given folder path from file system
 		@param[in] strPath the file path to delete
 		*/
-		static void removeDir(LPCTSTR strPath);
+		static void removeDir(const TCHAR * strPath);
 	};
 }
 

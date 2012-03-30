@@ -15,7 +15,7 @@ An Interface for CStringEx Class.
 */
 #ifndef __EP_CSTRING_EX_H__
 #define __EP_CSTRING_EX_H__
-#include "epLib.h"
+#include "epFoundationLib.h"
 #include "epSystem.h"
 
 namespace epl
@@ -39,8 +39,8 @@ namespace epl
 		CStringEx(void) {};
 		CStringEx(const TCHAR* s) : CString(s) {}
 		CStringEx(const TCHAR c) {TCHAR s[2]={_T('\0'), _T('\0')}; s[0]=c; CString::operator=(s);}
-		CStringEx(int i, const TCHAR* format=_T("%d"), DWORD options=NO_OPTIONS);
-		CStringEx(double d, const TCHAR* format=_T("%02lf"), DWORD options=NO_OPTIONS);
+		CStringEx(int i, const TCHAR* format=_T("%d"), unsigned long options=NO_OPTIONS);
+		CStringEx(double d, const TCHAR* format=_T("%02lf"), unsigned long options=NO_OPTIONS);
 		virtual ~CStringEx() {};
 
 		CStringEx Left(TCHAR c, int n=1) const;						// everything to the left of the nth occurance of <c>

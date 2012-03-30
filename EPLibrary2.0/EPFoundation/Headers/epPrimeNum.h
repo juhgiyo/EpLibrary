@@ -30,7 +30,7 @@ An Interface for the Fast Prime Number Calculation.
 #ifndef __EP_PRIME_NUM_H__
 #define __EP_PRIME_NUM_H__
 
-#include "epLib.h"
+#include "epFoundationLib.h"
 
 namespace epl
 {

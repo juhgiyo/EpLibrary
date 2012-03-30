@@ -30,7 +30,7 @@ An Interface for Packet.
 #ifndef __EP_PACKET_H__
 #define __EP_PACKET_H__
 
-#include "epLib.h"
+#include "epFoundationLib.h"
 #include "epSystem.h"
 #include "epMemory.h"
 #include "epSmartObject.h"

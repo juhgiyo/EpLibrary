@@ -29,7 +29,7 @@ An Interface for the DateTime Operation.
 */
 #ifndef __EP_DATE_TIME_HELPER_H__
 #define __EP_DATE_TIME_HELPER_H__
-#include "epLib.h"
+#include "epFoundationLib.h"
 #include "epSystem.h"
 
 namespace epl 
@@ -63,21 +63,21 @@ namespace epl
 		@param[in] date the date to translate
 		@return the date string converted.
 		*/
-		static CString DateToString(const SYSTEMTIME date);
+		static EpString DateToString(const SYSTEMTIME date);
 
 		/*!
 		Translate the given SYSTEMTIME time part to Time String 
 		@param[in] time the time to translate
 		@return the time string converted.
 		*/
-		static CString TimeToString(const SYSTEMTIME time);
+		static EpString TimeToString(const SYSTEMTIME time);
 
 		/*!
 		Translate the given SYSTEMTIME's Date & Time to DateTime String 
 		@param[in] dateTime the DateTime to translate
 		@return the DateTime string converted.
 		*/
-		static CString DateTimeToString(const SYSTEMTIME dateTime);
+		static EpString DateTimeToString(const SYSTEMTIME dateTime);
 	};
 }
 

@@ -42,6 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\.\EPFoundation\Headers"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -106,6 +107,7 @@
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
 				AdditionalIncludeDirectories="..\.\EPFoundation\Headers"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				WarningLevel="3"
@@ -166,7 +168,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\.\EPFoundation\Headers"
-				PreprocessorDefinitions="EP_FOUNDATION_DLL_EXPORT"
+				PreprocessorDefinitions="WIN32;_DEBUG;EP_FOUNDATION_DLL_EXPORT"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -186,10 +188,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="uafxcwd.lib LIBCMTD.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_DLL.dll"
-				IgnoreDefaultLibraryNames="uafxcwd.lib LIBCMTD.lib"
+				IgnoreDefaultLibraryNames=""
+				SubSystem="2"
 				ImportLibrary="$(TargetDir)$(TargetName).lib"
+				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -242,7 +245,7 @@
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
 				AdditionalIncludeDirectories="..\.\EPFoundation\Headers"
-				PreprocessorDefinitions="EP_FOUNDATION_DLL_EXPORT"
+				PreprocessorDefinitions="WIN32;NDEBUG;EP_FOUNDATION_DLL_EXPORT"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
@@ -261,10 +264,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="uafxcw.lib LIBCMT.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_DLL.dll"
-				IgnoreDefaultLibraryNames="uafxcw.lib LIBCMT.lib"
+				IgnoreDefaultLibraryNames=""
+				SubSystem="2"
 				ImportLibrary="$(TargetDir)$(TargetName).lib"
+				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -474,42 +478,6 @@
 				</Filter>
 			</Filter>
 			<Filter
-				Name="GUI"
-				>
-				<File
-					RelativePath=".\Sources\epTaskbarNotifier.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Sources\epWinProcessHelper.cpp"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="FileSystem"
-				>
-				<File
-					RelativePath=".\Sources\epBaseFile.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Sources\epFolderHelper.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Sources\epPropertiesFile.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Sources\epXMLFile.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Sources\epXMLite.cpp"
-					>
-				</File>
-			</Filter>
-			<Filter
 				Name="Server"
 				>
 				<File
@@ -541,6 +509,42 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="File System"
+				>
+				<File
+					RelativePath=".\Sources\epBaseFile.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Sources\epFolderHelper.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Sources\epPropertiesFile.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Sources\epXMLFile.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Sources\epXMLite.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="GUI"
+				>
+				<File
+					RelativePath=".\Sources\epTaskbarNotifier.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Sources\epWinProcessHelper.cpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -548,11 +552,11 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\Headers\epl.h"
+				RelativePath=".\Headers\epFoundationLib.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Headers\epLib.h"
+				RelativePath=".\Headers\epl.h"
 				>
 			</File>
 			<Filter
@@ -800,42 +804,6 @@
 				</Filter>
 			</Filter>
 			<Filter
-				Name="GUI"
-				>
-				<File
-					RelativePath=".\Headers\epTaskbarNotifier.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Headers\epWinProcessHelper.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="File System"
-				>
-				<File
-					RelativePath=".\Headers\epBaseFile.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Headers\epFolderHelper.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Headers\epPropertiesFile.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Headers\epXMLFile.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Headers\epXMLite.h"
-					>
-				</File>
-			</Filter>
-			<Filter
 				Name="Server"
 				>
 				<File
@@ -868,6 +836,42 @@
 				</File>
 				<File
 					RelativePath=".\Headers\epPacketContainer.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="File System"
+				>
+				<File
+					RelativePath=".\Headers\epBaseFile.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Headers\epFolderHelper.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Headers\epPropertiesFile.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Headers\epXMLFile.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Headers\epXMLite.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="GUI"
+				>
+				<File
+					RelativePath=".\Headers\epTaskbarNotifier.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Headers\epWinProcessHelper.h"
 					>
 				</File>
 			</Filter>

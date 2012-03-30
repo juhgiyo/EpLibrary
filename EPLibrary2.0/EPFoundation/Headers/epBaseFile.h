@@ -29,7 +29,7 @@ An Interface for the Base File Class.
 */
 #ifndef __EP_BASE_FILE_H__
 #define __EP_BASE_FILE_H__
-#include "epLib.h"
+#include "epFoundationLib.h"
 #include "epSystem.h"
 #include "epMemory.h"
 #include <list>
@@ -92,20 +92,20 @@ namespace epl{
 		@param[in] filename the name of the file to save the list of properties
 		@return true if successfully saved, otherwise false
 		*/
-		bool SaveToFile(CString filename);
+		bool SaveToFile(const TCHAR *filename);
 		
 		/*!
 		Load the list of the properties from the given file
 		@param[in] filename the name of the file to load the list of properties
 		@return true if successfully loaded, otherwise false
 		*/
-		bool LoadFromFile(CString filename);
+		bool LoadFromFile(const TCHAR *filename);
 
 		/*!
 		Write the given string to the file
 		@param[in] toFileString the string to write to the file
 		*/
-		void WriteToFile(CString toFileString);
+		void WriteToFile(const TCHAR *toFileString);
 
 	protected:
 		/*!
@@ -115,7 +115,7 @@ namespace epl{
 		@param[out] retRest the rest of the buffer without the found line
 		@return true if successfully parsed the line, otherwise false
 		*/
-		bool getLine(CString buf, CString &retLine, CString &retRest);
+		bool getLine(EpString buf, EpString &retLine, EpString &retRest);
 
 		/*!
 		Loop Function that writes to the file
@@ -127,7 +127,7 @@ namespace epl{
 		Actual load Function that loads values from the file
 		** Sub classes should implement this function
 		*/
-		virtual void loadFromFile(CString line)=0;
+		virtual void loadFromFile(EpString line)=0;
 
 		/// Encoding type of the file
 		FileEncodingType m_encodingType;

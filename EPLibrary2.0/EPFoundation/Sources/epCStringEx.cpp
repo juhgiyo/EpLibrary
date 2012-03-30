@@ -10,7 +10,7 @@ Please refer to <http://www.codeproject.com/Articles/2396/Simple-CString-Extensi
 
 using namespace epl;
 
-CStringEx::CStringEx(int i, const TCHAR* format, DWORD options)
+CStringEx::CStringEx(int i, const TCHAR* format, unsigned long options)
 {
 	TCHAR s[64];							// Eeek, a hard coded limit on integer sizes!
 	_stprintf(s, _T("%d"), i);
@@ -25,7 +25,7 @@ CStringEx::CStringEx(int i, const TCHAR* format, DWORD options)
 }
 
 
-CStringEx::CStringEx(double d, const TCHAR* format, DWORD options)
+CStringEx::CStringEx(double d, const TCHAR* format, unsigned long options)
 {
 	TCHAR s[64];							// Eeek, a hard coded limit on double sizes!
 	_stprintf(s, format, d);

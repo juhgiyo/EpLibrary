@@ -77,7 +77,7 @@ An Interface for EP Foundation Library
 
 #include "epSingletonHolder.h"
 #include "epSmartObject.h"
-#include "epThreadPolicy.h"
+#include "epThreadSafeClass.h"
 
 //GUI
 #include "epTaskbarNotifier.h"

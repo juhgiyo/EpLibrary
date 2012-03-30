@@ -29,7 +29,7 @@ An Interface for NoLock Class.
 */
 #ifndef __EP_NO_LOCK_H__
 #define __EP_NO_LOCK_H__
-#include "epLib.h"
+#include "epFoundationLib.h"
 #include "epSystem.h"
 #include "epBaseLock.h"
 
