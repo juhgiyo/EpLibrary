@@ -147,7 +147,7 @@ bool BaseFile::LoadFromFile(CString filename)
 	if(m_encodingType==FILE_ENCODING_TYPE_UTF8||m_encodingType==FILE_ENCODING_TYPE_UTF16)
 	{		
 		//Find the actual length of file
-		unsigned int length= (unsigned int)propertyFile.SeekToEnd()+1;
+		unsigned int length= static_cast<unsigned int>(propertyFile.SeekToEnd()+1);
 		propertyFile.SeekToBegin();
 
 		char *cFileBuf=EP_NEW char[length];
@@ -165,7 +165,7 @@ bool BaseFile::LoadFromFile(CString filename)
 	else
 	{
 		//Find the actual length of file
-		unsigned int length=(unsigned int)propertyFile.GetLength();
+		unsigned int length=static_cast<unsigned int>( propertyFile.GetLength() );
 
 		TCHAR *tFileBuf=EP_NEW TCHAR[length];
 		memset(tFileBuf,0,sizeof(TCHAR)*length);

@@ -30,7 +30,7 @@ void WorkerThreadSingle::execute()
 		jobPtr->Retain();
 		m_workPool.Pop();
 		jobPtr->JobReport(BaseJob::JOB_STATUS_IN_PROCESS);
-		((BaseJobProcessor*)m_arg)->DoJob(m_threadId,m_lifePolicy,jobPtr);
+		(reinterpret_cast<BaseJobProcessor*>(m_arg))->DoJob(m_threadId,m_lifePolicy,jobPtr);
 		jobPtr->JobReport(BaseJob::JOB_STATUS_DONE);
 		jobPtr->Release();
 	}

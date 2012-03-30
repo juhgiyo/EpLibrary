@@ -129,28 +129,28 @@ unsigned int FastLog::FLogU(unsigned int input)
 {
 	if(input<FLOAT_INPUT_MIN_VAL)
 		return FLOG_ERROR;
-	return (unsigned int)fastLog(input,sizeof(unsigned int)*NUM_BITS_IN_BYTE-TYPE_UNSIGNED, UPPER );
+	return fastLog(input,sizeof(unsigned int)*NUM_BITS_IN_BYTE-TYPE_UNSIGNED, UPPER );
 }
 
 int FastLog::FLogU(int input)
 {
 	if(input<FLOAT_INPUT_MIN_VAL)
 		return FLOG_ERROR;
-	return (int)fastLog((unsigned int) input,sizeof(int)*NUM_BITS_IN_BYTE-TYPE_SIGNED, UPPER);
+	return static_cast<int>(fastLog(static_cast<unsigned int>(input),sizeof(int)*NUM_BITS_IN_BYTE-TYPE_SIGNED, UPPER));
 }
 
 unsigned short FastLog::FLogU(unsigned short input)
 {
 	if(input<FLOAT_INPUT_MIN_VAL)
 		return FLOG_ERROR;
-	return (unsigned short)fastLog((unsigned int)input, sizeof(unsigned short)*NUM_BITS_IN_BYTE-TYPE_UNSIGNED, UPPER);
+	return static_cast<unsigned short>(fastLog(static_cast<unsigned int>(input), sizeof(unsigned short)*NUM_BITS_IN_BYTE-TYPE_UNSIGNED, UPPER) );
 }
 
 short FastLog::FLogU(short input)
 {
 	if(input<FLOAT_INPUT_MIN_VAL)
 		return FLOG_ERROR;
-	return (short)fastLog((unsigned int)input, sizeof(short)*NUM_BITS_IN_BYTE-TYPE_SIGNED, UPPER);
+	return static_cast<short>( fastLog(static_cast<unsigned int>(input), sizeof(short)*NUM_BITS_IN_BYTE-TYPE_SIGNED, UPPER) );
 }
 
 
@@ -158,27 +158,27 @@ unsigned int FastLog::FLogL(unsigned int input)
 {
 	if(input<FLOAT_INPUT_MIN_VAL)
 		return FLOG_ERROR;
-	return (unsigned int)fastLog(input,sizeof(unsigned int)*NUM_BITS_IN_BYTE-TYPE_UNSIGNED, LOWER );
+	return fastLog(input,sizeof(unsigned int)*NUM_BITS_IN_BYTE-TYPE_UNSIGNED, LOWER );
 }
 
 int FastLog::FLogL(int input)
 {
 	if(input<FLOAT_INPUT_MIN_VAL)
 		return FLOG_ERROR;
-	return (int)fastLog((unsigned int) input,sizeof(int)*NUM_BITS_IN_BYTE-TYPE_SIGNED, LOWER);
+	return static_cast<int>( fastLog(static_cast<unsigned int>(input),sizeof(int)*NUM_BITS_IN_BYTE-TYPE_SIGNED, LOWER) );
 }
 
 unsigned short FastLog::FLogL(unsigned short input)
 {
 	if(input<FLOAT_INPUT_MIN_VAL)
 		return FLOG_ERROR;
-	return (unsigned short)fastLog((unsigned int)input, sizeof(unsigned short)*NUM_BITS_IN_BYTE-TYPE_UNSIGNED, LOWER);
+	return static_cast<unsigned short>( fastLog(static_cast<unsigned int>(input), sizeof(unsigned short)*NUM_BITS_IN_BYTE-TYPE_UNSIGNED, LOWER) );
 }
 
 short FastLog::FLogL(short input)
 {
 	if(input<FLOAT_INPUT_MIN_VAL)
 		return FLOG_ERROR;
-	return (short)fastLog((unsigned int)input, sizeof(short)*NUM_BITS_IN_BYTE-TYPE_SIGNED, LOWER);
+	return static_cast<short>( fastLog(static_cast<unsigned int>(input), sizeof(short)*NUM_BITS_IN_BYTE-TYPE_SIGNED, LOWER) );
 }
 

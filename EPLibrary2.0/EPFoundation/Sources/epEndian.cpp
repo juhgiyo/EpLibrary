@@ -45,7 +45,7 @@ int Endian::IntSwap(const int value)
 	b3 = ( value>>16 ) & 255;
 	b4 = ( value>>24 ) & 255;
 
-	return ((int)b1 << 24) + ((int)b2 << 16) + ((int)b3 << 8) + b4;
+	return (static_cast<int>(b1) << 24) + (static_cast<int>(b2) << 16) + (static_cast<int>(b3) << 8) + b4;
 }
 unsigned int Endian::UIntSwap(const unsigned int value)
 {
@@ -56,7 +56,7 @@ unsigned int Endian::UIntSwap(const unsigned int value)
 	b3 = ( value>>16 ) & 255;
 	b4 = ( value>>24 ) & 255;
 
-	return ((unsigned int)b1 << 24) + ((unsigned int)b2 << 16) + ((unsigned int)b3 << 8) + b4;
+	return (static_cast<unsigned int>(b1) << 24) + (static_cast<unsigned int>(b2) << 16) + (static_cast<unsigned int>(b3) << 8) + b4;
 }
 float Endian::FloatSwap(const float value)
 {

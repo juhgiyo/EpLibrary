@@ -229,7 +229,7 @@ namespace epl
 		m_lockPolicy=dArr.m_lockPolicy;
 		m_numOfElements=dArr.m_numOfElements;
 		m_actualSize=dArr.m_actualSize;
-		m_head=EP_Malloc(sizeof(FDATA)*m_actualSize);
+		m_head=reinterpret_cast<FDATA*>(EP_Malloc(sizeof(FDATA)*m_actualSize));
 		EP_WASSERT(m_head,_T("Allocation Failed"));
 		memcpy(m_head,dArr.m_head,sizeof(FDATA)*m_actualSize);
 		switch(m_lockPolicy)
@@ -308,7 +308,7 @@ namespace epl
 		}
 		else
 		{
-			m_head=EP_Malloc(newSize*sizeof(FDATA));
+			m_head=reinterpret_cast<FDATA*>(EP_Malloc(newSize*sizeof(FDATA)));
 			m_actualSize=newSize;
 		}
 		EP_WASSERT(m_head,_T("Allocation Failed"));

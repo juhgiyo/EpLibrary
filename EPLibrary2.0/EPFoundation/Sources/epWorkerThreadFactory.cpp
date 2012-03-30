@@ -24,11 +24,11 @@ using namespace epl;
 BaseWorkerThread *WorkerThreadFactory::GetWorkerThread(const BaseWorkerThread::ThreadLifePolicy policy)
 {
 	if(policy==BaseWorkerThread::THREAD_LIFE_INFINITE)
-		return (BaseWorkerThread*)EP_NEW WorkerThreadInfinite(policy);
+		return dynamic_cast<BaseWorkerThread*>(EP_NEW WorkerThreadInfinite(policy));
 	else if(policy==BaseWorkerThread::THREAD_LIFE_TERMINATE_AFTER_WORK)
-		return (BaseWorkerThread*)EP_NEW WorkerThreadSingle(policy);
+		return dynamic_cast<BaseWorkerThread*>(EP_NEW WorkerThreadSingle(policy));
 	else if(policy==BaseWorkerThread::THREAD_LIFE_SUSPEND_AFTER_WORK)
-		return (BaseWorkerThread*)EP_NEW WorkerThreadInfinite(policy);
+		return dynamic_cast<BaseWorkerThread*>(EP_NEW WorkerThreadInfinite(policy));
 	else
 		EP_WASSERT(0,_T("Unknown Thread Life Policy Input(%d)!"),policy);
 	return NULL;

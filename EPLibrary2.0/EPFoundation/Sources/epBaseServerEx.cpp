@@ -116,7 +116,7 @@ vector<BaseServerWorkerEx*> BaseServerEx::GetClientList() const
 }
 DWORD BaseServerEx::ServerThread( LPVOID lpParam ) 
 {
-	BaseServerEx *pMainClass=(BaseServerEx*)lpParam;
+	BaseServerEx *pMainClass=reinterpret_cast<BaseServerEx*>(lpParam);
 
 	SOCKET clientSocket;
 	while(clientSocket=accept(pMainClass->m_listenSocket, NULL, NULL))
@@ -129,7 +129,7 @@ DWORD BaseServerEx::ServerThread( LPVOID lpParam )
 		{
 			BaseServerWorkerEx *accWorker=pMainClass->createNewWorker();
 			pMainClass->GetClientList().push_back(accWorker);
-			accWorker->Start((void*)clientSocket);
+			accWorker->Start(reinterpret_cast<void*>(clientSocket));
 		}
 
 		vector<BaseServerWorkerEx*>::iterator iter;
@@ -203,7 +203,7 @@ bool BaseServerEx::StartServer()
 	}
 
 	// Setup the TCP listening socket
-	iResult = bind( m_listenSocket, m_result->ai_addr, (int)m_result->ai_addrlen);
+	iResult = bind( m_listenSocket, m_result->ai_addr, static_cast<int>(m_result->ai_addrlen));
 	if (iResult == SOCKET_ERROR) {
 		MessageBox(NULL,_T("bind failed with error\n"),_T("Error"),MB_OK);
 		StopServer();
@@ -219,7 +219,7 @@ bool BaseServerEx::StartServer()
 	m_isServerStarted=true;
 
 	// Create thread 1.
-	m_serverThreadHandle = CreateThread( NULL, 0, (LPTHREAD_START_ROUTINE)BaseServerEx::ServerThread, this, 0, NULL);  
+	m_serverThreadHandle = CreateThread( NULL, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(BaseServerEx::ServerThread), this, 0, NULL);  
 	if(m_serverThreadHandle)
 		return true;
 	return false;

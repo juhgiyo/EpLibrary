@@ -18,26 +18,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epWinProcessHelper.h"
 #include <comdef.h>
 #include <tchar.h>
+#include "epMemory.h"
 using namespace epl;
 
 #pragma warning(disable: 4996)
 
 PPERF_OBJECT_TYPE FirstObject( PPERF_DATA_BLOCK PerfData )
 {
-    return( (PPERF_OBJECT_TYPE)((PBYTE)PerfData + 
-        PerfData->HeaderLength) );
+    return reinterpret_cast<PPERF_OBJECT_TYPE>((PBYTE)PerfData + 
+        PerfData->HeaderLength);
 }
 
 PPERF_OBJECT_TYPE NextObject( PPERF_OBJECT_TYPE PerfObj )
 {
-    return( (PPERF_OBJECT_TYPE)((PBYTE)PerfObj + 
-        PerfObj->TotalByteLength) );
+    return reinterpret_cast<PPERF_OBJECT_TYPE>((PBYTE)PerfObj + 
+        PerfObj->TotalByteLength);
 }
 
 PPERF_INSTANCE_DEFINITION FirstInstance( PPERF_OBJECT_TYPE PerfObj )
 {
-    return( (PPERF_INSTANCE_DEFINITION)((PBYTE)PerfObj + 
-        PerfObj->DefinitionLength) );
+    return reinterpret_cast<PPERF_INSTANCE_DEFINITION>((PBYTE)PerfObj + 
+        PerfObj->DefinitionLength);
 }
 
 PPERF_INSTANCE_DEFINITION NextInstance( 
@@ -45,30 +46,30 @@ PPERF_INSTANCE_DEFINITION NextInstance(
 {
     PPERF_COUNTER_BLOCK PerfCntrBlk;
 
-    PerfCntrBlk = (PPERF_COUNTER_BLOCK)((PBYTE)PerfInst + 
+    PerfCntrBlk = reinterpret_cast<PPERF_COUNTER_BLOCK>((PBYTE)PerfInst + 
         PerfInst->ByteLength);
 
-    return( (PPERF_INSTANCE_DEFINITION)((PBYTE)PerfCntrBlk + 
-        PerfCntrBlk->ByteLength) );
+    return reinterpret_cast<PPERF_INSTANCE_DEFINITION>((PBYTE)PerfCntrBlk + 
+        PerfCntrBlk->ByteLength);
 }
 
 PPERF_COUNTER_DEFINITION FirstCounter( PPERF_OBJECT_TYPE PerfObj )
 {
-    return( (PPERF_COUNTER_DEFINITION) ((PBYTE)PerfObj + 
-        PerfObj->HeaderLength) );
+    return reinterpret_cast<PPERF_COUNTER_DEFINITION>((PBYTE)PerfObj + 
+        PerfObj->HeaderLength);
 }
 
 PPERF_COUNTER_DEFINITION NextCounter( 
     PPERF_COUNTER_DEFINITION PerfCntr )
 {
-    return( (PPERF_COUNTER_DEFINITION)((PBYTE)PerfCntr + 
-        PerfCntr->ByteLength) );
+    return reinterpret_cast<PPERF_COUNTER_DEFINITION>((PBYTE)PerfCntr + 
+        PerfCntr->ByteLength);
 }
 
 
 PPERF_COUNTER_BLOCK CounterBlock(PPERF_INSTANCE_DEFINITION PerfInst)
 {
-	return (PPERF_COUNTER_BLOCK) ((LPBYTE) PerfInst + PerfInst->ByteLength);
+	return reinterpret_cast<PPERF_COUNTER_BLOCK>((LPBYTE) PerfInst + PerfInst->ByteLength);
 }
 
 #define TOTALBYTES    64*1024
@@ -91,7 +92,7 @@ void WinProcessHelper::GetProcessID(LPCTSTR pProcessName, std::vector<DWORD>& re
 
 // Allocate the buffer for the performance data.
 
-    pPerfData = (PPERF_DATA_BLOCK) malloc( BufferSize );
+    pPerfData = reinterpret_cast<PPERF_DATA_BLOCK>(EP_Malloc( BufferSize ));
 
 	TCHAR szKey[32];
 	_stprintf(szKey,_T("%d %d"),PROCESS_OBJECT_INDEX, PROC_ID_COUNTER);
@@ -100,13 +101,13 @@ void WinProcessHelper::GetProcessID(LPCTSTR pProcessName, std::vector<DWORD>& re
                                szKey,
                                NULL,
                                NULL,
-                               (LPBYTE) pPerfData,
+                               reinterpret_cast<LPBYTE>(pPerfData),
                                &BufferSize )) == ERROR_MORE_DATA )
     {
 		// Get a buffer that is big enough.
 
         BufferSize += BYTEINCREMENT;
-        pPerfData = (PPERF_DATA_BLOCK) realloc( pPerfData, BufferSize );
+        pPerfData = reinterpret_cast<PPERF_DATA_BLOCK>(EP_Realloc( pPerfData, BufferSize ));
     }
 
 	// Get the first object type.
@@ -142,8 +143,8 @@ void WinProcessHelper::GetProcessID(LPCTSTR pProcessName, std::vector<DWORD>& re
         {
 			pCurCntr = pPerfCntr;
 			bstrInput = pProcessName;
-			bstrProcessName = (wchar_t *)((PBYTE)pPerfInst + pPerfInst->NameOffset);
-			if (!_tcscmp((LPCTSTR)bstrProcessName, (LPCTSTR) bstrInput))
+			bstrProcessName = reinterpret_cast<wchar_t *>(reinterpret_cast<PBYTE>(pPerfInst) + pPerfInst->NameOffset);
+			if (!_tcscmp(static_cast<LPCTSTR>(bstrProcessName), static_cast<LPCTSTR>(bstrInput)))
 			{
 			
 				// Retrieve all counters.
@@ -153,7 +154,7 @@ void WinProcessHelper::GetProcessID(LPCTSTR pProcessName, std::vector<DWORD>& re
 					if (pCurCntr->CounterNameTitleIndex == PROC_ID_COUNTER)
 					{
 						PtrToCntr = CounterBlock(pPerfInst);
-						DWORD *pdwValue = (DWORD*)((LPBYTE) PtrToCntr + pCurCntr->CounterOffset);
+						DWORD *pdwValue = reinterpret_cast<DWORD*>(reinterpret_cast<LPBYTE>(PtrToCntr) + pCurCntr->CounterOffset);
 						retSetOfPID.push_back(*pdwValue);
 						break;
 					}
@@ -231,7 +232,7 @@ bool WinProcessHelper::TerminateProcess(LPCTSTR pProcessName)
 	epl::WinProcessHelper::GetProcessID(pProcessName,setOfPid);
 	if(!setOfPid.empty())
 	{
-		for(int i=0; i<(int)setOfPid.size(); i++)
+		for(unsigned int i=0; i<setOfPid.size(); i++)
 		{
 			HANDLE pProcess = OpenProcess(PROCESS_ALL_ACCESS,FALSE,setOfPid[i]);
 			::TerminateProcess(pProcess,0);

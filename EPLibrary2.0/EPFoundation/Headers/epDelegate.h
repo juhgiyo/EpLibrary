@@ -149,7 +149,7 @@ namespace epl
 		@param[in] b right side of packet
 		@return this object
 		*/
-		Delegate & operator=(const Delegate&b)
+		Delegate<RetType,ArgType> & operator=(const Delegate<RetType,ArgType>&b)
 		{
 			if(this!=&b)
 			{
@@ -353,14 +353,26 @@ namespace epl
 		Default Constructor
 
 		Initializes the delegate
+		@param[in] lockPolicyType The lock policy
 		*/
-		Delegate()
+		Delegate(LockPolicy lockPolicyType=EP_LOCK_POLICY)
 		{
-#ifdef EP_MULTIPROCESS
-			m_lock=EP_NEW Mutex();
-#else //EP_MULTIPROCESS
-			m_lock=EP_NEW CriticalSectionEx();
-#endif //EP_MULTIPROCESS
+			m_lockPolicy=lockPolicyType;
+			switch(lockPolicyType)
+			{
+			case LOCK_POLICY_CRITICALSECTION:
+				m_lock=EP_NEW CriticalSectionEx();
+				break;
+			case LOCK_POLICY_MUTEX:
+				m_lock=EP_NEW Mutex();
+				break;
+			case LOCK_POLICY_NONE:
+				m_lock=EP_NEW NoLock();
+				break;
+			default:
+				m_lock=NULL;
+				break;
+			}
 		}
 
 		/*!
@@ -368,15 +380,27 @@ namespace epl
 
 		Initializes the delegate with given function pointer
 		@param[in] func the initial function pointer
+		@param[in] lockPolicyType The lock policy
 		*/
-		Delegate(RetType (*func)(void))
+		Delegate(RetType (*func)(void),LockPolicy lockPolicyType=EP_LOCK_POLICY)
 		{
+			m_lockPolicy=lockPolicyType;
 			m_funcList.push_back(func);
-#ifdef EP_MULTIPROCESS
-			m_lock=EP_NEW Mutex();
-#else //EP_MULTIPROCESS
-			m_lock=EP_NEW CriticalSectionEx();
-#endif //EP_MULTIPROCESS
+			switch(lockPolicyType)
+			{
+			case LOCK_POLICY_CRITICALSECTION:
+				m_lock=EP_NEW CriticalSectionEx();
+				break;
+			case LOCK_POLICY_MUTEX:
+				m_lock=EP_NEW Mutex();
+				break;
+			case LOCK_POLICY_NONE:
+				m_lock=EP_NEW NoLock();
+				break;
+			default:
+				m_lock=NULL;
+				break;
+			}
 		}
 
 		/*!
@@ -387,12 +411,23 @@ namespace epl
 		*/
 		Delegate(const Delegate<RetType,void> &orig)
 		{
+			m_lockPolicy=orig.m_lockPolicy;
 			m_funcList=orig.m_funcList;
-#ifdef EP_MULTIPROCESS
-			m_lock=EP_NEW Mutex();
-#else //EP_MULTIPROCESS
-			m_lock=EP_NEW CriticalSectionEx();
-#endif //EP_MULTIPROCESS
+			switch(m_lockPolicy)
+			{
+			case LOCK_POLICY_CRITICALSECTION:
+				m_lock=EP_NEW CriticalSectionEx();
+				break;
+			case LOCK_POLICY_MUTEX:
+				m_lock=EP_NEW Mutex();
+				break;
+			case LOCK_POLICY_NONE:
+				m_lock=EP_NEW NoLock();
+				break;
+			default:
+				m_lock=NULL;
+				break;
+			}
 		}
 
 		/*!
@@ -409,16 +444,16 @@ namespace epl
 		/*!
 		Assignment Operator Overloading
 
-		the Packet set as given packet b
+		the Delegate set as given packet b
 		@param[in] b right side of packet
 		@return this object
 		*/
-		Packet & operator=(const Packet&b)
+		Delegate<RetType,void> & operator=(const Delegate<RetType,void>&b)
 		{
 			if(this!=&b)
 			{
 				LockObj lock(m_lock);
-				m_funcList=orig.m_funcList;
+				m_funcList=b.m_funcList;
 			}
 			return *this;
 		}
@@ -597,6 +632,8 @@ namespace epl
 		vector<RetType (*)(void)> m_funcList;
 		/// lock
 		BaseLock *m_lock;
+		/// Lock Policy
+		LockPolicy m_lockPolicy;
 	};
 }
 template<typename RetType,typename ArgType>

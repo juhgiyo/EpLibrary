@@ -85,7 +85,7 @@ int BaseServerWorkerEx::Send(const Packet &packet)
 	int length=packet.GetPacketByteSize();
 	if(length>0)
 	{
-		int sentLength=send(m_clientSocket,(char*)&length,4,0);
+		int sentLength=send(m_clientSocket,reinterpret_cast<char*>(&length),4,0);
 		if(sentLength<=0)
 			return false;
 	}
@@ -105,7 +105,7 @@ int BaseServerWorkerEx::receive(Packet &packet)
 {
 	int readLength=0;
 	int length=packet.GetPacketByteSize();
-	char *packetData=(char*)packet.GetPacket();
+	char *packetData=const_cast<char*>(packet.GetPacket());
 	while(length>0)
 	{
 		int recvLength=recv(m_clientSocket,packetData, length, 0);
@@ -120,8 +120,8 @@ int BaseServerWorkerEx::receive(Packet &packet)
 
 unsigned long BaseServerWorkerEx::passPacket(void *param)
 {
-	Packet *recvPacket=( (PacketPassUnit*)param)->m_packet;
-	BaseServerWorkerEx *worker=( (PacketPassUnit*)param)->m_this;
+	Packet *recvPacket=( reinterpret_cast<PacketPassUnit*>(param))->m_packet;
+	BaseServerWorkerEx *worker=( reinterpret_cast<PacketPassUnit*>(param))->m_this;
 	worker->parsePacket(*recvPacket);
 	recvPacket->Release();
 	return 0;
@@ -137,7 +137,7 @@ void BaseServerWorkerEx::execute()
 		int size =receive(recvSizePacket);
 		if(size>0)
 		{
-			unsigned int shouldReceive=((unsigned int*)(recvSizePacket.GetPacket()))[0];
+			unsigned int shouldReceive=(reinterpret_cast<unsigned int*>(const_cast<char*>(recvSizePacket.GetPacket())))[0];
 			Packet *recvPacket=EP_NEW Packet(NULL,shouldReceive);
 			iResult = receive(*recvPacket);
 

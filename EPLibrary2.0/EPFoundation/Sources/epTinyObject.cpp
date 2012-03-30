@@ -37,7 +37,7 @@ namespace epl
 		assert(blocks > 0);
 		assert((blockSize * blocks) / blockSize == blocks);
 
-		m_Data = EP_NEW unsigned char[blockSize * (unsigned int)blocks];
+		m_Data = EP_NEW unsigned char[blockSize * static_cast<unsigned int>(blocks)];
 		Reset(blockSize, blocks);
 
 	}
@@ -71,7 +71,7 @@ namespace epl
 	void StaticAllocator::Fragment::Deallocate(void *p, unsigned int blockSize)
 	{
 		assert(p>=m_Data);
-		unsigned char * releaseData= static_cast<unsigned char*>(p);
+		unsigned char * releaseData= reinterpret_cast<unsigned char*>(p);
 		assert((releaseData-m_Data)%blockSize==0);
 		*releaseData=firstAvailableBlock;
 		firstAvailableBlock=static_cast<unsigned char>((releaseData-m_Data)/blockSize);
@@ -236,7 +236,7 @@ namespace epl
 		assert(!m_fragments.empty());
 		assert(m_deallocFragment);
 
-		unsigned int chunkLength = (unsigned int)m_numBlocks * m_blockSize;
+		unsigned int chunkLength = static_cast<unsigned int>(m_numBlocks) * m_blockSize;
 
 		Fragment* lo = m_deallocFragment;
 		Fragment* hi = m_deallocFragment + 1;

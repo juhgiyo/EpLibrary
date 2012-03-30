@@ -46,7 +46,7 @@ namespace epl
 	{ 
 		if(sortList==NULL || listSize<=1)
 			return;
-		T* mergeSpace=(T*)EP_Malloc(sizeof(T)*listSize);
+		T* mergeSpace=reinterpret_cast<T*>(EP_Malloc(sizeof(T)*listSize));
 		T* sortedList=subMergeSort<T>(sortList,listSize,mergeSpace,SortFunc);
 		EP_Free(mergeSpace);
 		return;

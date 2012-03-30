@@ -106,7 +106,7 @@ bool FileStream::write(const void *value,const int byteSize)
 {
 	if(!value)
 		return false;
-	if(m_stream.size()<(size_t)(m_offset+byteSize))
+	if(m_stream.size()<static_cast<size_t>(m_offset+byteSize))
 	{
 		m_stream.resize(m_offset+byteSize);
 	}
@@ -121,7 +121,7 @@ bool FileStream::read(void *value,const int byteSize)
 	if(m_stream.empty() || !value)
 		return false;
 
-	if(m_stream.size()>(size_t)(m_offset+byteSize))
+	if(m_stream.size()>static_cast<size_t>(m_offset+byteSize))
 	{
 		memcpy(value,&m_stream.at(m_offset) , byteSize);
 		m_offset+=byteSize;

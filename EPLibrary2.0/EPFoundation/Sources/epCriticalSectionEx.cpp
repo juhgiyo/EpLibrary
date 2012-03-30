@@ -99,7 +99,7 @@ long CriticalSectionEx::TryLockFor(const unsigned int dwMilliSecond)
 				return ret;	
 			}		
 			timeUsed=System::GetTickCount()-startTime;
-			waitTime=waitTime-(unsigned int)timeUsed;
+			waitTime=waitTime-timeUsed;
 			startTime=System::GetTickCount();
 		}
 		return 0;

@@ -36,7 +36,7 @@ BaseWorkerThread::~BaseWorkerThread()
 {
 	if(m_arg)
 	{
-		((SmartObject*)m_arg)->Release();
+		(reinterpret_cast<SmartObject*>(m_arg))->Release();
 	}
 	while(!m_workPool.IsEmpty())
 	{
@@ -78,10 +78,10 @@ void BaseWorkerThread::SetArg(void* a)
 	if(m_status!=THREAD_STATUS_STARTED)
 	{
 		if(m_arg)
-			((SmartObject*)m_arg)->Release();
+			(reinterpret_cast<SmartObject*>(m_arg))->Release();
 		m_arg=a;
 		if(m_arg)
-			((SmartObject*)m_arg)->Retain();
+			(reinterpret_cast<SmartObject*>(m_arg))->Retain();
 	}
 	else
 	{
@@ -98,6 +98,6 @@ void BaseWorkerThread::callCallBack()
 {
 	LockObj lock(m_threadLock);
 	if(m_callBackClass)	
-		((WorkerThreadDelegate*)m_callBackClass)->CallBackFunc(this);
+		(reinterpret_cast<WorkerThreadDelegate*>(m_callBackClass))->CallBackFunc(this);
 	m_callBackClass=NULL;
 }

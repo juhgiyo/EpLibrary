@@ -91,9 +91,9 @@ bool Thread::Start(void * arg,const ThreadOpCode opCode, const ThreadType thread
 		SetArg(arg);
 		m_type=threadType;
 		if(m_type==THREAD_TYPE_BEGIN_THREAD)
-			m_threadHandle=(ThreadHandle)_beginthreadex(NULL,stackSize,Thread::entryPoint,this,opCode,&m_threadId);
+			m_threadHandle=reinterpret_cast<ThreadHandle>(_beginthreadex(NULL,stackSize,Thread::entryPoint,this,opCode,&m_threadId));
 		else
-			m_threadHandle=::CreateThread(NULL,stackSize,Thread::entryPoint2,this,opCode,(LPDWORD)&m_threadId);
+			m_threadHandle=::CreateThread(NULL,stackSize,Thread::entryPoint2,this,opCode,reinterpret_cast<LPDWORD>(&m_threadId));
 
 		if(!m_threadHandle)
 		{
@@ -265,7 +265,7 @@ int Thread::run()
 
 unsigned int Thread::entryPoint(void * pthis)
 {
-	Thread * pt = (Thread*)pthis;
+	Thread * pt = reinterpret_cast<Thread*>(pthis);
 	pt->run();
 	return 0;
 }
@@ -273,7 +273,7 @@ unsigned int Thread::entryPoint(void * pthis)
 
 unsigned long Thread::entryPoint2(void * pthis)
 {
-	Thread * pt = (Thread*)pthis;
+	Thread * pt = reinterpret_cast<Thread*>(pthis);
 	pt->run();
 	return 0;
 }

@@ -83,7 +83,7 @@ long Mutex::TryLockFor(const unsigned int dwMilliSecond)
 {
 	long ret=0;
 
-	ret=(long)m_singleLock->Lock(dwMilliSecond);
+	ret=static_cast<long>(m_singleLock->Lock(dwMilliSecond));
 
 #if _DEBUG
 	if(ret)

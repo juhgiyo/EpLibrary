@@ -73,6 +73,7 @@ An Interface for EP Foundation Library
 #include "epCriticalSectionEx.h"
 #include "epMutex.h"
 #include "epSemaphore.h"
+#include "epNoLock.h"
 
 #include "epSingletonHolder.h"
 #include "epSmartObject.h"

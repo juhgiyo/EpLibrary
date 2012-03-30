@@ -49,8 +49,8 @@ void ProfileManager::ProfileNode::Write(EpFile* const file)
 CompResultType ProfileManager::ProfileNode::Compare(const void * a, const void * b)
 {
 
-	ProfileNode *_a=*(ProfileNode**)a;
-	ProfileNode *_b=*(ProfileNode**)b;
+	ProfileNode *_a=*reinterpret_cast<ProfileNode**>(const_cast<void*>(a));
+	ProfileNode *_b=*reinterpret_cast<ProfileNode**>(const_cast<void*>(b));
 
 	if ( _a->m_fileName >  _b->m_fileName ) return COMP_RESULT_GREATERTHAN;
 	else if ( _a->m_fileName == _b->m_fileName )
@@ -113,7 +113,7 @@ bool ProfileManager::isProfileExist(const TCHAR *fileName,const TCHAR* funcName,
 	ProfileNode**retData=NULL;
 
 	if(m_list.size())
-		retData=BinarySearch(profPointer,(ProfileNode**)&(m_list.at(0)),m_list.size(),ProfileNode::Compare,retIdx);
+		retData=BinarySearch(profPointer,reinterpret_cast<ProfileNode**>( &(m_list.at(0)) ),m_list.size(),ProfileNode::Compare,retIdx);
 	if(retData)
 		retIter=*retData;
 	else

@@ -32,12 +32,12 @@ EpTime System::GetTime()
 	{
 		s_bInitializedTime = true;
 		ftime(&kTB);
-		s_lInitialSec = (long)kTB.time;
+		s_lInitialSec = static_cast<long>(kTB.time);
 		s_lInitialUSec = 1000*kTB.millitm;
 	}
 
 	ftime(&kTB);
-	long lCurrentSec = (long)kTB.time;
+	long lCurrentSec = static_cast<long>(kTB.time);
 	long lCurrentUSec = 1000*kTB.millitm;
 	long lDeltaSec = lCurrentSec - s_lInitialSec;
 	long lDeltaUSec = lCurrentUSec -s_lInitialUSec;
@@ -47,7 +47,7 @@ EpTime System::GetTime()
 		lDeltaSec--;
 	}
 
-	return 0.001*(double)(1000*lDeltaSec + lDeltaUSec/1000);
+	return 0.001*static_cast<double>(1000*lDeltaSec + lDeltaUSec/1000);
 
 	/*
 	static EpTime currentTick=0;
@@ -284,7 +284,7 @@ CString System::HexToString(const BYTE *buff, unsigned int len)
 			c = (b - 10) + 'A';
 		}
 
-		result += (TCHAR)c;
+		result += static_cast<TCHAR>(c);
 
 		b = buff[i] & 0x0f;
 
@@ -297,7 +297,7 @@ CString System::HexToString(const BYTE *buff, unsigned int len)
 			c = (b - 10) + 'A';
 		}
 
-		result += (TCHAR)c;
+		result += static_cast<TCHAR>(c);
 	}
 
 	return result;

@@ -43,7 +43,7 @@ CString ConsoleHelper::ExecuteConsoleCommand(CString command)
 	sInfo.hStdOutput=wPipe;
 	sInfo.hStdError=wPipe;
 
-	CreateProcess(0,(LPWSTR)csExecute.GetString(),0,0,TRUE,NORMAL_PRIORITY_CLASS|CREATE_NO_WINDOW,0,0,&sInfo,&pInfo);
+	CreateProcess(0,reinterpret_cast<LPWSTR>(const_cast<wchar_t*>(csExecute.GetString())),0,0,TRUE,NORMAL_PRIORITY_CLASS|CREATE_NO_WINDOW,0,0,&sInfo,&pInfo);
 	CloseHandle(wPipe);
 
 	char buf[100];

@@ -147,7 +147,7 @@ bool FolderHelper::CopyTheFile(LPCTSTR strFromFile, LPCTSTR strToFile,bool failI
 unsigned int FolderHelper::GetActualFileLength(CFile &file)
 {
 	//unsigned int length= (unsigned int)file.SeekToEnd()+1;
-	unsigned int length= (unsigned int)file.SeekToEnd();
+	unsigned int length= static_cast<unsigned int>(file.SeekToEnd());
 	file.SeekToBegin();
 	return length;
 }

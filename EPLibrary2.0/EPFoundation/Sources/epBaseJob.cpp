@@ -55,8 +55,8 @@ void BaseJob::JobReport(const JobStatus status)
 
 CompResultType BaseJob::CompFunc(const void *a,const void *b)
 {
-	BaseJob **_a=(BaseJob **)a;
-	BaseJob **_b=(BaseJob **)b;
+	BaseJob **_a=reinterpret_cast<BaseJob **>(const_cast<void*>(a));
+	BaseJob **_b=reinterpret_cast<BaseJob **>(const_cast<void*>(b));
 	if((*_a)->GetPriority() > (*_b)->GetPriority())
 		return COMP_RESULT_LESSTHAN;
 	else if((*_a)->GetPriority() < (*_b)->GetPriority())

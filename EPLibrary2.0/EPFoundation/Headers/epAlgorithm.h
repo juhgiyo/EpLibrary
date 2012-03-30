@@ -94,8 +94,8 @@ namespace epl
 	template<typename T>
 	CompResultType CompClass<T>::CompFunc(const void * a, const void * b)
 	{
-		T* _a=(T*)a;
-		T* _b=(T*)b;
+		T* _a=reinterpret_cast<T*>(a);
+		T* _b=reinterpret_cast<T*>(b);
 		if(*_a==*_b)
 			return COMP_RESULT_EQUAL;
 		else if(*_a>*_b)
@@ -128,8 +128,8 @@ namespace epl
 	template<typename T>
 	inline void CopyFunc(T *a, T*b)
 	{
-		char *_a=(char*)a;
-		char *_b=(char*)b;
+		char *_a=reinterpret_cast<char*>(a);
+		char *_b=reinterpret_cast<char*>(b);
 		unsigned int width=sizeof(T);
 		if ( _a != _b )
 			while ( width-- ) {

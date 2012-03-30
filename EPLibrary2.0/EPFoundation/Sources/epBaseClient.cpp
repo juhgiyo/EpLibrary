@@ -164,7 +164,7 @@ int BaseClient::Send(const Packet &packet)
 	int length=packet.GetPacketByteSize();
 	if(length>0)
 	{
-		int sentLength=send(m_connectSocket,(char*)&length,4,0);
+		int sentLength=send(m_connectSocket,reinterpret_cast<char*>(&length),4,0);
 		if(sentLength<=0)
 			return false;
 	}
@@ -188,7 +188,7 @@ int BaseClient::receive(Packet &packet)
 	
 	int readLength=0;
 	int length=packet.GetPacketByteSize();
-	char *packetData=(char*)packet.GetPacket();
+	char *packetData=const_cast<char*>(packet.GetPacket());
 	while(length>0)
 	{
 		int recvLength=recv(m_connectSocket,packetData, length, 0);
@@ -257,7 +257,7 @@ bool BaseClient::Connect()
 		}
 
 		// Connect to server.
-		iResult = connect( m_connectSocket, m_ptr->ai_addr, (int)m_ptr->ai_addrlen);
+		iResult = connect( m_connectSocket, m_ptr->ai_addr, static_cast<int>(m_ptr->ai_addrlen));
 		if (iResult == SOCKET_ERROR) {
 			closesocket(m_connectSocket);
 			m_connectSocket = INVALID_SOCKET;
@@ -272,7 +272,7 @@ bool BaseClient::Connect()
 	}
 	m_isConnected=true;
 
-	m_clientThreadHandle = CreateThread( NULL, 0, (LPTHREAD_START_ROUTINE)BaseClient::ClientThread, this, 0, NULL);  
+	m_clientThreadHandle = CreateThread( NULL, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(BaseClient::ClientThread), this, 0, NULL);  
 	if(m_clientThreadHandle)
 		return true;
 	return true;
@@ -281,7 +281,7 @@ bool BaseClient::Connect()
 
 DWORD BaseClient::ClientThread( LPVOID lpParam ) 
 {
-	BaseClient *pMainClass=(BaseClient*)lpParam;
+	BaseClient *pMainClass=reinterpret_cast<BaseClient*>(lpParam);
 	int iResult;
 	/// Receive buffer
 	Packet recvSizePacket(NULL,4);
@@ -290,7 +290,7 @@ DWORD BaseClient::ClientThread( LPVOID lpParam )
 		int size =pMainClass->receive(recvSizePacket);
 		if(size>0)
 		{
-			unsigned int shouldReceive=((unsigned int*)(recvSizePacket.GetPacket()))[0];
+			unsigned int shouldReceive=(reinterpret_cast<unsigned int*>(const_cast<char*>(recvSizePacket.GetPacket())))[0];
 			Packet recvPacket(NULL,shouldReceive);
 			iResult = pMainClass->receive(recvPacket);
 

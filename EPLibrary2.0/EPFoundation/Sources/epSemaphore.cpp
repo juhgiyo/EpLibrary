@@ -59,7 +59,7 @@ void Semaphore::Lock()
 
 long Semaphore::TryLock()
 {
-	long ret=(long)m_singleLock->Lock(0);
+	long ret=static_cast<long>( m_singleLock->Lock(0) );
 #if _DEBUG
 	if(ret)
 	{
@@ -77,7 +77,7 @@ long Semaphore::TryLock()
 }
 long Semaphore::TryLockFor(const unsigned int dwMilliSecond)
 {
-	long ret=(long)m_singleLock->Lock(dwMilliSecond);
+	long ret=static_cast<long>( m_singleLock->Lock(dwMilliSecond) );
 #if _DEBUG
 	if(ret)
 	{
