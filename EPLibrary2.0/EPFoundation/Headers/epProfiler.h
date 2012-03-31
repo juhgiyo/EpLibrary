@@ -50,7 +50,7 @@ Macro that creates the unique name for the profiler and returns TCHAR *.
 @return TCHAR * array holding newly created unique name of the profiler
 @remark Usage: Profiler x=Profiler(GET_NEW_UNIQUE_NAME());
 */
-#define GET_NEW_UNIQUE_NAME() Profiler::GetNewUniqueName(__TFILE__,__TFUNCTION__,__LINE__).c_str()
+#define GET_NEW_UNIQUE_NAME() epl::Profiler::GetNewUniqueName(__TFILE__,__TFUNCTION__,__LINE__).c_str()
 
 /*!
 @def PROFILE_THIS
@@ -128,10 +128,12 @@ namespace epl
 		*/
 		EpTime GetLastProfileTime();
 
+#if defined(_DEBUG) && defined(EP_ENABLE_PROFILE)
 		/*!
 		Add the last profiled time to ProfileManager
 		*/
 		void AddLastProfileTimeToManager();
+#endif// defined(_DEBUG) && defined(EP_ENABLE_PROFILE)
 
 		/*!
 		Create Name for the Profiler and returns the name
@@ -179,6 +181,11 @@ namespace epl
 			}
 			return *this;
 		}
+
+		/*!
+		Write the all data to the file.
+		*/
+		virtual void FlushToFile();
 
 		/*! 
 		@class ProfileObj epProfiler.h

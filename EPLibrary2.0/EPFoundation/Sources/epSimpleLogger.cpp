@@ -92,6 +92,7 @@ SimpleLogManager::~SimpleLogManager()
 
 void SimpleLogManager::AddSimpleLog(const TCHAR *fileName, const TCHAR *funcName,const int lineNum,const TCHAR *format,...)
 {
+#if  defined(_DEBUG) && defined(EP_ENABLE_LOG)
 	LockObj lock(m_nodeListLock);
 
 
@@ -117,6 +118,13 @@ void SimpleLogManager::AddSimpleLog(const TCHAR *fileName, const TCHAR *funcName
 	System::TcsDate(log->m_dateStr,9);
 	System::TcsTime(log->m_timeStr,9);
 	m_list.push_back(log);
+#endif// defined(_DEBUG) && defined(EP_ENABLE_LOG)
 }
 
+void SimpleLogManager::FlushToFile()
+{
+#if  defined(_DEBUG) && defined(EP_ENABLE_LOG)
+	BaseOutputter::FlushToFile();
+#endif// defined(_DEBUG) && defined(EP_ENABLE_LOG)
+}
 

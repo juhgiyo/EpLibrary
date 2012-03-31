@@ -89,6 +89,10 @@ namespace epl
 		void AddSimpleLog(const TCHAR *fileName, const TCHAR *funcName,const int lineNum,const TCHAR *format,...);
 
 		/*!
+		Write the all data to the file.
+		*/
+		virtual void FlushToFile();
+		/*!
 		Assignment operator overloading
 		@param[in] b the second object
 		@return the new copied object

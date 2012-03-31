@@ -83,11 +83,14 @@ EpTime Profiler::GetLastProfileTime()
 	return m_lastProfileTime;
 }
 
+#if defined(_DEBUG) && defined(EP_ENABLE_PROFILE)
 void Profiler::AddLastProfileTimeToManager()
 {
 	EP_VERIFY_LOGIC_ERROR_W_MSG(m_lastProfileTime<=0.0,"There is no last profiled time!");
 	epl::SingletonHolder<epl::ProfileManager>::Instance().addProfile(m_uniqueName.c_str(),m_lastProfileTime);
 }
+#endif// defined(_DEBUG) && defined(EP_ENABLE_PROFILE)
+
 EpTString Profiler::GetNewUniqueName(TCHAR *fileName, TCHAR *functionName,unsigned int lineNum)
 {
 	EpTString uniqueProfilerName;
@@ -148,7 +151,12 @@ CompResultType ProfileManager::ProfileNode::Compare(const void * a, const void *
 	else return COMP_RESULT_LESSTHAN;		
 }
 
-
+void ProfileManager::FlushToFile()
+{
+#if  defined(_DEBUG) && defined(EP_ENABLE_PROFILE)
+	BaseOutputter::FlushToFile();
+#endif// defined(_DEBUG) && defined(EP_ENABLE_PROFILE)
+}
 
 ProfileManager::ProfileManager(LockPolicy lockPolicyType):BaseOutputter(lockPolicyType)
 {
@@ -218,8 +226,12 @@ ProfileManager::ProfileObj::ProfileObj(const TCHAR *uniqueName)
 	m_profiler.Start();
 }
 
+
 ProfileManager::ProfileObj::~ProfileObj()
 {
 	m_profiler.Stop();
+#if defined(_DEBUG) && defined(EP_ENABLE_PROFILE)
 	m_profiler.AddLastProfileTimeToManager();
+#endif// defined(_DEBUG) && defined(EP_ENABLE_PROFILE)
 }
+
