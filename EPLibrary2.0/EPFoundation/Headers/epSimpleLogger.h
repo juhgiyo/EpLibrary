@@ -143,7 +143,7 @@ namespace epl
 			/// The time when the log is called.
 			TCHAR m_timeStr[9];
 			/// The user string
-			TCHAR * m_userStr;
+			EpTString m_userStr;
 
 		};
 

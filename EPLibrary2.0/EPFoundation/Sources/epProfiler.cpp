@@ -32,13 +32,13 @@ ProfileManager::ProfileNode::~ProfileNode()
 }
 void ProfileManager::ProfileNode::Print() const
 {
-	System::TPrintf(_T("%s::%s %d ms %d ms %d\n"),m_fileName,m_funcName,m_totalTime/m_cnt,m_totalTime,m_cnt);
+	System::TPrintf(_T("%s::%s Average : %d ms Total : %d ms Call : %d\n"),m_fileName,m_funcName,m_totalTime/m_cnt,m_totalTime,m_cnt);
 }
 
 void ProfileManager::ProfileNode::Write(EpFile* const file)
 {
 	EP_VERIFY_INVALID_ARGUMENT_W_MSG(file,"The File Pointer is NULL!");
-	System::FTPrintf(file,_T("%s::%s %d ms %d ms %d\n"),m_fileName,m_funcName,m_totalTime/m_cnt,m_totalTime,m_cnt);
+	System::FTPrintf(file,_T("%s::%s Average : %d ms Total : %d ms Call : %d\n"),m_fileName,m_funcName,m_totalTime/m_cnt,m_totalTime,m_cnt);
 }
 
 CompResultType ProfileManager::ProfileNode::Compare(const void * a, const void * b)
@@ -47,11 +47,13 @@ CompResultType ProfileManager::ProfileNode::Compare(const void * a, const void *
 	ProfileNode *_a=*reinterpret_cast<ProfileNode**>(const_cast<void*>(a));
 	ProfileNode *_b=*reinterpret_cast<ProfileNode**>(const_cast<void*>(b));
 
-	if ( &(_a->m_fileName) >  &(_b->m_fileName) ) return COMP_RESULT_GREATERTHAN;
-	else if ( &(_a->m_fileName) == &(_b->m_fileName) )
+	int result=_a->m_fileName.compare(_b->m_fileName);
+	if (result>0) return COMP_RESULT_GREATERTHAN;
+	else if (result==0 )
 	{
-		if ( &(_a->m_funcName) >  &(_b->m_funcName) ) return COMP_RESULT_GREATERTHAN;
-		else if ( &(_a->m_funcName) ==  &(_b->m_funcName) )return COMP_RESULT_EQUAL;
+		int result2=_a->m_funcName.compare(_b->m_funcName);
+		if ( result2>0 ) return COMP_RESULT_GREATERTHAN;
+		else if ( result2==0 )return COMP_RESULT_EQUAL;
 		else return COMP_RESULT_LESSTHAN;
 	}
 	else return COMP_RESULT_LESSTHAN;		
@@ -60,9 +62,9 @@ CompResultType ProfileManager::ProfileNode::Compare(const void * a, const void *
 
 ProfileManager::Profiler::Profiler(const TCHAR *fileName,const TCHAR *funcName)
 {
-	m_startTime=System::GetTime();
 	m_funcName=funcName;
 	m_fileName=fileName;
+	m_startTime=System::GetTime();
 }
 ProfileManager::Profiler::~Profiler()
 {

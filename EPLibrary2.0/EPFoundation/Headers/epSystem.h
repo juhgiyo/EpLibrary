@@ -122,8 +122,8 @@ namespace epl
 
 	public:
 		/*!
-		Return the current time.
-		@return the current time.
+		Return the current time in milliseconds.
+		@return the current time in milliseconds.
 		*/
 		static EpTime GetTime();
 

@@ -47,7 +47,7 @@ EpTime System::GetTime()
 		lDeltaSec--;
 	}
 
-	return 0.001*static_cast<double>(1000*lDeltaSec + lDeltaUSec/1000);
+	return static_cast<double>(1000*lDeltaSec + lDeltaUSec/1000); //*0.001 for seconds
 
 	/*
 	static EpTime currentTick=0;

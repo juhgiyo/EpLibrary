@@ -25,18 +25,16 @@ SimpleLogManager::SimpleLogNode::SimpleLogNode() :OutputNode()
 	m_lineNum=0;
 	System::Memset(m_dateStr,0,sizeof(TCHAR)*9);
 	System::Memset(m_timeStr,0,sizeof(TCHAR)*9);
-	m_userStr=NULL;
+	m_userStr=_T("");
 }
 
 SimpleLogManager::SimpleLogNode::~SimpleLogNode()
 {
-	if(m_userStr)
-		EP_DELETE[] m_userStr;
 }
 
 void SimpleLogManager::SimpleLogNode::Print() const
 {
-	if(m_userStr)
+	if(m_userStr.length())
 		System::TPrintf(_T("%s::%s(%d) %s %s - %s\n"),m_fileName,m_funcName,m_lineNum,m_dateStr,m_timeStr,m_userStr);
 	else
 		System::TPrintf(_T("%s::%s(%d) %s %s\n"),m_fileName,m_funcName,m_lineNum,m_dateStr,m_timeStr);
@@ -45,7 +43,7 @@ void SimpleLogManager::SimpleLogNode::Print() const
 void SimpleLogManager::SimpleLogNode::Write(EpFile* const file)
 {
 	EP_VERIFY_INVALID_ARGUMENT_W_MSG(file,"The File Pointer is NULL!");
-	if(m_userStr)
+	if(m_userStr.length())
 	{
 		System::FTPrintf(file,_T("%s::%s(%d) %s %s - %s\n"),m_fileName,m_funcName,m_lineNum,m_dateStr,m_timeStr,m_userStr);
 	}
@@ -86,14 +84,13 @@ void SimpleLogManager::AddSimpleLog(const TCHAR *fileName, const TCHAR *funcName
 	int len;
 	va_start(args, format); 
 	len=System::TcsLen_V(format,args);
-	if(len==1)
+	if(len==0)
 	{
-		log->m_userStr=NULL;
+		log->m_userStr=_T("");
 	}
 	else
 	{
-		log->m_userStr=EP_NEW TCHAR[len];
-		System::STPrintf_V(log->m_userStr,len,format,args);
+		System::STPrintf_V(log->m_userStr,format,args);
 	}
 	va_end(args); 
 
