@@ -96,32 +96,32 @@ void* System::Memset(void* source,int val,unsigned int srcSize)
 
 
 
-int System::StrDate(char * buffer, unsigned int numberOfElements)
+EpErrno System::StrDate(char * buffer, unsigned int numberOfElements)
 {
 	return _strdate_s(buffer,numberOfElements);
 }
 
-int System::StrTime(char * buffer, unsigned int numberOfElements)
+EpErrno System::StrTime(char * buffer, unsigned int numberOfElements)
 {
 	return _strtime_s(buffer,numberOfElements);
 }
 
-int System::WStrDate(wchar_t * buffer, unsigned int numberOfElements)
+EpErrno System::WStrDate(wchar_t * buffer, unsigned int numberOfElements)
 {
 	return _wstrdate_s(buffer,numberOfElements);
 }
 
-int System::WStrTime(wchar_t * buffer, unsigned int numberOfElements)
+EpErrno System::WStrTime(wchar_t * buffer, unsigned int numberOfElements)
 {
 	return _wstrtime_s(buffer,numberOfElements);
 }
 
-int System::TcsDate(TCHAR * buffer, unsigned int numberOfElements)
+EpErrno System::TcsDate(TCHAR * buffer, unsigned int numberOfElements)
 {
 	return _tstrdate_s(buffer,numberOfElements);
 }
 
-int System::TcsTime(TCHAR * buffer, unsigned int numberOfElements)
+EpErrno System::TcsTime(TCHAR * buffer, unsigned int numberOfElements)
 {
 	return _tstrtime_s(buffer,numberOfElements);
 }
@@ -489,17 +489,17 @@ int System::FTPrintf_V(EpFile* const fileStream, const TCHAR* format,va_list arg
 }
 
 
-int System::FOpen(EpFile *&retFileStream,const char* filename,const char * mode )
+EpErrno System::FOpen(EpFile *&retFileStream,const char* filename,const char * mode )
 {
 	return fopen_s(&retFileStream,filename,mode);
 }
 
-int System::FWOpen(EpFile *&retFileStream,const wchar_t* filename,const wchar_t * mode )
+EpErrno System::FWOpen(EpFile *&retFileStream,const wchar_t* filename,const wchar_t * mode )
 {
 	return _wfopen_s(&retFileStream,filename,mode);
 }
 
-int System::FTOpen(EpFile *&retFileStream,const TCHAR* filename,const TCHAR * mode )
+EpErrno System::FTOpen(EpFile *&retFileStream,const TCHAR* filename,const TCHAR * mode )
 {
 	return _tfopen_s(&retFileStream,filename,mode);
 }
@@ -510,33 +510,33 @@ int System::FClose(EpFile * const fileStream)
 	return fclose(fileStream);
 }
 
-size_t System::FWrite(const void* buffer,unsigned int size, unsigned int count, EpFile * const fileStream)
+unsigned int System::FWrite(const void* buffer,unsigned int size, unsigned int count, EpFile * const fileStream)
 {
 	return fwrite(buffer,size,count,fileStream);
 }
 
 
-int System::FSize(EpFile* const fileStream)
+long System::FSize(EpFile* const fileStream)
 {
 	fseek (fileStream , 0 , SEEK_END);
-	int fileSize = ftell (fileStream);
+	long fileSize = ftell (fileStream);
 	rewind (fileStream);
 	return fileSize;
 }
 
-int System::FRead(void *retBuff,unsigned int size, unsigned int count,EpFile * const fileStream)
+unsigned int System::FRead(void *retBuff,unsigned int size, unsigned int count,EpFile * const fileStream)
 {
 	return fread(retBuff,size,count,fileStream);
 }
 
 
-int System::GetLastError()
+unsigned long System::GetLastError()
 {
 	return ::GetLastError();
 }
 unsigned long System::FormatLastErrorMessage(TCHAR *retBuff, const unsigned int maxElementCount) 
 {
-	int err=System::GetLastError();
+	unsigned long err=System::GetLastError();
 	return FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,
 		0,
 		err,

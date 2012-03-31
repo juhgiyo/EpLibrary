@@ -102,6 +102,7 @@ An Interface for EP Foundation Library
 #include "epRegistryHelper.h"
 #include "epSystem.h"
 #include "epTinyObject.h"
+#include "epException.h"
 
 //Thread System
 #include "epBaseJob.h"

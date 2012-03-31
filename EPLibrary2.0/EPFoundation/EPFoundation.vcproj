@@ -727,6 +727,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Headers\epException.h"
+					>
+				</File>
+				<File
 					RelativePath=".\Headers\epMemory.h"
 					>
 				</File>

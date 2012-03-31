@@ -102,6 +102,9 @@ namespace epl
 	/// A type definition for EpFile Type
 	typedef FILE EpFile ;
 
+	/// A type definition for EpErrno Type
+	typedef int EpErrno;
+
 	/*! 
 	@class System epSystem.h
 	@brief This is a base class for System  Class
@@ -159,7 +162,7 @@ namespace epl
 		@param[in] numberOfElements the Maximum number of elements in the buffer.
 		@return 0 if successful, otherwise an error code.
 		*/
-		static int StrDate(char * buffer, unsigned int numberOfElements);
+		static EpErrno StrDate(char * buffer, unsigned int numberOfElements);
 
 		/*!
 		Copy the current time to a buffer.
@@ -167,7 +170,7 @@ namespace epl
 		@param[in] numberOfElements the Maximum number of elements in the buffer.
 		@return 0 if successful, otherwise an error code.
 		*/
-		static int StrTime(char * buffer, unsigned int numberOfElements);
+		static EpErrno StrTime(char * buffer, unsigned int numberOfElements);
 
 		/*!
 		Copy the current time to a buffer.
@@ -175,7 +178,7 @@ namespace epl
 		@param[in] numberOfElements the Maximum number of elements in the buffer.
 		@return 0 if successful, otherwise an error code.
 		*/
-		static int WStrTime(wchar_t * buffer, unsigned int numberOfElements);
+		static EpErrno WStrTime(wchar_t * buffer, unsigned int numberOfElements);
 		
 				/*!
 		Copy the current system date to a buffer.
@@ -183,7 +186,7 @@ namespace epl
 		@param[in] numberOfElements the Maximum number of elements in the buffer.
 		@return 0 if successful, otherwise an error code.
 		*/
-		static int WStrDate(wchar_t * buffer, unsigned int numberOfElements);
+		static EpErrno WStrDate(wchar_t * buffer, unsigned int numberOfElements);
 
 		/*!
 		Copy the current system date to a buffer.
@@ -191,7 +194,7 @@ namespace epl
 		@param[in] numberOfElements the Maximum number of elements in the buffer.
 		@return 0 if successful, otherwise an error code.
 		*/
-		static int TcsDate(TCHAR * buffer, unsigned int numberOfElements);
+		static EpErrno TcsDate(TCHAR * buffer, unsigned int numberOfElements);
 
 		/*!
 		Copy the current time to a buffer.
@@ -199,7 +202,7 @@ namespace epl
 		@param[in] numberOfElements the Maximum number of elements in the buffer.
 		@return 0 if successful, otherwise an error code.
 		*/
-		static int TcsTime(TCHAR * buffer, unsigned int numberOfElements);
+		static EpErrno TcsTime(TCHAR * buffer, unsigned int numberOfElements);
 
 
 
@@ -650,7 +653,7 @@ namespace epl
 		@param[in] fileStream Pointer to FILE structure.
 		@return the number of full items actually written.
 		*/
-		static size_t FWrite(const void* buffer,unsigned int size, unsigned int count, EpFile * const fileStream);
+		static unsigned int FWrite(const void* buffer,unsigned int size, unsigned int count, EpFile * const fileStream);
 		
 		/*!
 		Read from the given file stream and write to the given buffer.
@@ -660,20 +663,20 @@ namespace epl
 		@param[in] fileStream Pointer to FILE structure.
 		@return the number of full items actually read.
 		*/
-		static int FRead(void *retBuff,unsigned int size, unsigned int count,EpFile * const fileStream);
+		static unsigned int FRead(void *retBuff,unsigned int size, unsigned int count,EpFile * const fileStream);
 
 		/*!
 		Return the file size in byte.
 		@param[in] fileStream Pointer to FILE structure.
 		@return the file size in byte.
 		*/
-		static int FSize(EpFile* const fileStream);
+		static long FSize(EpFile* const fileStream);
 			
 		/*!
 		Return the last error message code
 		@return the last occurred error message code.
 		*/
-		static int GetLastError();
+		static unsigned long GetLastError();
 
 		/*!
 		Format the Last Error Code to String
