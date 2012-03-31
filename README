@@ -55,6 +55,7 @@ FEATURES
   2. DateTime Operation
   3. Endian Operation
   4. Registry Operation
+  5. Exception Handles
 
 * Thread System
   1. Simple Thread Scheduler
