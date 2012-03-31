@@ -98,14 +98,14 @@ bool BaseClientEx::SetHostName(const TCHAR * hostName)
 		m_hostName=DEFAULT_HOSTNAME;
 	else
 	{
-#ifdef _UNICODE
+#if defined(_UNICODE) || defined(UNICODE)
 		char *tmpString=EP_NEW char[strLength+1];
 		System::WideCharToMultiByte(hostName,tmpString);
 		m_hostName=tmpString;
 		EP_DELETE[] tmpString;
-#else// _UNICODE
+#else// defined(_UNICODE) || defined(UNICODE)
 		m_hostName=hostName;
-#endif// _UNICODE 
+#endif// defined(_UNICODE) || defined(UNICODE)
 	}
 	return true;
 
@@ -121,14 +121,14 @@ bool BaseClientEx::SetPort(const TCHAR * port)
 		m_port=DEFAULT_PORT;
 	else
 	{
-#ifdef _UNICODE
+#if defined(_UNICODE) || defined(UNICODE)
 		char *tmpString=EP_NEW char[strLength+1];
 		System::WideCharToMultiByte(port,tmpString);
 		m_port=tmpString;
 		EP_DELETE[] tmpString;
-#else// _UNICODE
+#else// defined(_UNICODE) || defined(UNICODE)
 		m_port=port;
-#endif// _UNICODE 
+#endif// defined(_UNICODE) || defined(UNICODE)
 	}
 	return true;
 
@@ -138,31 +138,31 @@ EpTString BaseClientEx::GetHostName() const
 {
 	if(!m_hostName.length())
 		return _T("");
-#ifdef _UNICODE
+#if defined(_UNICODE) || defined(UNICODE)
 	EpTString retString;
 	TCHAR *hostName=EP_NEW TCHAR[m_hostName.length()+1];
 	System::MultiByteToWideChar(m_hostName.c_str(),m_hostName.length(),hostName);
 	retString=hostName;
 	EP_DELETE[] hostName;
 	return retString;
-#else //_UNICODE
+#else //defined(_UNICODE) || defined(UNICODE)
 	return m_hostName;
-#endif //_UNICODE
+#endif //defined(_UNICODE) || defined(UNICODE)
 }
 EpTString BaseClientEx::GetPort() const
 {
 	if(!m_port.length())
 		return _T("");
-#ifdef _UNICODE
+#if defined(_UNICODE) || defined(UNICODE)
 	EpTString retString;
 	TCHAR *port=EP_NEW TCHAR[m_port.length()+1];
 	System::MultiByteToWideChar(m_port.c_str(),m_port.length(),port);
 	retString=port;
 	EP_DELETE[] port;
 	return retString;
-#else //_UNICODE
+#else //defined(_UNICODE) || defined(UNICODE)
 	return m_port;
-#endif //_UNICODE
+#endif //defined(_UNICODE) || defined(UNICODE)
 }
 
 int BaseClientEx::Send(const Packet &packet)

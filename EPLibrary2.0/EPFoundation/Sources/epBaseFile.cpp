@@ -74,7 +74,7 @@ void BaseFile::WriteToFile(const TCHAR *toFileString)
 	unsigned int strLength=System::TcsLen(toFileString);
 	if(m_encodingType==FILE_ENCODING_TYPE_UTF8||m_encodingType==FILE_ENCODING_TYPE_UTF16)
 	{	
-#ifdef _UNICODE
+#if defined(_UNICODE) || defined(UNICODE)
 		char *multiByteToFile = EP_NEW char[strLength+1];
 
 		System::Memset(multiByteToFile,0,strLength+1);
@@ -82,16 +82,16 @@ void BaseFile::WriteToFile(const TCHAR *toFileString)
 		if(m_file)
 			System::FWrite(multiByteToFile,sizeof(char),strLength,m_file);
 		EP_DELETE[] multiByteToFile;
-#else
+#else// defined(_UNICODE) || defined(UNICODE)
 		System::FWrite(toFileString,sizeof(char),strLength,m_file);
-#endif
+#endif// defined(_UNICODE) || defined(UNICODE)
 	}
 	else
 	{
-#ifdef _UNICODE
+#if defined(_UNICODE) || defined(UNICODE)
 		if(m_file)
 			System::FWrite(toFileString,sizeof(wchar_t),strLength,m_file);
-#else //_UNICODE
+#else //defined(_UNICODE) || defined(UNICODE)
 		wchar_t *wideCharToFile = EP_NEW wchar_t[strLength+1];
 
 		System::Memset(wideCharToFile,0,(strLength+1)*sizeof(wchar_t));
@@ -99,7 +99,7 @@ void BaseFile::WriteToFile(const TCHAR *toFileString)
 		if(m_file)
 			System::FWrite(toFileString,sizeof(wchar_t),strLength,m_file);
 		EP_DELETE[] wideCharToFile;
-#endif //_UNICODE		
+#endif //defined(_UNICODE) || defined(UNICODE)
 	}
 }
 
@@ -153,7 +153,7 @@ bool BaseFile::LoadFromFile(const TCHAR *filename)
 	EpTString rest;
 	if(m_encodingType==FILE_ENCODING_TYPE_UTF8||m_encodingType==FILE_ENCODING_TYPE_UTF16)
 	{	
-#ifdef _UNICODE
+#if defined(_UNICODE) || defined(UNICODE)
 		//Find the actual length of file
 		unsigned int length= static_cast<unsigned int>(System::FSize(m_file));
 
@@ -168,7 +168,7 @@ bool BaseFile::LoadFromFile(const TCHAR *filename)
 		rest=tFileBuf;
 		EP_DELETE[] cFileBuf;
 		EP_DELETE[] tFileBuf;
-#else //_UNICODE
+#else //defined(_UNICODE) || defined(UNICODE)
 		//Find the actual length of file
 		unsigned int length= static_cast<unsigned int>(System::FSize(m_file));
 
@@ -179,11 +179,11 @@ bool BaseFile::LoadFromFile(const TCHAR *filename)
 
 		rest=cFileBuf;
 		EP_DELETE[] cFileBuf;
-#endif //_UNICODE
+#endif //defined(_UNICODE) || defined(UNICODE)
 	}
 	else
 	{
-#ifdef _UNICODE
+#if defined(_UNICODE) || defined(UNICODE)
 		//Find the actual length of file
 		unsigned int length=static_cast<unsigned int>( System::FSize(m_file)/sizeof(TCHAR) );
 
@@ -194,7 +194,7 @@ bool BaseFile::LoadFromFile(const TCHAR *filename)
 
 		rest=tFileBuf;
 		EP_DELETE[] tFileBuf;
-#else //_UNICODE
+#else //defined(_UNICODE) || defined(UNICODE)
 		//Find the actual length of file
 		unsigned int length=static_cast<unsigned int>( System::FSize(m_file)/sizeof(TCHAR) );
 
@@ -209,7 +209,7 @@ bool BaseFile::LoadFromFile(const TCHAR *filename)
 		rest=cFileBuf;
 		EP_DELETE[] cFileBuf;
 		EP_DELETE[] tFileBuf;
-#endif //_UNICODE
+#endif //defined(_UNICODE) || defined(UNICODE)
 	}
 
 

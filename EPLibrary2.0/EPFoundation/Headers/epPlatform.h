@@ -98,19 +98,19 @@ An Interface for the Platform Dependencies.
 #else //_WIN32
 
 #ifndef TCHAR
-#ifdef _UNICODE
+#if defined(_UNICODE) || defined(UNICODE)
 typedef unsigned short TCHAR 
-#else// _UNICODE
+#else// defined(_UNICODE) || defined(UNICODE)
 #define char TCHAR 
-#endif// _UNICODE
+#endif// defined(_UNICODE) || defined(UNICODE)
 #endif// TCHAR
 
 #ifndef _T
-#ifdef _UNICODE
+#if defined(_UNICODE) || defined(UNICODE)
 #define _T(x) L ## x
-#else// _UNICODE
+#else// defined(_UNICODE) || defined(UNICODE)
 #define _T(x) x
-#endif// _UNICODE
+#endif//defined(_UNICODE) || defined(UNICODE)
 #endif// _T(x)
 #endif //_WIN32
 

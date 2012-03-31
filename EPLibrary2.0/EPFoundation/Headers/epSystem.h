@@ -90,11 +90,11 @@ namespace epl
 	/// A type definition for EpTString Type
 	typedef std::string EpString;
 	typedef std::wstring EpWString;
-#ifdef _UNICODE
+#if defined(_UNICODE) || defined(UNICODE)
 	typedef EpWString EpTString;
-#else
+#else //defined(_UNICODE) || defined(UNICODE)
 	typedef EpString EpTString;
-#endif
+#endif //defined(_UNICODE) || defined(UNICODE)
 
 	/// A type definition for EpTime Type
 	typedef double EpTime;
