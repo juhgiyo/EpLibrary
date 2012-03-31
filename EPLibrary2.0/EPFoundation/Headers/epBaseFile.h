@@ -115,7 +115,7 @@ namespace epl{
 		@param[out] retRest the rest of the buffer without the found line
 		@return true if successfully parsed the line, otherwise false
 		*/
-		bool getLine(EpString buf, EpString &retLine, EpString &retRest);
+		bool getLine(EpTString buf, EpTString &retLine, EpTString &retRest);
 
 		/*!
 		Loop Function that writes to the file
@@ -127,7 +127,7 @@ namespace epl{
 		Actual load Function that loads values from the file
 		** Sub classes should implement this function
 		*/
-		virtual void loadFromFile(EpString line)=0;
+		virtual void loadFromFile(EpTString line)=0;
 
 		/// Encoding type of the file
 		FileEncodingType m_encodingType;

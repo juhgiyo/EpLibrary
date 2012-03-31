@@ -83,7 +83,7 @@ namespace epl
 		Return the file name set for this stream
 		@return the file name set for this stream.
 		*/
-		EpString GetFileName() const;
+		EpTString GetFileName() const;
 
 		/*!
 		Load the stream from the file
@@ -115,7 +115,7 @@ namespace epl
 		virtual bool read(void * value,const int byteSize);
 
 		/// The file name to load/write the stream
-		EpString m_fileName;
+		EpTString m_fileName;
 
 	};
 }

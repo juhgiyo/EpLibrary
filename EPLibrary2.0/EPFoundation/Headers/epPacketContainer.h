@@ -105,7 +105,7 @@ namespace epl
 			{
 				m_packetContainer=reinterpret_cast<PacketContainerStruct*>( EP_Malloc(sizeof(PacketContainerStruct) + (arraySize*sizeof(ArrayType)) ) );
 				EP_WASSERT(m_packetContainer,_T("Allocation Failed"));
-				memcpy(m_packetContainer,&packet,sizeof(PacketContainerStruct) + (arraySize*sizeof(ArrayType)));
+				System::Memcpy(m_packetContainer,&packet,sizeof(PacketContainerStruct) + (arraySize*sizeof(ArrayType)));
 				m_length=arraySize;
 			}
 			else
@@ -155,7 +155,7 @@ namespace epl
 			{
 				m_packetContainer=reinterpret_cast<PacketContainerStruct*>( EP_Malloc(byteSize) );
 				EP_WASSERT(m_packetContainer,_T("Allocation Failed"));
-				memcpy(m_packetContainer,rawData,byteSize);
+				System::Memcpy(m_packetContainer,rawData,byteSize);
 				m_length=(byteSize-sizeof(PacketContainerStruct))/sizeof(ArrayType);
 			}
 			else
@@ -272,7 +272,7 @@ namespace epl
 			{
 				m_packetContainer=reinterpret_cast<PacketContainerStruct*>( EP_Malloc(sizeof(PacketContainerStruct) + (arraySize*sizeof(ArrayType)) ) );
 				EP_WASSERT(m_packetContainer,_T("Allocation Failed"));
-				memcpy(m_packetContainer,&packet,sizeof(PacketContainerStruct) + (arraySize*sizeof(ArrayType)));
+				System::Memcpy(m_packetContainer,&packet,sizeof(PacketContainerStruct) + (arraySize*sizeof(ArrayType)));
 				m_length=arraySize;
 			}
 			else
@@ -305,7 +305,7 @@ namespace epl
 			{
 				m_packetContainer=reinterpret_cast<PacketContainerStruct*>( EP_Malloc(byteSize) );
 				EP_WASSERT(m_packetContainer,_T("Allocation Failed"));
-				memcpy(m_packetContainer,rawData,byteSize);
+				System::Memcpy(m_packetContainer,rawData,byteSize);
 				m_length=(byteSize-sizeof(PacketContainerStruct))/sizeof(ArrayType);
 			}
 			else

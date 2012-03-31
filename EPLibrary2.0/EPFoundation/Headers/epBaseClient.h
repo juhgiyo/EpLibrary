@@ -146,13 +146,13 @@ namespace epl{
 		Get the hostname of server
 		@return the hostname in string
 		*/
-		EpString GetHostName() const;
+		EpTString GetHostName() const;
 
 		/*!
 		Get the port number of server
 		@return the port number in string
 		*/
-		EpString GetPort() const;
+		EpTString GetPort() const;
 
 		/*!
 		Connect to the server

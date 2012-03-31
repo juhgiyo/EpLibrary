@@ -16,6 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "epBaseServerWorker.h"
+#include "epSimpleLogger.h"
 
 using namespace epl;
 BaseServerWorker::BaseServerWorker(LockPolicy lockPolicyType): Thread(lockPolicyType), SmartObject(lockPolicyType)
@@ -62,7 +63,7 @@ BaseServerWorker::~BaseServerWorker()
 	int iResult;
 	iResult = shutdown(m_clientSocket, SD_SEND);
 	if (iResult == SOCKET_ERROR) {
-		printf("shutdown failed with error\n"); // TODO:: Log
+		LOG_THIS_MSG(_T("shutdown failed with error\n"));
 		closesocket(m_clientSocket);
 	}
 	if(m_sendLock)
@@ -141,11 +142,11 @@ void BaseServerWorker::execute()
 			}
 			else if (iResult == 0)
 			{
-				printf("Connection closing...\n"); // TODO:: LOG
+				LOG_THIS_MSG(_T("Connection closing...\n"));
 				break;
 			}
 			else  {
-				printf("recv failed with error\n"); // TODO:: LOG
+				LOG_THIS_MSG(_T("recv failed with error\n"));
 				break;
 			}
 		}

@@ -116,7 +116,7 @@ bool Thread::Start(void * arg,const ThreadOpCode opCode, const ThreadType thread
 	else
 	{
 		// Error Thread already exists
-		EP_NOTICEBOX(_T("Thread already exists! Thread ID: %d"),m_threadId);
+		EP_NOTICEBOX(0,_T("Thread already exists! Thread ID: %d"),m_threadId);
 	}
 	return false;
 
@@ -135,7 +135,7 @@ bool Thread::Resume()
 	else
 	{
 		// Thread Not in Suspended State
-		EP_NOTICEBOX(_T("Thread must be in suspended state in order to resume! Thread ID: %d"),m_threadId);
+		EP_NOTICEBOX(0,_T("Thread must be in suspended state in order to resume! Thread ID: %d"),m_threadId);
 
 	}
 	return false;
@@ -154,7 +154,7 @@ bool Thread::Suspend()
 	else
 	{
 		// Thread Not in Started State
-		EP_NOTICEBOX(_T("Thread must be in running state in order to suspend! Thread ID: %d"),m_threadId);
+		EP_NOTICEBOX(0,_T("Thread must be in running state in order to suspend! Thread ID: %d"),m_threadId);
 
 	}
 	return false;
@@ -190,7 +190,7 @@ bool Thread::Terminate()
 	else
 	{
 		// No Thread Exists
-		EP_NOTICEBOX(_T("There is no thread to terminate! Thread ID: %d"),m_threadId);
+		EP_NOTICEBOX(0,_T("There is no thread to terminate! Thread ID: %d"),m_threadId);
 	}
 	return false;
 }
@@ -202,7 +202,7 @@ unsigned long Thread::WaitFor(const unsigned long tMilliseconds)
 		return ::WaitForSingleObject(m_threadHandle,tMilliseconds);
 	else
 	{
-		EP_NOTICEBOX(_T("Thread %d is not Running state!"),m_threadId);
+		EP_NOTICEBOX(0,_T("Thread %d is not Running state!"),m_threadId);
 		return 0;
 	}
 }
@@ -219,7 +219,7 @@ bool Thread::TerminateAfter(const unsigned long tMilliseconds)
 		case WAIT_TIMEOUT:
 		case WAIT_FAILED:
 			Terminate();
-			LOG_THIS_MSG(_T("Thread did not ended properly.\nError Code:%d"),status);
+			EP_WASSERT(0,_T("Thread did not ended properly.\nError Code:%d"),status);
 			break;
 		default:
 			break;
@@ -228,7 +228,7 @@ bool Thread::TerminateAfter(const unsigned long tMilliseconds)
 	}
 	else
 	{
-		EP_NOTICEBOX(_T("Thread %d is not Running state!"),m_threadId);
+		EP_NOTICEBOX(0,_T("Thread %d is not Running state!"),m_threadId);
 		return false;
 	}
 
@@ -248,7 +248,7 @@ void Thread::SetArg(void* a)
 		m_arg=a;
 	else
 	{
-		EP_NOTICEBOX(_T("Cannot Set Argument during Thread Running!"));
+		EP_NOTICEBOX(0,_T("Cannot Set Argument during Thread Running!"));
 	}
 }
 

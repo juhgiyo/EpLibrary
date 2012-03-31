@@ -130,7 +130,7 @@ namespace epl{
 		Get the port number of server
 		@return the port number in string
 		*/
-		EpString GetPort() const;
+		EpTString GetPort() const;
 
 		/*!
 		Start the server

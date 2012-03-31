@@ -22,7 +22,7 @@ using namespace epl;
 
 
 
-bool FolderHelper::ChooseFolder(HWND hParent, const TCHAR * title, EpString &retFolderPath)
+bool FolderHelper::ChooseFolder(HWND hParent, const TCHAR * title, EpTString &retFolderPath)
 {
 	bool success = false;
 	BROWSEINFO bi;
@@ -61,9 +61,9 @@ void FolderHelper::removeDir( const TCHAR * strPath)
 {  
 
 	CFileFind searchFile;  
-	EpString strFile;  
+	EpTString strFile;  
 	long bRet;  
-	EpString inputPath=strPath;
+	EpTString inputPath=strPath;
 
 	if(_waccess(inputPath.c_str(),00) != 0)  
 		return;  
@@ -94,10 +94,10 @@ bool FolderHelper::CreateFolder(const TCHAR * strPath)
 
 void FolderHelper::DeleteFolder(const TCHAR * strPath)
 {
-	if(!System::StrLen(strPath))
+	if(!System::TcsLen(strPath))
 		return;
-	EpString path=strPath;
-	EpString path2=strPath;
+	EpTString path=strPath;
+	EpTString path2=strPath;
 	int length=path.length();
 	int count=0;
 	for(int trav=length-1;trav>=0;trav--)
@@ -124,7 +124,7 @@ bool FolderHelper::IsPathExist(const TCHAR * path)
 {
 	return  PathFileExists(path);
 }
-bool FolderHelper::GetSpecialFolderPath(int csidl,bool isCreateIfNotExist,EpString &retPath)
+bool FolderHelper::GetSpecialFolderPath(int csidl,bool isCreateIfNotExist,EpTString &retPath)
 {
 	TCHAR pathString[MAX_PATH]={0};
 	if(SHGetSpecialFolderPath(NULL,pathString,csidl,isCreateIfNotExist))
@@ -151,10 +151,10 @@ unsigned int FolderHelper::GetActualFileLength(CFile &file)
 	return length;
 }
 
-EpString FolderHelper::GetPathOnly(const TCHAR * filePath)
+EpTString FolderHelper::GetPathOnly(const TCHAR * filePath)
 {
-	unsigned int strLength=System::StrLen(filePath);
-	EpString retString=filePath;
+	unsigned int strLength=System::TcsLen(filePath);
+	EpTString retString=filePath;
 	for(int stringTrav=strLength-1;stringTrav>=0;stringTrav--)
 	{
 		if(retString.at(stringTrav)!=_T('\\'))
@@ -165,17 +165,17 @@ EpString FolderHelper::GetPathOnly(const TCHAR * filePath)
 	return retString;
 }
 
-EpString FolderHelper::GetModuleFileName()
+EpTString FolderHelper::GetModuleFileName()
 {
 	TCHAR pathName[MAX_PATH];
-	memset(pathName,0,sizeof(TCHAR)*MAX_PATH);
+	System::Memset(pathName,0,sizeof(TCHAR)*MAX_PATH);
 	::GetModuleFileName(NULL, pathName,MAX_PATH);
-	EpString retString=pathName;
+	EpTString retString=pathName;
 	return retString;
 }
 
-EpString FolderHelper::GetModuleFileDirectory()
+EpTString FolderHelper::GetModuleFileDirectory()
 {
-	EpString retString=GetModuleFileName();
+	EpTString retString=GetModuleFileName();
 	return GetPathOnly(retString.c_str());
 }

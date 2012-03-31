@@ -22,8 +22,8 @@ using namespace epl;
 SimpleLogManager::SimpleLogNode::SimpleLogNode() :OutputNode()
 {
 	m_lineNum=0;
-	memset(m_dateStr,0,sizeof(TCHAR)*9);
-	memset(m_timeStr,0,sizeof(TCHAR)*9);
+	System::Memset(m_dateStr,0,sizeof(TCHAR)*9);
+	System::Memset(m_timeStr,0,sizeof(TCHAR)*9);
 	m_userStr=NULL;
 }
 
@@ -36,9 +36,9 @@ SimpleLogManager::SimpleLogNode::~SimpleLogNode()
 void SimpleLogManager::SimpleLogNode::Print() const
 {
 	if(m_userStr)
-		System::Printf(_T("%s::%s(%d) %s %s - %s\n"),m_fileName,m_funcName,m_lineNum,m_dateStr,m_timeStr,m_userStr);
+		System::TPrintf(_T("%s::%s(%d) %s %s - %s\n"),m_fileName,m_funcName,m_lineNum,m_dateStr,m_timeStr,m_userStr);
 	else
-		System::Printf(_T("%s::%s(%d) %s %s\n"),m_fileName,m_funcName,m_lineNum,m_dateStr,m_timeStr);
+		System::TPrintf(_T("%s::%s(%d) %s %s\n"),m_fileName,m_funcName,m_lineNum,m_dateStr,m_timeStr);
 }
 
 void SimpleLogManager::SimpleLogNode::Write(EpFile* const file)
@@ -47,11 +47,11 @@ void SimpleLogManager::SimpleLogNode::Write(EpFile* const file)
 	{
 		if(m_userStr)
 		{
-			System::FPrintf(file,_T("%s::%s(%d) %s %s - %s\n"),m_fileName,m_funcName,m_lineNum,m_dateStr,m_timeStr,m_userStr);
+			System::TFPrintf(file,_T("%s::%s(%d) %s %s - %s\n"),m_fileName,m_funcName,m_lineNum,m_dateStr,m_timeStr,m_userStr);
 		}
 		else
 		{
-			System::FPrintf(file,_T("%s::%s(%d) %s %s\n"),m_fileName,m_funcName,m_lineNum,m_dateStr,m_timeStr);
+			System::TFPrintf(file,_T("%s::%s(%d) %s %s\n"),m_fileName,m_funcName,m_lineNum,m_dateStr,m_timeStr);
 		}
 	}
 	else
@@ -67,7 +67,7 @@ SimpleLogManager::SimpleLogManager(const SimpleLogManager& b):BaseOutputter(b)
 SimpleLogManager::~SimpleLogManager()
 {	
 	EpFile *file=NULL;
-	System::FOpen(file,_T("simplelog.dat"),_T("wt"));
+	System::TFOpen(file,_T("simplelog.dat"),_T("wt"));
 	if(file)
 	{
 		WriteToFile(file);
@@ -91,7 +91,7 @@ void SimpleLogManager::AddSimpleLog(const TCHAR *fileName, const TCHAR *funcName
 	va_list args; 
 	int len;
 	va_start(args, format); 
-	len=System::StrLen_V(format,args);
+	len=System::TcsLen_V(format,args);
 	if(len==1)
 	{
 		log->m_userStr=NULL;
@@ -99,12 +99,12 @@ void SimpleLogManager::AddSimpleLog(const TCHAR *fileName, const TCHAR *funcName
 	else
 	{
 		log->m_userStr=EP_NEW TCHAR[len];
-		System::SPrintf_V(log->m_userStr,len,format,args);
+		System::TSPrintf_V(log->m_userStr,len,format,args);
 	}
 	va_end(args); 
 
-	System::StrDate(log->m_dateStr,9);
-	System::StrTime(log->m_timeStr,9);
+	System::TcsDate(log->m_dateStr,9);
+	System::TcsTime(log->m_timeStr,9);
 	m_list.push_back(log);
 }
 

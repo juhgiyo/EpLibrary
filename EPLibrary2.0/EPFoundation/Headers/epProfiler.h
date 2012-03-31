@@ -51,7 +51,7 @@ Macro that returns the reference of Profile Manager Instance.
 Macro that profiles the function where it called.
 */
 #if  defined(_DEBUG) && defined(ENABLE_PROFILE)
-#define PROFILE_THIS epl::ProfileManager::Profiler prof=epl::ProfileManager::Profiler(__WFILE__,__WFUNCTION__)
+#define PROFILE_THIS epl::ProfileManager::Profiler prof=epl::ProfileManager::Profiler(__TFILE__,__TFUNCTION__)
 #else
 #define PROFILE_THIS ((void)0)
 #endif
@@ -116,9 +116,9 @@ namespace epl
 			/// The start time that profiling started
 			EpTime m_startTime;
 			/// The Profiling File Name
-			EpString m_fileName;
+			EpTString m_fileName;
 			/// The Profiling Function Name
-			EpString m_funcName;
+			EpTString m_funcName;
 
 		};
 
@@ -186,9 +186,9 @@ namespace epl
 
 		private:
 			/// Profiling File Name
-			EpString m_fileName;
+			EpTString m_fileName;
 			/// Profiling Function Name
-			EpString m_funcName;
+			EpTString m_funcName;
 			/// The Quantity of Profiling occurred
 			int m_cnt;
 			/// The Total Profiling Time elapsed.

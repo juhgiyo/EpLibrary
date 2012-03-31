@@ -33,9 +33,9 @@ namespace epl
 {
 	void StaticAllocator::Fragment::Init(unsigned int blockSize, unsigned char blocks)
 	{
-		assert(blockSize > 0);
-		assert(blocks > 0);
-		assert((blockSize * blocks) / blockSize == blocks);
+		EP_ASSERT(blockSize > 0);
+		EP_ASSERT(blocks > 0);
+		EP_ASSERT((blockSize * blocks) / blockSize == blocks);
 
 		m_Data = EP_NEW unsigned char[blockSize * static_cast<unsigned int>(blocks)];
 		Reset(blockSize, blocks);
@@ -44,9 +44,9 @@ namespace epl
 
 	void StaticAllocator::Fragment::Reset(unsigned int blockSize, unsigned char blocks)
 	{
-		assert(blockSize > 0);
-		assert(blocks > 0);
-		assert((blockSize * blocks) / blockSize == blocks);
+		EP_ASSERT(blockSize > 0);
+		EP_ASSERT(blocks > 0);
+		EP_ASSERT((blockSize * blocks) / blockSize == blocks);
 		firstAvailableBlock=0;
 		numBlocksAvailable=blocks;
 		unsigned char i=0;
@@ -60,7 +60,7 @@ namespace epl
 	{
 		if(!numBlocksAvailable)
 			return 0;
-		assert((firstAvailableBlock * blockSize) / blockSize == 
+		EP_ASSERT((firstAvailableBlock * blockSize) / blockSize == 
 			firstAvailableBlock);
 		unsigned char *result= m_Data+(firstAvailableBlock*blockSize);
 		firstAvailableBlock=*result;
@@ -70,12 +70,12 @@ namespace epl
 
 	void StaticAllocator::Fragment::Deallocate(void *p, unsigned int blockSize)
 	{
-		assert(p>=m_Data);
+		EP_ASSERT(p>=m_Data);
 		unsigned char * releaseData= reinterpret_cast<unsigned char*>(p);
-		assert((releaseData-m_Data)%blockSize==0);
+		EP_ASSERT((releaseData-m_Data)%blockSize==0);
 		*releaseData=firstAvailableBlock;
 		firstAvailableBlock=static_cast<unsigned char>((releaseData-m_Data)/blockSize);
-		assert(firstAvailableBlock==(releaseData-m_Data)/blockSize);
+		EP_ASSERT(firstAvailableBlock==(releaseData-m_Data)/blockSize);
 		++numBlocksAvailable;
 	}
 
@@ -95,14 +95,14 @@ namespace epl
 		, m_allocFragment(0)
 		, m_deallocFragment(0)
 	{
-		assert(m_blockSize > 0);
+		EP_ASSERT(m_blockSize > 0);
 
 		unsigned int numBlocks = DEFAULT_FRAGMENT_SIZE / blockSize;
 		if (numBlocks > UCHAR_MAX) numBlocks = UCHAR_MAX;
 		else if (numBlocks == 0) numBlocks = 8 * blockSize;
 
 		m_numBlocks = static_cast<unsigned char>(numBlocks);
-		assert(m_numBlocks == numBlocks);
+		EP_ASSERT(m_numBlocks == numBlocks);
 	}
 
 
@@ -168,25 +168,25 @@ namespace epl
 				}
 			}
 		}
-		assert(m_allocFragment!=0);
-		assert(m_allocFragment->numBlocksAvailable>0);
+		EP_ASSERT(m_allocFragment!=0);
+		EP_ASSERT(m_allocFragment->numBlocksAvailable>0);
 		return m_allocFragment->Allocate(m_blockSize);
 	}
 
 	void StaticAllocator::Deallocate(void* p, CacheType type)
 	{
-		assert(!m_fragments.empty());
-		assert(&(m_fragments.front()) <= m_deallocFragment);
-		assert(&(m_fragments.back()) >= m_deallocFragment);
+		EP_ASSERT(!m_fragments.empty());
+		EP_ASSERT(&(m_fragments.front()) <= m_deallocFragment);
+		EP_ASSERT(&(m_fragments.back()) >= m_deallocFragment);
 
 		m_deallocFragment  = VicinityFind(p);
-		assert(m_deallocFragment);
+		EP_ASSERT(m_deallocFragment);
 
 		DoDeallocate(p,type);
 	}
 	void StaticAllocator::Release()
 	{
-		assert(m_fragments.empty());
+		EP_ASSERT(m_fragments.empty());
 		m_fragments.clear();
 	}
 	void StaticAllocator::Delete()
@@ -233,8 +233,8 @@ namespace epl
 	}
 	StaticAllocator::Fragment* StaticAllocator::VicinityFind(void* p)
 	{
-		assert(!m_fragments.empty());
-		assert(m_deallocFragment);
+		EP_ASSERT(!m_fragments.empty());
+		EP_ASSERT(m_deallocFragment);
 
 		unsigned int chunkLength = static_cast<unsigned int>(m_numBlocks) * m_blockSize;
 
@@ -272,8 +272,8 @@ namespace epl
 
 	void StaticAllocator::DoDeallocate(void* p, CacheType type)
 	{
-		assert(m_deallocFragment->m_Data <= p);
-		assert(m_deallocFragment->m_Data + m_numBlocks * m_blockSize > p);
+		EP_ASSERT(m_deallocFragment->m_Data <= p);
+		EP_ASSERT(m_deallocFragment->m_Data + m_numBlocks * m_blockSize > p);
 
 
 
@@ -413,9 +413,9 @@ namespace epl
 		}
 		int idx=trav;
 
-		assert(idx !=-1);
+		EP_ASSERT(idx !=-1);
 		i=&(m_pool.at(idx));
-		assert(i->GetBlockSize() == numBytes);
+		EP_ASSERT(i->GetBlockSize() == numBytes);
 		m_lastDealloc = i;
 		m_lastDealloc->Deallocate(p,type);
 

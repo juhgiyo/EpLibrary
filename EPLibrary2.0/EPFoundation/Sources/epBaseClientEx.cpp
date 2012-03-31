@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "epBaseClientEx.h"
 #include "epThread.h"
-
+#include "epSimpleLogger.h"
 using namespace epl;
 
 BaseClientEx::BaseClientEx(const TCHAR * hostName, const TCHAR * port,LockPolicy lockPolicyType)
@@ -93,15 +93,14 @@ bool BaseClientEx::SetHostName(const TCHAR * hostName)
 	if(m_isConnected)
 		return false;
 
-	unsigned int strLength=System::StrLen(hostName);
+	unsigned int strLength=System::TcsLen(hostName);
 	if(strLength==0)
 		m_hostName=DEFAULT_HOSTNAME;
 	else
 	{
 
 		char *tmpString=EP_NEW char[strLength+1];
-		wcstombs(tmpString,hostName,strLength);
-		tmpString[strLength]='\0';
+		System::WideCharToMultiByte(hostName,tmpString);
 		m_hostName=tmpString;
 		EP_DELETE[] tmpString;
 	}
@@ -114,14 +113,13 @@ bool BaseClientEx::SetPort(const TCHAR * port)
 	if(m_isConnected)
 		return false;
 
-	unsigned int strLength=System::StrLen(port);
+	unsigned int strLength=System::TcsLen(port);
 	if(strLength==0)
 		m_port=DEFAULT_PORT;
 	else
 	{
 		char *tmpString=EP_NEW char[strLength+1];
-		wcstombs(tmpString,port,strLength);
-		m_port[strLength]='\0';
+		System::WideCharToMultiByte(port,tmpString);
 		m_port=tmpString;
 		EP_DELETE[] tmpString;
 	}
@@ -129,22 +127,22 @@ bool BaseClientEx::SetPort(const TCHAR * port)
 
 }
 
-EpString BaseClientEx::GetHostName() const
+EpTString BaseClientEx::GetHostName() const
 {
 	if(!m_hostName.length())
 		return _T("");
-	EpString retString;
+	EpTString retString;
 	TCHAR *hostName=EP_NEW TCHAR[m_hostName.length()+1];
 	System::MultiByteToWideChar(m_hostName.c_str(),m_hostName.length(),hostName);
 	retString=hostName;
 	EP_DELETE[] hostName;
 	return retString;
 }
-EpString BaseClientEx::GetPort() const
+EpTString BaseClientEx::GetPort() const
 {
 	if(!m_port.length())
 		return _T("");
-	EpString retString;
+	EpTString retString;
 	TCHAR *port=EP_NEW TCHAR[m_port.length()+1];
 	System::MultiByteToWideChar(m_port.c_str(),m_port.length(),port);
 	retString=port;
@@ -221,7 +219,7 @@ bool BaseClientEx::Connect()
 	// Initialize Winsock
 	iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
 	if (iResult != 0) {
-		MessageBox(NULL,_T("WSAStartup failed with error\n"),_T("Error"),MB_OK);
+		EP_NOTICEBOX(_T("WSAStartup failed with error\n"));
 		return false;
 	}
 
@@ -233,7 +231,7 @@ bool BaseClientEx::Connect()
 	// Resolve the server address and port
 	iResult = getaddrinfo(m_hostName.c_str(), m_port.c_str(), &hints, &m_result);
 	if ( iResult != 0 ) {
-		MessageBox(NULL,_T("getaddrinfo failed with error\n"),_T("Error"),MB_OK);
+		EP_NOTICEBOX(_T("getaddrinfo failed with error\n"));
 		WSACleanup();
 		return false;
 	}
@@ -245,7 +243,7 @@ bool BaseClientEx::Connect()
 		m_connectSocket = socket(m_ptr->ai_family, m_ptr->ai_socktype, 
 			m_ptr->ai_protocol);
 		if (m_connectSocket == INVALID_SOCKET) {
-			MessageBox(NULL,_T("socket failed with error\n"),_T("Error"),MB_OK);
+			EP_NOTICEBOX(_T("socket failed with error\n"));
 			Disconnect();
 			return false;
 		}
@@ -260,7 +258,7 @@ bool BaseClientEx::Connect()
 		break;
 	}
 	if (m_connectSocket == INVALID_SOCKET) {
-		MessageBox(NULL,_T("Unable to connect to server!\n"),_T("Error"),MB_OK);
+		EP_NOTICEBOX(_T("Unable to connect to server!\n"));
 		Disconnect();
 		return false;
 	}
@@ -304,12 +302,12 @@ unsigned long BaseClientEx::ClientThread( LPVOID lpParam )
 			}
 			else if (iResult == 0)
 			{
-				printf("Connection closing...\n"); // TODO:: LOG
+				LOG_THIS_MSG(_T("Connection closing...\n"));
 				recvPacket->Release();
 				break;
 			}
 			else  {
-				printf("recv failed with error\n"); // TODO:: LOG
+				LOG_THIS_MSG(_T("recv failed with error\n"));
 				recvPacket->Release();
 				break;
 			}
@@ -341,7 +339,7 @@ void BaseClientEx::Disconnect()
 		// shutdown the connection since no more data will be sent
 		int iResult = shutdown(m_connectSocket, SD_SEND);
 		if (iResult == SOCKET_ERROR) {
-			printf("shutdown failed with error: %d\n", WSAGetLastError());// TODO LOG
+			LOG_THIS_MSG(_T("shutdown failed with error: %d\n"), WSAGetLastError());
 		}
 		closesocket(m_connectSocket);
 	}

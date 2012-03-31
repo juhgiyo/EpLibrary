@@ -112,9 +112,9 @@ bool NetworkStream::read(void *value,const int byteSize)
 {
 	bool retVal=false;
 
-	if(!m_stream.empty() && value && m_stream.size()>=(size_t)(m_readOffset+byteSize))
+	if(!m_stream.empty() && value && m_stream.size()>=static_cast<unsigned int>(m_readOffset+byteSize))
 	{
-		memcpy(value,&m_stream.at(m_readOffset) , byteSize);
+		System::Memcpy(value,&m_stream.at(m_readOffset) , byteSize);
 		m_readOffset+=byteSize;
 		retVal=true;
 	}

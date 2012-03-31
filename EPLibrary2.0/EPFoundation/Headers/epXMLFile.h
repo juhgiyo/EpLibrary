@@ -107,7 +107,7 @@ namespace epl
 		Actual load Function that loads values from the file
 		** Sub classes should implement this function
 		*/
-		virtual void loadFromFile(EpString line);
+		virtual void loadFromFile(EpTString line);
 
 		/*!
 		Recursively find all nodes with the given node name
@@ -115,7 +115,7 @@ namespace epl
 		@param[in] nodeName the node name to find the nodes
 		@return the list of the nodes with the given node name
 		*/
-		XNodes findAllNode(XNode *node, const EpString &  nodeName);
+		XNodes findAllNode(XNode *node, const EpTString &  nodeName);
 	};
 }
 

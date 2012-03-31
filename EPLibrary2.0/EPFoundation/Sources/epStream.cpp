@@ -119,7 +119,7 @@ bool Stream::write(const void *value,const int byteSize)
 	{
 		m_stream.resize(m_offset+byteSize);
 	}
-	memcpy(&m_stream.at(m_offset), value, byteSize);
+	System::Memcpy(&m_stream.at(m_offset), value, byteSize);
 	m_offset+=byteSize;
 
 	return true;
@@ -132,7 +132,7 @@ bool Stream::read(void *value,const int byteSize)
 
 	if(m_stream.size()>static_cast<size_t>(m_offset+byteSize))
 	{
-		memcpy(value,&m_stream.at(m_offset) , byteSize);
+		System::Memcpy(value,&m_stream.at(m_offset) , byteSize);
 		m_offset+=byteSize;
 		return true;
 	}
@@ -295,7 +295,7 @@ bool Stream::ReadBytes(unsigned char* retByteList, const unsigned int listSize)
 bool Stream::WriteStreamToFile(const TCHAR *fileName)
 {
 	LockObj lock(m_streamLock);
-	if(System::StrLen(fileName)==0)
+	if(System::TcsLen(fileName)==0)
 	{
 		LOG_THIS_MSG(_T("File Name Not Set!"));
 		return false;
@@ -306,7 +306,7 @@ bool Stream::WriteStreamToFile(const TCHAR *fileName)
 		return false;
 	}
 	EpFile *file;
-	System::FOpen(file,fileName,_T("wt"));
+	System::TFOpen(file,fileName,_T("wt"));
 	System::FWrite(&m_stream.at(0),sizeof(unsigned char),m_stream.size(),file);
 	System::FClose(file);
 	return true;

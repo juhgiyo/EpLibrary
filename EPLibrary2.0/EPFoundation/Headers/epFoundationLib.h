@@ -56,6 +56,13 @@ An Interface for EP Library.
 #define WIDEN(x) WIDEN2(x)
 #define __WFILE__ WIDEN(__FILE__)
 #define __WFUNCTION__ WIDEN(__FUNCTION__)
+#ifdef _UNICODE
+#define __TFILE__ __WFILE__
+#define __TFUNCTION__ __WFUNCTION__
+#else
+#define __TFILE__ __FILE__
+#define __TFUNCTION__ __FUNCTION__
+#endif
 
 #ifndef NULL
 #define NULL 0

@@ -19,9 +19,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace epl;
 
-EpString ConsoleHelper::ExecuteConsoleCommand(const TCHAR * command)
+EpTString ConsoleHelper::ExecuteConsoleCommand(const TCHAR * command)
 {
-	EpString csExecute;
+	EpTString csExecute;
 	csExecute=command;
 
 	SECURITY_ATTRIBUTES secattr;
@@ -48,7 +48,7 @@ EpString ConsoleHelper::ExecuteConsoleCommand(const TCHAR * command)
 
 	TCHAR buf[100];
 	unsigned long reDword;
-	EpString m_csOutput,csTemp;
+	EpTString m_csOutput,csTemp;
 	long res;
 	do
 	{

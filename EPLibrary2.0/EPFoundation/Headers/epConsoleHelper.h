@@ -48,7 +48,7 @@ namespace epl
 		@param[in] command the command to execute
 		@return the result of the console command
 		*/
-		static EpString ExecuteConsoleCommand(const TCHAR * command);
+		static EpTString ExecuteConsoleCommand(const TCHAR * command);
 
 		/*!
 		Execute the given executable file

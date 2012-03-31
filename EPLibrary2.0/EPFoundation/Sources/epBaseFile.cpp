@@ -71,13 +71,13 @@ BaseFile::~BaseFile()
 void BaseFile::WriteToFile(const TCHAR *toFileString)
 {
 	LockObj lock(m_lock);
-	unsigned int strLength=System::StrLen(toFileString);
+	unsigned int strLength=System::TcsLen(toFileString);
 	if(m_encodingType==FILE_ENCODING_TYPE_UTF8||m_encodingType==FILE_ENCODING_TYPE_UTF16)
 	{	
 		char *multiByteToFile = EP_NEW char[strLength+1];
-
-		memset(multiByteToFile,0,strLength+1);
-		wcstombs(multiByteToFile,toFileString,strLength);
+		
+		System::Memset(multiByteToFile,0,strLength+1);
+		System::WideCharToMultiByte(toFileString,multiByteToFile);
 
 		if(m_file)
 			m_file->Write(multiByteToFile,strLength);
@@ -93,19 +93,19 @@ void BaseFile::WriteToFile(const TCHAR *toFileString)
 bool BaseFile::SaveToFile(const TCHAR *filename)
 {
 	LockObj lock(m_lock);
-	unsigned int strLength=System::StrLen(filename);
+	unsigned int strLength=System::TcsLen(filename);
 	if(strLength<=0)
 		return false;
 
 	FILE *fStream;
-	errno_t e;
+	int e;
 
 	if(m_encodingType==FILE_ENCODING_TYPE_UTF8)
-		e= _tfopen_s(&fStream,filename,_T("wt,ccs=UTF-8"));
+		e= System::TFOpen(fStream,filename,_T("wt,ccs=UTF-8"));
 	else if(m_encodingType==FILE_ENCODING_TYPE_UNICODE)
-		e= _tfopen_s(&fStream,filename,_T("wt,ccs=UNICODE"));
+		e= System::TFOpen(fStream,filename,_T("wt,ccs=UNICODE"));
 	else if(m_encodingType==FILE_ENCODING_TYPE_UTF16)
-		e= _tfopen_s(&fStream,filename,_T("wt,ccs=UTF-16LE"));
+		e= System::TFOpen(fStream,filename,_T("wt,ccs=UTF-16LE"));
 	else
 		return false;
 	if (e != 0) 
@@ -124,19 +124,19 @@ bool BaseFile::SaveToFile(const TCHAR *filename)
 bool BaseFile::LoadFromFile(const TCHAR *filename)
 {
 	LockObj lock(m_lock);
-	unsigned int strLength=System::StrLen(filename);
+	unsigned int strLength=System::TcsLen(filename);
 	if(strLength<=0)
 		return false;
 
 	FILE *fStream;
-	errno_t e;
+	int e;
 
 	if(m_encodingType==FILE_ENCODING_TYPE_UTF8)
-		e= _tfopen_s(&fStream,filename,_T("rt,ccs=UTF-8"));
+		e= System::TFOpen(fStream,filename,_T("rt,ccs=UTF-8"));
 	else if(m_encodingType==FILE_ENCODING_TYPE_UNICODE)
-		e= _tfopen_s(&fStream,filename,_T("rt,ccs=UNICODE"));
+		e= System::TFOpen(fStream,filename,_T("rt,ccs=UNICODE"));
 	else if(m_encodingType==FILE_ENCODING_TYPE_UTF16)
-		e= _tfopen_s(&fStream,filename,_T("rt,ccs=UTF-16LE"));
+		e= System::TFOpen(fStream,filename,_T("rt,ccs=UTF-16LE"));
 	else
 		return false;
 
@@ -145,7 +145,7 @@ bool BaseFile::LoadFromFile(const TCHAR *filename)
 	CStdioFile propertyFile(fStream);  // open the file from this stream
 	m_file=&propertyFile;
 
-	EpString rest;
+	EpTString rest;
 	if(m_encodingType==FILE_ENCODING_TYPE_UTF8||m_encodingType==FILE_ENCODING_TYPE_UTF16)
 	{		
 		//Find the actual length of file
@@ -153,7 +153,7 @@ bool BaseFile::LoadFromFile(const TCHAR *filename)
 		propertyFile.SeekToBegin();
 
 		char *cFileBuf=EP_NEW char[length];
-		memset(cFileBuf,0,length);
+		System::Memset(cFileBuf,0,length);
 		propertyFile.Read(cFileBuf,length);
 		propertyFile.Close();
 
@@ -170,7 +170,7 @@ bool BaseFile::LoadFromFile(const TCHAR *filename)
 		unsigned int length=static_cast<unsigned int>( propertyFile.GetLength() );
 
 		TCHAR *tFileBuf=EP_NEW TCHAR[length];
-		memset(tFileBuf,0,sizeof(TCHAR)*length);
+		System::Memset(tFileBuf,0,sizeof(TCHAR)*length);
 		propertyFile.Read(tFileBuf,length);
 		propertyFile.Close();
 
@@ -186,12 +186,12 @@ bool BaseFile::LoadFromFile(const TCHAR *filename)
 }
 
 
-bool BaseFile::getLine(EpString buf, EpString &retLine, EpString &retRest)
+bool BaseFile::getLine(EpTString buf, EpTString &retLine, EpTString &retRest)
 {
 	if(buf.length()<=0)
 		return false;
 	TCHAR splitChar=0;
-	EpString lineSTring=_T("");
+	EpTString lineSTring=_T("");
 	int bufTrav=0;
 
 	do{

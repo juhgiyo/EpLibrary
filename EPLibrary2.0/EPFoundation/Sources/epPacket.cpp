@@ -30,9 +30,9 @@ Packet::Packet(char *packet, unsigned int byteSize, bool shouldAllocate, LockPol
 		{
 			m_packet=EP_NEW char[byteSize];
 			if(packet)
-				memcpy(m_packet,packet,byteSize);
+				System::Memcpy(m_packet,packet,byteSize);
 			else
-				memset(m_packet,0,byteSize);
+				System::Memset(m_packet,0,byteSize);
 			m_packetSize=byteSize;
 		}
 	}
@@ -67,7 +67,7 @@ Packet::Packet(const Packet& b):SmartObject(b)
 		if(b.m_packetSize>0)
 		{
 			m_packet=EP_NEW char[b.m_packetSize];
-			memcpy(m_packet,b.m_packet,b.m_packetSize);
+			System::Memcpy(m_packet,b.m_packet,b.m_packetSize);
 		}
 		m_packetSize=b.m_packetSize;
 	}
@@ -110,7 +110,7 @@ Packet & Packet::operator=(const Packet&b)
 			{
 				m_packet=EP_NEW char[b.m_packetSize];
 				EP_WASSERT(0,_T("Allocation Failed."));
-				memcpy(m_packet,b.m_packet,b.m_packetSize);
+				System::Memcpy(m_packet,b.m_packet,b.m_packetSize);
 			}
 			m_packetSize=b.m_packetSize;
 		}
@@ -160,9 +160,9 @@ void Packet::SetPacket(char* packet, unsigned int packetByteSize)
 			EP_WASSERT(0,_T("Allocation Failed."));
 		}
 		if(packet)
-			memcpy(m_packet,packet,packetByteSize);
+			System::Memcpy(m_packet,packet,packetByteSize);
 		else
-			memset(m_packet,0,packetByteSize);
+			System::Memset(m_packet,0,packetByteSize);
 		m_packetSize=packetByteSize;
 
 	}

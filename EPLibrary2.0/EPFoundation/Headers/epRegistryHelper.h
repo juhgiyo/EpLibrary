@@ -73,7 +73,7 @@ namespace epl
 		@param[out] retString the string data read
 		@return true if successful, otherwise false
 		*/
-		static bool GetRegistryData(HKEY key,const TCHAR * subKey,const TCHAR * regName, EpString &retString);
+		static bool GetRegistryData(HKEY key,const TCHAR * subKey,const TCHAR * regName, EpTString &retString);
 
 
 		/*!

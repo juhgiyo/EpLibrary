@@ -37,6 +37,8 @@ void WorkerThreadInfinite::execute()
 		}
 		
 		EP_WASSERT(m_arg,_T("Job Processor Cannot be NULL!"));
+		if(m_arg)
+			break;
 		BaseJob * jobPtr=m_workPool.Front();
 		jobPtr->Retain();
 		m_workPool.Pop();

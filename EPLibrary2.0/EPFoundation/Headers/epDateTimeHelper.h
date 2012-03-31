@@ -63,21 +63,21 @@ namespace epl
 		@param[in] date the date to translate
 		@return the date string converted.
 		*/
-		static EpString DateToString(const SYSTEMTIME date);
+		static EpTString DateToString(const SYSTEMTIME date);
 
 		/*!
 		Translate the given SYSTEMTIME time part to Time String 
 		@param[in] time the time to translate
 		@return the time string converted.
 		*/
-		static EpString TimeToString(const SYSTEMTIME time);
+		static EpTString TimeToString(const SYSTEMTIME time);
 
 		/*!
 		Translate the given SYSTEMTIME's Date & Time to DateTime String 
 		@param[in] dateTime the DateTime to translate
 		@return the DateTime string converted.
 		*/
-		static EpString DateTimeToString(const SYSTEMTIME dateTime);
+		static EpTString DateTimeToString(const SYSTEMTIME dateTime);
 	};
 }
 

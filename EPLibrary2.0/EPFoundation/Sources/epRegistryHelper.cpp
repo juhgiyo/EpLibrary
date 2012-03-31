@@ -23,7 +23,7 @@ using namespace epl;
 
 bool RegistryHelper::SetRegistryData(HKEY key,const TCHAR * subKey,const TCHAR * regName,const TCHAR * regData)
 {
-	if(SHSetValue(key,subKey,regName,REG_SZ,regData,(System::StrLen(regData)+1)*sizeof(TCHAR))==ERROR_SUCCESS)
+	if(SHSetValue(key,subKey,regName,REG_SZ,regData,(System::TcsLen(regData)+1)*sizeof(TCHAR))==ERROR_SUCCESS)
 		return true;
 	return false;
 }
@@ -35,7 +35,7 @@ bool RegistryHelper::SetRegistryData(HKEY key,const TCHAR *subKey,const TCHAR * 
 	return false;
 }
 
-bool RegistryHelper::GetRegistryData(HKEY key,const TCHAR *subKey,const TCHAR * regName, EpString &retString)
+bool RegistryHelper::GetRegistryData(HKEY key,const TCHAR *subKey,const TCHAR * regName, EpTString &retString)
 {
 	unsigned long size;
 	retString=_T("");
@@ -85,19 +85,19 @@ void RegistryHelper::DeleteRegistryKey(HKEY key, const TCHAR * subkey)
 
 HKEY RegistryHelper::GetRegistryMode(const TCHAR * strRegPath)
 {
-	if(_tcsstr(strRegPath,_T("HKEY_CLASSES_ROOT"))!=NULL)
+	if(System::TcsStr(strRegPath,_T("HKEY_CLASSES_ROOT"))!=NULL)
 	{
 		return HKEY_CLASSES_ROOT;
 	}
-	else if(_tcsstr(strRegPath,_T("HKEY_CURRENT_USER"))!=NULL)
+	else if(System::TcsStr(strRegPath,_T("HKEY_CURRENT_USER"))!=NULL)
 	{
 		return HKEY_CLASSES_ROOT;
 	}
-	else if(_tcsstr(strRegPath,_T("HKEY_LOCAL_MACHINE"))!=NULL)
+	else if(System::TcsStr(strRegPath,_T("HKEY_LOCAL_MACHINE"))!=NULL)
 	{
 		return HKEY_CLASSES_ROOT;
 	}
-	else if(_tcsstr(strRegPath,_T("HKEY_USERS"))!=NULL)
+	else if(System::TcsStr(strRegPath,_T("HKEY_USERS"))!=NULL)
 	{
 		return HKEY_CLASSES_ROOT;
 	}

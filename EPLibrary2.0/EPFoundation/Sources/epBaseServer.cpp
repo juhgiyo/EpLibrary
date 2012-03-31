@@ -16,6 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "epBaseServer.h"
+#include "epSimpleLogger.h"
 
 using namespace epl;
 
@@ -80,25 +81,24 @@ bool BaseServer::SetPort(const TCHAR *  port)
 	LockObj lock(m_lock);
 	if(m_isServerStarted)
 		return false;
-	unsigned int strLength=System::StrLen(port);
+	unsigned int strLength=System::TcsLen(port);
 	if(strLength==0)
 		m_port=DEFAULT_PORT;
 	else
 	{
 		char *tmpString=EP_NEW char[strLength+1];
-		wcstombs(tmpString,port,strLength);
-		m_port[strLength]='\0';
+		System::WideCharToMultiByte(port,tmpString);
 		m_port=tmpString;
 		EP_DELETE[] tmpString;
 	}
 	return true;
 }
 
-EpString BaseServer::GetPort() const
+EpTString BaseServer::GetPort() const
 {
 	if(!m_port.length())
 		return _T("");
-	EpString retString;
+	EpTString retString;
 	TCHAR *port=EP_NEW TCHAR[m_port.length()+1];
 	System::MultiByteToWideChar(m_port.c_str(),m_port.length(),port);
 	retString=port;
@@ -170,7 +170,7 @@ bool BaseServer::StartServer()
 	iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
 	if (iResult != 0) {
 
-		MessageBox(NULL,_T("WSAStartup failed with error\n"),_T("Error"),MB_OK);
+		EP_NOTICEBOX(_T("WSAStartup failed with error\n"));
 		return false;
 	}
 
@@ -184,7 +184,7 @@ bool BaseServer::StartServer()
 	// Resolve the server address and port
 	iResult = getaddrinfo(NULL, m_port.c_str(), &m_hints, &m_result);
 	if ( iResult != 0 ) {
-		MessageBox(NULL,_T("getaddrinfo failed with error\n"),_T("Error"),MB_OK);
+		EP_NOTICEBOX(_T("getaddrinfo failed with error\n"));
 		WSACleanup();
 		return false;
 	}
@@ -192,7 +192,7 @@ bool BaseServer::StartServer()
 	// Create a SOCKET for connecting to server
 	m_listenSocket = socket(m_result->ai_family, m_result->ai_socktype, m_result->ai_protocol);
 	if (m_listenSocket == INVALID_SOCKET) {
-		MessageBox(NULL,_T("socket failed with error\n"),_T("Error"),MB_OK);
+		EP_NOTICEBOX(_T("socket failed with error\n"));
 		StopServer();
 		return false;
 	}
@@ -200,14 +200,14 @@ bool BaseServer::StartServer()
 	// Setup the TCP listening socket
 	iResult = bind( m_listenSocket, m_result->ai_addr, static_cast<int>(m_result->ai_addrlen));
 	if (iResult == SOCKET_ERROR) {
-		MessageBox(NULL,_T("bind failed with error\n"),_T("Error"),MB_OK);
+		EP_NOTICEBOX(_T("bind failed with error\n"));
 		StopServer();
 		return false;
 	}
 
 	iResult = listen(m_listenSocket, SOMAXCONN);
 	if (iResult == SOCKET_ERROR) {
-		MessageBox(NULL,_T("listen failed with error\n"),_T("Error"),MB_OK);
+		EP_NOTICEBOX(_T("listen failed with error\n"));
 		StopServer();
 		return false;
 	}

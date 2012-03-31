@@ -50,7 +50,7 @@ Macro that returns the reference of Simple Log Manager Instance.
 Macro that logs the line and time where it called.
 */
 #if  defined(_DEBUG) && defined(ENABLE_LOG)
-#define LOG_THIS LOG_INSTANCE.AddSimpleLog(__WFILE__,__WFUNCTION__,__LINE__,_T(""))
+#define LOG_THIS LOG_INSTANCE.AddSimpleLog(__TFILE__,__TFUNCTION__,__LINE__,_T(""))
 #else
 #define LOG_THIS ((void)0)
 #endif
@@ -61,7 +61,7 @@ Macro that logs the line and time where it called.
 Macro that logs the line, and time where it called, with user message.
 */
 #if  defined(_DEBUG) && defined(ENABLE_LOG)
-#define LOG_THIS_MSG(inputString,...) LOG_INSTANCE.AddSimpleLog(__WFILE__,__WFUNCTION__,__LINE__,inputString,__VA_ARGS__)
+#define LOG_THIS_MSG(inputString,...) LOG_INSTANCE.AddSimpleLog(__TFILE__,__TFUNCTION__,__LINE__,inputString,__VA_ARGS__)
 #else
 #define LOG_THIS_MSG(inputString,...) ((void)0)
 #endif
@@ -133,9 +133,9 @@ namespace epl
 
 		private:
 			/// The name of file where the log is called.
-			EpString m_fileName;
+			EpTString m_fileName;
 			/// The name of function where the log is called.
-			EpString m_funcName;
+			EpTString m_funcName;
 			/// The line number where the log is called.
 			int m_lineNum;
 			/// The date when the log is called.

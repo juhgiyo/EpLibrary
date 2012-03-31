@@ -52,7 +52,7 @@ namespace epl
 		@param[out] retFolderPath the chosen folder path
 		@return true if the folder is successfully chosen, otherwise false
 		*/
-		static bool ChooseFolder(HWND hParent, const TCHAR * title, EpString &retFolderPath);
+		static bool ChooseFolder(HWND hParent, const TCHAR * title, EpTString &retFolderPath);
 
 		/*!
 		Check if the given path exists
@@ -83,7 +83,7 @@ namespace epl
 		@param[out] retPath the returning path string
 		@return true if the folder exists, otherwise false
 		*/
-		static bool GetSpecialFolderPath(int csidl,bool isCreateIfNotExist,EpString &retPath);
+		static bool GetSpecialFolderPath(int csidl,bool isCreateIfNotExist,EpTString &retPath);
 
 		/*!
 		Copy the source file to the destination file
@@ -106,20 +106,20 @@ namespace epl
 		Return the full path with file name for the current executable file
 		@return the full path of the current module
 		*/
-		static EpString GetModuleFileName();
+		static EpTString GetModuleFileName();
 
 		/*!
 		Return only the directory which contains the current executable file
 		@return the directory, which contains the current module
 		*/
-		static EpString GetModuleFileDirectory();
+		static EpTString GetModuleFileDirectory();
 
 		/*!
 		Return only the directory of given file path with file name
 		@param[in] filePath the full path of the file with file name
 		@return the directory, which contains the given file
 		*/
-		static EpString GetPathOnly(const TCHAR * filePath);
+		static EpTString GetPathOnly(const TCHAR * filePath);
 
 	private:
 		/*!

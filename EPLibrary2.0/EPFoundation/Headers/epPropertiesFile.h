@@ -99,7 +99,7 @@ namespace epl{
 		@param[in] retVal the value of the property of given key
 		@return true if found, otherwise false
 		*/
-		bool GetProperty(const TCHAR * key,EpString &retVal) const;
+		bool GetProperty(const TCHAR * key,EpTString &retVal) const;
 
 		/*!
 		Add new property with the given key and value
@@ -133,7 +133,7 @@ namespace epl{
 		Actual Load Function that loads values from the file
 		** Sub classes should implement this function
 		*/
-		virtual void loadFromFile(EpString line);
+		virtual void loadFromFile(EpTString line);
 
 		/*!
 		Parse the key and value from the line buffer
@@ -142,10 +142,10 @@ namespace epl{
 		@param[out] retVal the value part of the given line
 		@return true if successfully parsed the key and value, otherwise false
 		*/
-		bool getValueKeyFromLine(EpString buf, EpString &retKey, EpString &retVal);
+		bool getValueKeyFromLine(EpTString buf, EpTString &retKey, EpTString &retVal);
 
 		/// The list of the properties
-		list<pair<EpString,EpString> > m_propertyList;
+		list<pair<EpTString,EpTString> > m_propertyList;
 	};
 }
 

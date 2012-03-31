@@ -35,9 +35,9 @@ PropertiesFile::~PropertiesFile()
 
 bool PropertiesFile::SetProperty(const TCHAR *  key, const TCHAR * val)
 {
-	EpString opKey=key;
+	EpTString opKey=key;
 	opKey.append(_T("="));
-	list<pair<EpString, EpString> >::iterator iter;
+	list<pair<EpTString, EpTString> >::iterator iter;
 	for(iter=m_propertyList.begin();iter != m_propertyList.end();iter++)
 	{
 		if(iter->first.compare(opKey)==0)
@@ -49,11 +49,11 @@ bool PropertiesFile::SetProperty(const TCHAR *  key, const TCHAR * val)
 	return false;
 }
 
-bool PropertiesFile::GetProperty(const TCHAR * key,EpString &retVal) const
+bool PropertiesFile::GetProperty(const TCHAR * key,EpTString &retVal) const
 {
-	EpString opKey=key;
+	EpTString opKey=key;
 	opKey.append(_T("="));
-	list<pair<EpString, EpString> >::const_iterator iter;
+	list<pair<EpTString, EpTString> >::const_iterator iter;
 	for(iter=m_propertyList.begin();iter != m_propertyList.end();iter++)
 	{
 		if(iter->first.compare(opKey)==0)
@@ -67,9 +67,9 @@ bool PropertiesFile::GetProperty(const TCHAR * key,EpString &retVal) const
 
 bool PropertiesFile::AddProperty(const TCHAR * key, const TCHAR * val)
 {
-	EpString opKey=key;
+	EpTString opKey=key;
 	opKey.append(_T("="));
-	list<pair<EpString, EpString> >::iterator iter;
+	list<pair<EpTString, EpTString> >::iterator iter;
 	for(iter=m_propertyList.begin();iter != m_propertyList.end();iter++)
 	{
 		if(iter->first.compare(opKey)==0)
@@ -77,7 +77,7 @@ bool PropertiesFile::AddProperty(const TCHAR * key, const TCHAR * val)
 			return false;
 		}
 	}
-	pair<EpString,EpString> insertPair;
+	pair<EpTString,EpTString> insertPair;
 	insertPair.first=key;
 	insertPair.second=val;
 	m_propertyList.push_back(insertPair);
@@ -86,9 +86,9 @@ bool PropertiesFile::AddProperty(const TCHAR * key, const TCHAR * val)
 
 bool PropertiesFile::RemoveProperty(const TCHAR * key)
 {
-	EpString opKey=key;
+	EpTString opKey=key;
 	opKey.append(_T("="));
-	list<pair<EpString, EpString> >::iterator iter;
+	list<pair<EpTString, EpTString> >::iterator iter;
 	for(iter=m_propertyList.begin();iter != m_propertyList.end();iter++)
 	{
 		if(iter->first.compare(opKey)==0)
@@ -106,8 +106,8 @@ void PropertiesFile::Clear()
 }
 void PropertiesFile::writeLoop()
 {
-	list<pair<EpString,EpString> >::iterator iter;
-	EpString toFileString;
+	list<pair<EpTString,EpTString> >::iterator iter;
+	EpTString toFileString;
 	for(iter=m_propertyList.begin();iter!=m_propertyList.end();iter++)
 	{
 		toFileString=_T("");
@@ -118,23 +118,23 @@ void PropertiesFile::writeLoop()
 	}
 
 }
-void PropertiesFile::loadFromFile(EpString rest)
+void PropertiesFile::loadFromFile(EpTString rest)
 {
-	EpString line=_T("");
+	EpTString line=_T("");
 	while(getLine(rest,line,rest))
 	{
-		EpString key;
-		EpString val;
+		EpTString key;
+		EpTString val;
 		if(getValueKeyFromLine(line,key,val))
 		{
-			pair<EpString,EpString> inputPair;
+			pair<EpTString,EpTString> inputPair;
 			inputPair.first=key;
 			inputPair.second=val;
 			m_propertyList.push_back(inputPair);
 		}
 		else
 		{
-			pair<EpString,EpString> inputPair;
+			pair<EpTString,EpTString> inputPair;
 			inputPair.first=line;
 			inputPair.second=_T("");
 			m_propertyList.push_back(inputPair);
@@ -144,7 +144,7 @@ void PropertiesFile::loadFromFile(EpString rest)
 }
 
 
-bool PropertiesFile::getValueKeyFromLine(EpString buf, EpString &retKey, EpString &retVal)
+bool PropertiesFile::getValueKeyFromLine(EpTString buf, EpTString &retKey, EpTString &retVal)
 {
 	TCHAR splitChar=0;
 	int bufTrav=0;

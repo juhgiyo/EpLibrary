@@ -231,7 +231,7 @@ namespace epl
 		m_actualSize=dArr.m_actualSize;
 		m_head=reinterpret_cast<FDATA*>(EP_Malloc(sizeof(FDATA)*m_actualSize));
 		EP_WASSERT(m_head,_T("Allocation Failed"));
-		memcpy(m_head,dArr.m_head,sizeof(FDATA)*m_actualSize);
+		System::Memcpy(m_head,sizeof(FDATA)*m_actualSize,dArr.m_head,sizeof(FDATA)*m_actualSize);
 		switch(m_lockPolicy)
 		{
 		case LOCK_POLICY_CRITICALSECTION:
@@ -276,7 +276,8 @@ namespace epl
 	{
 		LockObj lock(m_lock);
 		m_numOfElements=0;
-		memset(m_head,0,sizeof(FDATA)*m_actualSize);
+		
+		System::Memset(m_head,0,sizeof(FDATA)*m_actualSize);
 	}
 
 	bool DynamicArray::IsEmpty() const
@@ -355,7 +356,7 @@ namespace epl
 			resize(m_numOfElements+dArr.m_numOfElements);
 		}
 		if(m_head && dArr.m_head && dArr.m_actualSize)
-			memcpy(m_head+m_numOfElements,dArr.m_head,dArr.m_numOfElements*sizeof(FDATA));
+			System::Memcpy(m_head+m_numOfElements,dArr.m_numOfElements*sizeof(FDATA),dArr.m_head,dArr.m_numOfElements*sizeof(FDATA));
 		m_numOfElements+=dArr.m_numOfElements;
 		return *this;
 	}
@@ -370,7 +371,7 @@ namespace epl
 			m_numOfElements=b.m_numOfElements;
 			resize(m_actualSize);
 			if(m_head&&b.m_head && b.m_actualSize)
-				memcpy(m_head,b.m_head,b.m_actualSize*sizeof(FDATA));
+				System::Memcpy(m_head,b.m_actualSize*sizeof(FDATA),b.m_head,b.m_actualSize*sizeof(FDATA));
 
 		}
 		return *this;

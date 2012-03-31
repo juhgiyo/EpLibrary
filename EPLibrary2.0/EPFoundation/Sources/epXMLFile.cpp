@@ -57,20 +57,20 @@ void XMLFile::Clear()
 }
 void XMLFile::writeLoop()
 {
-	EpString toFileString;
+	EpTString toFileString;
 
 	toFileString=GetXML().GetString();
 	WriteToFile(toFileString.c_str());
 	Close();
 }
-void XMLFile::loadFromFile(EpString rest)
+void XMLFile::loadFromFile(EpTString rest)
 {
 	Close();
 	Load(rest.c_str());
 
 }
 
-XNodes XMLFile::findAllNode(XNode *node, const EpString & nodeName)
+XNodes XMLFile::findAllNode(XNode *node, const EpTString & nodeName)
 {
 	XNodes nodelist;
 	std::queue<XNode*> recurseQueue;
