@@ -79,7 +79,11 @@ An Interface for System Class.
 @brief Macro Function for Notice Box
 @param[in] formatString the format of the message
 */
+#if defined(_DEBUG)
 #define EP_NOTICEBOX(formatString,...) epl::System::NoticeBox(__TFILE__,__TFUNCTION__,__LINE__,formatString,__VA_ARGS__)
+#else
+#define EP_NOTICEBOX(formatString,...) ((void)0)
+#endif
 
 #ifdef StrStr
 #undef StrStr
@@ -240,6 +244,23 @@ namespace epl
 		@return the number of characters written, not including the terminating null character, or a negative value if an output error occurs.
 		*/
 		static int SPrintf_V(char *dest,unsigned int sizeOfBuffer,const char *format,va_list args);
+
+				/*!
+		Print the given buffer to the console.
+		@param[out] retDest The destination location for output.
+		@param[in] format The format buffer to print out.
+		@return the number of characters written, not including the terminating null character, or a negative value if an output error occurs.
+		*/
+		static int SPrintf(EpString &retDest,const char *format,...);
+
+		/*!
+		Print the given buffer to the console.
+		@param[out] retDest The destination location for output.
+		@param[in] format The format buffer to print out.
+		@param[in] args Pointer to a list of arguments.
+		@return the number of characters written, not including the terminating null character, or a negative value if an output error occurs.
+		*/
+		static int SPrintf_V(EpString &retDest,const char *format,va_list args);
 		
 		
 		/*!
@@ -260,7 +281,7 @@ namespace epl
 
 		/*!
 		Print the given buffer to the console.
-		@param[in] dest The destination location for output.
+		@param[out] dest The destination location for output.
 		@param[in] sizeOfBuffer Maximum number of characters to store.
 		@param[in] format The format buffer to print out.
 		@return the number of characters written, not including the terminating null character, or a negative value if an output error occurs.
@@ -269,13 +290,30 @@ namespace epl
 
 		/*!
 		Print the given buffer to the console.
-		@param[in] dest The destination location for output.
+		@param[out] dest The destination location for output.
 		@param[in] sizeOfBuffer Maximum number of characters to store.
 		@param[in] format The format buffer to print out.
 		@param[in] args Pointer to a list of arguments.
 		@return the number of characters written, not including the terminating null character, or a negative value if an output error occurs.
 		*/
 		static int SWPrintf_V(wchar_t *dest,unsigned int sizeOfBuffer,const wchar_t *format,va_list args);
+
+		/*!
+		Print the given buffer to the console.
+		@param[out] retDest The destination location for output.
+		@param[in] format The format buffer to print out.
+		@return the number of characters written, not including the terminating null character, or a negative value if an output error occurs.
+		*/
+		static int SWPrintf(EpWString &retDest,const wchar_t *format,...);
+
+		/*!
+		Print the given buffer to the console.
+		@param[out] retDest The destination location for output.
+		@param[in] format The format buffer to print out.
+		@param[in] args Pointer to a list of arguments.
+		@return the number of characters written, not including the terminating null character, or a negative value if an output error occurs.
+		*/
+		static int SWPrintf_V(EpWString &retDest,const wchar_t *format,va_list args);
 		
 
 
@@ -297,7 +335,7 @@ namespace epl
 
 		/*!
 		Print the given buffer to the console.
-		@param[in] dest The destination location for output.
+		@param[out] dest The destination location for output.
 		@param[in] sizeOfBuffer Maximum number of characters to store.
 		@param[in] format The format buffer to print out.
 		@return the number of characters written, not including the terminating null character, or a negative value if an output error occurs.
@@ -306,7 +344,7 @@ namespace epl
 
 		/*!
 		Print the given buffer to the console.
-		@param[in] dest The destination location for output.
+		@param[out] dest The destination location for output.
 		@param[in] sizeOfBuffer Maximum number of characters to store.
 		@param[in] format The format buffer to print out.
 		@param[in] args Pointer to a list of arguments.
@@ -314,6 +352,23 @@ namespace epl
 		*/
 		static int STPrintf_V(TCHAR *dest,unsigned int sizeOfBuffer,const TCHAR *format,va_list args);
 		
+		/*!
+		Print the given buffer to the console.
+		@param[out] retDest The destination location for output.
+		@param[in] format The format buffer to print out.
+		@return the number of characters written, not including the terminating null character, or a negative value if an output error occurs.
+		*/
+		static int STPrintf(EpTString &retDest,const TCHAR *format,...);
+
+		/*!
+		Print the given buffer to the console.
+		@param[out] retDest The destination location for output.
+		@param[in] format The format buffer to print out.
+		@param[in] args Pointer to a list of arguments.
+		@return the number of characters written, not including the terminating null character, or a negative value if an output error occurs.
+		*/
+		static int STPrintf_V(EpTString &retDest,const TCHAR *format,va_list args);
+
 		
 		
 		/*!
@@ -682,10 +737,25 @@ namespace epl
 		Format the Last Error Code to String
 		@param[out] retBuff the buffer to put the human-readable error message.
 		@param[in] maxElementCount the number of element in the buffer
+		@param[out] retErrNo the last error number
 		@return if succeeds, the number of TCHARs stored in the output buffer, excluding the terminating null character otherwise zero.
 		*/
-		static unsigned long FormatLastErrorMessage(TCHAR *retBuff, const unsigned int maxElementCount);
+		static unsigned long FormatLastErrorMessage(TCHAR *retBuff, const unsigned int maxElementCount,unsigned long *retErrNo=NULL);
 
+		/*!
+		Format the Last Error Code to String
+		@param[out] retString the buffer to put the human-readable error message.
+		@param[out] retErrNo the last error number
+		@return if succeeds, the number of TCHARs stored in the output buffer, excluding the terminating null character otherwise zero.
+		*/
+		static unsigned long FormatLastErrorMessage(EpWString &retString,unsigned long *retErrNo) ;
+		/*!
+		Format the Last Error Code to String
+		@param[out] retString the buffer to put the human-readable error message.
+		@param[out] retErrNo the last error number
+		@return if succeeds, the number of TCHARs stored in the output buffer, excluding the terminating null character otherwise zero.
+		*/
+		static unsigned long FormatLastErrorMessage(EpString &retString,unsigned long *retErrNo) ;
 		/*!
 		Show Notice Message Box with message given including File Name, Function Name, and Line Number.
 		@param[in] fileName the file name of this function called.
@@ -706,16 +776,16 @@ namespace epl
 
 		/*!
 		Convert MultiByte String to WideChar String.
-		@param[in] multiByteCharString the string to convert to to WideChar string.
+		@param[in] multiByteCharString the string to convert to WideChar string.
 		@param[in] stringLength length of the MultiByte string excluding the terminating NULL.
-		@return EpTString that contains converted WideChar String.
+		@return EpWString that contains converted WideChar String.
 		*/
 		static EpWString MultiByteToWideChar(const char *multiByteCharString, unsigned int stringLength);
 
 		/*!
 		Convert MultiByte String to WideChar String.
-		@param[in] multiByteCharString the string to convert to to WideChar string.
-		@return EpTString that contains converted WideChar String.
+		@param[in] multiByteCharString the string to convert to WideChar string.
+		@return EpWString that contains converted WideChar String.
 		*/
 		static EpWString MultiByteToWideChar(const char *multiByteCharString);
 
@@ -729,7 +799,7 @@ namespace epl
 		*/
 		static int MultiByteToWideChar(const char *multiByteCharString, unsigned int stringLength, wchar_t *retWideCharString);
 
-				/*!
+		/*!
 		Convert MultiByte String to WideChar String.
 		@param[in] multiByteCharString the MultiByte string to convert to WideChar string.
 		@param[out] retWideCharString string that contains converted WideChar String.
@@ -753,6 +823,23 @@ namespace epl
 		@return the number of bytes written into the MultiByte output string, excluding the terminating NULL .
 		*/
 		static unsigned int  WideCharToMultiByte(const wchar_t* wideCharString,unsigned int stringLength, char *retMultiByteString);
+
+
+		/*!
+		Convert WideChar String to MultiByte String.
+		@param[in] wideCharString the string to convert to MultiByte string.
+		@param[in] stringLength length of the MultiByte string excluding the terminating NULL.
+		@return EpString that contains converted MultiByte String.
+		*/
+		static EpString WideCharToMultiByte(const wchar_t *wideCharString, unsigned int stringLength);
+
+		/*!
+		Convert MultiByte String to WideChar String.
+		@param[in] wideCharString the string to convert to MultiByte string.
+		@return EpString that contains converted MultiByte String.
+		*/
+		static EpString WideCharToMultiByte(const wchar_t *wideCharString);
+
 	};
 
 }

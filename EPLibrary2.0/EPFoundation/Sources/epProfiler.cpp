@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "epProfiler.h"
 #include "epBinarySearch.h"
+#include "epException.h"
 
 using namespace epl;
 
@@ -36,12 +37,8 @@ void ProfileManager::ProfileNode::Print() const
 
 void ProfileManager::ProfileNode::Write(EpFile* const file)
 {
-	if(file)
-	{
-		System::FTPrintf(file,_T("%s::%s %d ms %d ms %d\n"),m_fileName,m_funcName,m_totalTime/m_cnt,m_totalTime,m_cnt);
-	}
-	else
-		EP_WASSERT(0,_T("The File Pointer is NULL!"));
+	EP_VERIFY_INVALID_ARGUMENT_W_MSG(file,"The File Pointer is NULL!");
+	System::FTPrintf(file,_T("%s::%s %d ms %d ms %d\n"),m_fileName,m_funcName,m_totalTime/m_cnt,m_totalTime,m_cnt);
 }
 
 CompResultType ProfileManager::ProfileNode::Compare(const void * a, const void * b)
@@ -87,13 +84,9 @@ ProfileManager::~ProfileManager()
 {
 	EpFile *file=NULL;
 	System::FTOpen(file,_T("profile.dat"),_T("wt"));
-	if(file)
-	{
-		WriteToFile(file);
-		System::FClose(file);
-	}
-	else
-		EP_WASSERT(0,_T("Cannot open the file(%s)!"),_T("profile.dat"));
+	EP_VERIFY_RUNTIME_ERROR_W_MSG(file,"Cannot open the file(profile.dat)!");
+	WriteToFile(file);
+	System::FClose(file);
 }
 bool ProfileManager::isProfileExist(const TCHAR *fileName,const TCHAR * funcName,ProfileNode *&retIter, int &retIdx )
 {

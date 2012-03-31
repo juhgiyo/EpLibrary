@@ -302,7 +302,7 @@ namespace epl
 		*/
 		virtual FuncType operator [](unsigned int idx) const
 		{
-			ASSERT(idx<m_funcList.size());
+			EP_VERIFY_OUT_OF_RANGE(idx<m_funcList.size());
 			vector<RetType (*)(ArgType)>::iterator iter=m_funcList.begin();
 			iter+=idx;
 			return *iter;
@@ -601,7 +601,7 @@ namespace epl
 		*/
 		virtual FuncType operator [](unsigned int idx) const
 		{
-			ASSERT(idx<m_funcList.size());
+			EP_VERIFY_OUT_OF_RANGE(idx<m_funcList.size());
 			vector<RetType (*)(void)>::iterator iter=m_funcList.begin();
 			iter+=idx;
 			return *iter;

@@ -35,6 +35,7 @@ An Interface for Thread Safe Queue.
 #include "epCriticalSectionEx.h"
 #include "epMutex.h"
 #include "epNoLock.h"
+#include "epException.h"
 
 namespace epl
 {
@@ -226,7 +227,7 @@ namespace epl
 		LockObj lock(m_queueLock);
 		if(m_queue.empty())
 		{
-			EP_WASSERT(0,_T("Empty Queue"));
+			EP_VERIFY_DOMAIN_ERROR_W_MSG(0,"Empty Queue");
 		}
 		return m_queue.front();
 	}
@@ -237,7 +238,7 @@ namespace epl
 		LockObj lock(m_queueLock);
 		if(m_queue.empty())
 		{
-			EP_WASSERT(0,_T("Empty Queue"));
+			EP_VERIFY_DOMAIN_ERROR_W_MSG(0,"Empty Queue");
 		}
 		return m_queue.back();
 	}
@@ -271,7 +272,7 @@ namespace epl
 		LockObj lock(m_queueLock);
 		if(m_queue.empty())
 		{
-			EP_WASSERT(0,_T("Empty Queue"));
+			EP_VERIFY_DOMAIN_ERROR_W_MSG(0,"Empty Queue");
 		}
 		m_queue.erase(m_queue.begin());
 	}

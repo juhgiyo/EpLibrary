@@ -157,7 +157,37 @@ int System::SPrintf_V(char *dest,unsigned int sizeOfBuffer,const char *format,va
 	return vsprintf_s(dest,sizeOfBuffer,format,args);
 }
 
-
+int System::SPrintf(EpString &retDest,const char *format,...)
+{
+	int length;
+	char *tmpString=NULL;
+	int retVal=0;
+	va_list args;
+	va_start(args, format);
+	length=StrLen_V(format,args);
+	tmpString=EP_NEW char[length+1];
+	retVal=SPrintf_V(tmpString,length,format,args);
+	va_end(args);
+	retDest=tmpString;
+	if(tmpString)
+		EP_DELETE[] tmpString;
+	return retVal;
+}
+int System::SPrintf_V(EpString &retDest,const char *format,va_list args)
+{
+	int length;
+	char *tmpString=NULL;
+	int retVal=0;
+	va_start(args, format);
+	length=StrLen_V(format,args);
+	tmpString=EP_NEW char[length+1];
+	retVal=SPrintf_V(tmpString,length,format,args);
+	va_end(args);
+	retDest=tmpString;
+	if(tmpString)
+		EP_DELETE[] tmpString;
+	return retVal;
+}
 
 int System::WPrintf(const wchar_t * format, ... )
 {
@@ -189,7 +219,37 @@ int System::SWPrintf_V(wchar_t *dest,unsigned int sizeOfBuffer,const wchar_t *fo
 {
 	return vswprintf_s(dest,sizeOfBuffer,format,args);
 }
-
+int System::SWPrintf(EpWString &retDest,const wchar_t *format,...)
+{
+	int length;
+	wchar_t *tmpString=NULL;
+	int retVal=0;
+	va_list args;
+	va_start(args, format);
+	length=WcsLen_V(format,args);
+	tmpString=EP_NEW wchar_t[length+1];
+	retVal=SWPrintf_V(tmpString,length,format,args);
+	va_end(args);
+	retDest=tmpString;
+	if(tmpString)
+		EP_DELETE[] tmpString;
+	return retVal;
+}
+int System::SWPrintf_V(EpWString &retDest,const wchar_t *format,va_list args)
+{
+	int length;
+	wchar_t *tmpString=NULL;
+	int retVal=0;
+	va_start(args, format);
+	length=WcsLen_V(format,args);
+	tmpString=EP_NEW wchar_t[length+1];
+	retVal=SWPrintf_V(tmpString,length,format,args);
+	va_end(args);
+	retDest=tmpString;
+	if(tmpString)
+		EP_DELETE[] tmpString;
+	return retVal;
+}
 
 int System::TPrintf(const TCHAR * format, ... )
 {
@@ -217,6 +277,39 @@ int System::STPrintf(TCHAR *dest,unsigned int sizeOfBuffer,const TCHAR *format,.
 int System::STPrintf_V(TCHAR *dest,unsigned int sizeOfBuffer,const TCHAR *format,va_list args)
 {
 	return _vstprintf_s(dest,sizeOfBuffer,format,args);
+}
+
+
+int System::STPrintf(EpTString &retDest,const TCHAR *format,...)
+{
+	int length;
+	TCHAR *tmpString=NULL;
+	int retVal=0;
+	va_list args;
+	va_start(args, format);
+	length=TcsLen_V(format,args);
+	tmpString=EP_NEW TCHAR[length+1];
+	retVal=STPrintf_V(tmpString,length,format,args);
+	va_end(args);
+	retDest=tmpString;
+	if(tmpString)
+		EP_DELETE[] tmpString;
+	return retVal;
+}
+int System::STPrintf_V(EpTString &retDest,const TCHAR *format,va_list args)
+{
+	int length;
+	TCHAR *tmpString=NULL;
+	int retVal=0;
+	va_start(args, format);
+	length=TcsLen_V(format,args);
+	tmpString=EP_NEW TCHAR[length+1];
+	retVal=STPrintf_V(tmpString,length,format,args);
+	va_end(args);
+	retDest=tmpString;
+	if(tmpString)
+		EP_DELETE[] tmpString;
+	return retVal;
 }
 
 int System::StrLen(const char *format,...)
@@ -534,10 +627,13 @@ unsigned long System::GetLastError()
 {
 	return ::GetLastError();
 }
-unsigned long System::FormatLastErrorMessage(TCHAR *retBuff, const unsigned int maxElementCount) 
+unsigned long System::FormatLastErrorMessage(TCHAR *retBuff, const unsigned int maxElementCount,unsigned long *retErrNo) 
 {
 	unsigned long err=System::GetLastError();
-	return FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,
+	if(retErrNo!=NULL)
+		*retErrNo=err;
+
+	return FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM|FORMAT_MESSAGE_IGNORE_INSERTS,
 		0,
 		err,
 		MAKELANGID(LANG_ENGLISH,SUBLANG_ENGLISH_US),
@@ -545,6 +641,92 @@ unsigned long System::FormatLastErrorMessage(TCHAR *retBuff, const unsigned int 
 		maxElementCount,
 		NULL);
 
+}
+
+unsigned long System::FormatLastErrorMessage(EpString &retString,unsigned long *retErrNo) 
+{
+	unsigned long err=System::GetLastError();
+	if(retErrNo!=NULL)
+		*retErrNo=err;
+
+	TCHAR *errMsg=NULL;
+	unsigned long retVal=FormatMessage(
+		// use system message tables to retrieve error text
+		FORMAT_MESSAGE_FROM_SYSTEM
+		// allocate buffer on local heap for error text
+		|FORMAT_MESSAGE_ALLOCATE_BUFFER
+		// Important! will fail otherwise, since we're not 
+		// (and CANNOT) pass insertion parameters
+		|FORMAT_MESSAGE_IGNORE_INSERTS,  
+		NULL,    // unused with FORMAT_MESSAGE_FROM_SYSTEM
+		err,
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		errMsg,  // output 
+		0, // minimum size for output buffer
+		NULL);   // arguments - see note 
+
+	if ( errMsg != NULL)
+	{
+
+#if defined(_UNICODE) || defined(UNICODE)
+		unsigned int strLength=System::WcsLen(errMsg);
+		char *multiByteString=EP_NEW char[strLength+1];
+		System::Memset(multiByteString,0,strLength+1);
+		System::WideCharToMultiByte(errMsg,multiByteString);
+		retString=multiByteString;
+		EP_DELETE[] multiByteString;
+#else// defined(_UNICODE) || defined(UNICODE)
+		retString=errMsg;
+#endif// defined(_UNICODE) || defined(UNICODE)
+
+		// release memory allocated by FormatMessage()
+		LocalFree(errMsg);
+		errMsg = NULL;
+	}
+	return retVal;
+}
+
+unsigned long System::FormatLastErrorMessage(EpWString &retString,unsigned long *retErrNo) 
+{
+	unsigned long err=System::GetLastError();
+	if(retErrNo!=NULL)
+		*retErrNo=err;
+
+	TCHAR *errMsg=NULL;
+	unsigned long retVal=FormatMessage(
+		// use system message tables to retrieve error text
+		FORMAT_MESSAGE_FROM_SYSTEM
+		// allocate buffer on local heap for error text
+		|FORMAT_MESSAGE_ALLOCATE_BUFFER
+		// Important! will fail otherwise, since we're not 
+		// (and CANNOT) pass insertion parameters
+		|FORMAT_MESSAGE_IGNORE_INSERTS,  
+		NULL,    // unused with FORMAT_MESSAGE_FROM_SYSTEM
+		err,
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		errMsg,  // output 
+		0, // minimum size for output buffer
+		NULL);   // arguments - see note 
+
+	if ( errMsg != NULL)
+	{
+
+#if defined(_UNICODE) || defined(UNICODE)
+		retString=errMsg;
+#else// defined(_UNICODE) || defined(UNICODE)
+		unsigned int strLength=System::StrLen(errMsg);
+		wchar_t *wideCharString=EP_NEW wchar_t[strLength+1];
+		System::Memset(wideCharString,0,(strLength+1)*sizeof(wchar_t));
+		System::MultiByteToWideChar(errMsg,wideCharString);
+		retString=wideCharString;
+		EP_DELETE[] wideCharString;
+#endif// defined(_UNICODE) || defined(UNICODE)
+
+		// release memory allocated by FormatMessage()
+		LocalFree(errMsg);
+		errMsg = NULL;
+	}
+	return retVal;
 }
 
 int System::NoticeBox(const TCHAR* fileName, const TCHAR* funcName, const unsigned int lineNum,const TCHAR* format,...)
@@ -621,17 +803,6 @@ EpWString System::MultiByteToWideChar(const char *multiByteCharString, unsigned 
 	EP_DELETE[] tString;
 	return retString;
 }
-int System::MultiByteToWideChar(const char *multiByteCharString, unsigned int stringLength, wchar_t *retWideCharString)
-{
-	int result;
-	wchar_t *tString=EP_NEW wchar_t[stringLength+1];
-	System::Memset(tString,0,sizeof(wchar_t)*stringLength);
-	result=::MultiByteToWideChar(CP_ACP,0,multiByteCharString,-1,tString,stringLength);
-	tString[stringLength]=_T('\0');
-	System::Memcpy(retWideCharString,tString,sizeof(wchar_t)*(stringLength+1));
-	EP_DELETE[] tString;
-	return result;
-}
 
 EpWString System::MultiByteToWideChar(const char *multiByteCharString)
 {
@@ -644,6 +815,19 @@ EpWString System::MultiByteToWideChar(const char *multiByteCharString)
 	EP_DELETE[] tString;
 	return retString;
 }
+
+int System::MultiByteToWideChar(const char *multiByteCharString, unsigned int stringLength, wchar_t *retWideCharString)
+{
+	int result;
+	wchar_t *tString=EP_NEW wchar_t[stringLength+1];
+	System::Memset(tString,0,sizeof(wchar_t)*stringLength);
+	result=::MultiByteToWideChar(CP_ACP,0,multiByteCharString,-1,tString,stringLength);
+	tString[stringLength]=_T('\0');
+	System::Memcpy(retWideCharString,tString,sizeof(wchar_t)*(stringLength+1));
+	EP_DELETE[] tString;
+	return result;
+}
+
 int System::MultiByteToWideChar(const char *multiByteCharString, wchar_t *retWideCharString)
 {
 	int result;
@@ -656,6 +840,8 @@ int System::MultiByteToWideChar(const char *multiByteCharString, wchar_t *retWid
 	EP_DELETE[] tString;
 	return result;
 }
+
+
 unsigned int System::WideCharToMultiByte(const wchar_t* wideCharString, char *retMultiByteString)
 {
 	unsigned int result;
@@ -671,4 +857,29 @@ unsigned int System::WideCharToMultiByte(const wchar_t* wideCharString, unsigned
 	result=wcstombs(retMultiByteString,wideCharString,stringLength);
 	retMultiByteString[stringLength]='\0';
 	return result;
+}
+
+EpString System::WideCharToMultiByte(const wchar_t *wideCharString, unsigned int stringLength)
+{
+	unsigned int result;
+	char *cString=EP_NEW char[stringLength+1];
+	System::Memset(cString,0,sizeof(char)*stringLength);
+	result=wcstombs(cString,wideCharString,stringLength);
+	cString[stringLength]='\0';
+	EpString retString=cString;
+	EP_DELETE[] cString;
+	return retString;
+}
+
+EpString System::WideCharToMultiByte(const wchar_t *wideCharString)
+{
+	unsigned int stringLength=System::WcsLen(wideCharString);
+	unsigned int result;
+	char *cString=EP_NEW char[stringLength+1];
+	System::Memset(cString,0,sizeof(char)*stringLength);
+	result=wcstombs(cString,wideCharString,stringLength);
+	cString[stringLength]='\0';
+	EpString retString=cString;
+	EP_DELETE[] cString;
+	return retString;
 }

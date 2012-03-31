@@ -30,6 +30,10 @@ BaseWorkerThread *WorkerThreadFactory::GetWorkerThread(const BaseWorkerThread::T
 	else if(policy==BaseWorkerThread::THREAD_LIFE_SUSPEND_AFTER_WORK)
 		return dynamic_cast<BaseWorkerThread*>(EP_NEW WorkerThreadInfinite(policy));
 	else
-		EP_WASSERT(0,_T("Unknown Thread Life Policy Input(%d)!"),policy);
+	{
+		EpString errMsg;
+		System::SPrintf(errMsg,"Unknown Thread Life Policy Input! Thread Life Policy Input : %d",policy);
+		EP_VERIFY_INVALID_ARGUMENT_W_MSG(0,errMsg);
+	}
 	return NULL;
 }

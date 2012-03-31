@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "epSemaphore.h"
 #include "epSystem.h"
+#include "epException.h"
 using namespace epl;
 
 
@@ -47,8 +48,7 @@ void Semaphore::Lock()
 	int threadID=GetCurrentThreadId();
 	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
 	{
-		if(*iter==threadID)
-			EP_ASSERT(0);
+		EP_VERIFY_THREAD_DEADLOCK_ERROR(*iter!=threadID);
 	}
 #endif //_DEBUG
 	m_singleLock->Lock();
@@ -67,8 +67,7 @@ long Semaphore::TryLock()
 		int threadID=GetCurrentThreadId();
 		for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
 		{
-			if(*iter==threadID)
-				EP_ASSERT(0);
+			EP_VERIFY_THREAD_DEADLOCK_ERROR(*iter!=threadID);
 		}
 		m_threadList.push_back(threadID);
 	}
@@ -85,8 +84,7 @@ long Semaphore::TryLockFor(const unsigned int dwMilliSecond)
 		int threadID=GetCurrentThreadId();
 		for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
 		{
-			if(*iter==threadID)
-				EP_ASSERT(0);
+			EP_VERIFY_THREAD_DEADLOCK_ERROR(*iter!=threadID);
 		}
 		m_threadList.push_back(threadID);
 	}

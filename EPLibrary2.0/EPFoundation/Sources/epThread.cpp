@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "epThread.h"
 #include "epSimpleLogger.h"
+#include "epException.h"
 
 using namespace epl;
 
@@ -94,12 +95,13 @@ bool Thread::Start(void * arg,const ThreadOpCode opCode, const ThreadType thread
 			m_threadHandle=reinterpret_cast<ThreadHandle>(_beginthreadex(NULL,stackSize,Thread::entryPoint,this,opCode,&m_threadId));
 		else
 			m_threadHandle=::CreateThread(NULL,stackSize,Thread::entryPoint2,this,opCode,reinterpret_cast<LPDWORD>(&m_threadId));
-
 		if(!m_threadHandle)
 		{
-			TCHAR errmsg[512];
-			System::FormatLastErrorMessage(errmsg,512);
-			EP_WASSERT(0,_T("Cannot create thread!\nError Code: %d\nError Message: %s"),System::GetLastError(),errmsg);
+			EpString errMsg,lastErrMsg;
+			unsigned long lastErrNum=0;
+			System::FormatLastErrorMessage(lastErrMsg,&lastErrNum);
+			System::SPrintf(errMsg,"Cannot create the thread!\nError Code: %d\nError Message: %s",lastErrNum,lastErrMsg);
+			EP_VERIFY_THREAD_CREATION_ERROR_W_MSG(0,errMsg);
 			return false;
 
 		}
@@ -116,7 +118,7 @@ bool Thread::Start(void * arg,const ThreadOpCode opCode, const ThreadType thread
 	else
 	{
 		// Error Thread already exists
-		EP_NOTICEBOX(0,_T("Thread already exists! Thread ID: %d"),m_threadId);
+		EP_NOTICEBOX(_T("Thread already exists! Thread ID: %d"),m_threadId);
 	}
 	return false;
 
@@ -135,7 +137,7 @@ bool Thread::Resume()
 	else
 	{
 		// Thread Not in Suspended State
-		EP_NOTICEBOX(0,_T("Thread must be in suspended state in order to resume! Thread ID: %d"),m_threadId);
+		EP_NOTICEBOX(_T("Thread must be in suspended state in order to resume! Thread ID: %d"),m_threadId);
 
 	}
 	return false;
@@ -154,7 +156,7 @@ bool Thread::Suspend()
 	else
 	{
 		// Thread Not in Started State
-		EP_NOTICEBOX(0,_T("Thread must be in running state in order to suspend! Thread ID: %d"),m_threadId);
+		EP_NOTICEBOX(_T("Thread must be in running state in order to suspend! Thread ID: %d"),m_threadId);
 
 	}
 	return false;
@@ -179,18 +181,17 @@ bool Thread::Terminate()
 		else
 		{
 			// TerminateThread Failed
-
-
-			TCHAR errmsg[512];
-			System::FormatLastErrorMessage(errmsg,512);
-			EP_WASSERT(0,_T("Cannot terminate thread!\nTerminateThread Function failed!\nThread ID: %d\n Error Code: %d\nError Message: %s"),
-				m_threadId,System::GetLastError(),errmsg);
+			EpString errMsg,lastErrMsg;
+			unsigned long lastErrNum=0;
+			System::FormatLastErrorMessage(lastErrMsg,&lastErrNum);
+			System::SPrintf(errMsg,"Cannot terminate thread!\nThread ID: %d\n Error Code: %d\nError Message: %s",lastErrNum,lastErrMsg);
+			EP_VERIFY_THREAD_TERMINATION_ERROR_W_MSG(0,errMsg);
 		}
 	}
 	else
 	{
 		// No Thread Exists
-		EP_NOTICEBOX(0,_T("There is no thread to terminate! Thread ID: %d"),m_threadId);
+		EP_NOTICEBOX(_T("There is no thread to terminate! Thread ID: %d"),m_threadId);
 	}
 	return false;
 }
@@ -202,7 +203,7 @@ unsigned long Thread::WaitFor(const unsigned long tMilliseconds)
 		return ::WaitForSingleObject(m_threadHandle,tMilliseconds);
 	else
 	{
-		EP_NOTICEBOX(0,_T("Thread %d is not Running state!"),m_threadId);
+		EP_NOTICEBOX(_T("Thread %d is not Running state!"),m_threadId);
 		return 0;
 	}
 }
@@ -218,8 +219,14 @@ bool Thread::TerminateAfter(const unsigned long tMilliseconds)
 		case WAIT_ABANDONED:
 		case WAIT_TIMEOUT:
 		case WAIT_FAILED:
-			Terminate();
-			EP_WASSERT(0,_T("Thread did not ended properly.\nError Code:%d"),status);
+			try
+			{
+				Terminate();
+			}
+			catch(ExceptionThreadTerminationError e)
+			{
+				throw;
+			}
 			break;
 		default:
 			break;
@@ -228,7 +235,7 @@ bool Thread::TerminateAfter(const unsigned long tMilliseconds)
 	}
 	else
 	{
-		EP_NOTICEBOX(0,_T("Thread %d is not Running state!"),m_threadId);
+		EP_NOTICEBOX(_T("Thread %d is not Running state!"),m_threadId);
 		return false;
 	}
 
@@ -248,7 +255,7 @@ void Thread::SetArg(void* a)
 		m_arg=a;
 	else
 	{
-		EP_NOTICEBOX(0,_T("Cannot Set Argument during Thread Running!"));
+		EP_NOTICEBOX(_T("Cannot Set Argument during Thread Running!"));
 	}
 }
 

@@ -16,6 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "epSimpleLogger.h"
+#include "epException.h"
 
 using namespace epl;
 
@@ -43,19 +44,15 @@ void SimpleLogManager::SimpleLogNode::Print() const
 
 void SimpleLogManager::SimpleLogNode::Write(EpFile* const file)
 {
-	if(file)
+	EP_VERIFY_INVALID_ARGUMENT_W_MSG(file,"The File Pointer is NULL!");
+	if(m_userStr)
 	{
-		if(m_userStr)
-		{
-			System::FTPrintf(file,_T("%s::%s(%d) %s %s - %s\n"),m_fileName,m_funcName,m_lineNum,m_dateStr,m_timeStr,m_userStr);
-		}
-		else
-		{
-			System::FTPrintf(file,_T("%s::%s(%d) %s %s\n"),m_fileName,m_funcName,m_lineNum,m_dateStr,m_timeStr);
-		}
+		System::FTPrintf(file,_T("%s::%s(%d) %s %s - %s\n"),m_fileName,m_funcName,m_lineNum,m_dateStr,m_timeStr,m_userStr);
 	}
 	else
-		EP_WASSERT(0,_T("The File Pointer is NULL!"));
+	{
+		System::FTPrintf(file,_T("%s::%s(%d) %s %s\n"),m_fileName,m_funcName,m_lineNum,m_dateStr,m_timeStr);
+	}
 }
 
 
@@ -68,13 +65,10 @@ SimpleLogManager::~SimpleLogManager()
 {	
 	EpFile *file=NULL;
 	System::FTOpen(file,_T("simplelog.dat"),_T("wt"));
-	if(file)
-	{
-		WriteToFile(file);
-		System::FClose(file);
-	}
-	else
-		EP_WASSERT(0,_T("Cannot Open the file(%s)!"),_T("simplelog.dat"));
+	EP_VERIFY_RUNTIME_ERROR_W_MSG(file,"Cannot open the file(simplelog.dat)!");
+
+	WriteToFile(file);
+	System::FClose(file);
 }
 
 

@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <stdlib.h>
 #include <time.h>
 #include "epSystem.h"
+#include "epException.h"
 using namespace epl;
 
 int Random::GetRandom()
@@ -27,7 +28,7 @@ int Random::GetRandom()
 }
 int Random::GetRandom(int startNum, int endNum)
 {
-	EP_ASSERT(endNum>=startNum);
+	EP_VERIFY_RANGE_ERROR(endNum>=startNum);
 	return rand()%(endNum-startNum+1)+startNum;
 }
 Random::Random()

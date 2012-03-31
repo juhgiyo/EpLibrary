@@ -38,7 +38,11 @@ void SmartObject::Release()
 		return;
 	}
 	if(m_refCount<0)
-		EP_WASSERT(0, _T("Reference Count is negative Value!"));
+	{
+		EpString errMsg;
+		System::SPrintf(errMsg,"Reference Count is negative Value! Reference Count : %d",m_refCount);
+		EP_VERIFY_RUNTIME_ERROR_W_MSG(m_refCount>=0, errMsg);
+	}
 }
 
 SmartObject::SmartObject(LockPolicy lockPolicyType)
@@ -88,8 +92,12 @@ SmartObject::SmartObject(const SmartObject& b)
 SmartObject::~SmartObject()
 {
 	m_refCount--;
-	if( m_refCount!=0)
-		EP_WASSERT(0,_T("The Reference Count is not 0!\nThe Reference Count is %d !"),m_refCount);
+	if(m_refCount!=0)
+	{
+		EpString errMsg;
+		System::SPrintf(errMsg,"The Reference Count is not 0!! Reference Count : %d",m_refCount);
+		EP_VERIFY_RUNTIME_ERROR_W_MSG(m_refCount==0, errMsg);
+	}
 	if(m_refCounterLock)
 		EP_DELETE m_refCounterLock;
 }

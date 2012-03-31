@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "epNoLock.h"
 #include "epSystem.h"
+#include "epException.h"
 using namespace epl;
 
 
@@ -37,8 +38,7 @@ void NoLock::Lock()
 	int threadID=GetCurrentThreadId();
 	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
 	{
-		if(*iter==threadID)
-			EP_ASSERT(0);
+		EP_VERIFY_THREAD_DEADLOCK_ERROR(*iter!=threadID);
 	}
 #endif //_DEBUG
 #if _DEBUG
@@ -53,8 +53,7 @@ long NoLock::TryLock()
 	int threadID=GetCurrentThreadId();
 	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
 	{
-		if(*iter==threadID)
-			EP_ASSERT(0);
+		EP_VERIFY_THREAD_DEADLOCK_ERROR(*iter!=threadID);
 	}
 	m_threadList.push_back(threadID);
 #endif //_DEBUG
@@ -67,8 +66,7 @@ long NoLock::TryLockFor(const unsigned int dwMilliSecond)
 	int threadID=GetCurrentThreadId();
 	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
 	{
-		if(*iter==threadID)
-			EP_ASSERT(0);
+		EP_VERIFY_THREAD_DEADLOCK_ERROR(*iter!=threadID);
 	}
 	m_threadList.push_back(threadID);
 #endif //_DEBUG

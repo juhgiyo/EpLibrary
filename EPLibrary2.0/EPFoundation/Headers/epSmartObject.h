@@ -35,6 +35,7 @@ An Interface for the Smart Object.
 #include "epCriticalSectionEx.h"
 #include "epMutex.h"
 #include "epNoLock.h"
+#include "epException.h"
 
 namespace epl
 {
@@ -110,7 +111,12 @@ namespace epl
 				return;
 			}
 			if(m_refCount<0)
-				EP_WASSERT(0, _T("Reference Count is negative Value!"));
+			{
+				EpString errMsg;
+				System::SPrintf(errMsg,"Reference Count is negative Value! Reference Count : %d",m_refCount);
+				EP_VERIFY_DOMAIN_ERROR_W_MSG(m_refCount>=0, errMsg);
+			}
+
 		}
 
 	protected:

@@ -109,7 +109,7 @@ Packet & Packet::operator=(const Packet&b)
 			if(b.m_packetSize>0)
 			{
 				m_packet=EP_NEW char[b.m_packetSize];
-				EP_WASSERT(0,_T("Allocation Failed."));
+				EP_VERIFY_BAD_ALLOC(m_packet);
 				System::Memcpy(m_packet,b.m_packet,b.m_packetSize);
 			}
 			m_packetSize=b.m_packetSize;
@@ -157,7 +157,7 @@ void Packet::SetPacket(char* packet, unsigned int packetByteSize)
 		if(packetByteSize>0)
 		{
 			m_packet=EP_NEW char[packetByteSize];
-			EP_WASSERT(0,_T("Allocation Failed."));
+			EP_VERIFY_BAD_ALLOC(m_packet);
 		}
 		if(packet)
 			System::Memcpy(m_packet,packet,packetByteSize);
