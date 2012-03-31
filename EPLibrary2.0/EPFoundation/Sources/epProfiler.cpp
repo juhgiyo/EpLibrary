@@ -38,7 +38,7 @@ void ProfileManager::ProfileNode::Write(EpFile* const file)
 {
 	if(file)
 	{
-		System::TFPrintf(file,_T("%s::%s %d ms %d ms %d\n"),m_fileName,m_funcName,m_totalTime/m_cnt,m_totalTime,m_cnt);
+		System::FTPrintf(file,_T("%s::%s %d ms %d ms %d\n"),m_fileName,m_funcName,m_totalTime/m_cnt,m_totalTime,m_cnt);
 	}
 	else
 		EP_WASSERT(0,_T("The File Pointer is NULL!"));
@@ -86,7 +86,7 @@ ProfileManager::ProfileManager(const ProfileManager& b):BaseOutputter(b)
 ProfileManager::~ProfileManager()
 {
 	EpFile *file=NULL;
-	System::TFOpen(file,_T("profile.dat"),_T("wt"));
+	System::FTOpen(file,_T("profile.dat"),_T("wt"));
 	if(file)
 	{
 		WriteToFile(file);

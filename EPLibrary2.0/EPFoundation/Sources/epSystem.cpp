@@ -106,6 +106,16 @@ int System::StrTime(char * buffer, unsigned int numberOfElements)
 	return _strtime_s(buffer,numberOfElements);
 }
 
+int System::WStrDate(wchar_t * buffer, unsigned int numberOfElements)
+{
+	return _wstrdate_s(buffer,numberOfElements);
+}
+
+int System::WStrTime(wchar_t * buffer, unsigned int numberOfElements)
+{
+	return _wstrtime_s(buffer,numberOfElements);
+}
+
 int System::TcsDate(TCHAR * buffer, unsigned int numberOfElements)
 {
 	return _tstrdate_s(buffer,numberOfElements);
@@ -147,6 +157,40 @@ int System::SPrintf_V(char *dest,unsigned int sizeOfBuffer,const char *format,va
 	return vsprintf_s(dest,sizeOfBuffer,format,args);
 }
 
+
+
+int System::WPrintf(const wchar_t * format, ... )
+{
+	va_list args; 
+	int retVal=0;
+	va_start(args, format); 
+	retVal=vwprintf_s(format,args);
+	va_end(args); 
+	return retVal;
+}
+
+int System::WPrintf_V(const wchar_t* format, va_list args)
+{
+	return vwprintf_s(format,args);
+}
+
+
+int System::SWPrintf(wchar_t *dest,unsigned int sizeOfBuffer,const wchar_t *format,...)
+{
+	va_list args; 
+	int retVal=0;
+	va_start(args, format); 
+	retVal=vswprintf_s(dest,sizeOfBuffer,format,args);
+	va_end(args); 
+	return retVal;
+}
+
+int System::SWPrintf_V(wchar_t *dest,unsigned int sizeOfBuffer,const wchar_t *format,va_list args)
+{
+	return vswprintf_s(dest,sizeOfBuffer,format,args);
+}
+
+
 int System::TPrintf(const TCHAR * format, ... )
 {
 	va_list args; 
@@ -160,7 +204,7 @@ int System::TPrintf_V(const TCHAR* format, va_list args)
 {
 	return _vtprintf_s(format,args);
 }
-int System::TSPrintf(TCHAR *dest,unsigned int sizeOfBuffer,const TCHAR *format,...)
+int System::STPrintf(TCHAR *dest,unsigned int sizeOfBuffer,const TCHAR *format,...)
 {
 	va_list args; 
 	int retVal=0;
@@ -170,7 +214,7 @@ int System::TSPrintf(TCHAR *dest,unsigned int sizeOfBuffer,const TCHAR *format,.
 	return retVal;
 }
 
-int System::TSPrintf_V(TCHAR *dest,unsigned int sizeOfBuffer,const TCHAR *format,va_list args)
+int System::STPrintf_V(TCHAR *dest,unsigned int sizeOfBuffer,const TCHAR *format,va_list args)
 {
 	return _vstprintf_s(dest,sizeOfBuffer,format,args);
 }
@@ -227,8 +271,121 @@ const char *System::StrStr(const char *source,const char *subString)
 
 int System::StrLen_V(const char*format, va_list args)
 {
-	return _vscprintf(format,args)+1;
+	return _vscprintf(format,args);
 }
+
+
+
+int System::MbsLen(const unsigned char *format,...)
+{
+	va_list args; 
+	int retVal; 
+	va_start(args, format); 
+	retVal=_vscprintf(reinterpret_cast<const char*>(format),args);
+	va_end(args); 
+	return retVal;
+}
+
+unsigned char* System::MbsCat (unsigned char* dest, unsigned int dstSize, const unsigned char* source)
+{
+	int err = _mbscat_s(dest,dstSize,source);
+	if (err == 0)
+	{
+		return dest;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+unsigned char* System::MbsNCpy (unsigned char* dest, unsigned int dstSize, const unsigned char* source, unsigned int srcSize)
+{
+	int err = _mbsncpy_s(dest,dstSize,source,srcSize);
+	if (err == 0)
+	{
+		return dest;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+unsigned char* System::MbsTok (unsigned char* token, const unsigned char* delimiters,unsigned char*& nextToken)
+{
+	return _mbstok_s(token,delimiters,&nextToken);
+}
+
+unsigned char *System::MbsCpy(unsigned char *dest, const unsigned char*source)
+{
+	return _mbscpy(dest,source);
+}
+const unsigned char *System::MbsStr(const unsigned char *source,const unsigned char *subString)
+{
+	return _mbsstr(source,subString);
+}
+
+int System::MbsLen_V(const unsigned char*format, va_list args)
+{
+	return _vscprintf(reinterpret_cast<const char*>(format),args);
+}
+
+int System::WcsLen(const wchar_t *format,...)
+{
+	va_list args; 
+	int retVal; 
+	va_start(args, format); 
+	retVal=_vscwprintf(format,args);
+	va_end(args); 
+	return retVal;
+}
+
+wchar_t* System::WcsCat (wchar_t* dest, unsigned int dstSize, const wchar_t* source)
+{
+	int err = wcscat_s(dest,dstSize,source);
+	if (err == 0)
+	{
+		return dest;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+wchar_t* System::WcsNCpy (wchar_t* dest, unsigned int dstSize, const wchar_t* source, unsigned int srcSize)
+{
+	int err = wcsncpy_s(dest,dstSize,source,srcSize);
+	if (err == 0)
+	{
+		return dest;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+wchar_t* System::WcsTok (wchar_t* token, const wchar_t* delimiters, wchar_t*& nextToken)
+{
+	return wcstok_s(token,delimiters,&nextToken);
+}
+
+wchar_t *System::WcsCpy(wchar_t *dest, const wchar_t*source)
+{
+	return wcscpy(dest,source);
+}
+const wchar_t *System::WcsStr(const wchar_t *source,const wchar_t *subString)
+{
+	return wcsstr(source,subString);
+}
+
+int System::WcsLen_V(const wchar_t*format, va_list args)
+{
+	return _vscwprintf(format,args);
+}
+
 
 int System::TcsLen(const TCHAR *format,...)
 {
@@ -279,7 +436,7 @@ const TCHAR *System::TcsStr(const TCHAR *source,const TCHAR *subString)
 
 int System::TcsLen_V(const TCHAR*format, va_list args)
 {
-	return _vsctprintf(format,args)+1;
+	return _vsctprintf(format,args);
 }
 
 
@@ -299,7 +456,23 @@ int System::FPrintf_V(EpFile* const fileStream, const char* format,va_list args)
 	return vfprintf(fileStream,format,args);
 }
 
-int System::TFPrintf(EpFile* const fileStream, const TCHAR* format,...)
+int System::FWPrintf(EpFile* const fileStream, const wchar_t* format,...)
+{
+	va_list args; 
+	int retVal; 
+	va_start(args, format); 
+	retVal=vfwprintf(fileStream,format,args);
+	va_end(args); 
+	return retVal;
+
+}
+
+int System::FWPrintf_V(EpFile* const fileStream, const wchar_t* format,va_list args)
+{
+	return vfwprintf(fileStream,format,args);
+}
+
+int System::FTPrintf(EpFile* const fileStream, const TCHAR* format,...)
 {
 	va_list args; 
 	int retVal; 
@@ -310,7 +483,7 @@ int System::TFPrintf(EpFile* const fileStream, const TCHAR* format,...)
 
 }
 
-int System::TFPrintf_V(EpFile* const fileStream, const TCHAR* format,va_list args)
+int System::FTPrintf_V(EpFile* const fileStream, const TCHAR* format,va_list args)
 {
 	return _vftprintf(fileStream,format,args);
 }
@@ -321,7 +494,12 @@ int System::FOpen(EpFile *&retFileStream,const char* filename,const char * mode 
 	return fopen_s(&retFileStream,filename,mode);
 }
 
-int System::TFOpen(EpFile *&retFileStream,const TCHAR* filename,const TCHAR * mode )
+int System::FWOpen(EpFile *&retFileStream,const wchar_t* filename,const wchar_t * mode )
+{
+	return _wfopen_s(&retFileStream,filename,mode);
+}
+
+int System::FTOpen(EpFile *&retFileStream,const TCHAR* filename,const TCHAR * mode )
 {
 	return _tfopen_s(&retFileStream,filename,mode);
 }
@@ -377,11 +555,11 @@ int System::NoticeBox(const TCHAR* fileName, const TCHAR* funcName, const unsign
 	va_list args;
 	va_start(args, format);
 	length=TcsLen_V(format,args);
-	tmpString=EP_NEW TCHAR[length];
-	TSPrintf_V(tmpString,length,format,args);
+	tmpString=EP_NEW TCHAR[length+1];
+	STPrintf_V(tmpString,length,format,args);
 	fullLength=TcsLen(_T("File Name : %s\nFunction Name : %s\nLine Number : %d\n\nMessage : %s\n"),fileName,funcName,lineNum,tmpString);
-	tmpSTring2=EP_NEW TCHAR[fullLength];
-	TSPrintf(tmpSTring2,fullLength,_T("File Name : %s\nFunction Name : %s\nLine Number : %d\n\nMessage : %s\n"),fileName,funcName,lineNum,tmpString);
+	tmpSTring2=EP_NEW TCHAR[fullLength+1];
+	STPrintf(tmpSTring2,fullLength,_T("File Name : %s\nFunction Name : %s\nLine Number : %d\n\nMessage : %s\n"),fileName,funcName,lineNum,tmpString);
 	va_end(args);
 	int retVal=0;
 	retVal=MessageBox(NULL,tmpSTring2,_T("Notice"),MB_OK);
@@ -481,7 +659,7 @@ int System::MultiByteToWideChar(const char *multiByteCharString, wchar_t *retWid
 unsigned int System::WideCharToMultiByte(const wchar_t* wideCharString, char *retMultiByteString)
 {
 	unsigned int result;
-	unsigned int strLength=System::TcsLen(wideCharString);
+	unsigned int strLength=System::WcsLen(wideCharString);
 	result=wcstombs(retMultiByteString,wideCharString,strLength);
 	retMultiByteString[strLength]='\0';
 	return result;

@@ -47,11 +47,11 @@ void SimpleLogManager::SimpleLogNode::Write(EpFile* const file)
 	{
 		if(m_userStr)
 		{
-			System::TFPrintf(file,_T("%s::%s(%d) %s %s - %s\n"),m_fileName,m_funcName,m_lineNum,m_dateStr,m_timeStr,m_userStr);
+			System::FTPrintf(file,_T("%s::%s(%d) %s %s - %s\n"),m_fileName,m_funcName,m_lineNum,m_dateStr,m_timeStr,m_userStr);
 		}
 		else
 		{
-			System::TFPrintf(file,_T("%s::%s(%d) %s %s\n"),m_fileName,m_funcName,m_lineNum,m_dateStr,m_timeStr);
+			System::FTPrintf(file,_T("%s::%s(%d) %s %s\n"),m_fileName,m_funcName,m_lineNum,m_dateStr,m_timeStr);
 		}
 	}
 	else
@@ -67,7 +67,7 @@ SimpleLogManager::SimpleLogManager(const SimpleLogManager& b):BaseOutputter(b)
 SimpleLogManager::~SimpleLogManager()
 {	
 	EpFile *file=NULL;
-	System::TFOpen(file,_T("simplelog.dat"),_T("wt"));
+	System::FTOpen(file,_T("simplelog.dat"),_T("wt"));
 	if(file)
 	{
 		WriteToFile(file);
@@ -99,7 +99,7 @@ void SimpleLogManager::AddSimpleLog(const TCHAR *fileName, const TCHAR *funcName
 	else
 	{
 		log->m_userStr=EP_NEW TCHAR[len];
-		System::TSPrintf_V(log->m_userStr,len,format,args);
+		System::STPrintf_V(log->m_userStr,len,format,args);
 	}
 	va_end(args); 
 

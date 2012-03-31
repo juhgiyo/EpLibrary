@@ -172,7 +172,7 @@ namespace epl{
 		virtual BaseServerWorkerEx* createNewWorker()=0;
 
 		/// port number
-		std::string m_port;
+		EpString m_port;
 		/// listening socket
 		SOCKET m_listenSocket;
 		/// internal use variable

@@ -168,8 +168,23 @@ namespace epl
 		@return 0 if successful, otherwise an error code.
 		*/
 		static int StrTime(char * buffer, unsigned int numberOfElements);
+
+		/*!
+		Copy the current time to a buffer.
+		@param[out] buffer A pointer to a buffer which will be filled in with the formatted time string.
+		@param[in] numberOfElements the Maximum number of elements in the buffer.
+		@return 0 if successful, otherwise an error code.
+		*/
+		static int WStrTime(wchar_t * buffer, unsigned int numberOfElements);
 		
-		
+				/*!
+		Copy the current system date to a buffer.
+		@param[out] buffer A pointer to a buffer which will be filled in with the formatted date string.
+		@param[in] numberOfElements the Maximum number of elements in the buffer.
+		@return 0 if successful, otherwise an error code.
+		*/
+		static int WStrDate(wchar_t * buffer, unsigned int numberOfElements);
+
 		/*!
 		Copy the current system date to a buffer.
 		@param[out] buffer A pointer to a buffer which will be filled in with the formatted date string.
@@ -223,7 +238,44 @@ namespace epl
 		*/
 		static int SPrintf_V(char *dest,unsigned int sizeOfBuffer,const char *format,va_list args);
 		
-				
+		
+		/*!
+		Print the given buffer to the console.
+		@param[in] format The format buffer to print out.
+		@return number of character printed, or a negative value if an error occurs
+		*/
+		static int WPrintf(const wchar_t * format, ... );
+		
+		/*!
+		Print the given buffer to the console.
+		@param[in] format The format buffer to print out.
+		@param[in] args Pointer to a list of arguments.
+		@return number of character printed, or a negative value if an error occurs
+		*/
+		static int WPrintf_V(const wchar_t* format, va_list args);
+
+
+		/*!
+		Print the given buffer to the console.
+		@param[in] dest The destination location for output.
+		@param[in] sizeOfBuffer Maximum number of characters to store.
+		@param[in] format The format buffer to print out.
+		@return the number of characters written, not including the terminating null character, or a negative value if an output error occurs.
+		*/
+		static int SWPrintf(wchar_t *dest,unsigned int sizeOfBuffer,const wchar_t *format,...);
+
+		/*!
+		Print the given buffer to the console.
+		@param[in] dest The destination location for output.
+		@param[in] sizeOfBuffer Maximum number of characters to store.
+		@param[in] format The format buffer to print out.
+		@param[in] args Pointer to a list of arguments.
+		@return the number of characters written, not including the terminating null character, or a negative value if an output error occurs.
+		*/
+		static int SWPrintf_V(wchar_t *dest,unsigned int sizeOfBuffer,const wchar_t *format,va_list args);
+		
+
+
 		/*!
 		Print the given buffer to the console.
 		@param[in] format The format buffer to print out.
@@ -247,7 +299,7 @@ namespace epl
 		@param[in] format The format buffer to print out.
 		@return the number of characters written, not including the terminating null character, or a negative value if an output error occurs.
 		*/
-		static int TSPrintf(TCHAR *dest,unsigned int sizeOfBuffer,const TCHAR *format,...);
+		static int STPrintf(TCHAR *dest,unsigned int sizeOfBuffer,const TCHAR *format,...);
 
 		/*!
 		Print the given buffer to the console.
@@ -257,7 +309,7 @@ namespace epl
 		@param[in] args Pointer to a list of arguments.
 		@return the number of characters written, not including the terminating null character, or a negative value if an output error occurs.
 		*/
-		static int TSPrintf_V(TCHAR *dest,unsigned int sizeOfBuffer,const TCHAR *format,va_list args);
+		static int STPrintf_V(TCHAR *dest,unsigned int sizeOfBuffer,const TCHAR *format,va_list args);
 		
 		
 		
@@ -267,8 +319,6 @@ namespace epl
 		@return the number of characters of the final format string
 		*/
 		static int StrLen(const char *format,...);
-
-
 
 		/*!
 		Concatenate the source string to destination string.
@@ -322,6 +372,127 @@ namespace epl
 		*/
 		static int StrLen_V(const char*format, va_list args);
 
+
+		/*!
+		Return the total  number of characters of the final format string
+		@param[in] format The format buffer to find the size in byte.
+		@return the number of characters of the final format string
+		*/
+		static int MbsLen(const unsigned char *format,...);
+
+		/*!
+		Concatenate the source string to destination string.
+		@param[in] dest The destination for copying.
+		@param[in] dstSize the maximum destination size.
+		@param[in] source The source string to be concatenated.
+		@return the resulting buffer.
+		*/
+		static unsigned char* MbsCat (unsigned char* dest, unsigned int dstSize, const unsigned char* source);
+
+		/*!
+		Copy the source strings to destination string.
+		@param[in] dest The destination for copying.
+		@param[in] dstSize the maximum destination size.
+		@param[in] source The source strings to be copied.
+		@param[in] srcSize the number of source strings.
+		@return the resulting buffer.
+		*/
+		static unsigned char* MbsNCpy (unsigned char* dest, unsigned int dstSize, const unsigned char* source, unsigned int srcSize);
+
+		/*!
+		Tokenize the string by delimiters.
+		@param[in] token The string to tokenize.
+		@param[in] delimiters the delimiter to tokenize the given string by.
+		@param[in] nextToken position to store information between calls to strtok_s.
+		@return the resulting buffer.
+		*/
+		static unsigned char* MbsTok (unsigned char* token, const unsigned char* delimiters, unsigned char*& nextToken);
+
+		/*!
+		Copy source string to destination string, and return the destination string.
+		@param[out] dest The Destination String
+		@param[in] source The Source String
+		@return the Destination String.
+		*/
+		static unsigned char *MbsCpy(unsigned char *dest, const unsigned char*source);
+
+		/*!
+		Return a pointer to the first occurrence of a search string in a string.
+		@param[in] source the source string to search the substring
+		@param[in] subString the search string
+		@return a pointer to the first occurrence of a search string in source string
+		*/
+		static const unsigned char *MbsStr(const unsigned char *source,const unsigned char *subString);
+
+		/*!
+		Return the total  number of characters of the final format string
+		@param[in] format The format buffer to find the size in byte.
+		@param[in] args Pointer to a list of arguments.
+		@return the number of characters of the final format string
+		*/
+		static int MbsLen_V(const unsigned char*format, va_list args);
+
+		/*!
+		Return the total  number of characters of the final format string
+		@param[in] format The format buffer to find the size in byte.
+		@return the number of characters of the final format string
+		*/
+		static int WcsLen(const wchar_t *format,...);
+
+		/*!
+		Concatenate the source string to destination string.
+		@param[in] dest The destination for copying.
+		@param[in] dstSize the maximum destination size.
+		@param[in] source The source string to be concatenated.
+		@return the resulting buffer.
+		*/
+		static wchar_t* WcsCat (wchar_t* dest, unsigned int dstSize, const wchar_t* source);
+
+		/*!
+		Copy the source strings to destination string.
+		@param[in] dest The destination for copying.
+		@param[in] dstSize the maximum destination size.
+		@param[in] source The source strings to be copied.
+		@param[in] srcSize the number of source strings.
+		@return the resulting buffer.
+		*/
+		static wchar_t* WcsNCpy (wchar_t* dest, unsigned int dstSize, const wchar_t* source, unsigned int srcSize);
+
+		/*!
+		Tokenize the string by delimiters.
+		@param[in] token The string to tokenize.
+		@param[in] delimiters the delimiter to tokenize the given string by.
+		@param[in] nextToken position to store information between calls to strtok_s.
+		@return the resulting buffer.
+		*/
+		static wchar_t* WcsTok (wchar_t* token, const wchar_t* delimiters, wchar_t*& nextToken);
+
+		/*!
+		Copy source string to destination string, and return the destination string.
+		@param[out] dest The Destination String
+		@param[in] source The Source String
+		@return the Destination String.
+		*/
+		static wchar_t *WcsCpy(wchar_t *dest, const wchar_t*source);
+
+		/*!
+		Return a pointer to the first occurrence of a search string in a string.
+		@param[in] source the source string to search the substring
+		@param[in] subString the search string
+		@return a pointer to the first occurrence of a search string in source string
+		*/
+		static const wchar_t *WcsStr(const wchar_t *source,const wchar_t *subString);
+
+		/*!
+		Return the total  number of characters of the final format string
+		@param[in] format The format buffer to find the size in byte.
+		@param[in] args Pointer to a list of arguments.
+		@return the number of characters of the final format string
+		*/
+		static int WcsLen_V(const wchar_t*format, va_list args);
+
+
+
 		
 		/*!
 		Return the total  number of characters of the final format string
@@ -329,8 +500,6 @@ namespace epl
 		@return the number of characters of the final format string
 		*/
 		static int TcsLen(const TCHAR *format,...);
-
-
 
 		/*!
 		Concatenate the source string to destination string.
@@ -402,14 +571,14 @@ namespace epl
 		*/
 		static int FPrintf_V(EpFile* const fileStream, const char* format,va_list args);
 		
-		
+
 		/*!
 		Print formatted data to a file stream.
 		@param[in] fileStream Pointer to FILE structure.
 		@param[in] format Format-control string.
 		@return the number of bytes written. 
 		*/
-		static int TFPrintf(EpFile* const  fileStream, const TCHAR* format,...);
+		static int FWPrintf(EpFile* const  fileStream, const wchar_t* format,...);
 		
 		/*!
 		Print formatted data to a file stream.
@@ -418,7 +587,25 @@ namespace epl
 		@param[in] args Pointer to a list of arguments.
 		@return the number of bytes written. 
 		*/
-		static int TFPrintf_V(EpFile* const fileStream, const TCHAR* format,va_list args);
+		static int FWPrintf_V(EpFile* const fileStream, const wchar_t* format,va_list args);
+		
+		
+		/*!
+		Print formatted data to a file stream.
+		@param[in] fileStream Pointer to FILE structure.
+		@param[in] format Format-control string.
+		@return the number of bytes written. 
+		*/
+		static int FTPrintf(EpFile* const  fileStream, const TCHAR* format,...);
+		
+		/*!
+		Print formatted data to a file stream.
+		@param[in] fileStream Pointer to FILE structure.
+		@param[in] format Format-control string.
+		@param[in] args Pointer to a list of arguments.
+		@return the number of bytes written. 
+		*/
+		static int FTPrintf_V(EpFile* const fileStream, const TCHAR* format,va_list args);
 		
 		/*!
 		Open the file, given by file name according to the mode given.
@@ -436,7 +623,17 @@ namespace epl
 		@param[in] mode Type of access permitted.
 		@return Zero if successful; an error code on failure. 
 		*/
-		static int TFOpen(EpFile *&retFileStream,const TCHAR* filename,const TCHAR * mode );
+		static int FWOpen(EpFile *&retFileStream,const wchar_t* filename,const wchar_t * mode );
+	
+
+		/*!
+		Open the file, given by file name according to the mode given.
+		@param[out] retFileStream A pointer to the file pointer that will receive the pointer to the opened file.
+		@param[in] filename Filename.
+		@param[in] mode Type of access permitted.
+		@return Zero if successful; an error code on failure. 
+		*/
+		static int FTOpen(EpFile *&retFileStream,const TCHAR* filename,const TCHAR * mode );
 		
 		/*!
 		Closes the given file stream.
@@ -471,7 +668,7 @@ namespace epl
 		@return the file size in byte.
 		*/
 		static int FSize(EpFile* const fileStream);
-	
+			
 		/*!
 		Return the last error message code
 		@return the last occurred error message code.

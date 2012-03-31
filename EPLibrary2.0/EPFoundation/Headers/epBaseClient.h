@@ -201,9 +201,9 @@ namespace epl{
 		static unsigned long ClientThread( LPVOID lpParam ) ;
 
 		/// port
-		std::string m_port;
+		EpString m_port;
 		/// hostname
-		std::string m_hostName;
+		EpString m_hostName;
 		/// connection socket
 		SOCKET m_connectSocket;
 		/// internal variable

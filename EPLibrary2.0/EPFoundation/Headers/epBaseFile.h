@@ -132,7 +132,7 @@ namespace epl{
 		/// Encoding type of the file
 		FileEncodingType m_encodingType;
 		/// File Pointer
-		CStdioFile *m_file;
+		EpFile *m_file;
 		/// the lock
 		BaseLock * m_lock;
 		/// Lock Policy

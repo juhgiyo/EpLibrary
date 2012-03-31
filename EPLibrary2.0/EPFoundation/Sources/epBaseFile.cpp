@@ -74,19 +74,32 @@ void BaseFile::WriteToFile(const TCHAR *toFileString)
 	unsigned int strLength=System::TcsLen(toFileString);
 	if(m_encodingType==FILE_ENCODING_TYPE_UTF8||m_encodingType==FILE_ENCODING_TYPE_UTF16)
 	{	
+#ifdef _UNICODE
 		char *multiByteToFile = EP_NEW char[strLength+1];
-		
+
 		System::Memset(multiByteToFile,0,strLength+1);
 		System::WideCharToMultiByte(toFileString,multiByteToFile);
-
 		if(m_file)
-			m_file->Write(multiByteToFile,strLength);
+			System::FWrite(multiByteToFile,sizeof(char),strLength,m_file);
 		EP_DELETE[] multiByteToFile;
+#else
+		System::FWrite(toFileString,sizeof(char),strLength,m_file);
+#endif
 	}
 	else
 	{
+#ifdef _UNICODE
 		if(m_file)
-			m_file->Write(toFileString,(strLength)*sizeof(TCHAR));
+			System::FWrite(toFileString,sizeof(wchar_t),strLength,m_file);
+#else //_UNICODE
+		wchar_t *wideCharToFile = EP_NEW wchar_t[strLength+1];
+
+		System::Memset(wideCharToFile,0,(strLength+1)*sizeof(wchar_t));
+		System::MultiByteToWideChar(toFileString,wideCharToFile);
+		if(m_file)
+			System::FWrite(toFileString,sizeof(wchar_t),strLength,m_file);
+		EP_DELETE[] wideCharToFile;
+#endif //_UNICODE		
 	}
 }
 
@@ -97,25 +110,21 @@ bool BaseFile::SaveToFile(const TCHAR *filename)
 	if(strLength<=0)
 		return false;
 
-	FILE *fStream;
 	int e;
 
 	if(m_encodingType==FILE_ENCODING_TYPE_UTF8)
-		e= System::TFOpen(fStream,filename,_T("wt,ccs=UTF-8"));
+		e= System::FTOpen(m_file,filename,_T("wt,ccs=UTF-8"));
 	else if(m_encodingType==FILE_ENCODING_TYPE_UNICODE)
-		e= System::TFOpen(fStream,filename,_T("wt,ccs=UNICODE"));
+		e= System::FTOpen(m_file,filename,_T("wt,ccs=UNICODE"));
 	else if(m_encodingType==FILE_ENCODING_TYPE_UTF16)
-		e= System::TFOpen(fStream,filename,_T("wt,ccs=UTF-16LE"));
+		e= System::FTOpen(m_file,filename,_T("wt,ccs=UTF-16LE"));
 	else
 		return false;
 	if (e != 0) 
 		return false; // failed..
-	CStdioFile propertyFile(fStream);  // open the file from this stream
-	m_file=&propertyFile;
 
 	writeLoop();
-
-	propertyFile.Close();
+	System::FClose(m_file);
 	m_file=NULL;
 	return true;
 }
@@ -128,54 +137,79 @@ bool BaseFile::LoadFromFile(const TCHAR *filename)
 	if(strLength<=0)
 		return false;
 
-	FILE *fStream;
 	int e;
 
 	if(m_encodingType==FILE_ENCODING_TYPE_UTF8)
-		e= System::TFOpen(fStream,filename,_T("rt,ccs=UTF-8"));
+		e= System::FTOpen(m_file,filename,_T("rt,ccs=UTF-8"));
 	else if(m_encodingType==FILE_ENCODING_TYPE_UNICODE)
-		e= System::TFOpen(fStream,filename,_T("rt,ccs=UNICODE"));
+		e= System::FTOpen(m_file,filename,_T("rt,ccs=UNICODE"));
 	else if(m_encodingType==FILE_ENCODING_TYPE_UTF16)
-		e= System::TFOpen(fStream,filename,_T("rt,ccs=UTF-16LE"));
+		e= System::FTOpen(m_file,filename,_T("rt,ccs=UTF-16LE"));
 	else
 		return false;
 
 	if (e != 0) 
 		return false; // failed..
-	CStdioFile propertyFile(fStream);  // open the file from this stream
-	m_file=&propertyFile;
-
 	EpTString rest;
 	if(m_encodingType==FILE_ENCODING_TYPE_UTF8||m_encodingType==FILE_ENCODING_TYPE_UTF16)
-	{		
+	{	
+#ifdef _UNICODE
 		//Find the actual length of file
-		unsigned int length= static_cast<unsigned int>(propertyFile.SeekToEnd()+1);
-		propertyFile.SeekToBegin();
+		unsigned int length= static_cast<unsigned int>(System::FSize(m_file));
 
-		char *cFileBuf=EP_NEW char[length];
-		System::Memset(cFileBuf,0,length);
-		propertyFile.Read(cFileBuf,length);
-		propertyFile.Close();
+		char *cFileBuf=EP_NEW char[length+1];
+		System::Memset(cFileBuf,0,length+1);
+		System::FRead(cFileBuf,sizeof(char),length,m_file);
+		System::FClose(m_file);
 
-		TCHAR *tFileBuf=EP_NEW TCHAR[length];
-		MultiByteToWideChar(CP_ACP, 0, cFileBuf,-1,tFileBuf,length);
-
+		wchar_t *tFileBuf=EP_NEW wchar_t[length+1];
+		System::Memset(tFileBuf,0,sizeof(wchar_t)*(length+1));
+		System::MultiByteToWideChar(cFileBuf,length,tFileBuf);
 		rest=tFileBuf;
 		EP_DELETE[] cFileBuf;
 		EP_DELETE[] tFileBuf;
+#else //_UNICODE
+		//Find the actual length of file
+		unsigned int length= static_cast<unsigned int>(System::FSize(m_file));
+
+		char *cFileBuf=EP_NEW char[length+1];
+		System::Memset(cFileBuf,0,length+1);
+		System::FRead(cFileBuf,sizeof(char),length,m_file);
+		System::FClose(m_file);
+
+		rest=cFileBuf;
+		EP_DELETE[] cFileBuf;
+#endif //_UNICODE
 	}
 	else
 	{
+#ifdef _UNICODE
 		//Find the actual length of file
-		unsigned int length=static_cast<unsigned int>( propertyFile.GetLength() );
+		unsigned int length=static_cast<unsigned int>( System::FSize(m_file)/sizeof(TCHAR) );
 
-		TCHAR *tFileBuf=EP_NEW TCHAR[length];
-		System::Memset(tFileBuf,0,sizeof(TCHAR)*length);
-		propertyFile.Read(tFileBuf,length);
-		propertyFile.Close();
+		wchar_t *tFileBuf=EP_NEW wchar_t[length+1];
+		System::Memset(tFileBuf,0,sizeof(TCHAR)*(length+1));
+		System::FRead(tFileBuf,sizeof(TCHAR),length,m_file);
+		System::FClose(m_file);
 
 		rest=tFileBuf;
 		EP_DELETE[] tFileBuf;
+#else //_UNICODE
+		//Find the actual length of file
+		unsigned int length=static_cast<unsigned int>( System::FSize(m_file)/sizeof(TCHAR) );
+
+		wchar_t *tFileBuf=EP_NEW wchar_t[length+1];
+		System::Memset(tFileBuf,0,sizeof(TCHAR)*(length+1));
+		System::FRead(tFileBuf,sizeof(TCHAR),length,m_file);
+		System::FClose(m_file);
+
+		char *cFileBuf=EP_NEW char[length+1];
+		System::Memset(cFileBuf,0,sizeof(char)*(length+1));
+		System::WideCharToMultiByte(tFileBuf,length,cFileBuf);
+		rest=cFileBuf;
+		EP_DELETE[] cFileBuf;
+		EP_DELETE[] tFileBuf;
+#endif //_UNICODE
 	}
 
 

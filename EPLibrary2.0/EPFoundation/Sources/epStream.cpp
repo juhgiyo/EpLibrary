@@ -306,7 +306,7 @@ bool Stream::WriteStreamToFile(const TCHAR *fileName)
 		return false;
 	}
 	EpFile *file;
-	System::TFOpen(file,fileName,_T("wt"));
+	System::FTOpen(file,fileName,_T("wt"));
 	System::FWrite(&m_stream.at(0),sizeof(unsigned char),m_stream.size(),file);
 	System::FClose(file);
 	return true;
