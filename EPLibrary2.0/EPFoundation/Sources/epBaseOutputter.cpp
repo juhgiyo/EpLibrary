@@ -16,12 +16,14 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "epBaseOutputter.h"
-
+#include "epException.h"
 using namespace epl;
 
 DECLARE_THREAD_SAFE_CLASS(System);
 
 BaseOutputter::OutputNode::OutputNode()
+{}
+BaseOutputter::OutputNode::OutputNode(const OutputNode& b)
 {}
 BaseOutputter::OutputNode::~OutputNode()
 {}
@@ -49,6 +51,7 @@ BaseOutputter::BaseOutputter(LockPolicy lockPolicyType)
 BaseOutputter::BaseOutputter(const BaseOutputter& b)
 {
 	m_lockPolicy=b.m_lockPolicy;
+	m_fileName=b.m_fileName;
 	switch(m_lockPolicy)
 	{
 	case LOCK_POLICY_CRITICALSECTION:
@@ -93,12 +96,29 @@ void BaseOutputter::Print() const
 		(*iter)->Print();
 	}
 }
-
-void BaseOutputter::WriteToFile(EpFile* const file)
+void BaseOutputter::FlushToFile()
+{
+	LockObj lock(m_nodeListLock);
+	EpFile *file=NULL;
+	System::FTOpen(file,m_fileName.c_str(),_T("wt"));
+	if(!file)
+	{
+		EpString errMsg;
+		System::SPrintf(errMsg,"Cannot open the file(%s)!",m_fileName.c_str());
+		EP_VERIFY_RUNTIME_ERROR_W_MSG(file,errMsg);
+	}
+	writeToFile(file);
+	System::FClose(file);
+}
+void BaseOutputter::SetFileName(const TCHAR *fileName)
+{
+	LockObj lock(m_nodeListLock);
+	m_fileName=fileName;
+}
+void BaseOutputter::writeToFile(EpFile* const file)
 {
 	if(file)
-	{
-		LockObj lock(m_nodeListLock);
+	{		
 		std::vector<OutputNode*>::iterator iter;
 		for(iter=m_list.begin();iter!=m_list.end();iter++)
 		{

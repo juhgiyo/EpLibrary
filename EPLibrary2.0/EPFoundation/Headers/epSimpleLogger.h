@@ -49,18 +49,19 @@ Macro that returns the reference of Simple Log Manager Instance.
 
 Macro that logs the line and time where it called.
 */
-#if  defined(_DEBUG) && defined(ENABLE_LOG)
+#if  defined(_DEBUG) && defined(EP_ENABLE_LOG)
 #define LOG_THIS LOG_INSTANCE.AddSimpleLog(__TFILE__,__TFUNCTION__,__LINE__,_T(""))
 #else
 #define LOG_THIS ((void)0)
 #endif
+
 /*!
 @def LOG_THIS_MSG
 @brief Simple Macro to log simple line with msg.
 
 Macro that logs the line, and time where it called, with user message.
 */
-#if  defined(_DEBUG) && defined(ENABLE_LOG)
+#if  defined(_DEBUG) && defined(EP_ENABLE_LOG)
 #define LOG_THIS_MSG(inputString,...) LOG_INSTANCE.AddSimpleLog(__TFILE__,__TFUNCTION__,__LINE__,inputString,__VA_ARGS__)
 #else
 #define LOG_THIS_MSG(inputString,...) ((void)0)
@@ -115,10 +116,26 @@ namespace epl
 			Default Constructor
 			*/
 			SimpleLogNode();
+	
+			/*!
+			Default Copy Constructor
+
+			Initializes the BaseClient
+			@param[in] b the second object
+			*/
+			SimpleLogNode(const SimpleLogNode& b);
+
 			/*!
 			Default Destructor
 			*/
 			virtual ~SimpleLogNode();
+
+			/*!
+			Assignment operator overloading
+			@param[in] b the second object
+			@return the new copied object
+			*/
+			SimpleLogNode & operator=(const SimpleLogNode&b);
 
 			/*!
 			Print the data in format,

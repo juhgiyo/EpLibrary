@@ -21,24 +21,119 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace epl;
 
-ProfileManager::ProfileNode::ProfileNode() :OutputNode()
+
+
+Profiler::Profiler()
 {
+	m_uniqueName=_T("");
+	m_startTime=0.0;
+	m_endTime=0.0;
+	m_lastProfileTime=0.0;
+
+}
+
+Profiler::Profiler(const Profiler & b)
+{
+	m_startTime=b.m_startTime;
+	m_endTime=b.m_endTime;
+	m_uniqueName=b.m_uniqueName;
+	m_lastProfileTime=b.m_lastProfileTime;
+}
+Profiler::Profiler(const TCHAR *uniqueName)
+{
+	m_uniqueName=uniqueName;
+	m_startTime=0.0;
+	m_endTime=0.0;
+	m_lastProfileTime=0.0;
+}
+
+Profiler &Profiler::operator=(const Profiler & b)
+{
+	if(this!=&b)
+	{
+		m_startTime=b.m_startTime;
+		m_endTime=b.m_endTime;
+		m_uniqueName=b.m_uniqueName;
+		m_lastProfileTime=b.m_lastProfileTime;
+	}
+	return *this;
+}
+
+Profiler::~Profiler()
+{
+}
+void Profiler::Start()
+{
+	m_endTime=0.0;
+	m_startTime=System::GetTime();
+}
+
+EpTime Profiler::Stop()
+{
+	m_endTime=0.0;
+	m_endTime=System::GetTime();
+	EP_VERIFY_LOGIC_ERROR_W_MSG(m_endTime-m_startTime<=0.0,"Stop Function called without starting!");
+	m_lastProfileTime=m_endTime-m_startTime;
+	return m_lastProfileTime;
+}
+
+EpTime Profiler::GetLastProfileTime()
+{
+	EP_VERIFY_LOGIC_ERROR_W_MSG(m_lastProfileTime<=0.0,"There is no last profiled time!");
+	return m_lastProfileTime;
+}
+
+void Profiler::AddLastProfileTimeToManager()
+{
+	EP_VERIFY_LOGIC_ERROR_W_MSG(m_lastProfileTime<=0.0,"There is no last profiled time!");
+	epl::SingletonHolder<epl::ProfileManager>::Instance().addProfile(m_uniqueName.c_str(),m_lastProfileTime);
+}
+EpTString Profiler::GetNewUniqueName(TCHAR *fileName, TCHAR *functionName,unsigned int lineNum)
+{
+	EpTString uniqueProfilerName;
+	System::STPrintf(uniqueProfilerName,_T("%s::%s(%d)"),fileName,functionName,lineNum);
+	return uniqueProfilerName;
+}
+
+
+
+ProfileManager::ProfileNode::ProfileNode(const TCHAR *uniqueName):OutputNode() 
+{
+	m_uniqueName=uniqueName;
 	m_cnt=0;
 	m_totalTime=0;
 }
-
+ProfileManager::ProfileNode::ProfileNode(const ProfileNode& b):OutputNode(b)
+{
+	m_uniqueName=b.m_uniqueName;
+	m_cnt=b.m_cnt;
+	m_totalTime=b.m_totalTime;
+}
 ProfileManager::ProfileNode::~ProfileNode()
 {
 }
+
+ProfileManager::ProfileNode & ProfileManager::ProfileNode::operator=(const ProfileManager::ProfileNode&b)
+{
+	if(this!=&b)
+	{
+		m_uniqueName=b.m_uniqueName;
+		m_cnt=b.m_cnt;
+		m_totalTime=b.m_totalTime;
+		BaseOutputter::OutputNode::operator =(b);
+	}
+	return *this;
+}
+
 void ProfileManager::ProfileNode::Print() const
 {
-	System::TPrintf(_T("%s::%s Average : %d ms Total : %d ms Call : %d\n"),m_fileName,m_funcName,m_totalTime/m_cnt,m_totalTime,m_cnt);
+	System::TPrintf(_T("%s Average : %d ms Total : %d ms Call : %d\n"),m_uniqueName.c_str(),m_totalTime/m_cnt,m_totalTime,m_cnt);
 }
 
 void ProfileManager::ProfileNode::Write(EpFile* const file)
 {
 	EP_VERIFY_INVALID_ARGUMENT_W_MSG(file,"The File Pointer is NULL!");
-	System::FTPrintf(file,_T("%s::%s Average : %d ms Total : %d ms Call : %d\n"),m_fileName,m_funcName,m_totalTime/m_cnt,m_totalTime,m_cnt);
+	System::FTPrintf(file,_T("%s Average : %d ms Total : %d ms Call : %d\n"),m_uniqueName.c_str(),m_totalTime/m_cnt,m_totalTime,m_cnt);
 }
 
 CompResultType ProfileManager::ProfileNode::Compare(const void * a, const void * b)
@@ -47,56 +142,31 @@ CompResultType ProfileManager::ProfileNode::Compare(const void * a, const void *
 	ProfileNode *_a=*reinterpret_cast<ProfileNode**>(const_cast<void*>(a));
 	ProfileNode *_b=*reinterpret_cast<ProfileNode**>(const_cast<void*>(b));
 
-	int result=_a->m_fileName.compare(_b->m_fileName);
+	int result=_a->m_uniqueName.compare(_b->m_uniqueName);
 	if (result>0) return COMP_RESULT_GREATERTHAN;
-	else if (result==0 )
-	{
-		int result2=_a->m_funcName.compare(_b->m_funcName);
-		if ( result2>0 ) return COMP_RESULT_GREATERTHAN;
-		else if ( result2==0 )return COMP_RESULT_EQUAL;
-		else return COMP_RESULT_LESSTHAN;
-	}
+	else if (result==0 ) return COMP_RESULT_EQUAL;
 	else return COMP_RESULT_LESSTHAN;		
-}
-
-
-ProfileManager::Profiler::Profiler(const TCHAR *fileName,const TCHAR *funcName)
-{
-	m_funcName=funcName;
-	m_fileName=fileName;
-	m_startTime=System::GetTime();
-}
-ProfileManager::Profiler::~Profiler()
-{
-	EpTime endTime=0;
-	endTime=System::GetTime();
-	// Logging Comes here
-	PROFILE_INSTANCE.AddProfile(m_fileName.c_str(),m_funcName.c_str(),endTime-m_startTime);
 }
 
 
 
 ProfileManager::ProfileManager(LockPolicy lockPolicyType):BaseOutputter(lockPolicyType)
 {
+	m_fileName=_T("profile.dat");
 }
 ProfileManager::ProfileManager(const ProfileManager& b):BaseOutputter(b)
-{}
+{
+}
 
 ProfileManager::~ProfileManager()
 {
-	EpFile *file=NULL;
-	System::FTOpen(file,_T("profile.dat"),_T("wt"));
-	EP_VERIFY_RUNTIME_ERROR_W_MSG(file,"Cannot open the file(profile.dat)!");
-	WriteToFile(file);
-	System::FClose(file);
+	FlushToFile();
 }
-bool ProfileManager::isProfileExist(const TCHAR *fileName,const TCHAR * funcName,ProfileNode *&retIter, int &retIdx )
+bool ProfileManager::isProfileExist(const TCHAR *uniqueName,ProfileNode *&retIter, int &retIdx )
 {
 	if(!m_list.size())
 		return false;
-	ProfileNode profile;
-	profile.m_fileName=fileName;
-	profile.m_funcName=funcName;
+	ProfileNode profile=ProfileNode(uniqueName);
 	profile.m_cnt=1;
 	profile.m_totalTime=0;
 
@@ -121,21 +191,19 @@ bool ProfileManager::isProfileExist(const TCHAR *fileName,const TCHAR * funcName
 
 
 
-void ProfileManager::AddProfile(const TCHAR *fileName,const TCHAR * funcName, const EpTime &time)
+void ProfileManager::addProfile(const TCHAR *uniqueName, const EpTime &time)
 {
 	LockObj lock(m_nodeListLock);
 	ProfileNode *existStruct=NULL;
 	int retIdx=-1;
-	if(isProfileExist(fileName,funcName,existStruct,retIdx) && existStruct && retIdx!=-1)
+	if(isProfileExist(uniqueName,existStruct,retIdx) && existStruct && retIdx!=-1)
 	{
 		existStruct->m_totalTime+=time;
 		existStruct->m_cnt++;
 	}
 	else
 	{
-		ProfileNode *profile=EP_NEW ProfileNode();
-		profile->m_fileName=fileName;
-		profile->m_funcName=funcName;
+		ProfileNode *profile=EP_NEW ProfileNode(uniqueName);
 		profile->m_totalTime=time;
 		profile->m_cnt=1;
 		std::vector<OutputNode*>::iterator iter=m_list.begin()+retIdx;
@@ -143,3 +211,15 @@ void ProfileManager::AddProfile(const TCHAR *fileName,const TCHAR * funcName, co
 	}
 }
 
+
+ProfileManager::ProfileObj::ProfileObj(const TCHAR *uniqueName)
+{
+	m_profiler=Profiler(uniqueName);
+	m_profiler.Start();
+}
+
+ProfileManager::ProfileObj::~ProfileObj()
+{
+	m_profiler.Stop();
+	m_profiler.AddLastProfileTimeToManager();
+}

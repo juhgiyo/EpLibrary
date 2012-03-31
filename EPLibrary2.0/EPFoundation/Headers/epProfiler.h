@@ -33,9 +33,6 @@ An Interface for the Debugging Profiler.
 #include "epBaseOutputter.h"
 #include "epSingletonHolder.h"
 
-
-
-
 /*!
 @def PROFILE_INSTANCE
 @brief A Simple Macro to get the Profile Manager Instance
@@ -44,20 +41,121 @@ Macro that returns the reference of Profile Manager Instance.
 */
 #define PROFILE_INSTANCE epl::SingletonHolder<epl::ProfileManager>::Instance()
 
+
+/*!
+@def GET_NEW_UNIQUE_NAME
+@brief Simple Macro to create unique name for the profiler.
+
+Macro that creates the unique name for the profiler and returns TCHAR *.
+@return TCHAR * array holding newly created unique name of the profiler
+@remark Usage: Profiler x=Profiler(GET_NEW_UNIQUE_NAME());
+*/
+#define GET_NEW_UNIQUE_NAME() Profiler::GetNewUniqueName(__TFILE__,__TFUNCTION__,__LINE__).c_str()
+
 /*!
 @def PROFILE_THIS
 @brief Simple Macro to profile the function.
 
 Macro that profiles the function where it called.
+@param[in] varName the variable name for the profile
+@remark Usage: PROFILE_THIS(profile);
 */
-#if  defined(_DEBUG) && defined(ENABLE_PROFILE)
-#define PROFILE_THIS epl::ProfileManager::Profiler prof=epl::ProfileManager::Profiler(__TFILE__,__TFUNCTION__)
+#if  defined(_DEBUG) && defined(EP_ENABLE_PROFILE)
+#define PROFILE_THIS(varName) epl::ProfileManager::ProfileObj varName(GET_NEW_UNIQUE_NAME())
 #else
-#define PROFILE_THIS ((void)0)
+#define PROFILE_THIS(varName) ((void)0)
 #endif
+
+
+
 
 namespace epl
 {
+	/*! 
+	@class Profiler epProfiler.h
+	@brief This is a class for handling the profiling
+	*/
+	class EP_FOUNDATION Profiler
+	{
+	public:
+
+		/*!
+		Default Constructor
+		*/
+		Profiler();
+		
+		/*!
+		Default Copy Constructor
+
+		*Cannot be Used.
+		*/
+		Profiler(const Profiler & b);
+
+		/*!
+		Default Contructor
+
+		@param[in] uniqueName The unique name for the profiler.
+		*/
+		Profiler(const TCHAR *uniqueName);
+		
+		/*!
+		Assignment operator overloading
+
+		@param[in] b the second object
+		@return the new copied object
+		*/
+		Profiler &operator=(const Profiler & b);
+
+		/*!
+		Default Destructor
+		*/
+		virtual ~Profiler();
+
+		/*!
+		Start profiling.
+		*/
+		void Start();
+
+		/*!
+		Stop profiling.
+		@return the profiled time in milliseconds
+		*/
+		EpTime Stop();
+
+		/*!
+		Return the last profiled time in milliseconds.
+		@return the last profiled time in milliseconds.
+		*/
+		EpTime GetLastProfileTime();
+
+		/*!
+		Add the last profiled time to ProfileManager
+		*/
+		void AddLastProfileTimeToManager();
+
+		/*!
+		Create Name for the Profiler and returns the name
+		@param[in] fileName the file name of the caller
+		@param[in] functionName the function mae of the caller
+		@param[in] lineNum the line number where it called
+		@return EpTString with the newly created name
+		*/
+		static EpTString GetNewUniqueName(TCHAR *fileName, TCHAR *functionName,unsigned int lineNum);
+
+
+	private:
+		/// The start time that profiling started
+		EpTime m_startTime;
+		/// The end time that profiling ended
+		EpTime m_endTime;
+		/// The last profile time
+		EpTime m_lastProfileTime;
+		/// The Profiling Name
+		EpTString m_uniqueName;
+
+	};
+
+	
 	/*! 
 	@class ProfileManager epProfiler.h
 	@brief A class that manages the profile data.
@@ -66,15 +164,7 @@ namespace epl
 	{
 	public:
 		friend class SingletonHolder<ProfileManager>;
-
-		/*!
-		Add the new profiling log to the profiling list.
-		@param[in] fileName the File Name for the profiling log.
-		@param[in] funcName the Function Name for the profiling log.
-		@param[in] time The ellapsed time of the profiling.
-		*/
-		void AddProfile(const TCHAR *fileName,const TCHAR * funcName, const EpTime &time);
-
+		friend class Profiler;
 		
 		/*!
 		Assignment operator overloading
@@ -91,34 +181,52 @@ namespace epl
 		}
 
 		/*! 
-		@class Profiler epProfiler.h
+		@class ProfileObj epProfiler.h
 		@brief This is a class for handling the profiling
 		*/
-		class EP_FOUNDATION Profiler
+		class EP_FOUNDATION ProfileObj
 		{
-			friend ProfileManager;
 		public:
 			/*!
 			Default Contructor
 
 			If PROFILE_THIS Macro is used the inputs are automatically generated.
-			@param[in] fileName The file name that gets profiling.
-			@param[in] funcName The function name that gets profiled.
+			@param[in] uniqueName the Name of the profiler.
 			*/
-			Profiler(const TCHAR *fileName,const TCHAR * funcName);
+			ProfileObj(const TCHAR *uniqueName);
 			
+			/*!
+			Assignment operator overloading
+
+			@param[in] b the second object
+			@return the new copied object
+			*/
+			ProfileObj &operator=(const ProfileObj & b)
+			{
+				return *this;
+			}
 			/*!
 			Default Destructor
 			*/
-			virtual ~Profiler();
+			virtual ~ProfileObj();
 
 		private:
-			/// The start time that profiling started
-			EpTime m_startTime;
-			/// The Profiling File Name
-			EpTString m_fileName;
-			/// The Profiling Function Name
-			EpTString m_funcName;
+			/*!
+			Default Constructor
+
+			*Cannot be Used.
+			*/
+			ProfileObj(){EP_ASSERT(0);}
+
+			/*!
+			Default Copy Constructor
+
+			*Cannot be Used.
+			*/
+			ProfileObj(const ProfileObj & b){EP_ASSERT(0);}
+
+			/// The profiler object
+			Profiler m_profiler;
 
 		};
 
@@ -142,8 +250,6 @@ namespace epl
 		*/
 		virtual ~ProfileManager();
 
-
-
 		/*! 
 		@class ProfileNode epProfiler.h
 		@brief A class to hold profiling related members.
@@ -155,13 +261,29 @@ namespace epl
 
 			/*!
 			Default Constructor
+			@remark Should NOT be used
 			*/
-			ProfileNode();
+			ProfileNode(const TCHAR *uniqueName);
+
+			/*!
+			Default Copy Constructor
+
+			Initializes the BaseClient
+			@param[in] b the second object
+			*/
+			ProfileNode(const ProfileNode& b);
 
 			/*!
 			Default Destructor
 			*/
 			virtual ~ProfileNode();
+
+			/*!
+			Assignment operator overloading
+			@param[in] b the second object
+			@return the new copied object
+			*/
+			ProfileNode & operator=(const ProfileNode&b);
 
 			/*!
 			It prints the data in format,
@@ -185,10 +307,19 @@ namespace epl
 			static CompResultType Compare(const void *a, const void *b);
 
 		private:
-			/// Profiling File Name
-			EpTString m_fileName;
-			/// Profiling Function Name
-			EpTString m_funcName;
+			/*!
+			Default Constructor
+			@remark Should NOT be used
+			*/
+			ProfileNode():OutputNode() 
+			{
+				EP_ASSERT(0);
+				m_cnt=0;
+				m_totalTime=0;
+			}
+
+			/// Profiling Name
+			EpTString m_uniqueName;
 			/// The Quantity of Profiling occurred
 			int m_cnt;
 			/// The Total Profiling Time elapsed.
@@ -203,14 +334,26 @@ namespace epl
 
 		It searches the existence using the File Name and Function Name as the keys.
 		If found, it returns the reference to that object to retIter.
-		@param[in] fileName the File Name for searching.
-		@param[in] funcName the Function Name for searching.
+		@param[in] uniqueName the Name of the profiler for searching.
 		@param[out] retIter The reference to the found profiling log.
 		@param[out] retIdx The index of the found profiling log.
 		@return true if found, otherwise false.
 		*/
-		bool isProfileExist(const TCHAR *fileName,const TCHAR * funcName,ProfileNode * &retIter, int &retIdx );
+		bool isProfileExist(const TCHAR *uniqueName,ProfileNode * &retIter, int &retIdx );
+
+
+		
+		/*!
+		Add the new profiling log to the profiling list.
+		@param[in] uniqueName the Name for the profiler.
+		@param[in] time The ellapsed time of the profiling.
+		*/
+		void addProfile(const TCHAR *uniqueName, const EpTime &time);
 
 	};
+	/// type definition  for profile object
+	typedef ProfileManager::ProfileObj ProfileObj;
+
 }
 #endif //__EP_PROFILER_H__
+

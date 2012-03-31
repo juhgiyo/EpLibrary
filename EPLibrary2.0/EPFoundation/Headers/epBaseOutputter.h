@@ -45,11 +45,16 @@ namespace epl
 	class EP_FOUNDATION BaseOutputter
 	{
 	public:
+
 		/*!
-		Write the data to given file.
-		@param[in] file the file which data will be written.
+		Write the all data to the file.
 		*/
-		virtual void WriteToFile(EpFile* const file);
+		virtual void FlushToFile();
+		/*!
+		Set the output file name.
+		@param[in] fileName the file name for the output.
+		*/
+		virtual void SetFileName(const TCHAR *fileName);
 
 		/*!
 		Print the data to command line.
@@ -72,11 +77,14 @@ namespace epl
 			{
 				LockObj lock(m_nodeListLock);
 				m_list=b.m_list;
+				m_fileName=b.m_fileName;
 			}
 			return *this;
 		}
 
 	protected:
+
+
 		/*! 
 		@class OutputNode epBaseOutputter.h
 		@brief A virtual class for OutputNode.
@@ -92,6 +100,23 @@ namespace epl
 			Default Destructor
 			*/
 			virtual ~OutputNode();
+			/*!
+			Default Copy Constructor
+
+			Initializes the BaseClient
+			@param[in] b the second object
+			*/
+			OutputNode(const OutputNode& b);
+
+			/*!
+			Assignment operator overloading
+			@param[in] b the second object
+			@return the new copied object
+			*/
+			OutputNode & operator=(const OutputNode&b)
+			{
+				return *this;
+			}
 
 			/*!
 			Print the data in format,
@@ -128,6 +153,15 @@ namespace epl
 		BaseLock* m_nodeListLock;
 		/// Lock Policy
 		LockPolicy m_lockPolicy;
+		/// File Name
+		EpTString m_fileName;
+
+	private:
+		/*!
+		Write the data to given file.
+		@param[in] file the file which data will be written.
+		*/
+		void writeToFile(EpFile* const file);
 	};
 }
 #endif //__EP_OUTPUTTER_H__

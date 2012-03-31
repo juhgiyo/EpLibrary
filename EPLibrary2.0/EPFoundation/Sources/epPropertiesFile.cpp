@@ -21,7 +21,6 @@ using namespace epl;
 
 PropertiesFile::PropertiesFile(FileEncodingType encodingType, LockPolicy lockPolicyType):BaseFile(encodingType,lockPolicyType)
 {
-
 }
 
 PropertiesFile::PropertiesFile(const PropertiesFile& b):BaseFile(b)

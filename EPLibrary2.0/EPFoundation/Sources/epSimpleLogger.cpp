@@ -27,17 +27,41 @@ SimpleLogManager::SimpleLogNode::SimpleLogNode() :OutputNode()
 	System::Memset(m_timeStr,0,sizeof(TCHAR)*9);
 	m_userStr=_T("");
 }
-
+SimpleLogManager::SimpleLogNode::SimpleLogNode(const SimpleLogNode& b):OutputNode(b)
+{
+	m_fileName=b.m_fileName;
+	m_funcName=b.m_funcName;
+	m_lineNum=b.m_lineNum;
+	m_userStr=b.m_userStr;
+	System::Memcpy(m_dateStr,b.m_dateStr,sizeof(TCHAR)*9);
+	System::Memcpy(m_timeStr,b.m_timeStr,sizeof(TCHAR)*9);
+	BaseOutputter::OutputNode::operator =(b);
+}
 SimpleLogManager::SimpleLogNode::~SimpleLogNode()
 {
+}
+
+SimpleLogManager::SimpleLogNode & SimpleLogManager::SimpleLogNode::operator=(const SimpleLogManager::SimpleLogNode&b)
+{
+	if(this!=&b)
+	{
+		m_fileName=b.m_fileName;
+		m_funcName=b.m_funcName;
+		m_lineNum=b.m_lineNum;
+		m_userStr=b.m_userStr;
+		System::Memcpy(m_dateStr,b.m_dateStr,sizeof(TCHAR)*9);
+		System::Memcpy(m_timeStr,b.m_timeStr,sizeof(TCHAR)*9);
+		BaseOutputter::OutputNode::operator =(b);
+	}
+	return *this;
 }
 
 void SimpleLogManager::SimpleLogNode::Print() const
 {
 	if(m_userStr.length())
-		System::TPrintf(_T("%s::%s(%d) %s %s - %s\n"),m_fileName,m_funcName,m_lineNum,m_dateStr,m_timeStr,m_userStr);
+		System::TPrintf(_T("%s::%s(%d) %s %s - %s\n"),m_fileName.c_str(),m_funcName.c_str(),m_lineNum,m_dateStr,m_timeStr,m_userStr.c_str());
 	else
-		System::TPrintf(_T("%s::%s(%d) %s %s\n"),m_fileName,m_funcName,m_lineNum,m_dateStr,m_timeStr);
+		System::TPrintf(_T("%s::%s(%d) %s %s\n"),m_fileName.c_str(),m_funcName.c_str(),m_lineNum,m_dateStr,m_timeStr);
 }
 
 void SimpleLogManager::SimpleLogNode::Write(EpFile* const file)
@@ -45,28 +69,24 @@ void SimpleLogManager::SimpleLogNode::Write(EpFile* const file)
 	EP_VERIFY_INVALID_ARGUMENT_W_MSG(file,"The File Pointer is NULL!");
 	if(m_userStr.length())
 	{
-		System::FTPrintf(file,_T("%s::%s(%d) %s %s - %s\n"),m_fileName,m_funcName,m_lineNum,m_dateStr,m_timeStr,m_userStr);
+		System::FTPrintf(file,_T("%s::%s(%d) %s %s - %s\n"),m_fileName.c_str(),m_funcName.c_str(),m_lineNum,m_dateStr,m_timeStr,m_userStr.c_str());
 	}
 	else
 	{
-		System::FTPrintf(file,_T("%s::%s(%d) %s %s\n"),m_fileName,m_funcName,m_lineNum,m_dateStr,m_timeStr);
+		System::FTPrintf(file,_T("%s::%s(%d) %s %s\n"),m_fileName.c_str(),m_funcName.c_str(),m_lineNum,m_dateStr,m_timeStr);
 	}
 }
 
 
 SimpleLogManager::SimpleLogManager(LockPolicy lockPolicyType):BaseOutputter(lockPolicyType)
 {
+	m_fileName=_T("simplelog.dat");
 }
 SimpleLogManager::SimpleLogManager(const SimpleLogManager& b):BaseOutputter(b)
 {}
 SimpleLogManager::~SimpleLogManager()
 {	
-	EpFile *file=NULL;
-	System::FTOpen(file,_T("simplelog.dat"),_T("wt"));
-	EP_VERIFY_RUNTIME_ERROR_W_MSG(file,"Cannot open the file(simplelog.dat)!");
-
-	WriteToFile(file);
-	System::FClose(file);
+	FlushToFile();
 }
 
 
