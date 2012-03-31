@@ -113,8 +113,8 @@ namespace epl
 
 	protected:
 		/*!
-		Parse the given packet and do relevant operation
-		** Subclasses must implement this
+		Parse the given packet and do relevant operation.
+		@remark Subclasses must implement this
 		@param[in] packet the packet to parse
 		*/
 		virtual void parsePacket(const Packet &packet)=0;

@@ -91,9 +91,11 @@ An Interface for System Class.
 
 namespace epl
 {
-	/// A type definition for EpTString Type
+	/// A type definition for EpString Type
 	typedef std::string EpString;
+	/// A type definition for EpWString Type
 	typedef std::wstring EpWString;
+	/// A type definition for EpTString Type
 #if defined(_UNICODE) || defined(UNICODE)
 	typedef EpWString EpTString;
 #else //defined(_UNICODE) || defined(UNICODE)

@@ -128,7 +128,7 @@ namespace epl{
 		
 		/*!
 		Set the hostname for the server.
-		**Cannot be changed while connected to server
+		@remark Cannot be changed while connected to server
 		@param[in] hostName The hostname to set.
 		@return true if succeeded otherwise false
 		*/
@@ -136,7 +136,7 @@ namespace epl{
 
 		/*!
 		Set the port for the server.
-		**Cannot be changed while connected to server
+		@remark Cannot be changed while connected to server
 		@param[in] port The port to set.
 		@return true if succeeded otherwise false
 		*/
@@ -179,8 +179,8 @@ namespace epl{
 
 	protected:
 		/*!
-		Parse the given packet and do relevant operation
-		** Subclasses must implement this
+		Parse the given packet and do relevant operation.
+		@remark Subclasses must implement this
 		@param[in] packet the packet to parse
 		@return status of the process
 		*/

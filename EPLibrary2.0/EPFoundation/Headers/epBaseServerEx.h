@@ -120,7 +120,7 @@ namespace epl{
 		
 		/*!
 		Set the port for the server.
-		**Cannot be changed while connected to server
+		@remark Cannot be changed while connected to server.
 		@param[in] port The port to set.
 		@return true if succeeded otherwise false
 		*/
@@ -164,9 +164,9 @@ namespace epl{
 	protected:
 
 		/*!
-		Return the new server worker
-		** Sub-class should implement this to create new worker
-		** Server will automatically release this worker
+		Return the new server worker.
+		@remark  Sub-class should implement this to create new worker
+		@remark  Server will automatically release this worker
 		@return the new server worker
 		*/
 		virtual BaseServerWorkerEx* createNewWorker()=0;

@@ -37,8 +37,8 @@ namespace epl
 
 /*!
 @def EP_VERIFY_EXCEPTION_W_MSG
-@brief Macro Function for verify and throw exception with message
-* Expression must be 0 to throw the given exception
+@brief Macro Function for verify and throw exception with message.
+@remark Expression must be 0 to throw the given exception like an Assert.
 @param[in] _Expression the boolean expression to evaluate the exception
 @param[in] _Exception the exception to throw
 @param[in] _Message the message for the exception
@@ -52,8 +52,8 @@ namespace epl
 
 /*!
 @def EP_VERIFY_EXCEPTION
-@brief Macro Function for verify and throw exception
-* Expression must be 0 to throw the given exception like an Assert
+@brief Macro Function for verify and throw exception.
+@remark Expression must be 0 to throw the given exception like an Assert.
 @param[in] _Expression the boolean expression to evaluate the exception
 @param[in] _Exception the exception to throw
 */
@@ -69,16 +69,16 @@ namespace epl
 
 	/*!
 	@def EP_VERIFY_BAD_ALLOC_W_MSG
-	@brief Macro Function for verify and throw BadAlloc exception with message
-	* Expression must be 0 to throw the given exception
+	@brief Macro Function for verify and throw BadAlloc exception with message.
+	@remark Expression must be 0 to throw the exception like an Assert.
 	@param[in] _Expression the boolean expression to evaluate the exception
 	@param[in] _Message the message for the exception
 	*/
 #define EP_VERIFY_BAD_ALLOC_W_MSG(_Expression,_Message) EP_VERIFY_EXCEPTION_W_MSG(_Expression,ExceptionBadAlloc,_Message)
 	/*!
 	@def EP_VERIFY_BAD_ALLOC
-	@brief Macro Function for verify and throw BadAlloc exception
-	* Expression must be 0 to throw the given exception
+	@brief Macro Function for verify and throw BadAlloc exception.
+	@remark Expression must be 0 to throw the exception like an Assert.
 	@param[in] _Expression the boolean expression to evaluate the exception
 	*/
 #define EP_VERIFY_BAD_ALLOC(_Expression) EP_VERIFY_EXCEPTION(_Expression,ExceptionBadAlloc)
@@ -88,16 +88,16 @@ namespace epl
 	typedef std::logic_error ExceptionLogicError;
 	/*!
 	@def EP_VERIFY_LOGIC_ERROR_W_MSG
-	@brief Macro Function for verify and throw LogicError exception with message
-	* Expression must be 0 to throw the given exception
+	@brief Macro Function for verify and throw LogicError exception with message.
+	@remark Expression must be 0 to throw the exception like an Assert.
 	@param[in] _Expression the boolean expression to evaluate the exception
 	@param[in] _Message the message for the exception
 	*/
 #define EP_VERIFY_LOGIC_ERROR_W_MSG(_Expression,_Message) EP_VERIFY_EXCEPTION_W_MSG(_Expression,ExceptionLogicError,_Message)
 	/*!
 	@def EP_VERIFY_LOGIC_ERROR
-	@brief Macro Function for verify and throw LogicError exception
-	* Expression must be 0 to throw the given exception
+	@brief Macro Function for verify and throw LogicError exception.
+	@remark Expression must be 0 to throw the exception like an Assert.
 	@param[in] _Expression the boolean expression to evaluate the exception
 	*/
 #define EP_VERIFY_LOGIC_ERROR(_Expression) EP_VERIFY_EXCEPTION_W_MSG(_Expression,ExceptionLogicError,"lock error")
@@ -105,16 +105,16 @@ namespace epl
 	typedef std::domain_error ExceptionDomainError;
 	/*!
 	@def EP_VERIFY_DOMAIN_ERROR_W_MSG
-	@brief Macro Function for verify and throw DomainError exception with message
-	* Expression must be 0 to throw the given exception
+	@brief Macro Function for verify and throw DomainError exception with message.
+	@remark Expression must be 0 to throw the exception like an Assert.
 	@param[in] _Expression the boolean expression to evaluate the exception
 	@param[in] _Message the message for the exception
 	*/
 #define EP_VERIFY_DOMAIN_ERROR_W_MSG(_Expression,_Message) EP_VERIFY_EXCEPTION_W_MSG(_Expression,ExceptionDomainError,_Message)
 	/*!
 	@def EP_VERIFY_DOMAIN_ERROR
-	@brief Macro Function for verify and throw DomainError exception
-	* Expression must be 0 to throw the given exception
+	@brief Macro Function for verify and throw DomainError exception.
+	@remark Expression must be 0 to throw the exception like an Assert.
 	@param[in] _Expression the boolean expression to evaluate the exception
 	*/
 #define EP_VERIFY_DOMAIN_ERROR(_Expression) EP_VERIFY_EXCEPTION_W_MSG(_Expression,ExceptionDomainError,"domain error")
@@ -122,16 +122,16 @@ namespace epl
 	typedef std::invalid_argument ExceptionInvalidArgument;
 	/*!
 	@def EP_VERIFY_INVALID_ARGUMENT_W_MSG
-	@brief Macro Function for verify and throw InvalidArgument exception with message
-	* Expression must be 0 to throw the given exception
+	@brief Macro Function for verify and throw InvalidArgument exception with message.
+	@remark Expression must be 0 to throw the exception like an Assert.
 	@param[in] _Expression the boolean expression to evaluate the exception
 	@param[in] _Message the message for the exception
 	*/
 #define EP_VERIFY_INVALID_ARGUMENT_W_MSG(_Expression,_Message) EP_VERIFY_EXCEPTION_W_MSG(_Expression,ExceptionInvalidArgument,_Message)
 	/*!
 	@def EP_VERIFY_INVALID_ARGUMENT
-	@brief Macro Function for verify and throw InvalidArgument exception
-	* Expression must be 0 to throw the given exception
+	@brief Macro Function for verify and throw InvalidArgument exception.
+	@remark Expression must be 0 to throw the exception like an Assert.
 	@param[in] _Expression the boolean expression to evaluate the exception
 	*/
 #define EP_VERIFY_INVALID_ARGUMENT(_Expression) EP_VERIFY_EXCEPTION_W_MSG(_Expression,ExceptionInvalidArgument,"invalid argument")
@@ -139,16 +139,16 @@ namespace epl
 	typedef std::length_error ExceptionLengthError;
 	/*!
 	@def EP_VERIFY_LENGTH_ERROR_W_MSG
-	@brief Macro Function for verify and throw LengthError exception with message
-	* Expression must be 0 to throw the given exception
+	@brief Macro Function for verify and throw LengthError exception with message.
+	@remark Expression must be 0 to throw the exception like an Assert.
 	@param[in] _Expression the boolean expression to evaluate the exception
 	@param[in] _Message the message for the exception
 	*/
 #define EP_VERIFY_LENGTH_ERROR_W_MSG(_Expression,_Message) EP_VERIFY_EXCEPTION_W_MSG(_Expression,ExceptionLengthError,_Message)
 	/*!
 	@def EP_VERIFY_LENGTH_ERROR
-	@brief Macro Function for verify and throw LengthError exception
-	* Expression must be 0 to throw the given exception
+	@brief Macro Function for verify and throw LengthError exception.
+	@remark Expression must be 0 to throw the exception like an Assert.
 	@param[in] _Expression the boolean expression to evaluate the exception
 	*/
 #define EP_VERIFY_LENGTH_ERROR(_Expression) EP_VERIFY_EXCEPTION_W_MSG(_Expression,ExceptionLengthError,"length error")
@@ -156,16 +156,16 @@ namespace epl
 	typedef std::out_of_range ExceptionOutOfRange;
 	/*!
 	@def EP_VERIFY_OUT_OF_RANGE_W_MSG
-	@brief Macro Function for verify and throw OutOfRange exception with message
-	* Expression must be 0 to throw the given exception
+	@brief Macro Function for verify and throw OutOfRange exception with message.
+	@remark Expression must be 0 to throw the exception like an Assert.
 	@param[in] _Expression the boolean expression to evaluate the exception
 	@param[in] _Message the message for the exception
 	*/
 #define EP_VERIFY_OUT_OF_RANGE_W_MSG(_Expression,_Message) EP_VERIFY_EXCEPTION_W_MSG(_Expression,ExceptionOutOfRange,_Message)
 	/*!
 	@def EP_VERIFY_OUT_OF_RANGE
-	@brief Macro Function for verify and throw OutOfRange exception
-	* Expression must be 0 to throw the given exception
+	@brief Macro Function for verify and throw OutOfRange exception.
+	@remark Expression must be 0 to throw the exception like an Assert.
 	@param[in] _Expression the boolean expression to evaluate the exception
 	*/
 #define EP_VERIFY_OUT_OF_RANGE(_Expression) EP_VERIFY_EXCEPTION_W_MSG(_Expression,ExceptionOutOfRange,"out of range")
@@ -174,16 +174,16 @@ namespace epl
 	typedef std::runtime_error ExceptionRuntimeError;
 	/*!
 	@def EP_VERIFY_RUNTIME_ERROR_W_MSG
-	@brief Macro Function for verify and throw RuntimeError exception with message
-	* Expression must be 0 to throw the given exception
+	@brief Macro Function for verify and throw RuntimeError exception with message.
+	@remark Expression must be 0 to throw the exception like an Assert.
 	@param[in] _Expression the boolean expression to evaluate the exception
 	@param[in] _Message the message for the exception
 	*/
 #define EP_VERIFY_RUNTIME_ERROR_W_MSG(_Expression,_Message) EP_VERIFY_EXCEPTION_W_MSG(_Expression,ExceptionRuntimeError,_Message)
 	/*!
 	@def EP_VERIFY_RUNTIME_ERROR
-	@brief Macro Function for verify and throw RuntimeError exception
-	* Expression must be 0 to throw the given exception
+	@brief Macro Function for verify and throw RuntimeError exception.
+	@remark Expression must be 0 to throw the exception like an Assert.
 	@param[in] _Expression the boolean expression to evaluate the exception
 	*/
 #define EP_VERIFY_RUNTIME_ERROR(_Expression) EP_VERIFY_EXCEPTION_W_MSG(_Expression,ExceptionRuntimeError,"runtime error")
@@ -191,16 +191,16 @@ namespace epl
 	typedef std::range_error ExceptionRangeError;
 	/*!
 	@def EP_VERIFY_RANGE_ERROR_W_MSG
-	@brief Macro Function for verify and throw RangeError exception with message
-	* Expression must be 0 to throw the given exception
+	@brief Macro Function for verify and throw RangeError exception with message.
+	@remark Expression must be 0 to throw the exception like an Assert.
 	@param[in] _Expression the boolean expression to evaluate the exception
 	@param[in] _Message the message for the exception
 	*/
 #define EP_VERIFY_RANGE_ERROR_W_MSG(_Expression,_Message) EP_VERIFY_EXCEPTION_W_MSG(_Expression,ExceptionRangeError,_Message)
 	/*!
 	@def EP_VERIFY_RANGE_ERROR
-	@brief Macro Function for verify and throw RangeError exception
-	* Expression must be 0 to throw the given exception
+	@brief Macro Function for verify and throw RangeError exception.
+	@remark Expression must be 0 to throw the exception like an Assert.
 	@param[in] _Expression the boolean expression to evaluate the exception
 	*/
 #define EP_VERIFY_RANGE_ERROR(_Expression) EP_VERIFY_EXCEPTION_W_MSG(_Expression,ExceptionRangeError,"range error")
@@ -208,16 +208,16 @@ namespace epl
 	typedef std::overflow_error ExceptionOverflowError;
 	/*!
 	@def EP_VERIFY_OVERFLOW_ERROR_W_MSG
-	@brief Macro Function for verify and throw OverflowError exception with message
-	* Expression must be 0 to throw the given exception
+	@brief Macro Function for verify and throw OverflowError exception with message.
+	@remark Expression must be 0 to throw the exception like an Assert.
 	@param[in] _Expression the boolean expression to evaluate the exception
 	@param[in] _Message the message for the exception
 	*/
 #define EP_VERIFY_OVERFLOW_ERROR_W_MSG(_Expression,_Message) EP_VERIFY_EXCEPTION_W_MSG(_Expression,ExceptionOverflowError,_Message)
 	/*!
 	@def EP_VERIFY_OVERFLOW_ERROR
-	@brief Macro Function for verify and throw OverflowError exception
-	* Expression must be 0 to throw the given exception
+	@brief Macro Function for verify and throw OverflowError exception.
+	@remark Expression must be 0 to throw the exception like an Assert.
 	@param[in] _Expression the boolean expression to evaluate the exception
 	*/
 #define EP_VERIFY_OVERFLOW_ERROR(_Expression) EP_VERIFY_EXCEPTION_W_MSG(_Expression,ExceptionOverflowError,"overflow error")
@@ -225,16 +225,16 @@ namespace epl
 	typedef std::underflow_error ExceptionUnderflowError;
 	/*!
 	@def EP_VERIFY_UNDERFLOW_ERROR_W_MSG
-	@brief Macro Function for verify and throw UnderflowError exception with message
-	* Expression must be 0 to throw the given exception
+	@brief Macro Function for verify and throw UnderflowError exception with message.
+	@remark Expression must be 0 to throw the exception like an Assert.
 	@param[in] _Expression the boolean expression to evaluate the exception
 	@param[in] _Message the message for the exception
 	*/
 #define EP_VERIFY_UNDERFLOW_ERROR_W_MSG(_Expression,_Message) EP_VERIFY_EXCEPTION_W_MSG(_Expression,ExceptionUnderflowError,_Message)
 	/*!
 	@def EP_VERIFY_UNDERFLOW_ERROR
-	@brief Macro Function for verify and throw UnderflowError exception
-	* Expression must be 0 to throw the given exception
+	@brief Macro Function for verify and throw UnderflowError exception.
+	@remark Expression must be 0 to throw the exception like an Assert.
 	@param[in] _Expression the boolean expression to evaluate the exception
 	*/
 #define EP_VERIFY_UNDERFLOW_ERROR(_Expression) EP_VERIFY_EXCEPTION_W_MSG(_Expression,ExceptionUnderflowError,"underflow error")
@@ -292,16 +292,16 @@ namespace epl
 
 /*!
 	@def EP_VERIFY_THREAD_DEADLOCK_ERROR_W_MSG
-	@brief Macro Function for verify and throw TreadDeadlockError exception with message
-	* Expression must be 0 to throw the given exception
+	@brief Macro Function for verify and throw TreadDeadlockError exception with message.
+	@remark Expression must be 0 to throw the exception like an Assert.
 	@param[in] _Expression the boolean expression to evaluate the exception
 	@param[in] _Message the message for the exception
 	*/
 #define EP_VERIFY_THREAD_DEADLOCK_ERROR_W_MSG(_Expression,_Message) EP_VERIFY_EXCEPTION_W_MSG(_Expression,ExceptionThreadDeadLockError,_Message)
 /*!
 	@def EP_VERIFY_THREAD_ERROR
-	@brief Macro Function for verify and throw TreadDeadlockError exception
-	* Expression must be 0 to throw the given exception
+	@brief Macro Function for verify and throw TreadDeadlockError exception.
+	@remark Expression must be 0 to throw the exception like an Assert.
 	@param[in] _Expression the boolean expression to evaluate the exception
 	*/
 #define EP_VERIFY_THREAD_DEADLOCK_ERROR(_Expression) EP_VERIFY_EXCEPTION(_Expression,ExceptionThreadDeadLockError)
@@ -361,16 +361,16 @@ namespace epl
 
 /*!
 	@def EP_VERIFY_THREAD_CREATION_ERROR_W_MSG
-	@brief Macro Function for verify and throw ThreadCreationError exception with message
-	* Expression must be 0 to throw the given exception
+	@brief Macro Function for verify and throw ThreadCreationError exception with message.
+	@remark Expression must be 0 to throw the exception like an Assert.
 	@param[in] _Expression the boolean expression to evaluate the exception
 	@param[in] _Message the message for the exception
 	*/
 #define EP_VERIFY_THREAD_CREATION_ERROR_W_MSG(_Expression,_Message) EP_VERIFY_EXCEPTION_W_MSG(_Expression,ExceptionThreadCreationError,_Message)
 /*!
 	@def EP_VERIFY_THREAD_CREATION_ERROR
-	@brief Macro Function for verify and throw ThreadCreationError exception
-	* Expression must be 0 to throw the given exception
+	@brief Macro Function for verify and throw ThreadCreationError exception.
+	@remark Expression must be 0 to throw the exception like an Assert.
 	@param[in] _Expression the boolean expression to evaluate the exception
 	*/
 #define EP_VERIFY_THREAD_CREATION_ERROR(_Expression) EP_VERIFY_EXCEPTION(_Expression,ExceptionThreadCreationError)
@@ -429,16 +429,16 @@ namespace epl
 
 	/*!
 	@def EP_VERIFY_THREAD_TERMINATION_ERROR_W_MSG
-	@brief Macro Function for verify and throw TreadTerminationError exception with message
-	* Expression must be 0 to throw the given exception
+	@brief Macro Function for verify and throw TreadTerminationError exception with message.
+	@remark Expression must be 0 to throw the exception like an Assert.
 	@param[in] _Expression the boolean expression to evaluate the exception
 	@param[in] _Message the message for the exception
 	*/
 #define EP_VERIFY_THREAD_TERMINATION_ERROR_W_MSG(_Expression,_Message) EP_VERIFY_EXCEPTION_W_MSG(_Expression,ExceptionThreadTerminationError,_Message)
 /*!
 	@def EP_VERIFY_THREAD_TERMINATION_ERROR
-	@brief Macro Function for verify and throw TreadTerminationError exception
-	* Expression must be 0 to throw the given exception
+	@brief Macro Function for verify and throw TreadTerminationError exception.
+	@remark Expression must be 0 to throw the exception like an Assert.
 	@param[in] _Expression the boolean expression to evaluate the exception
 	*/
 #define EP_VERIFY_THREAD_TERMINATION_ERROR(_Expression) EP_VERIFY_EXCEPTION(_Expression,ExceptionThreadTerminationError)

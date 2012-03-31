@@ -124,14 +124,14 @@ namespace epl{
 	private:
 
 		/*!
-		Loop Function that writes to the file
-		** Sub classes should implement this function
+		Loop Function that writes to the file.
+		@remark Sub classes should implement this function
 		*/
 		virtual void writeLoop();
 
 		/*!
-		Actual Load Function that loads values from the file
-		** Sub classes should implement this function
+		Actual Load Function that loads values from the file.
+		@remark Sub classes should implement this function
 		*/
 		virtual void loadFromFile(EpTString line);
 

@@ -51,8 +51,8 @@ namespace epl
 		/*!
 		Default Constructor
 
-		Initializes the lock
-		**mutexName must be supplied if the object will be used across process boundaries.
+		Initializes the lock.
+		@remark mutexName must be supplied if the object will be used across process boundaries.
 		@param[in] mutexName name of the semaphore to distinguish
 		@param[in] lpsaAttributes the security attribute
 		*/

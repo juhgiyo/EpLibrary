@@ -52,8 +52,8 @@ namespace epl
 		/*!
 		Default Constructor
 
-		Initializes the lock
-		**semName must be supplied if the object will be used across process boundaries.
+		Initializes the lock.
+		@remark semName must be supplied if the object will be used across process boundaries.
 		@param[in] count lock count
 		@param[in] semName name of the semaphore to distinguish
 		@param[in] lpsaAttributes the security attribute
