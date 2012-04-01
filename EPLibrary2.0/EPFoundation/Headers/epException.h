@@ -299,7 +299,7 @@ namespace epl
 	*/
 #define EP_VERIFY_THREAD_DEADLOCK_ERROR_W_MSG(_Expression,_Message) EP_VERIFY_EXCEPTION_W_MSG(_Expression,ExceptionThreadDeadLockError,_Message)
 /*!
-	@def EP_VERIFY_THREAD_ERROR
+	@def EP_VERIFY_THREAD_DEADLOCK_ERROR
 	@brief Macro Function for verify and throw TreadDeadlockError exception.
 	@remark Expression must be 0 to throw the exception like an Assert.
 	@param[in] _Expression the boolean expression to evaluate the exception
