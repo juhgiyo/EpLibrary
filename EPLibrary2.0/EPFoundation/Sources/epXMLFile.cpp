@@ -35,6 +35,7 @@ XMLFile::~XMLFile()
 }
 void XMLFile::SetNodeValue(const TCHAR * nodeName, const TCHAR * attrName, const TCHAR *attrVal, const TCHAR * nodeVal)
 {
+	LockObj lock(m_lock);
 	XNodes findList=findAllNode(this,nodeName);
 	XNodes::iterator findIter;
 	for(findIter=findList.begin();findIter!=findList.end();findIter++)
@@ -43,7 +44,7 @@ void XMLFile::SetNodeValue(const TCHAR * nodeName, const TCHAR * attrName, const
 		XAttrs::iterator attrIter;
 		for(attrIter=attrList.begin();attrIter!=attrList.end();attrIter++)
 		{
-			if((*attrIter)->m_value==attrVal)
+			if((*attrIter)->m_value.Compare(attrVal)==0)
 			{
 				(*findIter)->m_value=nodeVal;
 			}
@@ -53,6 +54,7 @@ void XMLFile::SetNodeValue(const TCHAR * nodeName, const TCHAR * attrName, const
 
 void XMLFile::Clear()
 {
+	LockObj lock(m_lock);
 	Close();
 }
 void XMLFile::writeLoop()
@@ -70,14 +72,14 @@ void XMLFile::loadFromFile(EpTString rest)
 
 }
 
-XNodes XMLFile::findAllNode(XNode *node, const EpTString & nodeName)
+XNodes XMLFile::findAllNode(XNode *node, const TCHAR * nodeName)
 {
 	XNodes nodelist;
 	std::queue<XNode*> recurseQueue;
 	if(node==NULL)
 		return nodelist;
 	recurseQueue.push(node);
-	if(node->m_name==nodeName.c_str())
+	if(node->m_name.Compare(nodeName)==0)
 		nodelist.push_back(node);
 	while(!recurseQueue.empty())
 	{
@@ -87,7 +89,7 @@ XNodes XMLFile::findAllNode(XNode *node, const EpTString & nodeName)
 		for(XNodes::iterator it=procNode->GetChilds().begin();it!= procNode->GetChilds().end();it++)
 		{
 			XNode * child = *it;
-			if(child->m_name==nodeName.c_str())
+			if(child->m_name.Compare(nodeName)==0)
 				nodelist.push_back(child);
 			recurseQueue.push(child);
 		}

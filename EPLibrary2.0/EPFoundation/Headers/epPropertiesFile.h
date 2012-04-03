@@ -72,6 +72,7 @@ namespace epl{
 		{
 			if(this!=&b)
 			{
+				LockObj lock(m_lock);
 				m_propertyList=b.m_propertyList;
 				BaseFile::operator =(b);
 			}
@@ -121,6 +122,15 @@ namespace epl{
 		*/
 		void Clear();
 
+		/*!
+		If given key exists, then return the value, and 
+		if given key does not exist, then create key and 
+		return the reference to empty value.
+		@param[in] key the key of the property to find/create
+		@return value of the given key.
+		*/
+		EpTString& operator [](const TCHAR * key);
+
 	private:
 
 		/*!
@@ -145,7 +155,7 @@ namespace epl{
 		bool getValueKeyFromLine(EpTString buf, EpTString &retKey, EpTString &retVal);
 
 		/// The list of the properties
-		list<pair<EpTString,EpTString> > m_propertyList;
+		vector<pair<EpTString,EpTString> > m_propertyList;
 	};
 }
 

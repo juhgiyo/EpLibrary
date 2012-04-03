@@ -34,9 +34,10 @@ PropertiesFile::~PropertiesFile()
 
 bool PropertiesFile::SetProperty(const TCHAR *  key, const TCHAR * val)
 {
+	LockObj lock(m_lock);
 	EpTString opKey=key;
 	opKey.append(_T("="));
-	list<pair<EpTString, EpTString> >::iterator iter;
+	vector<pair<EpTString, EpTString> >::iterator iter;
 	for(iter=m_propertyList.begin();iter != m_propertyList.end();iter++)
 	{
 		if(iter->first.compare(opKey)==0)
@@ -50,9 +51,10 @@ bool PropertiesFile::SetProperty(const TCHAR *  key, const TCHAR * val)
 
 bool PropertiesFile::GetProperty(const TCHAR * key,EpTString &retVal) const
 {
+	LockObj lock(m_lock);
 	EpTString opKey=key;
 	opKey.append(_T("="));
-	list<pair<EpTString, EpTString> >::const_iterator iter;
+	vector<pair<EpTString, EpTString> >::const_iterator iter;
 	for(iter=m_propertyList.begin();iter != m_propertyList.end();iter++)
 	{
 		if(iter->first.compare(opKey)==0)
@@ -66,9 +68,10 @@ bool PropertiesFile::GetProperty(const TCHAR * key,EpTString &retVal) const
 
 bool PropertiesFile::AddProperty(const TCHAR * key, const TCHAR * val)
 {
+	LockObj lock(m_lock);
 	EpTString opKey=key;
 	opKey.append(_T("="));
-	list<pair<EpTString, EpTString> >::iterator iter;
+	vector<pair<EpTString, EpTString> >::iterator iter;
 	for(iter=m_propertyList.begin();iter != m_propertyList.end();iter++)
 	{
 		if(iter->first.compare(opKey)==0)
@@ -85,9 +88,10 @@ bool PropertiesFile::AddProperty(const TCHAR * key, const TCHAR * val)
 
 bool PropertiesFile::RemoveProperty(const TCHAR * key)
 {
+	LockObj lock(m_lock);
 	EpTString opKey=key;
 	opKey.append(_T("="));
-	list<pair<EpTString, EpTString> >::iterator iter;
+	vector<pair<EpTString, EpTString> >::iterator iter;
 	for(iter=m_propertyList.begin();iter != m_propertyList.end();iter++)
 	{
 		if(iter->first.compare(opKey)==0)
@@ -101,11 +105,12 @@ bool PropertiesFile::RemoveProperty(const TCHAR * key)
 
 void PropertiesFile::Clear()
 {
+	LockObj lock(m_lock);
 	m_propertyList.clear();
 }
 void PropertiesFile::writeLoop()
 {
-	list<pair<EpTString,EpTString> >::iterator iter;
+	vector<pair<EpTString,EpTString> >::iterator iter;
 	EpTString toFileString;
 	for(iter=m_propertyList.begin();iter!=m_propertyList.end();iter++)
 	{
@@ -116,6 +121,26 @@ void PropertiesFile::writeLoop()
 		WriteToFile(toFileString.c_str());
 	}
 
+}
+
+EpTString& PropertiesFile::operator [](const TCHAR * key)
+{
+	LockObj lock(m_lock);
+	EpTString opKey=key;
+	opKey.append(_T("="));
+	vector<pair<EpTString, EpTString> >::iterator iter;
+	for(iter=m_propertyList.begin();iter != m_propertyList.end();iter++)
+	{
+		if(iter->first.compare(opKey)==0)
+		{
+			return iter->second;
+		}
+	}
+	pair<EpTString,EpTString> insertPair;
+	insertPair.first=key;
+	insertPair.second=_T("");
+	m_propertyList.push_back(insertPair);
+	return m_propertyList.at(m_propertyList.size()-1).second;
 }
 void PropertiesFile::loadFromFile(EpTString rest)
 {

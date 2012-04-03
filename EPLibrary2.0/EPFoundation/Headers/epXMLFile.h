@@ -69,6 +69,7 @@ namespace epl
 		{
 			if(this!=&b)
 			{
+				LockObj lock(m_lock);
 				BaseFile::operator =(b);
 				XNode::operator =(const_cast<XMLFile&>(b));
 			}
@@ -115,7 +116,7 @@ namespace epl
 		@param[in] nodeName the node name to find the nodes
 		@return the list of the nodes with the given node name
 		*/
-		XNodes findAllNode(XNode *node, const EpTString &  nodeName);
+		XNodes findAllNode(XNode *node, const TCHAR *  nodeName);
 	};
 }
 
