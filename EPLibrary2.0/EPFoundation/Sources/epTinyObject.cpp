@@ -60,8 +60,7 @@ namespace epl
 	{
 		if(!numBlocksAvailable)
 			return 0;
-		EP_VERIFY_RUNTIME_ERROR((firstAvailableBlock * blockSize) / blockSize == 
-			firstAvailableBlock);
+		EP_VERIFY_RUNTIME_ERROR((firstAvailableBlock * blockSize) / blockSize == firstAvailableBlock);
 		unsigned char *result= m_Data+(firstAvailableBlock*blockSize);
 		firstAvailableBlock=*result;
 		--numBlocksAvailable;
