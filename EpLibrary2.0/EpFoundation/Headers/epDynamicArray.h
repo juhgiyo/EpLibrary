@@ -72,14 +72,12 @@ namespace epl
 		/*!
 		Delete the given array.
 		(Frees the memory)
-		@param[in] dArr The dynamic array structure to delete.
 		*/
 		void Delete();
 
 		/*!
 		Clear all the elements in the given array.
 		(Does Not Free the memory)
-		@param[in] dArr The dynamic array structure to clear.
 		*/
 		void Clear();
 
@@ -187,7 +185,6 @@ namespace epl
 		/*!
 		Actual delete the given array.
 		(Frees the memory)
-		@param[in] dArr The dynamic array structure to delete.
 		*/
 		void deleteArr();
 
@@ -287,14 +284,14 @@ namespace epl
 	{
 		LockObj lock(m_lock);
 		System::Memset(m_head,0,sizeof(FDATA)*m_actualSize);
-		m_numberOfElement=0;
+		m_numOfElements=0;
 	}
 
 	template <typename FDATA>
 	bool DynamicArray<FDATA>::IsEmpty() const
 	{
 		LockObj lock(m_lock);
-		if(m_numberOfElement)
+		if(m_numOfElements)
 			return true;
 		return false;
 	}

@@ -158,8 +158,8 @@ namespace epl
 		void push(const FKEY &key, const FDATA &data);
 
 		/*!
-		Actually change the given key to given new key.
-		@param[in] key The original key.
+		Actually change the key of the node with given index with new key.
+		@param[in] index The index of the node to change the key.
 		@param[in] newKey the new key for the given original key
 		@return true if succeeded otherwise false
 		*/
@@ -167,7 +167,7 @@ namespace epl
 
 		/*!
 		Actually erase the given key from the heap.
-		@param[in] key The key to remove.
+		@param[in] index The index of the node to remove.
 		@return true if succeeded otherwise false
 		*/
 		void erase(int index);
