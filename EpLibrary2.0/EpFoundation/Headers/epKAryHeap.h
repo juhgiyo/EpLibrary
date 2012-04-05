@@ -31,7 +31,7 @@ An Interface for K-ary Heap Template class.
 #define __EP_KARYHEAP_H__
 #include "epFoundationLib.h"
 #include "epDynamicArray.h"
-
+#include "epException.h"
 namespace epl
 {
 	/*! 
@@ -39,7 +39,7 @@ namespace epl
 	@brief A K-ary Heap Template class.
 	*/
 
-	template <typename FKEY,typename FDATA, int k=5, CompResultType (*KeyCompareFunc)(const void *,const void *)=CompClass<FDATA>::CompFunc >
+	template <typename FKEY,typename FDATA, int k=5, CompResultType (*KeyCompareFunc)(const void *,const void *)=CompClass<FKEY>::CompFunc >
 	class KAryHeap
 	{
 	public:
@@ -103,7 +103,7 @@ namespace epl
 		@param[out] retData the data with the minimum key of the heap
 		@return true if succeeded otherwise false
 		*/
-		bool Front(FKEY &retKey, FDATA &retData ) const;
+		bool Front(FKEY &retKey, FDATA &retData );
 
 		/*!
 		Change the given key to given new key.
@@ -190,7 +190,7 @@ namespace epl
 		@remark return -1 if there is no child for the node with given index
 		@return the index of the minimum child
 		*/
-		int findMinChild(int parentIdx) const;
+		int findMinChild(int parentIdx);
 
 		/*!
 		Return the index of parent
@@ -207,7 +207,7 @@ namespace epl
 		@remark return -1 if there is no node with the given key
 		@return the index of the found node
 		*/
-		int findIndex(const FKEY &key, int rootIdx=0) const
+		int findIndex(const FKEY &key, int rootIdx=0);
 
 		///  K-ary heap
 		DynamicArray<Pair<FKEY,FDATA> *> m_heap;
@@ -223,7 +223,7 @@ namespace epl
 	template <typename FKEY,typename FDATA,int k, CompResultType (*KeyCompareFunc)(const void *,const void *)>  
 	KAryHeap<FKEY,FDATA,k,KeyCompareFunc>::KAryHeap(LockPolicy lockPolicyType)
 	{
-		m_heap=DynamicArray<Pair<FKEY,FDATA> >(lockPolicyType);
+		m_heap=DynamicArray<Pair<FKEY,FDATA> *>(lockPolicyType);
 		m_heapSize=0;
 		m_lockPolicy=lockPolicyType;
 		switch(lockPolicyType)
@@ -239,6 +239,7 @@ namespace epl
 			break;
 		default:
 			m_lock=NULL;
+		}
 
 	}
 
@@ -314,12 +315,11 @@ namespace epl
 		int idx=findIndex(key, 0);
 		if(idx>=0)
 			return m_heap[idx]->second;
-		insert(key,reinterpret_cast<FDATA>(0));
+		push(key,reinterpret_cast<FDATA>(0));
 		idx=findIndex(key,0);
 		if(idx>=0)
 			return m_heap[idx]->second;
-		//TODO VERIFY EXCEPTION
-		
+		EP_VERIFY_DOMAIN_ERROR(0);
 	}
 
 	template <typename FKEY,typename FDATA,int k, CompResultType (*KeyCompareFunc)(const void *,const void *) >  
@@ -338,7 +338,7 @@ namespace epl
 	}
 
 	template <typename FKEY,typename FDATA,int k, CompResultType (*KeyCompareFunc)(const void *,const void *) >  
-	bool KAryHeap<FKEY,FDATA,k,KeyCompareFunc>::Front( FKEY &retKey, FDATA &retData ) const
+	bool KAryHeap<FKEY,FDATA,k,KeyCompareFunc>::Front( FKEY &retKey, FDATA &retData )
 	{		
 		LockObj lock(m_lock);
 		if(m_heapSize>0)
@@ -543,7 +543,7 @@ namespace epl
 	}
 
 	template <typename FKEY,typename FDATA,int k, CompResultType (*KeyCompareFunc)(const void *,const void *) >  
-	int KAryHeap<FKEY,FDATA,k,KeyCompareFunc>::findMinChild(int parentIdx) const
+	int KAryHeap<FKEY,FDATA,k,KeyCompareFunc>::findMinChild(int parentIdx)
 	{
 		int arrTrav;
 		if(k*parentIdx+1<m_heapSize)
@@ -552,7 +552,7 @@ namespace epl
 			int minIdx=k*parentIdx+1;
 			for(arrTrav=k*parentIdx+2; arrTrav<=k*parentIdx+k;arrTrav++)
 			{
-				if(m_heapSize<m_heapSize && KeyCompareFunc(&(minNode->first) , &(m_heap[arrTrav]->first))==COMP_RESULT_GREATERTHAN)
+				if(arrTrav<m_heapSize && KeyCompareFunc(&(minNode->first) , &(m_heap[arrTrav]->first))==COMP_RESULT_GREATERTHAN)
 				{
 					minNode=m_heap[arrTrav];
 					minIdx=arrTrav;
@@ -566,15 +566,17 @@ namespace epl
 
 
 	template <typename FKEY,typename FDATA,int k, CompResultType (*KeyCompareFunc)(const void *,const void *) >  
-	int KAryHeap<FKEY,FDATA,k,KeyCompareFunc>::findIndex(const FKEY &key, int rootIdx) const
+	int KAryHeap<FKEY,FDATA,k,KeyCompareFunc>::findIndex(const FKEY &key, int rootIdx)
 	{
 		if(rootIdx<m_heapSize)
 		{
-			if(KeyCompareFunc(&(m_heap[rootIdx]->first) ,&(oldKey))==COMP_RESULT_GREATERTHAN)
+			Pair<FKEY,FDATA> *pair=m_heap[rootIdx];
+
+			if(KeyCompareFunc(&(pair->first) ,&(key))==COMP_RESULT_GREATERTHAN)
 			{
 				return -1;
 			}
-			else if(KeyCompareFunc(&(m_heap[rootIdx]->first), &(oldKey))==COMP_RESULT_EQUAL)
+			else if(KeyCompareFunc(&(pair->first), &(key))==COMP_RESULT_EQUAL)
 			{	
 				return rootIdx;
 			}
@@ -582,11 +584,16 @@ namespace epl
 			int trav;
 			for(trav=1; trav<=k; trav++)
 			{
-				int retIdx = findIndex(oldKey,rootIdx*k+trav);
-				if(retIdx!=-1)
+				if(rootIdx*k+trav<m_heapSize)
 				{
-					return retIdx;
+					int retIdx = findIndex(key,rootIdx*k+trav);
+					if(retIdx!=-1)
+					{
+						return retIdx;
+					}
 				}
+				else
+					return -1;
 			}
 			return -1;
 

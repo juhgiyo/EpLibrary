@@ -482,13 +482,15 @@ namespace epl
 				if(m_length==arrSize)
 					return true;
 
-				if(arrSize<=m_packetContainer->m_length)
+				if(arrSize<=m_length)
 				{
 					EpString errMsg;
 					System::SPrintf(errMsg,"Given size = %d is smaller than the original = %d.\nNew array size must be (greater than/equal to) original array size.",arrSize,m_packetContainer->m_length);
 					EP_VERIFY_INVALID_ARGUMENT_W_MSG(arrSize>=m_packetContainer->m_length,errMsg)
 				}
-				m_packetContainer=EP_Realloc(m_packetContainer,sizeof(PacketContainerStruct)+ (arrSize*sizeof(ArrayType)));
+				
+				m_packetContainer=reinterpret_cast<PacketContainerStruct*>(EP_Realloc(m_packetContainer,sizeof(PacketContainerStruct)+ (arrSize*sizeof(ArrayType))));
+				System::Memset(((char*)m_packetContainer)+sizeof(PacketContainerStruct)+ (m_length*sizeof(ArrayType)),0,((arrSize-m_length)*sizeof(ArrayType)));
 				EP_VERIFY_BAD_ALLOC(m_packetContainer);
 				m_length=arrSize;
 				return true;

@@ -94,8 +94,8 @@ namespace epl
 	template<typename T>
 	CompResultType CompClass<T>::CompFunc(const void * a, const void * b)
 	{
-		T* _a=reinterpret_cast<T*>(a);
-		T* _b=reinterpret_cast<T*>(b);
+		T* _a=(T*)(a);
+		T* _b=(T*)(b);
 		if(*_a==*_b)
 			return COMP_RESULT_EQUAL;
 		else if(*_a>*_b)

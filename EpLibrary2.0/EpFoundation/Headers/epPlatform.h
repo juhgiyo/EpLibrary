@@ -42,8 +42,11 @@ An Interface for the Platform Dependencies.
 // 0x0601 -> Windows 7
 #ifndef WINVER
 #define WINVER 0x0601
+#endif //WINVER
+
+#ifndef _WIN32_WINNT
 #define _WIN32_WINNT 0x0601
-#endif
+#endif //_WIN32_WINNT
 #endif
 
 #ifndef _SECURE_ATL
