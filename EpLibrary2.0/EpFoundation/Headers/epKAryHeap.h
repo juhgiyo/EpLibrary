@@ -39,7 +39,7 @@ namespace epl
 	@brief A K-ary Heap Template class.
 	*/
 
-	template <typename FKEY,typename FDATA, int k=5, CompResultType (*KeyCompareFunc)(const void *,const void *)=CompClass<FKEY>::CompFunc >
+	template <typename FKEY,typename FDATA, unsigned int k=5, CompResultType (*KeyCompareFunc)(const void *,const void *)=CompClass<FKEY>::CompFunc >
 	class KAryHeap
 	{
 	public:
@@ -220,7 +220,7 @@ namespace epl
 
 	};
 
-	template <typename FKEY,typename FDATA,int k, CompResultType (*KeyCompareFunc)(const void *,const void *)>  
+	template <typename FKEY,typename FDATA,unsigned int k, CompResultType (*KeyCompareFunc)(const void *,const void *)>  
 	KAryHeap<FKEY,FDATA,k,KeyCompareFunc>::KAryHeap(LockPolicy lockPolicyType)
 	{
 		m_heap=DynamicArray<Pair<FKEY,FDATA> *>(lockPolicyType);
@@ -243,7 +243,7 @@ namespace epl
 
 	}
 
-	template <typename FKEY,typename FDATA,int k, CompResultType (*KeyCompareFunc)(const void *,const void *)>  
+	template <typename FKEY,typename FDATA,unsigned int k, CompResultType (*KeyCompareFunc)(const void *,const void *)>  
 	KAryHeap<FKEY,FDATA,k,KeyCompareFunc>::KAryHeap(const KAryHeap<FKEY,FDATA,k,KeyCompareFunc> & b)
 	{
 		m_lockPolicy=b.m_lockPolicy;
@@ -274,7 +274,7 @@ namespace epl
 
 	}
 
-	template <typename FKEY,typename FDATA,int k, CompResultType (*KeyCompareFunc)(const void *,const void *) >  
+	template <typename FKEY,typename FDATA,unsigned int k, CompResultType (*KeyCompareFunc)(const void *,const void *) >  
 	KAryHeap<FKEY,FDATA,k,KeyCompareFunc>::~KAryHeap()
 	{
 		for(int trav=0;trav<m_heapSize;trav++)
@@ -289,7 +289,7 @@ namespace epl
 	}
 
 
-	template <typename FKEY,typename FDATA,int k, CompResultType (*KeyCompareFunc)(const void *,const void *)>  
+	template <typename FKEY,typename FDATA,unsigned int k, CompResultType (*KeyCompareFunc)(const void *,const void *)>  
 	KAryHeap<FKEY,FDATA,k,KeyCompareFunc> &KAryHeap<FKEY,FDATA,k,KeyCompareFunc>::operator=(const KAryHeap<FKEY,FDATA,k,KeyCompareFunc> & b)
 	{
 		if(this!=&b)
@@ -308,7 +308,7 @@ namespace epl
 		return *this;
 	}
 	
-	template <typename FKEY,typename FDATA,int k, CompResultType (*KeyCompareFunc)(const void *,const void *)>  
+	template <typename FKEY,typename FDATA,unsigned int k, CompResultType (*KeyCompareFunc)(const void *,const void *)>  
 	FDATA &KAryHeap<FKEY,FDATA,k,KeyCompareFunc>::operator[](const FKEY & key)
 	{
 		LockObj lock(m_lock);
@@ -322,7 +322,7 @@ namespace epl
 		EP_VERIFY_DOMAIN_ERROR(0);
 	}
 
-	template <typename FKEY,typename FDATA,int k, CompResultType (*KeyCompareFunc)(const void *,const void *) >  
+	template <typename FKEY,typename FDATA,unsigned int k, CompResultType (*KeyCompareFunc)(const void *,const void *) >  
 	bool KAryHeap<FKEY,FDATA,k,KeyCompareFunc>::Pop( FKEY &retKey, FDATA &retData )
 	{
 		LockObj lock(m_lock);
@@ -337,7 +337,7 @@ namespace epl
 				
 	}
 
-	template <typename FKEY,typename FDATA,int k, CompResultType (*KeyCompareFunc)(const void *,const void *) >  
+	template <typename FKEY,typename FDATA,unsigned int k, CompResultType (*KeyCompareFunc)(const void *,const void *) >  
 	bool KAryHeap<FKEY,FDATA,k,KeyCompareFunc>::Front( FKEY &retKey, FDATA &retData )
 	{		
 		LockObj lock(m_lock);
@@ -351,7 +351,7 @@ namespace epl
 	}
 
 
-	template <typename FKEY,typename FDATA,int k, CompResultType (*KeyCompareFunc)(const void *,const void *)>  
+	template <typename FKEY,typename FDATA,unsigned int k, CompResultType (*KeyCompareFunc)(const void *,const void *)>  
 	bool KAryHeap<FKEY,FDATA,k,KeyCompareFunc>::ChangeKey(const FKEY &key, const FKEY &newKey)
 	{
 		LockObj lock(m_lock);
@@ -364,7 +364,7 @@ namespace epl
 		return false;
 	}
 
-	template <typename FKEY,typename FDATA,int k, CompResultType (*KeyCompareFunc)(const void *,const void *) >  
+	template <typename FKEY,typename FDATA,unsigned int k, CompResultType (*KeyCompareFunc)(const void *,const void *) >  
 	void KAryHeap<FKEY,FDATA,k,KeyCompareFunc>::Clear()
 	{
 		for(int trav=0;trav<m_heapSize;trav++)
@@ -376,7 +376,7 @@ namespace epl
 		m_heapSize=0;
 	}
 
-	template <typename FKEY,typename FDATA,int k, CompResultType (*KeyCompareFunc)(const void *,const void *)>  
+	template <typename FKEY,typename FDATA,unsigned int k, CompResultType (*KeyCompareFunc)(const void *,const void *)>  
 	bool KAryHeap<FKEY,FDATA,k,KeyCompareFunc>::Erase(const FKEY &key)
 	{
 		LockObj lock(m_lock);
@@ -387,7 +387,7 @@ namespace epl
 		}
 		return false;
 	}
-	template <typename FKEY,typename FDATA,int k, CompResultType (*KeyCompareFunc)(const void *,const void *) >  
+	template <typename FKEY,typename FDATA,unsigned int k, CompResultType (*KeyCompareFunc)(const void *,const void *) >  
 	bool KAryHeap<FKEY,FDATA,k,KeyCompareFunc>::IsEmpty() const
 	{
 		LockObj lock(m_lock);
@@ -396,7 +396,7 @@ namespace epl
 		return false;
 	}
 
-	template <typename FKEY,typename FDATA,int k, CompResultType (*KeyCompareFunc)(const void *,const void *) >  
+	template <typename FKEY,typename FDATA,unsigned int k, CompResultType (*KeyCompareFunc)(const void *,const void *) >  
 	unsigned int KAryHeap<FKEY,FDATA,k,KeyCompareFunc>::Size() const
 	{
 		LockObj lock(m_lock);
@@ -405,7 +405,7 @@ namespace epl
 
 
 
-	template <typename FKEY,typename FDATA,int k, CompResultType (*KeyCompareFunc)(const void *,const void *) >  
+	template <typename FKEY,typename FDATA,unsigned int k, CompResultType (*KeyCompareFunc)(const void *,const void *) >  
 	bool KAryHeap<FKEY,FDATA,k,KeyCompareFunc>::Push(const FKEY &key, const FDATA &data)
 	{	
 		LockObj lock(m_lock);
@@ -419,7 +419,7 @@ namespace epl
 
 
 
-	template <typename FKEY,typename FDATA,int k, CompResultType (*KeyCompareFunc)(const void *,const void *) >  
+	template <typename FKEY,typename FDATA,unsigned int k, CompResultType (*KeyCompareFunc)(const void *,const void *) >  
 	bool KAryHeap<FKEY,FDATA,k,KeyCompareFunc>::pop( Pair<FKEY,FDATA> &retMin )
 	{
 		if(m_heap.Size()> 0 && m_heapSize >0)
@@ -436,7 +436,7 @@ namespace epl
 		return false;
 	}
 
-	template <typename FKEY,typename FDATA,int k, CompResultType (*KeyCompareFunc)(const void *,const void *) >  
+	template <typename FKEY,typename FDATA,unsigned int k, CompResultType (*KeyCompareFunc)(const void *,const void *) >  
 	void KAryHeap<FKEY,FDATA,k,KeyCompareFunc>::push(const FKEY &key, const FDATA &data)
 	{
 	
@@ -452,7 +452,7 @@ namespace epl
 
 	}
 
-	template <typename FKEY,typename FDATA,int k, CompResultType (*KeyCompareFunc)(const void *,const void *) >  
+	template <typename FKEY,typename FDATA,unsigned int k, CompResultType (*KeyCompareFunc)(const void *,const void *) >  
 	void KAryHeap<FKEY,FDATA,k,KeyCompareFunc>::changeKey(int index, const FKEY &newKey)
 	{
 
@@ -471,7 +471,7 @@ namespace epl
 		}
 	}
 
-	template <typename FKEY,typename FDATA,int k, CompResultType (*KeyCompareFunc)(const void *,const void *) >  
+	template <typename FKEY,typename FDATA,unsigned int k, CompResultType (*KeyCompareFunc)(const void *,const void *) >  
 	void KAryHeap<FKEY,FDATA,k,KeyCompareFunc>::erase(int index)
 	{
 
@@ -489,7 +489,7 @@ namespace epl
 
 
 
-	template <typename FKEY,typename FDATA,int k, CompResultType (*KeyCompareFunc)(const void *,const void *) >  
+	template <typename FKEY,typename FDATA,unsigned int k, CompResultType (*KeyCompareFunc)(const void *,const void *) >  
 	void KAryHeap<FKEY,FDATA,k,KeyCompareFunc>::heapifyUp(int idx)
 	{
 		if(m_heap.Size()>0)
@@ -515,7 +515,7 @@ namespace epl
 		}
 	}
 
-	template <typename FKEY,typename FDATA,int k, CompResultType (*KeyCompareFunc)(const void *,const void *) >  
+	template <typename FKEY,typename FDATA,unsigned int k, CompResultType (*KeyCompareFunc)(const void *,const void *) >  
 	void KAryHeap<FKEY,FDATA,k,KeyCompareFunc>::heapifyDown(int idx)
 	{
 		if(m_heap.Size()>0)
@@ -542,7 +542,7 @@ namespace epl
 		}
 	}
 
-	template <typename FKEY,typename FDATA,int k, CompResultType (*KeyCompareFunc)(const void *,const void *) >  
+	template <typename FKEY,typename FDATA,unsigned int k, CompResultType (*KeyCompareFunc)(const void *,const void *) >  
 	int KAryHeap<FKEY,FDATA,k,KeyCompareFunc>::findMinChild(int parentIdx)
 	{
 		int arrTrav;
@@ -565,7 +565,7 @@ namespace epl
 	}
 
 
-	template <typename FKEY,typename FDATA,int k, CompResultType (*KeyCompareFunc)(const void *,const void *) >  
+	template <typename FKEY,typename FDATA,unsigned int k, CompResultType (*KeyCompareFunc)(const void *,const void *) >  
 	int KAryHeap<FKEY,FDATA,k,KeyCompareFunc>::findIndex(const FKEY &key, int rootIdx)
 	{
 		if(rootIdx<m_heapSize)
@@ -605,7 +605,7 @@ namespace epl
 		}
 	}
 
-	template <typename FKEY,typename FDATA,int k, CompResultType (*KeyCompareFunc)(const void *,const void *) >  
+	template <typename FKEY,typename FDATA,unsigned int k, CompResultType (*KeyCompareFunc)(const void *,const void *) >  
 	int KAryHeap<FKEY,FDATA,k,KeyCompareFunc>::getParentIDX(int childIdx) const
 	{
 		if(childIdx%k ==0)
