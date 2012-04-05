@@ -223,6 +223,8 @@ namespace epl
 	template <typename FKEY,typename FDATA,unsigned int k, CompResultType (*KeyCompareFunc)(const void *,const void *)>  
 	KAryHeap<FKEY,FDATA,k,KeyCompareFunc>::KAryHeap(LockPolicy lockPolicyType)
 	{
+		EP_VERIFY_DOMAIN_ERROR_W_MSG(k>0,"Template Declaration Error: k cannnot be less than/equal to 0");
+
 		m_heap=DynamicArray<Pair<FKEY,FDATA> *>(lockPolicyType);
 		m_heapSize=0;
 		m_lockPolicy=lockPolicyType;
@@ -246,6 +248,7 @@ namespace epl
 	template <typename FKEY,typename FDATA,unsigned int k, CompResultType (*KeyCompareFunc)(const void *,const void *)>  
 	KAryHeap<FKEY,FDATA,k,KeyCompareFunc>::KAryHeap(const KAryHeap<FKEY,FDATA,k,KeyCompareFunc> & b)
 	{
+		EP_VERIFY_DOMAIN_ERROR_W_MSG(k>0,"Template Declaration Error: k cannnot be less than/equal to 0");
 		m_lockPolicy=b.m_lockPolicy;
 		m_heap.Resize(b.m_heap.Size());
 		for(int trav=0;trav<b.m_heap.Size();trav++)
