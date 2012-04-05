@@ -146,6 +146,11 @@ namespace epl
 	{
 	public:
 		Pair(){}
+		Pair(const T& a, const U& b)
+		{
+			first=a;
+			second=b;
+		}
 		~Pair(){}
 		T first;
 		U second;

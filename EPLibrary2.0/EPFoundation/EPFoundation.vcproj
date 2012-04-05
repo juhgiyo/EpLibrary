@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="EPFoundation"
+	Name="EpFoundation"
 	ProjectGUID="{D4B0C1D4-EEB7-4AFD-A932-E51261BE3976}"
 	RootNamespace="EPFoundation"
 	TargetFrameworkVersion="196613"
@@ -640,6 +640,10 @@
 				</File>
 				<File
 					RelativePath=".\Headers\epDynamicArray.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Headers\epKAryHeap.h"
 					>
 				</File>
 				<Filter

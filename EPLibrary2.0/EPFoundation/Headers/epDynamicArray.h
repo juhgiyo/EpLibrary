@@ -282,6 +282,7 @@ namespace epl
 
 	bool DynamicArray::IsEmpty() const
 	{
+		LockObj lock(m_lock);
 		if(m_numOfElements)
 			return true;
 		return false;
@@ -289,6 +290,7 @@ namespace epl
 
 	unsigned int DynamicArray::Size() const
 	{
+		LockObj lock(m_lock);
 		return m_numOfElements;
 	}
 
@@ -305,11 +307,13 @@ namespace epl
 		if(m_head)
 		{
 			m_head=EP_Realloc(m_head,newSize*sizeof(FDATA));
+			System::Memset(m_head+(sizeof(FDATA)*m_actualSize),0,(newSize-m_actualSize)*sizeof(FDATA));
 			m_actualSize=newSize;
 		}
 		else
 		{
 			m_head=reinterpret_cast<FDATA*>(EP_Malloc(newSize*sizeof(FDATA)));
+			System::Memset(m_head,0,newSize*sizeof(FDATA));
 			m_actualSize=newSize;
 		}
 		EP_VERIFY_BAD_ALLOC(m_head);
@@ -318,9 +322,10 @@ namespace epl
 
 	FDATA &DynamicArray::At(unsigned int idx)
 	{
+		LockObj lock(m_lock);
 		if(m_numOfElements+1<idx)
 		{
-			Resize(idx+1);
+			resize(idx+1);
 			m_numOfElements=idx+1;
 		}
 		return *(m_head+idx)
