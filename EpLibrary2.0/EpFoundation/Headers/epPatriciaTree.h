@@ -49,7 +49,7 @@ namespace epl
 	@class PatriciaTree epPatriciaTree.h
 	@brief A Patricia Tree Template class.
 	*/
-	template<typename CharacterType, typename DataType , CharacterType Terminator=(CharacterType)0,bool isHoldingString=false, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)=CompClass<CharacterType>::CompFunc>
+	template<typename CharacterType, typename DataType , CharacterType Terminator=(CharacterType)0, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)=CompClass<CharacterType>::CompFunc>
 	class PatriciaTree
 	{
 	public:
@@ -506,8 +506,8 @@ namespace epl
 
 
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::PatriciaTree(PatriciaTreeMode mode,LockPolicy lockPolicyType)
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::PatriciaTree(PatriciaTreeMode mode,LockPolicy lockPolicyType)
 	{
 		m_totalCount=0;
 		m_root=EP_NEW PatriciaTreeNode(Terminator);
@@ -530,8 +530,8 @@ namespace epl
 		}
 	}
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::PatriciaTree(const PatriciaTree & b)
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::PatriciaTree(const PatriciaTree & b)
 	{
 		m_totalCount=b.m_totalCount;
 		m_root=EP_NEW PatriciaTreeNode(Terminator);
@@ -557,8 +557,8 @@ namespace epl
 
 	}
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::~PatriciaTree()
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::~PatriciaTree()
 	{
 		m_lock->Lock();
 		if(m_root)
@@ -568,8 +568,8 @@ namespace epl
 			EP_DELETE m_lock;
 	}
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc> &PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::operator=(const PatriciaTree & b)
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc> &PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::operator=(const PatriciaTree & b)
 	{
 		if(this!=&b)
 		{
@@ -585,8 +585,8 @@ namespace epl
 		return *this;
 	}
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	DataType &PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::operator[](const CharacterType * str)
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	DataType &PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::operator[](const CharacterType * str)
 	{
 
 		EP_VERIFY_INVALID_ARGUMENT_W_MSG(str,"String is NULL");
@@ -606,8 +606,8 @@ namespace epl
 		}
 	}
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	const DataType &PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::operator[](const CharacterType * str) const
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	const DataType &PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::operator[](const CharacterType * str) const
 	{
 		EP_VERIFY_INVALID_ARGUMENT_W_MSG(str,"String is NULL");
 		DataType retData;
@@ -617,8 +617,8 @@ namespace epl
 		return foundNode->GetData();
 	}
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	void PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::Clear()
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	void PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::Clear()
 	{
 		LockObj lock(m_lock);
 		m_totalCount=0;	
@@ -628,8 +628,8 @@ namespace epl
 	}
 
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	bool PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::Insert(const CharacterType* str,const DataType &data)
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	bool PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::Insert(const CharacterType* str,const DataType &data)
 	{
 		if(str!=NULL )
 		{		
@@ -643,8 +643,8 @@ namespace epl
 		return false;
 	}
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	bool PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::Erase(const CharacterType* str)
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	bool PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::Erase(const CharacterType* str)
 	{
 		if(str!=NULL)
 		{
@@ -658,8 +658,8 @@ namespace epl
 		return false;
 	}
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	bool PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::Find(const CharacterType* str, DataType &retData) const
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	bool PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::Find(const CharacterType* str, DataType &retData) const
 	{
 		if(str!=NULL)
 		{
@@ -672,8 +672,8 @@ namespace epl
 		return false;
 	}
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	bool PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::FindAll(const CharacterType* str, vector<Pair<const CharacterType*,DataType> > &retStrDataPairList) const
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	bool PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::FindAll(const CharacterType* str, vector<Pair<const CharacterType*,DataType> > &retStrDataPairList) const
 	{
 		if(str!=NULL)
 		{
@@ -687,8 +687,8 @@ namespace epl
 	}
 
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	typename PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::PatriciaTreeLeaf *PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::insert(BasePatriciaTreeNode *root,const CharacterType* str,unsigned int strTrav,const DataType &data)
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	typename PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::PatriciaTreeLeaf *PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::insert(BasePatriciaTreeNode *root,const CharacterType* str,unsigned int strTrav,const DataType &data)
 	{
 		if(m_mode==PATRICIA_TREE_MODE_RECURSIVE)
 		{
@@ -724,8 +724,8 @@ namespace epl
 		}
 	}
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	typename PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::PatriciaTreeLeaf *PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::insertLoop(BasePatriciaTreeNode *root,const CharacterType* str,unsigned int strTrav,const DataType &data)
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	typename PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::PatriciaTreeLeaf *PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::insertLoop(BasePatriciaTreeNode *root,const CharacterType* str,unsigned int strTrav,const DataType &data)
 	{
 		struct SnapShotStruct
 		{
@@ -784,8 +784,8 @@ namespace epl
 	}
 
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	bool PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::erase(BasePatriciaTreeNode *root,const CharacterType* str,unsigned int strTrav)
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	bool PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::erase(BasePatriciaTreeNode *root,const CharacterType* str,unsigned int strTrav)
 	{
 		if(m_mode==PATRICIA_TREE_MODE_RECURSIVE)
 		{
@@ -801,20 +801,11 @@ namespace epl
 				{
 					if(erase(currentNode,str,strTrav+1))
 					{
-						if(CharCompareFunc(&str[strTrav],&m_terminator)!=COMP_RESULT_EQUAL)
-						{		
-							rootNode->RemoveNode(str[strTrav+1]);
-							return true;
-						}
+						rootNode->RemoveNode(str[strTrav]);
 						return true;
 					}
-					else
-						return false;
 				}
-				else
-				{
-					return false;
-				}
+				return false;
 			}
 		}
 		else
@@ -825,14 +816,13 @@ namespace epl
 
 
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	bool PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::eraseLoop(BasePatriciaTreeNode *root,const CharacterType* str,unsigned int strTrav)
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	bool PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::eraseLoop(BasePatriciaTreeNode *root,const CharacterType* str,unsigned int strTrav)
 	{
 		struct SnapShotStruct
 		{
 			BasePatriciaTreeNode *root;
 			unsigned int strTrav;
-			PatriciaTreeNode *rootNode;
 			int stage;
 		};
 
@@ -840,7 +830,6 @@ namespace epl
 		SnapShotStruct currentSnaptshot;
 		currentSnaptshot.root=root;
 		currentSnaptshot.strTrav=strTrav;
-		currentSnaptshot.rootNode=NULL;
 		currentSnaptshot.stage=0;
 		snapshotStack.push(currentSnaptshot);
 		bool retBool=false;
@@ -863,12 +852,10 @@ namespace epl
 					BasePatriciaTreeNode *currentNode=(*rootNode)[str[currentSnaptshot.strTrav]];
 					if(currentNode)
 					{
-						currentSnaptshot.rootNode=rootNode;
 						currentSnaptshot.stage=1;
 						snapshotStack.push(currentSnaptshot);
 						SnapShotStruct newSnapshot;
 						newSnapshot.root=currentNode;
-						newSnapshot.rootNode=NULL;
 						newSnapshot.stage=0;
 						newSnapshot.strTrav=currentSnaptshot.strTrav+1;
 						snapshotStack.push(newSnapshot);
@@ -881,12 +868,8 @@ namespace epl
 			case 1:
 				if(retBool)
 				{
-					if(CharCompareFunc(&str[currentSnaptshot.strTrav],&m_terminator)!=COMP_RESULT_EQUAL)
-					{		
-						currentSnaptshot.rootNode->RemoveNode(str[currentSnaptshot.strTrav+1]);
-						retBool=true;
-						continue;
-					}
+					PatriciaTreeNode *rootNode=static_cast<PatriciaTreeNode*>(currentSnaptshot.root);
+					rootNode->RemoveNode(str[currentSnaptshot.strTrav]);
 					retBool=true;
 					continue;
 				}
@@ -898,8 +881,8 @@ namespace epl
 		return retBool;
 	}
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	typename PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::PatriciaTreeLeaf *PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::find(BasePatriciaTreeNode *root,const CharacterType* str,unsigned int strTrav, DataType &retData) const
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	typename PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::PatriciaTreeLeaf *PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::find(BasePatriciaTreeNode *root,const CharacterType* str,unsigned int strTrav, DataType &retData) const
 	{
 		if(m_mode==PATRICIA_TREE_MODE_RECURSIVE)
 		{
@@ -930,8 +913,8 @@ namespace epl
 	}
 
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	typename PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::PatriciaTreeLeaf *PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::findLoop(BasePatriciaTreeNode *root,const CharacterType* str,unsigned int strTrav, DataType &retData) const
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	typename PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::PatriciaTreeLeaf *PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::findLoop(BasePatriciaTreeNode *root,const CharacterType* str,unsigned int strTrav, DataType &retData) const
 	{
 		struct SnapShotStruct
 		{
@@ -980,8 +963,8 @@ namespace epl
 		return retNode;
 	}
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	bool PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::findAll(BasePatriciaTreeNode *root,const CharacterType* str,unsigned int strTrav, vector<Pair<const CharacterType*,DataType> > &retStrDataPairList) const
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	bool PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::findAll(BasePatriciaTreeNode *root,const CharacterType* str,unsigned int strTrav, vector<Pair<const CharacterType*,DataType> > &retStrDataPairList) const
 	{
 		if(m_mode==PATRICIA_TREE_MODE_RECURSIVE)
 		{
@@ -998,39 +981,20 @@ namespace epl
 				BasePatriciaTreeNode *currentNode=(*rootNode)[str[strTrav]];
 				if(currentNode)
 				{
-					if(findAll(currentNode,str,strTrav+1,retStrDataPairList))
-					{
-						if(CharCompareFunc(&str[strTrav+1],&m_terminator)==COMP_RESULT_EQUAL)
-						{
-							PatriciaTreeNode *travNode=static_cast<PatriciaTreeNode*>(currentNode);
-							for(int trav=0;trav<travNode->GetList().size();trav++)
-							{
-								if(NodeCompareFunc(&m_terminator,travNode->GetList().at(trav))==COMP_RESULT_EQUAL)
-									traverseAll(travNode->GetList().at(trav),retStrDataPairList);
-							}
-						}
-						return true;
-					}
-					else
-					{
-						if(CharCompareFunc(&str[strTrav+1],&m_terminator)==COMP_RESULT_EQUAL)
-						{
-							PatriciaTreeNode *travNode=static_cast<PatriciaTreeNode*>(currentNode);
-							for(int trav=0;trav<travNode->GetList().size();trav++)
-							{
-								if(NodeCompareFunc(&m_terminator,travNode->GetList().at(trav))==COMP_RESULT_EQUAL)
-									traverseAll(travNode->GetList().at(trav),retStrDataPairList);
-							}
-							if(retStrDataPairList.size())
-								return true;
-						}
-						return false;
-					}
+					findAll(currentNode,str,strTrav+1,retStrDataPairList);
 				}
-				else
+				if(CharCompareFunc(&str[strTrav],&m_terminator)==COMP_RESULT_EQUAL)
 				{
-					return false;
+					for(int trav=0;trav<rootNode->GetList().size();trav++)
+					{
+						if(NodeCompareFunc(&m_terminator,&rootNode->GetList().at(trav))!=COMP_RESULT_EQUAL)
+							traverseAll(rootNode->GetList().at(trav),retStrDataPairList);
+					}
+					
 				}
+				if(retStrDataPairList.size())
+					return true;
+				return false;
 			}
 		}
 		else
@@ -1040,8 +1004,8 @@ namespace epl
 	}
 
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	bool PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::findAllLoop(BasePatriciaTreeNode *root,const CharacterType* str,unsigned int strTrav, vector<Pair<const CharacterType*,DataType> > &retStrDataPairList) const
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	bool PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::findAllLoop(BasePatriciaTreeNode *root,const CharacterType* str,unsigned int strTrav, vector<Pair<const CharacterType*,DataType> > &retStrDataPairList) const
 	{
 		struct SnapShotStruct
 		{
@@ -1094,47 +1058,43 @@ namespace epl
 						snapshotStack.push(newSnapshot);
 						continue;
 					}
-					else
+
+					if(CharCompareFunc(&str[currentSnaptshot.strTrav],&m_terminator)==COMP_RESULT_EQUAL)
 					{
-						retBool=false;
+						for(int trav=0;trav<rootNode->GetList().size();trav++)
+						{
+							if(NodeCompareFunc(&m_terminator,&rootNode->GetList().at(trav))!=COMP_RESULT_EQUAL)
+								traverseAll(rootNode->GetList().at(trav),retStrDataPairList);
+						}
+
+					}
+					if(retStrDataPairList.size())
+					{
+						retBool= true;
 						continue;
-					}
-				}
-				break;
-			case 1:
-				if(retBool)
-				{
-					if(CharCompareFunc(&str[currentSnaptshot.strTrav+1],&m_terminator)==COMP_RESULT_EQUAL)
-					{
-						PatriciaTreeNode *travNode=static_cast<PatriciaTreeNode*>(currentSnaptshot.currentNode);
-						for(int trav=0;trav<travNode->GetList().size();trav++)
-						{
-							if(NodeCompareFunc(&m_terminator,travNode->GetList().at(trav))==COMP_RESULT_EQUAL)
-								traverseAll(travNode->GetList().at(trav),retStrDataPairList);
-						}
-					}
-					retBool= true;
-					continue;
-				}
-				else
-				{
-					if(CharCompareFunc(&str[currentSnaptshot.strTrav+1],&m_terminator)==COMP_RESULT_EQUAL)
-					{
-						PatriciaTreeNode *travNode=static_cast<PatriciaTreeNode*>(currentSnaptshot.currentNode);
-						for(int trav=0;trav<travNode->GetList().size();trav++)
-						{
-							if(NodeCompareFunc(&m_terminator,travNode->GetList().at(trav))==COMP_RESULT_EQUAL)
-								traverseAll(travNode->GetList().at(trav),retStrDataPairList);
-						}
-						if(retStrDataPairList.size())
-						{
-							retBool= true;
-							continue;
-						}
 					}
 					retBool= false;
 					continue;
 				}
+				break;
+			case 1:
+				PatriciaTreeNode *rootNode=static_cast<PatriciaTreeNode*>(currentSnaptshot.root);
+				if(CharCompareFunc(&str[currentSnaptshot.strTrav],&m_terminator)==COMP_RESULT_EQUAL)
+				{
+					for(int trav=0;trav<rootNode->GetList().size();trav++)
+					{
+						if(NodeCompareFunc(&m_terminator,&rootNode->GetList().at(trav))!=COMP_RESULT_EQUAL)
+							traverseAll(rootNode->GetList().at(trav),retStrDataPairList);
+					}
+
+				}
+				if(retStrDataPairList.size())
+				{
+					retBool= true;
+					continue;
+				}
+				retBool= false;
+				continue;
 				break;
 			}
 	
@@ -1143,8 +1103,8 @@ namespace epl
 	}
 
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	void PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::traverseAll(BasePatriciaTreeNode *root, vector<Pair<const CharacterType*,DataType> > &retStrDataPairList) const
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	void PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::traverseAll(BasePatriciaTreeNode *root, vector<Pair<const CharacterType*,DataType> > &retStrDataPairList) const
 	{
 		if(m_mode==PATRICIA_TREE_MODE_RECURSIVE)
 		{
@@ -1170,8 +1130,8 @@ namespace epl
 		}
 	}
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	void PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::traverseAllLoop(BasePatriciaTreeNode *root, vector<Pair<const CharacterType*,DataType> > &retStrDataPairList) const
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	void PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::traverseAllLoop(BasePatriciaTreeNode *root, vector<Pair<const CharacterType*,DataType> > &retStrDataPairList) const
 	{
 
 
@@ -1210,24 +1170,24 @@ namespace epl
 		}
 	}
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::BasePatriciaTreeNode::BasePatriciaTreeNode(CharacterType c, bool isLeaf)
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::BasePatriciaTreeNode::BasePatriciaTreeNode(CharacterType c, bool isLeaf)
 	{
 		m_character=c;
 		m_isLeaf=isLeaf;
 	}
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::BasePatriciaTreeNode::BasePatriciaTreeNode(const BasePatriciaTreeNode &b)
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::BasePatriciaTreeNode::BasePatriciaTreeNode(const BasePatriciaTreeNode &b)
 	{
 		m_character=b.m_character;
 		m_isLeaf=b.m_isLeaf;
 	}
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::BasePatriciaTreeNode::~BasePatriciaTreeNode()
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::BasePatriciaTreeNode::~BasePatriciaTreeNode()
 	{
 	}
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	typename PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::BasePatriciaTreeNode &PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::BasePatriciaTreeNode::operator=(const BasePatriciaTreeNode & b)
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	typename PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::BasePatriciaTreeNode &PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::BasePatriciaTreeNode::operator=(const BasePatriciaTreeNode & b)
 	{
 
 		if(this!=&b)
@@ -1238,31 +1198,31 @@ namespace epl
 		return *this;
 	}
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	const CharacterType &PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::BasePatriciaTreeNode::GetCharacter() const
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	const CharacterType &PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::BasePatriciaTreeNode::GetCharacter() const
 	{
 		return m_character;
 	}
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	void PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::BasePatriciaTreeNode::SetCharacter(const CharacterType & c)
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	void PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::BasePatriciaTreeNode::SetCharacter(const CharacterType & c)
 	{
 		m_character=c;
 	}
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	bool PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::BasePatriciaTreeNode::IsLeaf() const
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	bool PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::BasePatriciaTreeNode::IsLeaf() const
 	{
 		return m_isLeaf;
 	}
 
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::PatriciaTreeLeaf::PatriciaTreeLeaf(const CharacterType *str,const DataType &data):BasePatriciaTreeNode(Terminator,true)
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::PatriciaTreeLeaf::PatriciaTreeLeaf(const CharacterType *str,const DataType &data):BasePatriciaTreeNode(Terminator,true)
 	{
 		m_data=data;
 		m_terminator=Terminator;
-		if(isHoldingString && str!=NULL)
+		if(str!=NULL)
 		{
 			int trav=0;
 			while(CharCompareFunc(&str[trav],&m_terminator)!=COMP_RESULT_EQUAL)
@@ -1274,20 +1234,20 @@ namespace epl
 		}
 	}
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::PatriciaTreeLeaf::PatriciaTreeLeaf(const PatriciaTreeLeaf &b):BasePatriciaTreeNode(b)
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::PatriciaTreeLeaf::PatriciaTreeLeaf(const PatriciaTreeLeaf &b):BasePatriciaTreeNode(b)
 	{
 		m_data=b.m_data;
 		m_string=b.m_string;
 	}
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::PatriciaTreeLeaf::~PatriciaTreeLeaf()
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::PatriciaTreeLeaf::~PatriciaTreeLeaf()
 	{
 	}
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	typename PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::PatriciaTreeLeaf &PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::PatriciaTreeLeaf::operator=(const PatriciaTreeLeaf & b)
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	typename PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::PatriciaTreeLeaf &PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::PatriciaTreeLeaf::operator=(const PatriciaTreeLeaf & b)
 	{
 		if(this!=&b)
 		{
@@ -1298,26 +1258,26 @@ namespace epl
 		return *this;
 	}
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	const DataType &PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::PatriciaTreeLeaf::GetData() const
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	const DataType &PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::PatriciaTreeLeaf::GetData() const
 	{
 		return m_data;
 	}
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	DataType &PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::PatriciaTreeLeaf::GetData()
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	DataType &PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::PatriciaTreeLeaf::GetData()
 	{
 		return m_data;
 	}
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	void PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::PatriciaTreeLeaf::SetData(const DataType &data)
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	void PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::PatriciaTreeLeaf::SetData(const DataType &data)
 	{
 		m_data=data;
 	}
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	const CharacterType *PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::PatriciaTreeLeaf::GetString() const
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	const CharacterType *PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::PatriciaTreeLeaf::GetString() const
 	{
 		if(m_string.size())
 		{
@@ -1327,14 +1287,14 @@ namespace epl
 	}
 
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::PatriciaTreeNode::PatriciaTreeNode(CharacterType c):BasePatriciaTreeNode(c)
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::PatriciaTreeNode::PatriciaTreeNode(CharacterType c):BasePatriciaTreeNode(c)
 	{
 		m_terminator=Terminator;
 	}
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::PatriciaTreeNode::PatriciaTreeNode(const PatriciaTreeNode &b):BasePatriciaTreeNode(b)
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::PatriciaTreeNode::PatriciaTreeNode(const PatriciaTreeNode &b):BasePatriciaTreeNode(b)
 	{
 		BasePatriciaTreeNode *tmpNode=NULL;
 		m_terminator=b.m_terminator;
@@ -1360,8 +1320,8 @@ namespace epl
 
 	}
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::PatriciaTreeNode::~PatriciaTreeNode()
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::PatriciaTreeNode::~PatriciaTreeNode()
 	{
 		BasePatriciaTreeNode *tmpNode=NULL;
 		for(int listTrav=0;listTrav<m_charList.size();listTrav++)
@@ -1373,8 +1333,8 @@ namespace epl
 		}
 	}
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	typename PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::PatriciaTreeNode &PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::PatriciaTreeNode::operator=(const PatriciaTreeNode & b)
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	typename PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::PatriciaTreeNode &PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::PatriciaTreeNode::operator=(const PatriciaTreeNode & b)
 	{
 		if(this!=&b)
 		{
@@ -1405,20 +1365,20 @@ namespace epl
 	}
 
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	const vector<typename PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::BasePatriciaTreeNode *> &PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::PatriciaTreeNode::GetList() const
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	const vector<typename PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::BasePatriciaTreeNode *> &PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::PatriciaTreeNode::GetList() const
 	{
 		return m_charList;	
 	}
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	vector<typename PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::BasePatriciaTreeNode *> &PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::PatriciaTreeNode::GetList()
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	vector<typename PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::BasePatriciaTreeNode *> &PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::PatriciaTreeNode::GetList()
 	{
 		return m_charList;	
 	}
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	typename PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::BasePatriciaTreeNode *PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::PatriciaTreeNode::AddNode(const CharacterType c)
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	typename PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::BasePatriciaTreeNode *PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::PatriciaTreeNode::AddNode(const CharacterType c)
 	{
 		if(m_charList.size())
 		{
@@ -1441,8 +1401,8 @@ namespace epl
 		}
 	}
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	typename PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::PatriciaTreeLeaf *PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::PatriciaTreeNode::AddLeaf(const CharacterType *str,const DataType& data)
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	typename PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::PatriciaTreeLeaf *PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::PatriciaTreeNode::AddLeaf(const CharacterType *str,const DataType& data)
 	{
 		if(m_charList.size())
 		{
@@ -1465,18 +1425,18 @@ namespace epl
 		}
 	}
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	bool PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::PatriciaTreeNode::RemoveNode(CharacterType c)
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	bool PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::PatriciaTreeNode::RemoveNode(CharacterType c)
 	{
 		if(m_charList.size())
 		{
 			int retIdx;
-			BasePatriciaTreeNode **existNode= BinarySearch(m_terminator,&(m_charList.at(0)),m_charList.size(),PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::NodeCompareFunc,retIdx);
+			BasePatriciaTreeNode **existNode= BinarySearch(c,&(m_charList.at(0)),m_charList.size(),PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::NodeCompareFunc,retIdx);
 			if(existNode)
 			{
 				if((*existNode)->IsLeaf())
 				{
-					EP_DELETE existNode;
+					EP_DELETE *existNode;
 					m_charList.erase(m_charList.begin()+retIdx);
 					return true;
 				}
@@ -1485,7 +1445,7 @@ namespace epl
 					PatriciaTreeNode *checkNode=static_cast<PatriciaTreeNode*>((*existNode));
 					if(checkNode->GetList().size()==0)
 					{
-						EP_DELETE existNode;
+						EP_DELETE *existNode;
 						m_charList.erase(m_charList.begin()+retIdx);
 						return true;
 					}
@@ -1497,8 +1457,8 @@ namespace epl
 		return false;
 	}
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	typename PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::BasePatriciaTreeNode *PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::PatriciaTreeNode::operator[](const CharacterType &character)
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	typename PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::BasePatriciaTreeNode *PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::PatriciaTreeNode::operator[](const CharacterType &character)
 	{
 		if(m_charList.size())
 		{
@@ -1510,8 +1470,8 @@ namespace epl
 		return NULL;
 	}
 
-	template<typename CharacterType, typename DataType , CharacterType Terminator,bool isHoldingString, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	typename const PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::BasePatriciaTreeNode *PatriciaTree<CharacterType,DataType,Terminator,isHoldingString,CharCompareFunc>::PatriciaTreeNode::operator[](const CharacterType &character) const
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	typename const PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::BasePatriciaTreeNode *PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::PatriciaTreeNode::operator[](const CharacterType &character) const
 	{
 		if(m_charList.size())
 		{
