@@ -44,7 +44,7 @@ namespace epl
 	@class ThreadSafeQueue epThreadSafeQueue.h
 	@brief A class for Thread Safe Queue.
 	*/
-	template <typename FDATA>
+	template <typename DataType>
 	class ThreadSafeQueue
 	{
 	public:
@@ -91,7 +91,7 @@ namespace epl
 		Check if the given obj exists in the queue.
 		@returns Returns true if exists, otherwise false.
 		*/
-		bool IsExist(FDATA const &data) const;
+		bool IsExist(DataType const &data) const;
 
 		/*!
 		Return the size of the queue.
@@ -103,25 +103,25 @@ namespace epl
 		Return the first item within the queue.
 		@return the first element of the queue.
 		*/
-		FDATA &Front();
+		DataType &Front();
 
 		/*!
 		Return the last item within the queue.
 		@return the last element of the queue.
 		*/
-		FDATA &Back();
+		DataType &Back();
 
 		/*!
 		Insert the new item into the queue.
 		@param[in] data The inserting data.
 		*/
-		virtual void Push(FDATA const &data);
+		virtual void Push(DataType const &data);
 
 		/*!
 		Erase the given item from the queue.
 		@param[in] data The data to erase.
 		*/
-		bool Erase(FDATA const &data);
+		bool Erase(DataType const &data);
 
 		/*!
 		Remove the first item from the queue.
@@ -130,7 +130,7 @@ namespace epl
 
 	protected:
 		/// Actual queue structure
-		std::vector<FDATA> m_queue;
+		std::vector<DataType> m_queue;
 
 		/// lock
 		BaseLock *m_queueLock;
@@ -140,8 +140,8 @@ namespace epl
 	};
 
 
-	template <typename FDATA>
-	ThreadSafeQueue<FDATA>::ThreadSafeQueue(LockPolicy lockPolicyType)
+	template <typename DataType>
+	ThreadSafeQueue<DataType>::ThreadSafeQueue(LockPolicy lockPolicyType)
 	{
 		m_lockPolicy=lockPolicyType;
 		switch(lockPolicyType)
@@ -161,8 +161,8 @@ namespace epl
 		}
 	}
 
-	template <typename FDATA>
-	ThreadSafeQueue<FDATA>::ThreadSafeQueue(const ThreadSafeQueue& b)
+	template <typename DataType>
+	ThreadSafeQueue<DataType>::ThreadSafeQueue(const ThreadSafeQueue& b)
 	{
 		m_queue=b.m_queue;
 		m_lockPolicy=b.m_lockPolicy;
@@ -183,8 +183,8 @@ namespace epl
 		}
 	}
 
-	template <typename FDATA>
-	ThreadSafeQueue<FDATA>::~ThreadSafeQueue()
+	template <typename DataType>
+	ThreadSafeQueue<DataType>::~ThreadSafeQueue()
 	{
 		m_queueLock->Lock();
 		m_queue.clear();
@@ -193,20 +193,20 @@ namespace epl
 			EP_DELETE m_queueLock;
 	}
 
-	template <typename FDATA>
-	bool ThreadSafeQueue<FDATA>::IsEmpty() const
+	template <typename DataType>
+	bool ThreadSafeQueue<DataType>::IsEmpty() const
 	{
 		return m_queue.empty();
 	}
 	
-	template <typename FDATA>
-	bool ThreadSafeQueue<FDATA>::IsExist(FDATA const &data) const
+	template <typename DataType>
+	bool ThreadSafeQueue<DataType>::IsExist(DataType const &data) const
 	{
 		LockObj lock(m_queueLock);
 		if(m_queue.empty())
 			return false;
 
-		std::vector<FDATA>::const_iterator iter;
+		std::vector<DataType>::const_iterator iter;
 		for(iter=m_queue.begin();iter!=m_queue.end();iter++)
 		{
 			if((*iter)==data)
@@ -215,14 +215,14 @@ namespace epl
 		return false;
 		
 	}
-	template <typename FDATA>
-	int ThreadSafeQueue<FDATA>::Size() const
+	template <typename DataType>
+	int ThreadSafeQueue<DataType>::Size() const
 	{
 		return m_queue.size();
 	}
 
-	template <typename FDATA>
-	FDATA &ThreadSafeQueue<FDATA>::Front()
+	template <typename DataType>
+	DataType &ThreadSafeQueue<DataType>::Front()
 	{
 		LockObj lock(m_queueLock);
 		if(m_queue.empty())
@@ -232,8 +232,8 @@ namespace epl
 		return m_queue.front();
 	}
 
-	template <typename FDATA>
-	FDATA &ThreadSafeQueue<FDATA>::Back()
+	template <typename DataType>
+	DataType &ThreadSafeQueue<DataType>::Back()
 	{
 		LockObj lock(m_queueLock);
 		if(m_queue.empty())
@@ -243,18 +243,18 @@ namespace epl
 		return m_queue.back();
 	}
 
-	template <typename FDATA>
-	void ThreadSafeQueue<FDATA>::Push(FDATA const & data)
+	template <typename DataType>
+	void ThreadSafeQueue<DataType>::Push(DataType const & data)
 	{
 		LockObj lock(m_queueLock);
 		m_queue.push_back(data);
 	}
 
-	template <typename FDATA>
-	bool ThreadSafeQueue<FDATA>::Erase(FDATA const &data)
+	template <typename DataType>
+	bool ThreadSafeQueue<DataType>::Erase(DataType const &data)
 	{
 		LockObj lock(m_queueLock);
-		std::vector<FDATA>::iterator iter;
+		std::vector<DataType>::iterator iter;
 		for(iter=m_queue.begin();iter!=m_queue.end();iter++)
 		{
 			if(*iter==data)
@@ -266,8 +266,8 @@ namespace epl
 		return false;
 	}
 
-	template <typename FDATA>
-	void ThreadSafeQueue<FDATA>::Pop()
+	template <typename DataType>
+	void ThreadSafeQueue<DataType>::Pop()
 	{
 		LockObj lock(m_queueLock);
 		if(m_queue.empty())
@@ -277,8 +277,8 @@ namespace epl
 		m_queue.erase(m_queue.begin());
 	}
 
-	template <typename FDATA>
-	ThreadSafeQueue<FDATA> & ThreadSafeQueue<FDATA>::operator=(const ThreadSafeQueue& b)
+	template <typename DataType>
+	ThreadSafeQueue<DataType> & ThreadSafeQueue<DataType>::operator=(const ThreadSafeQueue& b)
 	{
 		if(this != &b)
 		{

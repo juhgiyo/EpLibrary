@@ -42,7 +42,7 @@ namespace epl
 	@class DynamicArray epDynamicArray.h
 	@brief A template class for Dynamic Array.
 	*/
-	template <typename FDATA>
+	template <typename DataType>
 	class DynamicArray
 	{
 	public:
@@ -60,7 +60,7 @@ namespace epl
 		Initializes the Dynamic Array with given array
 		@param[in] dArr the Dynamic Array Object to copy from
 		*/
-		DynamicArray(const DynamicArray<FDATA> &dArr);
+		DynamicArray(const DynamicArray<DataType> &dArr);
 
 		/*!
 		Default Destructor
@@ -104,63 +104,64 @@ namespace epl
 		@param[in] idx The index to return the element.
 		@return the element at the given index.
 		*/
-		FDATA &At(unsigned int idx);
+		DataType &At(unsigned int idx);
 
 		/*!
 		Append the element given to the dynamic array given.
 		@param[in] data The data to append at the end.
 		@return the result dynamic array
 		*/
-		DynamicArray<FDATA> &Append(const FDATA &data);
+		DynamicArray<DataType> &Append(const DataType &data);
 
 		/*!
 		Append the given dynamic array to the this dynamic array.
 		@param[in] dArr The dynamic array structure to append.
 		@return the result dynamic array
 		*/
-		DynamicArray<FDATA> &Append(const DynamicArray<FDATA> &dArr);
+		DynamicArray<DataType> &Append(const DynamicArray<DataType> &dArr);
 
 		/*!
 		Initialize this array to given array
 		@param[in] b the dynamic array structure to initialize this array
 		@return the result dynamic array
 		*/
-		DynamicArray<FDATA> &operator=(const DynamicArray<FDATA>& b);
+		DynamicArray<DataType> &operator=(const DynamicArray<DataType>& b);
 
 		/*!
 		Return the element at the given index of the given array.
 		@param[in] idx The index to return the element.
 		@return the element at the given index.
 		*/
-		FDATA& operator[](unsigned int idx);
+		DataType& operator[](unsigned int idx);
+
 
 		/*!
 		Append the given dynamic array to the this dynamic array.
 		@param[in] b The dynamic array structure to append.
 		@return the result dynamic array
 		*/
-		DynamicArray<FDATA>& operator+=(const DynamicArray<FDATA>& b);
+		DynamicArray<DataType>& operator+=(const DynamicArray<DataType>& b);
 
 		/*!
 		Return new array by appending the given dynamic array to the this dynamic array.
 		@param[in] b The dynamic array structure to append.
 		@return the new result dynamic array
 		*/
-		DynamicArray<FDATA> operator+(const DynamicArray<FDATA>& b) const;
+		DynamicArray<DataType> operator+(const DynamicArray<DataType>& b) const;
 
 		/*!
 		Append the given element to the this dynamic array.
 		@param[in] b The element to append.
 		@return the result dynamic array
 		*/
-		DynamicArray<FDATA>& operator+=(const FDATA& b);
+		DynamicArray<DataType>& operator+=(const DataType& b);
 
 		/*!
 		Return new array by appending the given element to the this dynamic array.
 		@param[in] b The element to append.
 		@return the new result dynamic array
 		*/
-		DynamicArray<FDATA> operator+(const FDATA& b) const;
+		DynamicArray<DataType> operator+(const DataType& b) const;
 	private:
 		/*!
 		Actual resize the given array to given size.
@@ -173,14 +174,14 @@ namespace epl
 		@param[in] data The data to append at the end.
 		@return the result dynamic array
 		*/
-		DynamicArray<FDATA> &append(const FDATA &data);
+		DynamicArray<DataType> &append(const DataType &data);
 
 		/*!
 		Actual append the given dynamic array to the this dynamic array.
 		@param[in] dArr The dynamic array structure to append.
 		@return the result dynamic array
 		*/
-		DynamicArray<FDATA> &append(const DynamicArray<FDATA> &dArr);
+		DynamicArray<DataType> &append(const DynamicArray<DataType> &dArr);
 
 		/*!
 		Actual delete the given array.
@@ -189,7 +190,7 @@ namespace epl
 		void deleteArr();
 
 		/// the actual dynamic array
-		FDATA *m_head;
+		DataType *m_head;
 		/// the actual array size
 		unsigned int m_actualSize;
 		/// number of element
@@ -201,8 +202,8 @@ namespace epl
 
 	};
 
-	template <typename FDATA>
-	DynamicArray<FDATA>::DynamicArray(LockPolicy lockPolicyType)
+	template <typename DataType>
+	DynamicArray<DataType>::DynamicArray(LockPolicy lockPolicyType)
 	{
 		m_head=NULL;
 		m_actualSize=0;
@@ -224,18 +225,18 @@ namespace epl
 			break;
 		}
 	}
-	template <typename FDATA>
-	DynamicArray<FDATA>::DynamicArray(const DynamicArray<FDATA> &dArr)
+	template <typename DataType>
+	DynamicArray<DataType>::DynamicArray(const DynamicArray<DataType> &dArr)
 	{
 		m_lockPolicy=dArr.m_lockPolicy;
 		m_actualSize=dArr.m_actualSize;
 		m_numOfElements=dArr.m_numOfElements;
 		if(m_actualSize)
-			m_head=reinterpret_cast<FDATA*>(EP_Malloc(sizeof(FDATA)*m_actualSize));
+			m_head=reinterpret_cast<DataType*>(EP_Malloc(sizeof(DataType)*m_actualSize));
 		else
 			m_head=NULL;
 		EP_VERIFY_BAD_ALLOC(m_head);
-		System::Memcpy(m_head,sizeof(FDATA)*m_actualSize,dArr.m_head,sizeof(FDATA)*m_actualSize);
+		System::Memcpy(m_head,sizeof(DataType)*m_actualSize,dArr.m_head,sizeof(DataType)*m_actualSize);
 		switch(m_lockPolicy)
 		{
 		case LOCK_POLICY_CRITICALSECTION:
@@ -253,24 +254,26 @@ namespace epl
 		}
 	}
 
-	template <typename FDATA>
-	DynamicArray<FDATA>::~DynamicArray()
+	template <typename DataType>
+	DynamicArray<DataType>::~DynamicArray()
 	{
+		m_lock->Lock();
 		if(m_head)
 			EP_Free(m_head);
+		m_lock->Unlock();
 		if(m_lock)
 			EP_DELETE m_lock;
 	}
 
-	template <typename FDATA>
-	void DynamicArray<FDATA>::Delete()
+	template <typename DataType>
+	void DynamicArray<DataType>::Delete()
 	{
 		LockObj lock(m_lock);
 		deleteArr();
 	}
 
-	template <typename FDATA>
-	void DynamicArray<FDATA>::deleteArr()
+	template <typename DataType>
+	void DynamicArray<DataType>::deleteArr()
 	{
 		if(m_head)
 			EP_Free(m_head);
@@ -279,16 +282,16 @@ namespace epl
 		m_numOfElements=0;
 	}
 
-	template <typename FDATA>
-	void DynamicArray<FDATA>::Clear()
+	template <typename DataType>
+	void DynamicArray<DataType>::Clear()
 	{
 		LockObj lock(m_lock);
-		System::Memset(m_head,0,sizeof(FDATA)*m_actualSize);
+		System::Memset(m_head,0,sizeof(DataType)*m_actualSize);
 		m_numOfElements=0;
 	}
 
-	template <typename FDATA>
-	bool DynamicArray<FDATA>::IsEmpty() const
+	template <typename DataType>
+	bool DynamicArray<DataType>::IsEmpty() const
 	{
 		LockObj lock(m_lock);
 		if(m_numOfElements)
@@ -296,43 +299,43 @@ namespace epl
 		return false;
 	}
 
-	template <typename FDATA>
-	unsigned int DynamicArray<FDATA>::Size() const
+	template <typename DataType>
+	unsigned int DynamicArray<DataType>::Size() const
 	{
 		LockObj lock(m_lock);
 		return m_numOfElements;
 	}
 
-	template <typename FDATA>
-	bool DynamicArray<FDATA>::Resize(unsigned int newSize)
+	template <typename DataType>
+	bool DynamicArray<DataType>::Resize(unsigned int newSize)
 	{
 		LockObj lock(m_lock);
 		return resize(newSize);
 	}
 
-	template <typename FDATA>
-	bool DynamicArray<FDATA>::resize(unsigned int newSize)
+	template <typename DataType>
+	bool DynamicArray<DataType>::resize(unsigned int newSize)
 	{
 		if(m_actualSize>=newSize)
 			return false;
 		if(m_head)
 		{
-			m_head=reinterpret_cast<FDATA*>(EP_Realloc(m_head,newSize*sizeof(FDATA)));
-			System::Memset(m_head+m_actualSize,0,(newSize-m_actualSize)*sizeof(FDATA));
+			m_head=reinterpret_cast<DataType*>(EP_Realloc(m_head,newSize*sizeof(DataType)));
+			System::Memset(m_head+m_actualSize,0,(newSize-m_actualSize)*sizeof(DataType));
 			m_actualSize=newSize;
 		}
 		else
 		{
-			m_head=reinterpret_cast<FDATA*>(EP_Malloc(newSize*sizeof(FDATA)));
-			System::Memset(m_head,0,newSize*sizeof(FDATA));
+			m_head=reinterpret_cast<DataType*>(EP_Malloc(newSize*sizeof(DataType)));
+			System::Memset(m_head,0,newSize*sizeof(DataType));
 			m_actualSize=newSize;
 		}
 		EP_VERIFY_BAD_ALLOC(m_head);
 		return true;
 	}
 
-	template <typename FDATA>
-	FDATA &DynamicArray<FDATA>::At(unsigned int idx)
+	template <typename DataType>
+	DataType &DynamicArray<DataType>::At(unsigned int idx)
 	{
 		LockObj lock(m_lock);
 		if(m_numOfElements<=idx)
@@ -344,22 +347,22 @@ namespace epl
 	}
 
 
-	template <typename FDATA>
-	DynamicArray<FDATA> &DynamicArray<FDATA>::Append(const FDATA &data)
+	template <typename DataType>
+	DynamicArray<DataType> &DynamicArray<DataType>::Append(const DataType &data)
 	{
 		LockObj lock(m_lock);
 		append(data);
 	}
 
-	template <typename FDATA>
-	DynamicArray<FDATA> &DynamicArray<FDATA>::Append(const DynamicArray<FDATA> &dArr)
+	template <typename DataType>
+	DynamicArray<DataType> &DynamicArray<DataType>::Append(const DynamicArray<DataType> &dArr)
 	{
 		LockObj lock(m_lock);
 		return append(dArr);
 	}
 
-	template <typename FDATA>
-	DynamicArray<FDATA> &DynamicArray<FDATA>::append(const FDATA &data)
+	template <typename DataType>
+	DynamicArray<DataType> &DynamicArray<DataType>::append(const DataType &data)
 	{
 		if(m_actualSize<m_numOfElements+1)
 		{
@@ -369,21 +372,21 @@ namespace epl
 		m_numOfElements++;
 	}
 
-	template <typename FDATA>
-	DynamicArray<FDATA> &DynamicArray<FDATA>::append(const DynamicArray<FDATA> &dArr)
+	template <typename DataType>
+	DynamicArray<DataType> &DynamicArray<DataType>::append(const DynamicArray<DataType> &dArr)
 	{
 		if(m_actualSize < m_numOfElements+dArr.m_numOfElements)
 		{
 			resize(m_numOfElements+dArr.m_numOfElements);
 		}
 		if(m_head && dArr.m_head && dArr.m_actualSize)
-			System::Memcpy(m_head+m_numOfElements,dArr.m_numOfElements*sizeof(FDATA),dArr.m_head,dArr.m_numOfElements*sizeof(FDATA));
+			System::Memcpy(m_head+m_numOfElements,dArr.m_numOfElements*sizeof(DataType),dArr.m_head,dArr.m_numOfElements*sizeof(DataType));
 		m_numOfElements+=dArr.m_numOfElements;
 		return *this;
 	}
 
-	template <typename FDATA>
-	DynamicArray<FDATA> &DynamicArray<FDATA>::operator=(const DynamicArray<FDATA>& b)
+	template <typename DataType>
+	DynamicArray<DataType> &DynamicArray<DataType>::operator=(const DynamicArray<DataType>& b)
 	{
 		if(this != &b)
 		{
@@ -393,45 +396,46 @@ namespace epl
 			m_numOfElements=b.m_numOfElements;
 			resize(m_actualSize);
 			if(m_head&&b.m_head && b.m_actualSize)
-				System::Memcpy(m_head,b.m_numOfElements*sizeof(FDATA),b.m_head,b.m_numOfElements*sizeof(FDATA));
+				System::Memcpy(m_head,b.m_numOfElements*sizeof(DataType),b.m_head,b.m_numOfElements*sizeof(DataType));
 
 		}
 		return *this;
 	}
 
-	template <typename FDATA>
-	FDATA& DynamicArray<FDATA>::operator[](unsigned int idx)
+	template <typename DataType>
+	DataType& DynamicArray<DataType>::operator[](unsigned int idx)
 	{
 		return At(idx);
 	}
 
-	template <typename FDATA>
-	DynamicArray<FDATA>& DynamicArray<FDATA>::operator+=(const DynamicArray<FDATA>& b)
+	
+	template <typename DataType>
+	DynamicArray<DataType>& DynamicArray<DataType>::operator+=(const DynamicArray<DataType>& b)
 	{
 		LockObj lock(m_lock);
 		return append(b);
 	}
 
-	template <typename FDATA>
-	DynamicArray<FDATA> DynamicArray<FDATA>::operator+(const DynamicArray<FDATA>& b) const
+	template <typename DataType>
+	DynamicArray<DataType> DynamicArray<DataType>::operator+(const DynamicArray<DataType>& b) const
 	{
-		DynamicArray<FDATA> retArr;
+		DynamicArray<DataType> retArr;
 		retArr.Append(*this);
 		retArr.Append(b);
 		return retArr;
 	}
 
-	template <typename FDATA>
-	DynamicArray<FDATA>& DynamicArray<FDATA>::operator+=(const FDATA& b)
+	template <typename DataType>
+	DynamicArray<DataType>& DynamicArray<DataType>::operator+=(const DataType& b)
 	{
 		LockObj lock(m_lock);
 		return append(b);
 	}
 
-	template <typename FDATA>
-	DynamicArray<FDATA> DynamicArray<FDATA>::operator+(const FDATA& b) const
+	template <typename DataType>
+	DynamicArray<DataType> DynamicArray<DataType>::operator+(const DataType& b) const
 	{
-		DynamicArray<FDATA> retArr;
+		DynamicArray<DataType> retArr;
 		retArr.Append(*this);
 		retArr.Append(b);
 		return retArr;				

@@ -103,6 +103,14 @@ namespace epl{
 		bool GetProperty(const TCHAR * key,EpTString &retVal) const;
 
 		/*!
+		Get the value of the property with the given key
+		@param[in] key the key of the property to get the value
+		@remark raises exception when key does not exists 
+		@return the value of the property of given key
+		*/
+		EpTString &GetProperty(const TCHAR * key);
+
+		/*!
 		Add new property with the given key and value
 		@param[in] key the key of the property to add
 		@param[in] val the value of the new property
@@ -155,7 +163,7 @@ namespace epl{
 		bool getValueKeyFromLine(EpTString buf, EpTString &retKey, EpTString &retVal);
 
 		/// The list of the properties
-		vector<pair<EpTString,EpTString> > m_propertyList;
+		vector<Pair<EpTString,EpTString> > m_propertyList;
 	};
 }
 

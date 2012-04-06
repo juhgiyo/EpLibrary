@@ -646,6 +646,10 @@
 					RelativePath=".\Headers\epKAryHeap.h"
 					>
 				</File>
+				<File
+					RelativePath=".\Headers\epPatriciaTree.h"
+					>
+				</File>
 				<Filter
 					Name="Stream"
 					>

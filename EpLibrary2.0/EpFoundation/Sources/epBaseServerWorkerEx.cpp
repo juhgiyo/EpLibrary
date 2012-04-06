@@ -61,12 +61,14 @@ BaseServerWorkerEx::BaseServerWorkerEx(const BaseServerWorkerEx& b) : Thread(b),
 
 BaseServerWorkerEx::~BaseServerWorkerEx()
 {
+	m_sendLock->Lock();
 	int iResult;
 	iResult = shutdown(m_clientSocket, SD_SEND);
 	if (iResult == SOCKET_ERROR) {
 		LOG_THIS_MSG(_T("shutdown failed with error\n"));
 		closesocket(m_clientSocket);
 	}
+	m_sendLock->Unlock();
 	EP_DELETE m_sendLock;
 }
 

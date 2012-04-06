@@ -39,8 +39,8 @@ namespace epl
 	@class ThreadSafePQueue epThreadSafePQueue.h
 	@brief A class for Thread Safe Priority Queue.
 	*/
-	template <typename FDATA, typename Compare=CompClass<FDATA> >
-	class ThreadSafePQueue:public ThreadSafeQueue<FDATA>
+	template <typename DataType, typename Compare=CompClass<DataType> >
+	class ThreadSafePQueue:public ThreadSafeQueue<DataType>
 	{
 	public:
 		/*!
@@ -79,25 +79,25 @@ namespace epl
 		Insert the new item into the priority queue.
 		@param[in] data The inserting data.
 		*/
-		virtual void Push(FDATA const &data);
+		virtual void Push(DataType const &data);
 
 	};
 
-	template <typename FDATA, typename Compare>
-	ThreadSafePQueue<FDATA,Compare>::ThreadSafePQueue(LockPolicy lockPolicyType) :ThreadSafeQueue<FDATA>(lockPolicyType)
+	template <typename DataType, typename Compare>
+	ThreadSafePQueue<DataType,Compare>::ThreadSafePQueue(LockPolicy lockPolicyType) :ThreadSafeQueue<DataType>(lockPolicyType)
 	{
 	}
-	template <typename FDATA, typename Compare>
-	ThreadSafePQueue<FDATA,Compare>::ThreadSafePQueue(const ThreadSafePQueue& b):ThreadSafeQueue<FDATA>(b)
+	template <typename DataType, typename Compare>
+	ThreadSafePQueue<DataType,Compare>::ThreadSafePQueue(const ThreadSafePQueue& b):ThreadSafeQueue<DataType>(b)
 	{
 	}
-	template <typename FDATA, typename Compare>
-	ThreadSafePQueue<FDATA,Compare>::~ThreadSafePQueue()
+	template <typename DataType, typename Compare>
+	ThreadSafePQueue<DataType,Compare>::~ThreadSafePQueue()
 	{
 	}
 	
-	template <typename FDATA, typename Compare>
-	ThreadSafePQueue<FDATA,Compare> & ThreadSafePQueue<FDATA,Compare>::operator=(const ThreadSafePQueue&b)
+	template <typename DataType, typename Compare>
+	ThreadSafePQueue<DataType,Compare> & ThreadSafePQueue<DataType,Compare>::operator=(const ThreadSafePQueue&b)
 	{
 		if(this != &b)
 		{
@@ -106,11 +106,11 @@ namespace epl
 		return *this;
 	}
 
-	template <typename FDATA, typename Compare>
-	void ThreadSafePQueue<FDATA,Compare>::Push(FDATA const & data)
+	template <typename DataType, typename Compare>
+	void ThreadSafePQueue<DataType,Compare>::Push(DataType const & data)
 	{
 		LockObj lock(m_queueLock);
-		FDATA* retVal=NULL;
+		DataType* retVal=NULL;
 		if(m_queue.size())
 		{
 			int retIdx;

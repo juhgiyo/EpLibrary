@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "epPropertiesFile.h"
-
+#include "epException.h"
 using namespace epl;
 
 PropertiesFile::PropertiesFile(FileEncodingType encodingType, LockPolicy lockPolicyType):BaseFile(encodingType,lockPolicyType)
@@ -37,7 +37,7 @@ bool PropertiesFile::SetProperty(const TCHAR *  key, const TCHAR * val)
 	LockObj lock(m_lock);
 	EpTString opKey=key;
 	opKey.append(_T("="));
-	vector<pair<EpTString, EpTString> >::iterator iter;
+	vector<Pair<EpTString, EpTString> >::iterator iter;
 	for(iter=m_propertyList.begin();iter != m_propertyList.end();iter++)
 	{
 		if(iter->first.compare(opKey)==0)
@@ -54,7 +54,7 @@ bool PropertiesFile::GetProperty(const TCHAR * key,EpTString &retVal) const
 	LockObj lock(m_lock);
 	EpTString opKey=key;
 	opKey.append(_T("="));
-	vector<pair<EpTString, EpTString> >::const_iterator iter;
+	vector<Pair<EpTString, EpTString> >::const_iterator iter;
 	for(iter=m_propertyList.begin();iter != m_propertyList.end();iter++)
 	{
 		if(iter->first.compare(opKey)==0)
@@ -66,12 +66,28 @@ bool PropertiesFile::GetProperty(const TCHAR * key,EpTString &retVal) const
 	return false;
 }
 
+EpTString &PropertiesFile::GetProperty(const TCHAR * key)
+{
+	LockObj lock(m_lock);
+	EpTString opKey=key;
+	opKey.append(_T("="));
+	vector<Pair<EpTString, EpTString> >::iterator iter;
+	for(iter=m_propertyList.begin();iter != m_propertyList.end();iter++)
+	{
+		if(iter->first.compare(opKey)==0)
+		{
+			return iter->second;
+		}
+	}
+	EP_VERIFY_OUT_OF_RANGE_W_MSG(0,"Given key does not exists in the list.");
+}
+
 bool PropertiesFile::AddProperty(const TCHAR * key, const TCHAR * val)
 {
 	LockObj lock(m_lock);
 	EpTString opKey=key;
 	opKey.append(_T("="));
-	vector<pair<EpTString, EpTString> >::iterator iter;
+	vector<Pair<EpTString, EpTString> >::iterator iter;
 	for(iter=m_propertyList.begin();iter != m_propertyList.end();iter++)
 	{
 		if(iter->first.compare(opKey)==0)
@@ -79,7 +95,7 @@ bool PropertiesFile::AddProperty(const TCHAR * key, const TCHAR * val)
 			return false;
 		}
 	}
-	pair<EpTString,EpTString> insertPair;
+	Pair<EpTString,EpTString> insertPair;
 	insertPair.first=key;
 	insertPair.second=val;
 	m_propertyList.push_back(insertPair);
@@ -91,7 +107,7 @@ bool PropertiesFile::RemoveProperty(const TCHAR * key)
 	LockObj lock(m_lock);
 	EpTString opKey=key;
 	opKey.append(_T("="));
-	vector<pair<EpTString, EpTString> >::iterator iter;
+	vector<Pair<EpTString, EpTString> >::iterator iter;
 	for(iter=m_propertyList.begin();iter != m_propertyList.end();iter++)
 	{
 		if(iter->first.compare(opKey)==0)
@@ -110,7 +126,7 @@ void PropertiesFile::Clear()
 }
 void PropertiesFile::writeLoop()
 {
-	vector<pair<EpTString,EpTString> >::iterator iter;
+	vector<Pair<EpTString,EpTString> >::iterator iter;
 	EpTString toFileString;
 	for(iter=m_propertyList.begin();iter!=m_propertyList.end();iter++)
 	{
@@ -128,7 +144,7 @@ EpTString& PropertiesFile::operator [](const TCHAR * key)
 	LockObj lock(m_lock);
 	EpTString opKey=key;
 	opKey.append(_T("="));
-	vector<pair<EpTString, EpTString> >::iterator iter;
+	vector<Pair<EpTString, EpTString> >::iterator iter;
 	for(iter=m_propertyList.begin();iter != m_propertyList.end();iter++)
 	{
 		if(iter->first.compare(opKey)==0)
@@ -136,7 +152,7 @@ EpTString& PropertiesFile::operator [](const TCHAR * key)
 			return iter->second;
 		}
 	}
-	pair<EpTString,EpTString> insertPair;
+	Pair<EpTString,EpTString> insertPair;
 	insertPair.first=key;
 	insertPair.second=_T("");
 	m_propertyList.push_back(insertPair);
@@ -151,14 +167,14 @@ void PropertiesFile::loadFromFile(EpTString rest)
 		EpTString val;
 		if(getValueKeyFromLine(line,key,val))
 		{
-			pair<EpTString,EpTString> inputPair;
+			Pair<EpTString,EpTString> inputPair;
 			inputPair.first=key;
 			inputPair.second=val;
 			m_propertyList.push_back(inputPair);
 		}
 		else
 		{
-			pair<EpTString,EpTString> inputPair;
+			Pair<EpTString,EpTString> inputPair;
 			inputPair.first=line;
 			inputPair.second=_T("");
 			m_propertyList.push_back(inputPair);

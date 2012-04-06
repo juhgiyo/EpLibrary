@@ -127,11 +127,13 @@ Packet & Packet::operator=(const Packet&b)
 
 Packet::~Packet()
 {
+	m_lock->Lock();
 	if(m_isAllocated && m_packet)
 	{
 		EP_DELETE[] m_packet;
 	}
 	m_packet=NULL;
+	m_lock->Unlock();
 	if(m_lock)
 		EP_DELETE m_lock;
 }
