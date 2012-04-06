@@ -62,46 +62,49 @@ namespace epl
 	template<typename T>
 	inline T* subMergeSort(T *sortList, int listSize, T* workSpace,CompResultType (__cdecl *SortFunc)(const void * , const void *))
 	{
-		if(listSize==1)
-			return sortList;
-		int leftSize= listSize/2;
-		int rightSize= listSize-leftSize;
-		T* leftSortedList= subMergeSort<T>(sortList,leftSize,workSpace,SortFunc);
-		T* rightSortedList=subMergeSort<T>(sortList+leftSize, rightSize, workSpace,SortFunc);
-		int trav;
-		for(trav=0;trav<listSize;trav++)
+		if(listSize!=1)
 		{
-			if(leftSize==0)
+			int leftSize= listSize/2;
+			int rightSize= listSize-leftSize;
+			T* leftSortedList= subMergeSort<T>(sortList,leftSize,workSpace,SortFunc);
+
+			T* rightSortedList=subMergeSort<T>(sortList+leftSize, rightSize, workSpace,SortFunc);
+
+			int trav;
+			for(trav=0;trav<listSize;trav++)
 			{
-				workSpace[trav]=rightSortedList[0];
-				rightSortedList++;
-				rightSize--;
-			}
-			else if(rightSize==0)
-			{
-				workSpace[trav]=leftSortedList[0];
-				leftSortedList++;
-				leftSize--;			
-			}
-			else
-			{
-				if(SortFunc(&leftSortedList[0],&rightSortedList[0])<COMP_RESULT_EQUAL)
-				{
-					workSpace[trav]=leftSortedList[0];
-					leftSortedList++;
-					leftSize--;
-				}
-				else
+				if(leftSize==0)
 				{
 					workSpace[trav]=rightSortedList[0];
 					rightSortedList++;
 					rightSize--;
 				}
+				else if(rightSize==0)
+				{
+					workSpace[trav]=leftSortedList[0];
+					leftSortedList++;
+					leftSize--;			
+				}
+				else
+				{
+					if(SortFunc(&leftSortedList[0],&rightSortedList[0])<COMP_RESULT_EQUAL)
+					{
+						workSpace[trav]=leftSortedList[0];
+						leftSortedList++;
+						leftSize--;
+					}
+					else
+					{
+						workSpace[trav]=rightSortedList[0];
+						rightSortedList++;
+						rightSize--;
+					}
+				}
 			}
-		}
-		for(trav=0;trav<listSize;trav++)
-		{
-			sortList[trav]=workSpace[trav];
+			for(trav=0;trav<listSize;trav++)
+			{
+				sortList[trav]=workSpace[trav];
+			}
 		}
 		return sortList;
 

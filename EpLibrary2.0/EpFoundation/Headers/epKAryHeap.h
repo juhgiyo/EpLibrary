@@ -667,37 +667,32 @@ namespace epl
 		{
 			Pair<KeyType,DataType> *pair=m_heap[rootIdx];
 
-			if(KeyCompareFunc(&(pair->first) ,&(key))==COMP_RESULT_GREATERTHAN)
-			{
-				return -1;
-			}
-			else if(KeyCompareFunc(&(pair->first), &(key))==COMP_RESULT_EQUAL)
+
+			if(KeyCompareFunc(&(pair->first), &(key))==COMP_RESULT_EQUAL)
 			{	
 				return rootIdx;
 			}
 
-			int trav;
-			for(trav=1; trav<=k; trav++)
+			if(KeyCompareFunc(&(pair->first) ,&(key))!=COMP_RESULT_GREATERTHAN)
 			{
-				if(rootIdx*k+trav<m_heapSize)
+
+				int trav;
+				for(trav=1; trav<=k; trav++)
 				{
-					int retIdx = findIndex(key,rootIdx*k+trav);
-					if(retIdx!=-1)
+					if(rootIdx*k+trav<m_heapSize)
 					{
-						return retIdx;
+						int retIdx = findIndex(key,rootIdx*k+trav);
+						if(retIdx!=-1)
+						{
+							return retIdx;
+						}
 					}
+					else
+						break;
 				}
-				else
-					return -1;
 			}
-			return -1;
-
-
 		}
-		else
-		{
-			return -1;
-		}
+		return -1;
 	}
 
 	template <typename KeyType,typename DataType,unsigned int k, CompResultType (*KeyCompareFunc)(const void *,const void *) >  
