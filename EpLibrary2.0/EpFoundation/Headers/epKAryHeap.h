@@ -121,14 +121,14 @@ namespace epl
 		@param[out] retData the data with the minimum key of the heap
 		@return true if succeeded otherwise false
 		*/
-		bool Front(KeyType &retKey, DataType &retData );
+		bool Front(KeyType &retKey, DataType &retData ) const;
 
 		/*!
 		Return the minimum of heap
 		@remark raises the exception when heap is empty.
 		@return the minimum pair with key and data of heap
 		*/
-		Pair<KeyType,DataType> Front();
+		Pair<KeyType,DataType> Front() const;
 
 		/*!
 		Get the data of the node with given key.
@@ -136,7 +136,7 @@ namespace epl
 		@param[out] retData The data of the node with given key.
 		@return true if succeeded otherwise false.
 		*/
-		bool GetData(const KeyType &key,DataType &retData);
+		bool GetData(const KeyType &key,DataType &retData) const;
 		
 		/*!
 		Get the data of the node with given key.
@@ -145,6 +145,14 @@ namespace epl
 		@return data of the node with given key
 		*/
 		DataType &GetData(const KeyType &key);
+
+		/*!
+		Get the data of the node with given key.
+		@param[in] key The index of the node to get the data.
+		@remark raises the exception when key does not exist.
+		@return data of the node with given key
+		*/
+		const DataType &GetData(const KeyType &key) const;
 
 
 		/*!
@@ -412,12 +420,19 @@ namespace epl
 		int idx=findIndex(key, 0);
 		EP_VERIFY_OUT_OF_RANGE_W_MSG(idx>=0,"The given key does not exist in the heap");
 		return m_heap[idx]->second;
-		
+	}
 
+	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *)>  
+	const DataType &KAryHeap<KeyType,DataType,k,KeyCompareFunc>::GetData(const KeyType &key) const
+	{
+		LockObj lock(m_lock);
+		int idx=findIndex(key, 0);
+		EP_VERIFY_OUT_OF_RANGE_W_MSG(idx>=0,"The given key does not exist in the heap");
+		return m_heap[idx]->second;
 	}
 	
 	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *)>  
-	bool KAryHeap<KeyType,DataType,k,KeyCompareFunc>::GetData(const KeyType &key,DataType &retData)
+	bool KAryHeap<KeyType,DataType,k,KeyCompareFunc>::GetData(const KeyType &key,DataType &retData) const
 	{
 		LockObj lock(m_lock);
 		int idx=findIndex(key, 0);
@@ -445,7 +460,7 @@ namespace epl
 	}
 
 	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
-	bool KAryHeap<KeyType,DataType,k,KeyCompareFunc>::Front( KeyType &retKey, DataType &retData )
+	bool KAryHeap<KeyType,DataType,k,KeyCompareFunc>::Front( KeyType &retKey, DataType &retData ) const
 	{		
 		LockObj lock(m_lock);
 		if(m_heapSize>0)
@@ -459,7 +474,7 @@ namespace epl
 
 
 	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *)>  
-	Pair<KeyType,DataType> KAryHeap<KeyType,DataType,k,KeyCompareFunc>::Front()
+	Pair<KeyType,DataType> KAryHeap<KeyType,DataType,k,KeyCompareFunc>::Front() const
 	{
 		LockObj lock(m_lock);
 		EP_VERIFY_OUT_OF_RANGE_W_MSG(m_heapSize>0,"The heap is empty.");

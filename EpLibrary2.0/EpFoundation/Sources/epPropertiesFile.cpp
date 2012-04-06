@@ -82,6 +82,22 @@ EpTString &PropertiesFile::GetProperty(const TCHAR * key)
 	EP_VERIFY_OUT_OF_RANGE_W_MSG(0,"Given key does not exists in the list.");
 }
 
+const EpTString &PropertiesFile::GetProperty(const TCHAR * key) const
+{
+	LockObj lock(m_lock);
+	EpTString opKey=key;
+	opKey.append(_T("="));
+	vector<Pair<EpTString, EpTString> >::const_iterator iter;
+	for(iter=m_propertyList.begin();iter != m_propertyList.end();iter++)
+	{
+		if(iter->first.compare(opKey)==0)
+		{
+			return iter->second;
+		}
+	}
+	EP_VERIFY_OUT_OF_RANGE_W_MSG(0,"Given key does not exists in the list.");
+}
+
 bool PropertiesFile::AddProperty(const TCHAR * key, const TCHAR * val)
 {
 	LockObj lock(m_lock);
@@ -157,6 +173,22 @@ EpTString& PropertiesFile::operator [](const TCHAR * key)
 	insertPair.second=_T("");
 	m_propertyList.push_back(insertPair);
 	return m_propertyList.at(m_propertyList.size()-1).second;
+}
+
+const EpTString& PropertiesFile::operator [](const TCHAR * key) const
+{
+	LockObj lock(m_lock);
+	EpTString opKey=key;
+	opKey.append(_T("="));
+	vector<Pair<EpTString, EpTString> >::const_iterator iter;
+	for(iter=m_propertyList.begin();iter != m_propertyList.end();iter++)
+	{
+		if(iter->first.compare(opKey)==0)
+		{
+			return iter->second;
+		}
+	}
+	EP_VERIFY_OUT_OF_RANGE(0);
 }
 void PropertiesFile::loadFromFile(EpTString rest)
 {

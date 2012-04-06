@@ -111,6 +111,14 @@ namespace epl{
 		EpTString &GetProperty(const TCHAR * key);
 
 		/*!
+		Get the value of the property with the given key
+		@param[in] key the key of the property to get the value
+		@remark raises exception when key does not exists 
+		@return the value of the property of given key
+		*/
+		const EpTString &GetProperty(const TCHAR * key) const;
+
+		/*!
 		Add new property with the given key and value
 		@param[in] key the key of the property to add
 		@param[in] val the value of the new property
@@ -138,6 +146,14 @@ namespace epl{
 		@return value of the given key.
 		*/
 		EpTString& operator [](const TCHAR * key);
+
+		/*!
+		If given key exists, then return the value, and
+		return the reference to empty value.
+		@param[in] key the key of the property to find/create
+		@return value of the given key.
+		*/
+		const EpTString& operator [](const TCHAR * key) const;
 
 	private:
 
