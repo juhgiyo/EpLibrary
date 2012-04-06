@@ -31,7 +31,8 @@ An Interface for Quick Sort Algorithm Function.
 #define __EP_QUICK_SORT_H__
 #include "epFoundationLib.h"
 #include "epInsertionSort.h"
-
+#include <stack>
+using namespace std;
 
 namespace epl
 {
@@ -60,7 +61,7 @@ namespace epl
 	{
 		if(mode==QSORT_MODE_STL)
 		{
-			qsort(sortList,listSize,sizeof(T),SortFunc);
+			qsort(sortList,listSize,sizeof(T),(int (__cdecl *)(const void *,const void *))SortFunc);
 		}
 		else
 		{
@@ -99,7 +100,7 @@ namespace epl
 				subQuickSortRecursive<T>(sortList,index+1, high,SortFunc,minSize);
 			}
 		}
-		else if((high==low+1)&& SortFunc(sortList[low],sortList[high])>COMP_RESULT_EQUAL)
+		else if((high==low+1)&& SortFunc(&sortList[low],&sortList[high])>COMP_RESULT_EQUAL)
 		{
 			SwapFunc<T>(&sortList[low],&sortList[high]);
 		}
@@ -135,17 +136,17 @@ namespace epl
 	template<typename T>
 	inline int medianLocation(T* sortList, int i, int j, int k,CompResultType (__cdecl *SortFunc)(const void * , const void *))
 	{
-		if (SortFunc(sortList[i] , sortList[j])<COMP_RESULT_GREATERTHAN)
-			if (SortFunc(sortList[j] , sortList[k])<COMP_RESULT_GREATERTHAN)
+		if (SortFunc(&sortList[i] , &sortList[j])<COMP_RESULT_GREATERTHAN)
+			if (SortFunc(&sortList[j] , &sortList[k])<COMP_RESULT_GREATERTHAN)
 				return j;
-			else if (SortFunc(sortList[i] , sortList[k])<COMP_RESULT_GREATERTHAN)
+			else if (SortFunc(&sortList[i] , &sortList[k])<COMP_RESULT_GREATERTHAN)
 				return k;
 			else
 				return i;
 		else // sortList[j] < sortList[i]
-			if (SortFunc(sortList[i] , sortList[k])<COMP_RESULT_GREATERTHAN)
+			if (SortFunc(&sortList[i] , &sortList[k])<COMP_RESULT_GREATERTHAN)
 				return i;
-			else if (SortFunc(sortList[j] , sortList[k])<COMP_RESULT_GREATERTHAN)
+			else if (SortFunc(&sortList[j] , &sortList[k])<COMP_RESULT_GREATERTHAN)
 				return k;
 			else
 				return j;
@@ -165,8 +166,8 @@ namespace epl
 	{
 		while(high!=low)
 		{
-			CompResult res1=SortFunc(sortList[low],pivot);
-			CompResult res2=SortFunc(sortList[high],pivot);
+			CompResultType res1=SortFunc(&sortList[low],&pivot);
+			CompResultType res2=SortFunc(&sortList[high],&pivot);
 			if(res1<COMP_RESULT_GREATERTHAN)
 			{
 				low++;
@@ -184,7 +185,7 @@ namespace epl
 			}
 		}
 
-		if (SortFunc(sortList[low], pivot) <COMP_RESULT_EQUAL)
+		if (SortFunc(&sortList[low], &pivot) <COMP_RESULT_EQUAL)
 			return low;
 		else
 			return low-1;
@@ -193,102 +194,126 @@ namespace epl
 	/*!
 	Sub Function for Quick Sort with Loop Operation.
 	@param[in] sortList The list to sort.
-	@param[in] low the low index of the list.
-	@param[in] high the high index of the list.
+	@param[in] iLow the low index of the list.
+	@param[in] iHigh the high index of the list.
 	@param[in] SortFunc The Compare Function pointer.
 	@param[in] minSize the minimum size of the list for insertion Sort operation
 	*/
 	template<typename T>
-	inline void subQuickSortLoop(T* sortList, int low, int high,CompResultType (__cdecl *SortFunc)(const void *,const void *),int minSize)
+	inline void subQuickSortLoop(T* sortList, int iLow, int iHigh,CompResultType (__cdecl *SortFunc)(const void *,const void *),int minSize)
 	{
-		if(high>low+1)
+		struct SnapShotStruct
 		{
-			if((high-low)+1<=minSize)
+			int low;
+			int high;
+		};
+
+		stack<SnapShotStruct> snapshotStack;
+		SnapShotStruct currentSnaptshot;
+		currentSnaptshot.low=iLow;
+		currentSnaptshot.high=iHigh;
+		snapshotStack.push(currentSnaptshot);
+		while(!snapshotStack.empty())
+		{
+			currentSnaptshot=snapshotStack.top();
+			snapshotStack.pop();
+			if(currentSnaptshot.high>currentSnaptshot.low+1)
 			{
-				InsertionSort<T>(sortList,low,high,SortFunc);
-			}
-			else
-			{
-				int i=low+1;
-				int j=(low+high)/2;
-				int k=high;
-				int medLoc;
-				if (SortFunc(&sortList[i] , &sortList[j])<COMP_RESULT_GREATERTHAN)
-					if (SortFunc(&sortList[j] , &sortList[k])<COMP_RESULT_GREATERTHAN)
-						medLoc=j;
-					else if (SortFunc(&sortList[i] , &sortList[k])<COMP_RESULT_GREATERTHAN)
-						medLoc=k;
-					else
-						medLoc=i;
-				else // sortList[j] < sortList[i]
-					if (SortFunc(&sortList[i] , &sortList[k])<COMP_RESULT_GREATERTHAN)
-						medLoc=i;
-					else if (SortFunc(&sortList[j] , &sortList[k])<COMP_RESULT_GREATERTHAN)
-						medLoc=k;
-					else
-						medLoc=j;
-						
-				T tmp;
-				tmp=sortList[low];
-				sortList[low]=sortList[medLoc];
-				sortList[medLoc]=tmp;
-				
-				T &pivot=sortList[low];
-				int relHigh=high;
-				int relLow=low+1;
-				CompResultType res1=SortFunc(&sortList[relLow],&pivot);
-				CompResultType res2=SortFunc(&sortList[relHigh],&pivot);
-				while(relHigh!=relLow)
+				if((currentSnaptshot.high-currentSnaptshot.low)+1<=minSize)
 				{
-					if(res1<COMP_RESULT_GREATERTHAN)
-					{
-						relLow++;
-						res1=SortFunc(&sortList[relLow],&pivot);
-						if(res2>COMP_RESULT_LESSTHAN && relHigh>relLow)
-						{
-							relHigh--;
-							res2=SortFunc(&sortList[relHigh],&pivot);
-						}
-					}
-					else if(res2>COMP_RESULT_LESSTHAN)
-					{
-						relHigh--;
-						res2=SortFunc(&sortList[relHigh],&pivot);
-					}
-					else
-					{
-						tmp=sortList[relLow];
-						sortList[relLow]=sortList[relHigh];
-						sortList[relHigh]=tmp;
-						relLow++;
-						res1=SortFunc(&sortList[relLow],&pivot);
-						if(relHigh>relLow)
-						{
-							relHigh--;
-							res2=SortFunc(&sortList[relHigh],&pivot);
-						}
-					}
+					InsertionSort<T>(sortList,currentSnaptshot.low,currentSnaptshot.high,SortFunc);
 				}
-				int med;
-				if (SortFunc(&sortList[relLow], &pivot) < COMP_RESULT_EQUAL)
-					med= relLow;
 				else
-					med= relLow-1;
-				tmp=sortList[low];
-				sortList[low]=sortList[med];
-				sortList[med]=tmp;
-				int index = med;
-				subQuickSortLoop<T>(sortList, low, index-1,SortFunc,minSize);
-				subQuickSortLoop<T>(sortList,index+1, high,SortFunc,minSize);
+				{
+					int i=currentSnaptshot.low+1;
+					int j=(currentSnaptshot.low+currentSnaptshot.high)/2;
+					int k=currentSnaptshot.high;
+					int medLoc;
+					if (SortFunc(&sortList[i] , &sortList[j])<COMP_RESULT_GREATERTHAN)
+						if (SortFunc(&sortList[j] , &sortList[k])<COMP_RESULT_GREATERTHAN)
+							medLoc=j;
+						else if (SortFunc(&sortList[i] , &sortList[k])<COMP_RESULT_GREATERTHAN)
+							medLoc=k;
+						else
+							medLoc=i;
+					else // sortList[j] < sortList[i]
+						if (SortFunc(&sortList[i] , &sortList[k])<COMP_RESULT_GREATERTHAN)
+							medLoc=i;
+						else if (SortFunc(&sortList[j] , &sortList[k])<COMP_RESULT_GREATERTHAN)
+							medLoc=k;
+						else
+							medLoc=j;
+
+						T tmp;
+						tmp=sortList[currentSnaptshot.low];
+						sortList[currentSnaptshot.low]=sortList[medLoc];
+						sortList[medLoc]=tmp;
+
+						T &pivot=sortList[currentSnaptshot.low];
+						int relHigh=currentSnaptshot.high;
+						int relLow=currentSnaptshot.low+1;
+						CompResultType res1=SortFunc(&sortList[relLow],&pivot);
+						CompResultType res2=SortFunc(&sortList[relHigh],&pivot);
+						while(relHigh!=relLow)
+						{
+							if(res1<COMP_RESULT_GREATERTHAN)
+							{
+								relLow++;
+								res1=SortFunc(&sortList[relLow],&pivot);
+								if(res2>COMP_RESULT_LESSTHAN && relHigh>relLow)
+								{
+									relHigh--;
+									res2=SortFunc(&sortList[relHigh],&pivot);
+								}
+							}
+							else if(res2>COMP_RESULT_LESSTHAN)
+							{
+								relHigh--;
+								res2=SortFunc(&sortList[relHigh],&pivot);
+							}
+							else
+							{
+								tmp=sortList[relLow];
+								sortList[relLow]=sortList[relHigh];
+								sortList[relHigh]=tmp;
+								relLow++;
+								res1=SortFunc(&sortList[relLow],&pivot);
+								if(relHigh>relLow)
+								{
+									relHigh--;
+									res2=SortFunc(&sortList[relHigh],&pivot);
+								}
+							}
+						}
+						int med;
+						if (SortFunc(&sortList[relLow], &pivot) < COMP_RESULT_EQUAL)
+							med= relLow;
+						else
+							med= relLow-1;
+						tmp=sortList[currentSnaptshot.low];
+						sortList[currentSnaptshot.low]=sortList[med];
+						sortList[med]=tmp;
+						int index = med;
+
+						SnapShotStruct leftHalf,rightHalf;
+						leftHalf.low=currentSnaptshot.low;
+						leftHalf.high=index-1;
+
+						rightHalf.low=index+1;
+						rightHalf.high=currentSnaptshot.high;
+						snapshotStack.push(leftHalf);
+						snapshotStack.push(rightHalf);
+				}
+			}
+			else if((currentSnaptshot.high==currentSnaptshot.low+1)&& SortFunc(&sortList[currentSnaptshot.low],&sortList[currentSnaptshot.high])>COMP_RESULT_EQUAL)
+			{
+				T tmp;
+				tmp=sortList[currentSnaptshot.low];
+				sortList[currentSnaptshot.low]=sortList[currentSnaptshot.high];
+				sortList[currentSnaptshot.high]=tmp;
 			}
 		}
-		else if((high==low+1)&& SortFunc(&sortList[low],&sortList[high])>COMP_RESULT_EQUAL)
-		{
-			T tmp;
-			tmp=sortList[low];
-			sortList[low]=sortList[high];
-			sortList[high]=tmp;
-		}
+		
 	}
 
 }

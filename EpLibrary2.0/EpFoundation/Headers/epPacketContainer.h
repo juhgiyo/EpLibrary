@@ -172,6 +172,14 @@ namespace epl
 		ArrayType & operator[](unsigned int index);
 
 		/*!
+		return the reference to the array element at given index
+		* the arrSize must be smaller than current array size.
+		@param[in] index the index of the array to get the array element
+		@return the reference to the array element at given index
+		*/
+		const ArrayType & operator[](unsigned int index) const;
+
+		/*!
 		Copy the given Packet Container b to this Packet Container.
 		@param[in] b the PacketContainer to copy from
 		@return this object
@@ -512,6 +520,14 @@ namespace epl
 
 	template<typename PacketStruct, typename ArrayType>
 	ArrayType & PacketContainer<PacketStruct,ArrayType>::operator[](unsigned int index)
+	{
+		EP_VERIFY_DOMAIN_ERROR_W_MSG(m_packetContainer,"Actual packet is NULL.");
+		EP_VERIFY_OUT_OF_RANGE(index<m_length);
+		return m_packetContainer->m_array[index];
+	}
+
+	template<typename PacketStruct, typename ArrayType>
+	const ArrayType & PacketContainer<PacketStruct,ArrayType>::operator[](unsigned int index) const
 	{
 		EP_VERIFY_DOMAIN_ERROR_W_MSG(m_packetContainer,"Actual packet is NULL.");
 		EP_VERIFY_OUT_OF_RANGE(index<m_length);

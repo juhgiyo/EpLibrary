@@ -136,6 +136,14 @@ namespace epl
 
 
 		/*!
+		Return the element at the given index of the given array.
+		@param[in] idx The index to return the element.
+		@return the element at the given index.
+		*/
+		const DataType& operator[](unsigned int idx) const;
+
+
+		/*!
 		Append the given dynamic array to the this dynamic array.
 		@param[in] b The dynamic array structure to append.
 		@return the result dynamic array
@@ -408,7 +416,13 @@ namespace epl
 		return At(idx);
 	}
 
-	
+	template <typename DataType>
+	const DataType& DynamicArray<DataType>::operator[](unsigned int idx) const	
+	{
+		LockObj lock(m_lock);
+		EP_VERIFY_OUT_OF_RANGE(m_numOfElements>idx);
+		return *(m_head+idx);
+	}
 	template <typename DataType>
 	DynamicArray<DataType>& DynamicArray<DataType>::operator+=(const DynamicArray<DataType>& b)
 	{
