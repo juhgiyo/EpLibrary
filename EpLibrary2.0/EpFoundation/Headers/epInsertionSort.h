@@ -51,7 +51,7 @@ namespace epl
 			T tmp;
 			tmp=sortList[i];
 			int j=i-1;
-			while(j>=low && SortFunc(sortList[j],tmp)>COMP_RESULT_EQUAL)
+			while(j>=low && SortFunc(&sortList[j],&tmp)>COMP_RESULT_EQUAL)
 			{
 				sortList[j+1]=sortList[j];
 				j=j-1;

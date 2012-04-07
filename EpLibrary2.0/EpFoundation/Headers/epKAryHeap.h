@@ -375,6 +375,7 @@ namespace epl
 	{
 		if(this!=&b)
 		{
+			Clear();
 			LockObj lock(m_lock);
 			m_heap.Resize(b.m_heap.Size());
 			for(unsigned int trav=0;trav<b.m_heap.Size();trav++)

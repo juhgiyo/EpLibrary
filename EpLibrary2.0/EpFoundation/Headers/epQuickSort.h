@@ -55,9 +55,10 @@ namespace epl
 	@param[in] listSize The size of the list.
 	@param[in] SortFunc The Compare Function pointer.
 	@param[in] mode The QSort Mode
+	@param[in] minSize the minimum size for the insertion sort start
 	*/
 	template <typename T>
-	void QuickSort (T* sortList,const unsigned int listSize,CompResultType (__cdecl *SortFunc)(const void * , const void *), QSortMode mode=QSORT_MODE_STL)
+	void QuickSort (T* sortList,const unsigned int listSize,CompResultType (__cdecl *SortFunc)(const void * , const void *), QSortMode mode=QSORT_MODE_STL, int minSize=-1)
 	{
 		if(mode==QSORT_MODE_STL)
 		{
@@ -65,7 +66,8 @@ namespace epl
 		}
 		else
 		{
-			int minSize=listSize/2;
+			if(minSize<0 || minSize>listSize)
+				minSize=listSize/2;
 			if(mode==QSORT_MODE_RECURSIVE)
 				subQuickSortRecursive<T>(sortList,0,listSize-1,SortFunc, minSize);
 			else if(mode==QSORT_MODE_LOOP)
