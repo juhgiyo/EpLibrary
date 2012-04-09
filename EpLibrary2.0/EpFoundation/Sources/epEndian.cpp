@@ -27,7 +27,7 @@ short Endian::ShortSwap(const short value)
 
 	return (b1 << 8) + b2;
 }
-unsigned short Endian::ShortSwap(const unsigned short value)
+unsigned short Endian::UShortSwap(const unsigned short value)
 {
 	unsigned char b1, b2;
 

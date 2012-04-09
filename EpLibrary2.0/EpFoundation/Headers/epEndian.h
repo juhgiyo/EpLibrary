@@ -53,7 +53,7 @@ namespace epl
 		@param[in] value the value to swap.
 		@return the swapped value
 		*/
-		static unsigned short ShortSwap(const unsigned short value);
+		static unsigned short UShortSwap(const unsigned short value);
 
 		/*!
 		Swap Int Endianness and return the swapped value.
