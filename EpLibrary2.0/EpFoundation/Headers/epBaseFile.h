@@ -126,8 +126,9 @@ namespace epl{
 		/*!
 		Actual load Function that loads values from the file.
 		@remark Sub classes should implement this function
+		@param[in] the all data from the file
 		*/
-		virtual void loadFromFile(EpTString line)=0;
+		virtual void loadFromFile(EpTString lines)=0;
 
 		/// Encoding type of the file
 		FileEncodingType m_encodingType;

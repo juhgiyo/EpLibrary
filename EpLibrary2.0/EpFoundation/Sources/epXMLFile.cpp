@@ -65,10 +65,10 @@ void XMLFile::writeLoop()
 	WriteToFile(toFileString.c_str());
 	Close();
 }
-void XMLFile::loadFromFile(EpTString rest)
+void XMLFile::loadFromFile(EpTString lines)
 {
 	Close();
-	Load(rest.c_str());
+	Load(lines.c_str());
 
 }
 

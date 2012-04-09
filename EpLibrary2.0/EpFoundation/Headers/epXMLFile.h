@@ -107,8 +107,9 @@ namespace epl
 		/*!
 		Actual load Function that loads values from the file.
 		@remark Sub classes should implement this function
+		@param[in] the all data from the file
 		*/
-		virtual void loadFromFile(EpTString line);
+		virtual void loadFromFile(EpTString lines);
 
 		/*!
 		Recursively find all nodes with the given node name

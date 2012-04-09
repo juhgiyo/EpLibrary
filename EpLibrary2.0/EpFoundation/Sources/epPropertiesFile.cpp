@@ -190,10 +190,10 @@ const EpTString& PropertiesFile::operator [](const TCHAR * key) const
 	}
 	EP_VERIFY_OUT_OF_RANGE(0);
 }
-void PropertiesFile::loadFromFile(EpTString rest)
+void PropertiesFile::loadFromFile(EpTString lines)
 {
 	EpTString line=_T("");
-	while(getLine(rest,line,rest))
+	while(getLine(lines,line,lines))
 	{
 		EpTString key;
 		EpTString val;
