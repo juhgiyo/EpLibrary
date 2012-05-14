@@ -2,7 +2,7 @@
 XMLite for the EpLibrary
 @author Cho,Kyung Min: bro@shinbiro.com
 	edited by Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
-Please refer to <http://www.codeproject.com/Articles/2396/Simple-CString-Extension> for the license.
+Please refer to <http://www.codeproject.com/Articles/3426/XMLite-simple-XML-parser> for the license.
 */
 #include "epXMLite.h"
 #include <iostream>

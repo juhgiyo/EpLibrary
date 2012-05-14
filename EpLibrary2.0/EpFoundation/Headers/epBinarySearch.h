@@ -31,6 +31,7 @@ An Interface for Binary Search Algorithm.
 #define __EP_BINARY_SEARCH_H__
 
 #include "epFoundationLib.h"
+#include "epAlgorithm.h"
 
 namespace epl
 {

@@ -635,21 +635,23 @@ namespace epl
 		/// Lock Policy
 		LockPolicy m_lockPolicy;
 	};
-}
-template<typename RetType,typename ArgType>
-Delegate<RetType,ArgType> operator +(RetType (*func)(ArgType),const Delegate<RetType,ArgType>& right)
-{
-	Delegate<RetType,ArgType> ret(func);
-	ret+=right;
-	return ret;
+
+	template<typename RetType,typename ArgType>
+	Delegate<RetType,ArgType> operator +(RetType (*func)(ArgType),const Delegate<RetType,ArgType>& right)
+	{
+		Delegate<RetType,ArgType> ret(func);
+		ret+=right;
+		return ret;
+	}
+
+// 	template<typename RetType,typename ArgType>
+// 	Delegate<RetType,ArgType> operator +(RetType (*func)(ArgType),RetType (*func2)(ArgType))
+// 	{
+// 		Delegate<RetType,ArgType> ret(func);
+// 		ret+=func2;
+// 		return ret;
+// 	}
 }
 
-template<typename RetType,typename ArgType>
-Delegate<RetType,ArgType> operator +(RetType (*func)(ArgType),RetType (*func2)(ArgType))
-{
-	Delegate<RetType,ArgType> ret(func);
-	ret+=func2;
-	return ret;
-}
 
 #endif //__EP_DELEGATE_H__
