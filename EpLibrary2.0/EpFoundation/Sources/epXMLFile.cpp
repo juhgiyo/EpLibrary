@@ -20,7 +20,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace epl;
 
-
 XMLFile::XMLFile(TCHAR escapeValue,FileEncodingType encodingType, LockPolicy lockPolicyType) :XNode(), BaseFile(encodingType,lockPolicyType)
 {
 	m_escapeValue=escapeValue;
@@ -69,9 +68,8 @@ void XMLFile::writeLoop()
 void XMLFile::loadFromFile(EpTString lines)
 {
 	Close();
-	PARSEINFO info=PARSEINFO.piDefault;
-	info.m_escape_value=m_escapeValue;
-	Load(lines.c_str(),&info);
+	VALUEPARSEINFO::vpiDefault.chXMLEscape=m_escapeValue;
+	Load(lines.c_str());
 
 }
 

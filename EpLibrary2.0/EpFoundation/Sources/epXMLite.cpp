@@ -18,11 +18,6 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
-static const TCHAR chXMLTagOpen		= _T('<');
-static const TCHAR chXMLTagClose	= _T('>');
-static const TCHAR chXMLTagPre	= _T('/');
-static const TCHAR chXMLEscape = _T('\\');	// for value field escape
-
 static const TCHAR szXMLPIOpen[] = _T("<?");
 static const TCHAR szXMLPIClose[] = _T("?>");
 static const TCHAR szXMLCommentOpen[] = _T("<!--");
@@ -38,6 +33,7 @@ static const XENTITY x_EntityTable[] = {
 		{ _T('>'), _T("&gt;"), 4 } 
 	};
 
+VALUEPARSEINFO _tagValueParseInfo::vpiDefault=VALUEPARSEINFO();
 PARSEINFO _tagParseInfo::piDefault=PARSEINFO();
 DISP_OPT _tagDispOption::optDefault=DISP_OPT();
 XENTITYS _tagXMLEntitys::entityDefault((LPXENTITY)x_EntityTable, sizeof(x_EntityTable)/sizeof(x_EntityTable[0]) );
@@ -362,7 +358,7 @@ LPTSTR _tagXMLNode::LoadAttributes( const TCHAR * pszAttrs , LPPARSEINFO pi /*= 
 		if( xml = _tcsskip( xml ) )
 		{
 			// close tag
-			if( *xml == chXMLTagClose || *xml == chXMLTagPre )
+			if( *xml == VALUEPARSEINFO::vpiDefault.chXMLTagClose || *xml == VALUEPARSEINFO::vpiDefault.chXMLTagPre )
 				// wel-formed tag
 				return xml;
 
@@ -403,12 +399,12 @@ LPTSTR _tagXMLNode::LoadAttributes( const TCHAR * pszAttrs , LPPARSEINFO pi /*= 
 						// or none quote
 						int quote = *xml;
 						if( quote == _T('"') || quote == _T('\'') )
-							pEnd = _tcsechr( ++xml, quote, chXMLEscape );
+							pEnd = _tcsechr( ++xml, quote, VALUEPARSEINFO::vpiDefault.chXMLEscape );
 						else
 						{
 							//attr= value> 
 							// none quote mode
-							pEnd = _tcsepbrk( xml, _T(" >"), chXMLEscape );
+							pEnd = _tcsepbrk( xml, _T(" >"), VALUEPARSEINFO::vpiDefault.chXMLEscape );
 						}
 
 						bool trim = pi->m_trim_value;
@@ -494,12 +490,12 @@ LPTSTR _tagXMLNode::LoadAttributes( const TCHAR * pszAttrs, const TCHAR * pszEnd
 						// or none quote
 						int quote = *xml;
 						if( quote == _T('"') || quote == _T('\'') )
-							pEnd = _tcsechr( ++xml, quote, chXMLEscape );
+							pEnd = _tcsechr( ++xml, quote, VALUEPARSEINFO::vpiDefault.chXMLEscape );
 						else
 						{
 							//attr= value> 
 							// none quote mode
-							pEnd = _tcsepbrk( xml, _T(" >"), chXMLEscape );
+							pEnd = _tcsepbrk( xml, _T(" >"), VALUEPARSEINFO::vpiDefault.chXMLEscape );
 						}
 
 						bool trim = pi->m_trim_value;
@@ -755,12 +751,12 @@ LPTSTR _tagXMLNode::Load( const TCHAR * pszXml, LPPARSEINFO pi /*= &piDefault*/ 
 
 	LPTSTR xml = (LPTSTR)pszXml;
 
-	xml = _tcschr( xml, chXMLTagOpen );
+	xml = _tcschr( xml, VALUEPARSEINFO::vpiDefault.chXMLTagOpen );
 	if( xml == NULL )
 		return NULL;
 
 	// Close Tag
-	if( *(xml+1) == chXMLTagPre ) // </Close
+	if( *(xml+1) == VALUEPARSEINFO::vpiDefault.chXMLTagPre ) // </Close
 		return xml;
 
 	// Load Other Node before <Tag>(pi, comment, CDATA etc)
@@ -781,10 +777,10 @@ LPTSTR _tagXMLNode::Load( const TCHAR * pszXml, LPPARSEINFO pi /*= &piDefault*/ 
 	if( xml = LoadAttributes( xml, pi ) )
 	{
 		// alone tag <TAG ... />
-		if( *xml == chXMLTagPre )
+		if( *xml == VALUEPARSEINFO::vpiDefault.chXMLTagPre )
 		{
 			xml++;
-			if( *xml == chXMLTagClose )
+			if( *xml == VALUEPARSEINFO::vpiDefault.chXMLTagClose )
 				// wel-formed tag
 				return ++xml;
 			else
@@ -810,7 +806,7 @@ LPTSTR _tagXMLNode::Load( const TCHAR * pszXml, LPPARSEINFO pi /*= &piDefault*/ 
 			if( XIsEmptyString( m_value ) )
 			{
 				// Text Value 
-				TCHAR* pEnd = _tcsechr( ++xml, chXMLTagOpen, chXMLEscape );
+				TCHAR* pEnd = _tcsechr( ++xml, VALUEPARSEINFO::vpiDefault.chXMLTagOpen, VALUEPARSEINFO::vpiDefault.chXMLEscape );
 				if( pEnd == NULL ) 
 				{
 					if( pi->m_erorr_occur == false ) 
@@ -857,7 +853,7 @@ LPTSTR _tagXMLNode::Load( const TCHAR * pszXml, LPPARSEINFO pi /*= &piDefault*/ 
 				// open/close tag <TAG ..> ... </TAG>
 				//                             ^- current pointer
 				// CloseTag case
-				if( xml && *xml && *(xml+1) && *xml == chXMLTagOpen && *(xml+1) == chXMLTagPre )
+				if( xml && *xml && *(xml+1) && *xml == VALUEPARSEINFO::vpiDefault.chXMLTagOpen && *(xml+1) == VALUEPARSEINFO::vpiDefault.chXMLTagPre )
 				{
 					// </Close>
 					xml+=2; // C
@@ -911,10 +907,10 @@ LPTSTR _tagXMLNode::Load( const TCHAR * pszXml, LPPARSEINFO pi /*= &piDefault*/ 
 				{
 					
 					//if( xml && this->value.IsEmpty() && *xml !=chXMLTagOpen )
-					if( xml && XIsEmptyString( m_value ) && *xml !=chXMLTagOpen )
+					if( xml && XIsEmptyString( m_value ) && *xml !=VALUEPARSEINFO::vpiDefault.chXMLTagOpen )
 					{
 						// Text Value 
-						TCHAR* pEnd = _tcsechr( xml, chXMLTagOpen, chXMLEscape );
+						TCHAR* pEnd = _tcsechr( xml, VALUEPARSEINFO::vpiDefault.chXMLTagOpen, VALUEPARSEINFO::vpiDefault.chXMLEscape );
 						if( pEnd == NULL ) 
 						{
 							// error cos not exist CloseTag </TAG>

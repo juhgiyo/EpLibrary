@@ -70,6 +70,19 @@ namespace epl
 		PIE_ATTR_NO_VALUE
 	}PCODE;
 
+
+	typedef struct EP_FOUNDATION _tagValueParseInfo
+	{
+
+		TCHAR chXMLTagOpen;
+		TCHAR chXMLTagClose;
+		TCHAR chXMLTagPre;
+		TCHAR chXMLEscape;	// for value field escape
+		_tagValueParseInfo() { chXMLTagOpen = _T('<'); chXMLTagClose =  _T('>'); chXMLTagPre = _T('/'); chXMLEscape = _T('\\'); }
+
+		static _tagValueParseInfo vpiDefault;
+	}VALUEPARSEINFO,*LPVALUEPARSEINFO;
+
 	// Parse info.
 	typedef struct EP_FOUNDATION _tagParseInfo
 	{

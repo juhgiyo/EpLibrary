@@ -72,6 +72,7 @@ namespace epl
 				LockObj lock(m_lock);
 				BaseFile::operator =(b);
 				XNode::operator =(const_cast<XMLFile&>(b));
+				m_escapeValue=b.m_escapeValue;
 			}
 			return *this;
 		}
