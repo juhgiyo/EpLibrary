@@ -21,13 +21,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using namespace epl;
 
 
-XMLFile::XMLFile(FileEncodingType encodingType, LockPolicy lockPolicyType) :XNode(), BaseFile(encodingType,lockPolicyType)
+XMLFile::XMLFile(TCHAR escapeValue,FileEncodingType encodingType, LockPolicy lockPolicyType) :XNode(), BaseFile(encodingType,lockPolicyType)
 {
+	m_escapeValue=escapeValue;
 }
 
 XMLFile::XMLFile(const XMLFile& b):XNode(b),BaseFile(b)
 {
-	
+	m_escapeValue=b.m_escapeValue;	
 }
 XMLFile::~XMLFile()
 {
@@ -68,7 +69,9 @@ void XMLFile::writeLoop()
 void XMLFile::loadFromFile(EpTString lines)
 {
 	Close();
-	Load(lines.c_str());
+	PARSEINFO info=PARSEINFO.piDefault;
+	info.m_escape_value=m_escapeValue;
+	Load(lines.c_str(),&info);
 
 }
 

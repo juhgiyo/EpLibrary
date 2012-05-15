@@ -50,7 +50,7 @@ namespace epl
 		@param[in] encodingType the encoding type for this file
 		@param[in] lockPolicyType The lock policy
 		*/
-		XMLFile(FileEncodingType encodingType=FILE_ENCODING_TYPE_UTF16, LockPolicy lockPolicyType=EP_LOCK_POLICY);
+		XMLFile(TCHAR escapeValue=_T('\\'),FileEncodingType encodingType=FILE_ENCODING_TYPE_UTF16, LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Copy Constructor
@@ -118,6 +118,8 @@ namespace epl
 		@return the list of the nodes with the given node name
 		*/
 		XNodes findAllNode(XNode *node, const TCHAR *  nodeName);
+
+		TCHAR m_escapeValue;
 	};
 }
 
