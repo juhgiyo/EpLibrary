@@ -33,6 +33,9 @@ An Interface for the XML File Class.
 #include "epSystem.h"
 #include "epXMLite.h"
 #include "epBaseFile.h"
+#include <vector>
+
+using namespace std;
 
 namespace epl
 {
@@ -92,6 +95,15 @@ namespace epl
 		@param[in] nodeVal the value for replacement when found
 		*/
 		void SetNodeValue(const TCHAR * nodeName, const TCHAR * attrName, const TCHAR *attrVal, const TCHAR * nodeVal);
+
+		/*!
+		Recursively get all attribute value of nodes of the given node name with the attribute name given
+		@param[in] nodeName the name of the node to find
+		@param[in] attrName the attribute name of the node
+		@return the list of attribute values for given node name and attribute name.
+		*/
+		vector<const TCHAR *> GetAttrValue(const TCHAR *nodeName, const TCHAR *attrName);
+		
 
 		/*!
 		Clear the list of the xml

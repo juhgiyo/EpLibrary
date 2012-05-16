@@ -52,6 +52,24 @@ void XMLFile::SetNodeValue(const TCHAR * nodeName, const TCHAR * attrName, const
 	}
 }
 
+vector<const TCHAR *> XMLFile::GetAttrValue(const TCHAR *nodeName, const TCHAR *attrName)
+{
+	LockObj lock(m_lock);
+	vector<const TCHAR *> retList;
+	XNodes findList=findAllNode(this,nodeName);
+	XNodes::iterator findIter;
+	for(findIter=findList.begin();findIter!=findList.end();findIter++)
+	{
+		XAttrs attrList=(*findIter)->GetAttrs(attrName);
+		XAttrs::iterator attrIter;
+		for(attrIter=attrList.begin();attrIter!=attrList.end();attrIter++)
+		{
+			retList.push_back((*attrIter)->m_value.GetString());
+		}
+	}	
+	return retList;
+}
+
 void XMLFile::Clear()
 {
 	LockObj lock(m_lock);
