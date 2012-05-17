@@ -68,17 +68,16 @@ BaseFile::~BaseFile()
 }
 
 
-void BaseFile::WriteToFile(const TCHAR *toFileString)
+void BaseFile::writeToFile(const TCHAR *toFileString)
 {
-	LockObj lock(m_lock);
 	unsigned int strLength=System::TcsLen(toFileString);
-	if(m_encodingType==FILE_ENCODING_TYPE_UTF8||m_encodingType==FILE_ENCODING_TYPE_UTF16)
+	if(m_encodingType==FILE_ENCODING_TYPE_UTF8)//||m_encodingType==FILE_ENCODING_TYPE_UTF16)
 	{	
 #if defined(_UNICODE) || defined(UNICODE)
 		char *multiByteToFile = EP_NEW char[strLength+1];
 
 		System::Memset(multiByteToFile,0,strLength+1);
-		System::WideCharToMultiByte(toFileString,multiByteToFile);
+		System::UTF16ToUTF8(toFileString,multiByteToFile);
 		if(m_file)
 			System::FWrite(multiByteToFile,sizeof(char),strLength,m_file);
 		EP_DELETE[] multiByteToFile;
@@ -114,12 +113,13 @@ bool BaseFile::SaveToFile(const TCHAR *filename)
 
 	if(m_encodingType==FILE_ENCODING_TYPE_UTF8)
 		e= System::FTOpen(m_file,filename,_T("wt,ccs=UTF-8"));
-	else if(m_encodingType==FILE_ENCODING_TYPE_UNICODE)
-		e= System::FTOpen(m_file,filename,_T("wt,ccs=UNICODE"));
-	else if(m_encodingType==FILE_ENCODING_TYPE_UTF16)
+// 	else if(m_encodingType==FILE_ENCODING_TYPE_UNICODE)
+// 		e= System::FTOpen(m_file,filename,_T("wt,ccs=UNICODE"));
+	else if(m_encodingType==FILE_ENCODING_TYPE_UTF16 || m_encodingType==FILE_ENCODING_TYPE_UNICODE)
 		e= System::FTOpen(m_file,filename,_T("wt,ccs=UTF-16LE"));
 	else
 		return false;
+
 	if (e != 0) 
 		return false; // failed..
 
@@ -151,14 +151,13 @@ bool BaseFile::LoadFromFile(const TCHAR *filename)
 	if (e != 0) 
 		return false; // failed..
 	EpTString rest;
-	if(m_encodingType==FILE_ENCODING_TYPE_UTF8||m_encodingType==FILE_ENCODING_TYPE_UTF16)
-	{	
+
 #if defined(_UNICODE) || defined(UNICODE)
 		//Find the actual length of file
 		unsigned int length= static_cast<unsigned int>(System::FSize(m_file));
 
-		char *cFileBuf=EP_NEW char[length+1];
-		System::Memset(cFileBuf,0,length+1);
+		char *cFileBuf=EP_NEW char[length+2];
+		System::Memset(cFileBuf,0,length+2);
 		System::FRead(cFileBuf,sizeof(char),length,m_file);
 		System::FClose(m_file);
 
@@ -172,51 +171,86 @@ bool BaseFile::LoadFromFile(const TCHAR *filename)
 		//Find the actual length of file
 		unsigned int length= static_cast<unsigned int>(System::FSize(m_file));
 
-		char *cFileBuf=EP_NEW char[length+1];
-		System::Memset(cFileBuf,0,length+1);
+		char *cFileBuf=EP_NEW char[length+2];
+		System::Memset(cFileBuf,0,length+2);
 		System::FRead(cFileBuf,sizeof(char),length,m_file);
 		System::FClose(m_file);
 
 		rest=cFileBuf;
 		EP_DELETE[] cFileBuf;
 #endif //defined(_UNICODE) || defined(UNICODE)
-	}
-	else
-	{
-#if defined(_UNICODE) || defined(UNICODE)
-		//Find the actual length of file
-		unsigned int length=static_cast<unsigned int>( System::FSize(m_file)/sizeof(TCHAR) );
 
-		wchar_t *tFileBuf=EP_NEW wchar_t[length+1];
-		System::Memset(tFileBuf,0,sizeof(TCHAR)*(length+1));
-		System::FRead(tFileBuf,sizeof(TCHAR),length,m_file);
-		System::FClose(m_file);
+		loadFromFile(rest);
 
-		rest=tFileBuf;
-		EP_DELETE[] tFileBuf;
-#else //defined(_UNICODE) || defined(UNICODE)
-		//Find the actual length of file
-		unsigned int length=static_cast<unsigned int>( System::FSize(m_file)/sizeof(TCHAR) );
-
-		wchar_t *tFileBuf=EP_NEW wchar_t[length+1];
-		System::Memset(tFileBuf,0,sizeof(TCHAR)*(length+1));
-		System::FRead(tFileBuf,sizeof(TCHAR),length,m_file);
-		System::FClose(m_file);
-
-		char *cFileBuf=EP_NEW char[length+1];
-		System::Memset(cFileBuf,0,sizeof(char)*(length+1));
-		System::WideCharToMultiByte(tFileBuf,length,cFileBuf);
-		rest=cFileBuf;
-		EP_DELETE[] cFileBuf;
-		EP_DELETE[] tFileBuf;
-#endif //defined(_UNICODE) || defined(UNICODE)
-	}
-
-
-	loadFromFile(rest);
-	
 	m_file=NULL;
 	return true;
+
+// 	if(m_encodingType==FILE_ENCODING_TYPE_UTF8||m_encodingType==FILE_ENCODING_TYPE_UTF16)
+// 	{	
+// #if defined(_UNICODE) || defined(UNICODE)
+// 		//Find the actual length of file
+// 		unsigned int length= static_cast<unsigned int>(System::FSize(m_file));
+// 
+// 		char *cFileBuf=EP_NEW char[length+1];
+// 		System::Memset(cFileBuf,0,length+1);
+// 		System::FRead(cFileBuf,sizeof(char),length,m_file);
+// 		System::FClose(m_file);
+// 
+// 		wchar_t *tFileBuf=EP_NEW wchar_t[length+1];
+// 		System::Memset(tFileBuf,0,sizeof(wchar_t)*(length+1));
+// 		System::MultiByteToWideChar(cFileBuf,length,tFileBuf);
+// 		rest=tFileBuf;
+// 		EP_DELETE[] cFileBuf;
+// 		EP_DELETE[] tFileBuf;
+// #else //defined(_UNICODE) || defined(UNICODE)
+// 		//Find the actual length of file
+// 		unsigned int length= static_cast<unsigned int>(System::FSize(m_file));
+// 
+// 		char *cFileBuf=EP_NEW char[length+1];
+// 		System::Memset(cFileBuf,0,length+1);
+// 		System::FRead(cFileBuf,sizeof(char),length,m_file);
+// 		System::FClose(m_file);
+// 
+// 		rest=cFileBuf;
+// 		EP_DELETE[] cFileBuf;
+// #endif //defined(_UNICODE) || defined(UNICODE)
+// 	}
+// 	else
+// 	{
+// #if defined(_UNICODE) || defined(UNICODE)
+// 		//Find the actual length of file
+// 		unsigned int length=static_cast<unsigned int>( System::FSize(m_file)/sizeof(wchar_t) );
+// 
+// 		wchar_t *tFileBuf=EP_NEW wchar_t[length+1];
+// 		System::Memset(tFileBuf,0,sizeof(wchar_t)*(length+1));
+// 		System::FRead(tFileBuf,sizeof(wchar_t),length,m_file);
+// 		System::FClose(m_file);
+// 
+// 		rest=tFileBuf;
+// 		EP_DELETE[] tFileBuf;
+// #else //defined(_UNICODE) || defined(UNICODE)
+// 		//Find the actual length of file
+// 		unsigned int length=static_cast<unsigned int>( System::FSize(m_file)/sizeof(wchar_t) );
+// 
+// 		wchar_t *tFileBuf=EP_NEW wchar_t[length+1];
+// 		System::Memset(tFileBuf,0,sizeof(wchar_t)*(length+1));
+// 		System::FRead(tFileBuf,sizeof(TCHAR),length,m_file);
+// 		System::FClose(m_file);
+// 
+// 		char *cFileBuf=EP_NEW char[length+1];
+// 		System::Memset(cFileBuf,0,sizeof(char)*(length+1));
+// 		System::WideCharToMultiByte(tFileBuf,length,cFileBuf);
+// 		rest=cFileBuf;
+// 		EP_DELETE[] cFileBuf;
+// 		EP_DELETE[] tFileBuf;
+// #endif //defined(_UNICODE) || defined(UNICODE)
+// 	}
+// 
+// 
+// 	loadFromFile(rest);
+// 	
+// 	m_file=NULL;
+// 	return true;
 }
 
 

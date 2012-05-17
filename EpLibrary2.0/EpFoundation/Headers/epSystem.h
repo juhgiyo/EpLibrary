@@ -777,7 +777,7 @@ namespace epl
 		static EpTString HexToString(const unsigned char *buff, unsigned int len);
 
 		/*!
-		Convert MultiByte String to WideChar String.
+		Convert MultiByte String to WideChar String. [ANSI -> UTF-16]
 		@param[in] multiByteCharString the string to convert to WideChar string.
 		@param[in] stringLength length of the MultiByte string excluding the terminating NULL.
 		@return EpWString that contains converted WideChar String.
@@ -785,15 +785,14 @@ namespace epl
 		static EpWString MultiByteToWideChar(const char *multiByteCharString, unsigned int stringLength);
 
 		/*!
-		Convert MultiByte String to WideChar String.
+		Convert MultiByte String to WideChar String. [ANSI -> UTF-16]
 		@param[in] multiByteCharString the string to convert to WideChar string.
 		@return EpWString that contains converted WideChar String.
 		*/
 		static EpWString MultiByteToWideChar(const char *multiByteCharString);
 
-
 		/*!
-		Convert MultiByte String to WideChar String.
+		Convert MultiByte String to WideChar String. [ANSI -> UTF-16]
 		@param[in] multiByteCharString the MultiByte string to convert to WideChar string.
 		@param[in] stringLength length of the MultiByte string excluding the terminating NULL.
 		@param[out] retWideCharString string that contains converted WideChar String.
@@ -802,15 +801,16 @@ namespace epl
 		static int MultiByteToWideChar(const char *multiByteCharString, unsigned int stringLength, wchar_t *retWideCharString);
 
 		/*!
-		Convert MultiByte String to WideChar String.
+		Convert MultiByte String to WideChar String. [ANSI -> UTF-16]
 		@param[in] multiByteCharString the MultiByte string to convert to WideChar string.
 		@param[out] retWideCharString string that contains converted WideChar String.
 		@return the result status of the conversion.
 		*/
 		static int MultiByteToWideChar(const char *multiByteCharString, wchar_t *retWideCharString);
 	
+
 		/*!
-		Convert WideChar String to MultiByte String.
+		Convert WideChar String to MultiByte String. [UTF-16 -> ANSI]
 		@param[in] wideCharString the WideChar String to convert to MultiByte string.
 		@param[out] retMultiByteString string that contains converted MultiByte String.
 		@return the number of bytes written into the MultiByte output string, excluding the terminating NULL .
@@ -818,7 +818,7 @@ namespace epl
 		static unsigned int  WideCharToMultiByte(const wchar_t* wideCharString, char *retMultiByteString);
 
 		/*!
-		Convert WideChar String to MultiByte String.
+		Convert WideChar String to MultiByte String. [UTF-16 -> ANSI]
 		@param[in] wideCharString the WideChar String to convert to MultiByte string.
 		@param[in] stringLength length of the MultiByte string excluding the terminating NULL.
 		@param[out] retMultiByteString string that contains converted MultiByte String.
@@ -828,7 +828,7 @@ namespace epl
 
 
 		/*!
-		Convert WideChar String to MultiByte String.
+		Convert WideChar String to MultiByte String. [UTF-16 -> ANSI]
 		@param[in] wideCharString the string to convert to MultiByte string.
 		@param[in] stringLength length of the MultiByte string excluding the terminating NULL.
 		@return EpString that contains converted MultiByte String.
@@ -836,11 +836,86 @@ namespace epl
 		static EpString WideCharToMultiByte(const wchar_t *wideCharString, unsigned int stringLength);
 
 		/*!
-		Convert MultiByte String to WideChar String.
+		Convert MultiByte String to WideChar String. [UTF-16 -> ANSI]
 		@param[in] wideCharString the string to convert to MultiByte string.
 		@return EpString that contains converted MultiByte String.
 		*/
 		static EpString WideCharToMultiByte(const wchar_t *wideCharString);
+
+
+		/*!
+		Convert UTF-16 String to UTF-8 String. [UTF-16 -> UTF-8]
+		@param[in] utf16String the UTF-16 String to convert to UTF-8 string.
+		@param[out] retutf8String string that contains converted UTF-8 String.
+		@return the number of bytes written into the MultiByte output string, excluding the terminating NULL .
+		*/
+		static unsigned int  UTF16ToUTF8(const wchar_t* utf16String, char *retutf8String);
+
+		/*!
+		Convert UTF-16 String to UTF-8 String. [UTF-16 -> UTF-8]
+		@param[in] utf16String the UTF-16 String to convert to UTF-8 string.
+		@param[in] stringLength length of the UTF-8 string excluding the terminating NULL.
+		@param[out] retutf8String string that contains converted UTF-8 String.
+		@return the number of bytes written into the UTF-8 output string, excluding the terminating NULL .
+		*/
+		static unsigned int  UTF16ToUTF8(const wchar_t* utf16String,unsigned int stringLength, char *retutf8String);
+
+
+		/*!
+		Convert UTF-16 String to UTF-8 String. [UTF-16 -> UTF-8]
+		@param[in] utf16String the UTF-16 String to convert to UTF-8 string.
+		@param[in] stringLength length of the UTF-8 string excluding the terminating NULL.
+		@return EpString that contains converted UTF-8 String.
+		*/
+		static EpString UTF16ToUTF8(const wchar_t *utf16String, unsigned int stringLength);
+
+		/*!
+		Convert UTF-16 String to UTF-8 String. [UTF-16 -> UTF-8]
+		@param[in] utf16String the UTF-16 String to convert to UTF-8 string.
+		@return EpString that contains converted UTF-8 String.
+		*/
+		static EpString UTF16ToUTF8(const wchar_t *utf16String);
+
+
+		/*!
+		Convert UTF-8 String to UTF-16 String. [UTF-8 -> UTF-16]
+		@param[in] utf8String the string to convert to UTF-16 string.
+		@param[in] stringLength length of the UTF-8 string excluding the terminating NULL.
+		@return EpWString that contains converted UTF-16 String.
+		*/
+		static EpWString UTF8ToUTF16(const char *utf8String, unsigned int stringLength);
+
+		/*!
+		Convert UTF-8 String to UTF-16 String. [UTF-8 -> UTF-16]
+		@param[in] utf8String the UTF-8 String to convert to UTF-16 string.
+		@return EpString that contains converted UTF-16 String.
+		*/
+		static EpWString UTF8ToUTF16(const char *utf8String);
+
+		/*!
+		Convert UTF-8 String to UTF-16 String. [UTF-8 -> UTF-16]
+		@param[in] utf8String the UTF-8 string to convert to UTF-16 string.
+		@param[in] stringLength length of the UTF-8 string excluding the terminating NULL.
+		@param[out] retUtf16String string that contains converted UTF-16 String.
+		@return the result status of the conversion.
+		*/
+		static int UTF8ToUTF16(const char *utf8String, unsigned int stringLength, wchar_t *retUtf16String);
+
+		/*!
+		Convert UTF-8 String to UTF-16 String. [UTF-8 -> UTF-16]
+		@param[in] utf8String the UTF-8 string to convert to UTF-16 string.
+		@param[out] retUtf16String string that contains converted UTF-16 String.
+		@return the result status of the conversion.
+		*/
+		static int UTF8ToUTF16(const char *utf8String, wchar_t *retUtf16String);
+	
+		/*!
+		Check if the string contains any multi-byte character
+		@param[in] multiByteString unknown string.
+		@param[out] byteLength byte size of the given string.
+		@return true if string contains multi-byte character, otherwise false.
+		*/
+		static bool IsMultiByte(byte *multiByteString, unsigned int byteLength);
 
 	};
 

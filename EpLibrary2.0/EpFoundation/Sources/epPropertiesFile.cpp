@@ -150,9 +150,8 @@ void PropertiesFile::writeLoop()
 		toFileString.append(iter->first);
 		toFileString.append(iter->second);
 		toFileString.append(_T("\r\n"));
-		WriteToFile(toFileString.c_str());
+		writeToFile(toFileString.c_str());
 	}
-
 }
 
 EpTString& PropertiesFile::operator [](const TCHAR * key)

@@ -20,14 +20,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace epl;
 
-XMLFile::XMLFile(TCHAR escapeValue,FileEncodingType encodingType, LockPolicy lockPolicyType) :XNode(), BaseFile(encodingType,lockPolicyType)
+XMLInfo _xmlInfo::xmlDefault=XMLInfo();
+
+XMLFile::XMLFile(XMLInfo &xmlInfo,FileEncodingType encodingType, LockPolicy lockPolicyType) :XNode(), BaseFile(encodingType,lockPolicyType)
 {
-	m_escapeValue=escapeValue;
+	m_xmlInfo=xmlInfo;
 }
 
 XMLFile::XMLFile(const XMLFile& b):XNode(b),BaseFile(b)
 {
-	m_escapeValue=b.m_escapeValue;	
+	m_xmlInfo=b.m_xmlInfo;
 }
 XMLFile::~XMLFile()
 {
@@ -70,6 +72,15 @@ vector<const TCHAR *> XMLFile::GetAttrValue(const TCHAR *nodeName, const TCHAR *
 	return retList;
 }
 
+void XMLFile::SetXMLInfo(XMLInfo &info)
+{
+	m_xmlInfo=info;
+}
+XMLInfo XMLFile::GetXMLInfo()
+{
+	return m_xmlInfo;
+}
+
 void XMLFile::Clear()
 {
 	LockObj lock(m_lock);
@@ -79,15 +90,27 @@ void XMLFile::writeLoop()
 {
 	EpTString toFileString;
 
+	if(m_xmlInfo.m_isWriteComment)
+	{
+		EpTString commentToFile=_T("<?xml version=\"");
+		commentToFile.append(m_xmlInfo.m_xmlVersion);
+		commentToFile.append(_T("\" encoding=\'"));
+		commentToFile.append(m_xmlInfo.m_xmlEncoding);
+		commentToFile.append(_T("\'?>"));
+		writeToFile(commentToFile.c_str());
+	}
+
 	toFileString=GetXML().GetString();
-	WriteToFile(toFileString.c_str());
+	toFileString.append(_T("\r\n"));
+	writeToFile(toFileString.c_str());
 	Close();
 }
 void XMLFile::loadFromFile(EpTString lines)
 {
 	Close();
-	VALUEPARSEINFO::vpiDefault.chXMLEscape=m_escapeValue;
-	Load(lines.c_str());
+	VALUEPARSEINFO vpi;
+	vpi.chXMLEscape=m_xmlInfo.m_escapeValue;
+	Load(lines.c_str(),&vpi);
 
 }
 

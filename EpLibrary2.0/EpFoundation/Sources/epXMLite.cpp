@@ -349,7 +349,7 @@ void _tagXMLNode::Close()
 // Coder    Date                      Desc
 // bro      2002-10-29
 //========================================================
-LPTSTR _tagXMLNode::LoadAttributes( const TCHAR * pszAttrs , LPPARSEINFO pi /*= &piDefault*/)
+LPTSTR _tagXMLNode::LoadAttributes( const TCHAR * pszAttrs ,LPVALUEPARSEINFO vpi /*= &vpiDefault*/, LPPARSEINFO pi /*= &piDefault*/)
 {
 	LPTSTR xml = (LPTSTR)pszAttrs;
 
@@ -358,7 +358,7 @@ LPTSTR _tagXMLNode::LoadAttributes( const TCHAR * pszAttrs , LPPARSEINFO pi /*= 
 		if( xml = _tcsskip( xml ) )
 		{
 			// close tag
-			if( *xml == VALUEPARSEINFO::vpiDefault.chXMLTagClose || *xml == VALUEPARSEINFO::vpiDefault.chXMLTagPre )
+			if( *xml == vpi->chXMLTagClose || *xml == vpi->chXMLTagPre )
 				// wel-formed tag
 				return xml;
 
@@ -399,12 +399,12 @@ LPTSTR _tagXMLNode::LoadAttributes( const TCHAR * pszAttrs , LPPARSEINFO pi /*= 
 						// or none quote
 						int quote = *xml;
 						if( quote == _T('"') || quote == _T('\'') )
-							pEnd = _tcsechr( ++xml, quote, VALUEPARSEINFO::vpiDefault.chXMLEscape );
+							pEnd = _tcsechr( ++xml, quote, vpi->chXMLEscape );
 						else
 						{
 							//attr= value> 
 							// none quote mode
-							pEnd = _tcsepbrk( xml, _T(" >"), VALUEPARSEINFO::vpiDefault.chXMLEscape );
+							pEnd = _tcsepbrk( xml, _T(" >"), vpi->chXMLEscape );
 						}
 
 						bool trim = pi->m_trim_value;
@@ -440,7 +440,7 @@ LPTSTR _tagXMLNode::LoadAttributes( const TCHAR * pszAttrs , LPPARSEINFO pi /*= 
 // Coder    Date                      Desc
 // bro      2004-06-14
 //========================================================
-LPTSTR _tagXMLNode::LoadAttributes( const TCHAR * pszAttrs, const TCHAR * pszEnd, LPPARSEINFO pi /*= &piDefault*/ )
+LPTSTR _tagXMLNode::LoadAttributes( const TCHAR * pszAttrs, const TCHAR * pszEnd, LPVALUEPARSEINFO vpi /*= &vpiDefault*/, LPPARSEINFO pi /*= &piDefault*/)
 {
 	LPTSTR xml = (LPTSTR)pszAttrs;
 
@@ -490,12 +490,12 @@ LPTSTR _tagXMLNode::LoadAttributes( const TCHAR * pszAttrs, const TCHAR * pszEnd
 						// or none quote
 						int quote = *xml;
 						if( quote == _T('"') || quote == _T('\'') )
-							pEnd = _tcsechr( ++xml, quote, VALUEPARSEINFO::vpiDefault.chXMLEscape );
+							pEnd = _tcsechr( ++xml, quote, vpi->chXMLEscape );
 						else
 						{
 							//attr= value> 
 							// none quote mode
-							pEnd = _tcsepbrk( xml, _T(" >"), VALUEPARSEINFO::vpiDefault.chXMLEscape );
+							pEnd = _tcsepbrk( xml, _T(" >"),  vpi->chXMLEscape );
 						}
 
 						bool trim = pi->m_trim_value;
@@ -530,7 +530,7 @@ LPTSTR _tagXMLNode::LoadAttributes( const TCHAR * pszAttrs, const TCHAR * pszEnd
 // Coder    Date                      Desc
 // bro      2004-06-14
 //========================================================
-LPTSTR _tagXMLNode::LoadProcessingInstrunction( const TCHAR * pszXml, LPPARSEINFO pi /*= &piDefault*/ )
+LPTSTR _tagXMLNode::LoadProcessingInstrunction( const TCHAR * pszXml,LPVALUEPARSEINFO vpi /*= &vpiDefault*/, LPPARSEINFO pi /*= &piDefault*/)
 {
 	// find the end of pi
 	LPTSTR end = _tcsenistr( pszXml, szXMLPIClose, sizeof(szXMLPIClose)/sizeof(TCHAR)-1, pi ? pi->m_escape_value : 0 );
@@ -552,7 +552,7 @@ LPTSTR _tagXMLNode::LoadProcessingInstrunction( const TCHAR * pszXml, LPPARSEINF
 		_SetString( xml, pTagEnd, &node->m_name );
 		xml = pTagEnd;
 		
-		node->LoadAttributes( xml, end, pi );
+		node->LoadAttributes( xml, end, vpi, pi);
 
 		m_doc->m_childs.push_back( node );
 	}
@@ -573,7 +573,7 @@ LPTSTR _tagXMLNode::LoadProcessingInstrunction( const TCHAR * pszXml, LPPARSEINF
 // Coder    Date                      Desc
 // bro      2004-06-14
 //========================================================
-LPTSTR _tagXMLNode::LoadComment( const TCHAR * pszXml, LPPARSEINFO pi /*= &piDefault*/ )
+LPTSTR _tagXMLNode::LoadComment( const TCHAR * pszXml, LPVALUEPARSEINFO vpi /*= &vpiDefault*/, LPPARSEINFO pi /*= &piDefault*/)
 {
 	// find the end of comment
 	LPTSTR end = _tcsenistr( pszXml, szXMLCommentClose, sizeof(szXMLCommentClose)/sizeof(TCHAR)-1, pi ? pi->m_escape_value : 0 );
@@ -615,7 +615,7 @@ LPTSTR _tagXMLNode::LoadComment( const TCHAR * pszXml, LPPARSEINFO pi /*= &piDef
 // Coder    Date                      Desc
 // bro      2004-06-14
 //========================================================
-LPTSTR _tagXMLNode::LoadCDATA( const TCHAR * pszXml, LPPARSEINFO pi /*= &piDefault*/ )
+LPTSTR _tagXMLNode::LoadCDATA( const TCHAR * pszXml,LPVALUEPARSEINFO vpi /*= &vpiDefault*/, LPPARSEINFO pi /*= &piDefault*/)
 {
 	// find the end of CDATA
 	LPTSTR end = _tcsenistr( pszXml, szXMLCDATAClose, sizeof(szXMLCDATAClose)/sizeof(TCHAR)-1, pi ? pi->m_escape_value : 0 );
@@ -657,7 +657,7 @@ LPTSTR _tagXMLNode::LoadCDATA( const TCHAR * pszXml, LPPARSEINFO pi /*= &piDefau
 // Coder    Date                      Desc
 // bro      2004-06-14
 //========================================================
-LPTSTR LoadOtherNodes( LPXNode node, bool* pbRet, const TCHAR * pszXml, LPPARSEINFO pi /*= &piDefault*/ )
+LPTSTR LoadOtherNodes( LPXNode node, bool* pbRet, const TCHAR * pszXml,LPVALUEPARSEINFO vpi /*= &vpiDefault*/, LPPARSEINFO pi /*= &piDefault*/)
 {
 	LPTSTR xml = (LPTSTR)pszXml;
 	bool do_other_type = true;
@@ -674,7 +674,7 @@ LPTSTR LoadOtherNodes( LPXNode node, bool* pbRet, const TCHAR * pszXml, LPPARSEI
 		{
 			// processing instrunction parse
 			// return pointer is next node of pi
-			xml = node->LoadProcessingInstrunction( xml, pi );
+			xml = node->LoadProcessingInstrunction( xml, vpi, pi);
 			//if( xml == NULL )
 			//	return NULL;
 			// restart xml parse
@@ -690,7 +690,7 @@ LPTSTR LoadOtherNodes( LPXNode node, bool* pbRet, const TCHAR * pszXml, LPPARSEI
 		{
 			// processing comment parse
 			// return pointer is next node of comment
-			xml = node->LoadComment( xml, pi );
+			xml = node->LoadComment( xml, vpi, pi );
 			// comment node is terminal node
 			if( node->m_parent && node->m_parent->m_type != XNODE_DOC 
 				&& xml != prev )
@@ -711,7 +711,7 @@ LPTSTR LoadOtherNodes( LPXNode node, bool* pbRet, const TCHAR * pszXml, LPPARSEI
 		{
 			// processing CDATA parse
 			// return pointer is next node of CDATA
-			xml = node->LoadCDATA( xml, pi );
+			xml = node->LoadCDATA( xml, vpi, pi );
 			// CDATA node is terminal node
 			if( node->m_parent && node->m_parent->m_type != XNODE_DOC 
 				&& xml != prev )
@@ -744,25 +744,25 @@ LPTSTR LoadOtherNodes( LPXNode node, bool* pbRet, const TCHAR * pszXml, LPPARSEI
 // Coder    Date                      Desc
 // bro      2002-10-29
 //========================================================
-LPTSTR _tagXMLNode::Load( const TCHAR * pszXml, LPPARSEINFO pi /*= &piDefault*/ )
+LPTSTR _tagXMLNode::Load( const TCHAR * pszXml, LPVALUEPARSEINFO vpi /*= &vpiDefault*/, LPPARSEINFO pi /*= &piDefault*/ )
 {
 	// Close it
 	Close();
 
 	LPTSTR xml = (LPTSTR)pszXml;
 
-	xml = _tcschr( xml, VALUEPARSEINFO::vpiDefault.chXMLTagOpen );
+	xml = _tcschr( xml, vpi->chXMLTagOpen );
 	if( xml == NULL )
 		return NULL;
 
 	// Close Tag
-	if( *(xml+1) == VALUEPARSEINFO::vpiDefault.chXMLTagPre ) // </Close
+	if( *(xml+1) == vpi->chXMLTagPre ) // </Close
 		return xml;
 
 	// Load Other Node before <Tag>(pi, comment, CDATA etc)
 	bool bRet = false;
 	LPTSTR ret = NULL;
-	ret = LoadOtherNodes( this, &bRet, xml, pi );
+	ret = LoadOtherNodes( this, &bRet, xml, vpi, pi );
 	if( ret != NULL ) 
 		xml = ret;
 	if( bRet ) 
@@ -774,13 +774,13 @@ LPTSTR _tagXMLNode::Load( const TCHAR * pszXml, LPPARSEINFO pi /*= &piDefault*/ 
 	_SetString( xml, pTagEnd, &m_name );
 	xml = pTagEnd;
 	// Generate XML Attributte List
-	if( xml = LoadAttributes( xml, pi ) )
+	if( xml = LoadAttributes( xml, vpi, pi ) )
 	{
 		// alone tag <TAG ... />
-		if( *xml == VALUEPARSEINFO::vpiDefault.chXMLTagPre )
+		if( *xml == vpi->chXMLTagPre )
 		{
 			xml++;
-			if( *xml == VALUEPARSEINFO::vpiDefault.chXMLTagClose )
+			if( *xml == vpi->chXMLTagClose )
 				// wel-formed tag
 				return ++xml;
 			else
@@ -806,7 +806,7 @@ LPTSTR _tagXMLNode::Load( const TCHAR * pszXml, LPPARSEINFO pi /*= &piDefault*/ 
 			if( XIsEmptyString( m_value ) )
 			{
 				// Text Value 
-				TCHAR* pEnd = _tcsechr( ++xml, VALUEPARSEINFO::vpiDefault.chXMLTagOpen, VALUEPARSEINFO::vpiDefault.chXMLEscape );
+				TCHAR* pEnd = _tcsechr( ++xml, vpi->chXMLTagOpen, vpi->chXMLEscape );
 				if( pEnd == NULL ) 
 				{
 					if( pi->m_erorr_occur == false ) 
@@ -839,7 +839,7 @@ LPTSTR _tagXMLNode::Load( const TCHAR * pszXml, LPPARSEINFO pi /*= &piDefault*/ 
 				node->m_doc = m_doc;
 				node->m_type = m_type;
 				
-				xml = node->Load( xml,pi );
+				xml = node->Load( xml,vpi, pi );
 				if( node->m_name.IsEmpty() == FALSE )
 				{
 					m_childs.push_back( node );
@@ -853,7 +853,7 @@ LPTSTR _tagXMLNode::Load( const TCHAR * pszXml, LPPARSEINFO pi /*= &piDefault*/ 
 				// open/close tag <TAG ..> ... </TAG>
 				//                             ^- current pointer
 				// CloseTag case
-				if( xml && *xml && *(xml+1) && *xml == VALUEPARSEINFO::vpiDefault.chXMLTagOpen && *(xml+1) == VALUEPARSEINFO::vpiDefault.chXMLTagPre )
+				if( xml && *xml && *(xml+1) && *xml == vpi->chXMLTagOpen && *(xml+1) == vpi->chXMLTagPre )
 				{
 					// </Close>
 					xml+=2; // C
@@ -907,10 +907,10 @@ LPTSTR _tagXMLNode::Load( const TCHAR * pszXml, LPPARSEINFO pi /*= &piDefault*/ 
 				{
 					
 					//if( xml && this->value.IsEmpty() && *xml !=chXMLTagOpen )
-					if( xml && XIsEmptyString( m_value ) && *xml !=VALUEPARSEINFO::vpiDefault.chXMLTagOpen )
+					if( xml && XIsEmptyString( m_value ) && *xml !=vpi->chXMLTagOpen )
 					{
 						// Text Value 
-						TCHAR* pEnd = _tcsechr( xml, VALUEPARSEINFO::vpiDefault.chXMLTagOpen, VALUEPARSEINFO::vpiDefault.chXMLEscape );
+						TCHAR* pEnd = _tcsechr( xml, vpi->chXMLTagOpen, vpi->chXMLEscape );
 						if( pEnd == NULL ) 
 						{
 							// error cos not exist CloseTag </TAG>
@@ -958,7 +958,7 @@ LPTSTR _tagXMLNode::Load( const TCHAR * pszXml, LPPARSEINFO pi /*= &piDefault*/ 
 // Coder    Date                      Desc
 // bro      2002-10-29
 //========================================================
-LPTSTR _tagXMLDocument::Load( const TCHAR * pszXml, LPPARSEINFO pi /*= NULL*/ )
+LPTSTR _tagXMLDocument::Load( const TCHAR * pszXml,  LPVALUEPARSEINFO vpi /*= NULL*/, LPPARSEINFO pi /*= NULL*/)
 {
 	LPXNode node = EP_NEW XNode;
 	node->m_parent = (LPXNode)this;
@@ -969,7 +969,10 @@ LPTSTR _tagXMLDocument::Load( const TCHAR * pszXml, LPPARSEINFO pi /*= NULL*/ )
 	if( pi == NULL )
 		pi = &m_parse_info;
 
-	if( (end = node->Load( pszXml, pi )) == NULL )
+	if(vpi==NULL)
+		vpi=&m_valueParse_info;
+
+	if( (end = node->Load( pszXml, vpi, pi)) == NULL )
 	{
 		EP_DELETE node;
 		return NULL;
@@ -980,7 +983,7 @@ LPTSTR _tagXMLDocument::Load( const TCHAR * pszXml, LPPARSEINFO pi /*= NULL*/ )
 	// Load Other Node after </Tag>(pi, comment, CDATA etc)
 	LPTSTR ret;
 	bool bRet = false;
-	ret = LoadOtherNodes( node, &bRet, end, pi );
+	ret = LoadOtherNodes( node, &bRet, end, vpi , pi );
 	if( ret != NULL ) 
 		end = ret;
 

@@ -104,7 +104,7 @@ EpTString BaseServer::GetPort() const
 		return _T("");
 #if defined(_UNICODE) || defined(UNICODE)
 	EpTString retString;
-	TCHAR *port=EP_NEW TCHAR[m_port.length()+1];
+	wchar_t *port=EP_NEW wchar_t[m_port.length()+1];
 	System::MultiByteToWideChar(m_port.c_str(),m_port.length(),port);
 	retString=port;
 	EP_DELETE[] port;

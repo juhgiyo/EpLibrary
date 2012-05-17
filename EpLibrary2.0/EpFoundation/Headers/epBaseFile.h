@@ -101,13 +101,16 @@ namespace epl{
 		*/
 		bool LoadFromFile(const TCHAR *filename);
 
+
+
+	protected:
+
 		/*!
 		Write the given string to the file
 		@param[in] toFileString the string to write to the file
 		*/
-		void WriteToFile(const TCHAR *toFileString);
+		void writeToFile(const TCHAR *toFileString);
 
-	protected:
 		/*!
 		Get a single line from the given buffer
 		@param[in] buf the buffer that holds all lines

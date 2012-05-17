@@ -39,6 +39,23 @@ using namespace std;
 
 namespace epl
 {
+	struct _tagXMLNode;
+	typedef _tagXMLNode XNode;
+
+	typedef struct EP_FOUNDATION _xmlInfo
+	{
+		/// string for xml version
+		EpTString m_xmlVersion;
+		/// string for encoding type
+		EpTString m_xmlEncoding;
+		/// flag for writing comment or not
+		bool m_isWriteComment;
+		/// Escape Character for Value
+		TCHAR m_escapeValue; 
+		_xmlInfo() { m_xmlVersion = _T("1.0"); m_xmlEncoding =  _T("UTF-16"); m_isWriteComment = false;m_escapeValue=_T('\\'); }
+
+		static _xmlInfo xmlDefault;
+	}XMLInfo;
 
 	/*!
 	@class XMLFile epXMLFile.h
@@ -53,7 +70,7 @@ namespace epl
 		@param[in] encodingType the encoding type for this file
 		@param[in] lockPolicyType The lock policy
 		*/
-		XMLFile(TCHAR escapeValue=_T('\\'),FileEncodingType encodingType=FILE_ENCODING_TYPE_UTF16, LockPolicy lockPolicyType=EP_LOCK_POLICY);
+		XMLFile(XMLInfo &xmlInfo=XMLInfo::xmlDefault,FileEncodingType encodingType=FILE_ENCODING_TYPE_UTF16, LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Copy Constructor
@@ -75,7 +92,7 @@ namespace epl
 				LockObj lock(m_lock);
 				BaseFile::operator =(b);
 				XNode::operator =(const_cast<XMLFile&>(b));
-				m_escapeValue=b.m_escapeValue;
+				m_xmlInfo=b.m_xmlInfo;
 			}
 			return *this;
 		}
@@ -104,9 +121,21 @@ namespace epl
 		*/
 		vector<const TCHAR *> GetAttrValue(const TCHAR *nodeName, const TCHAR *attrName);
 		
+		/*!
+		Set XML info.
+		@param[in] info the XML info to set.
+		*/
+		void SetXMLInfo(XMLInfo &info);
 
 		/*!
-		Clear the list of the xml
+		Get current current XML info.
+		@return the current XML info.
+		*/
+		XMLInfo GetXMLInfo();
+
+
+		/*!
+		Clear the list of the XML
 		*/
 		void Clear();
 
@@ -132,7 +161,8 @@ namespace epl
 		*/
 		XNodes findAllNode(XNode *node, const TCHAR *  nodeName);
 
-		TCHAR m_escapeValue;
+		XMLInfo m_xmlInfo;
+
 	};
 }
 

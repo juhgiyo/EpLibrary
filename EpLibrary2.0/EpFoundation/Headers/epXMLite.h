@@ -154,16 +154,16 @@ namespace epl
 		LPXDoc	m_doc;		// document
 
 		// Load/Save XML
-		LPTSTR	Load( const TCHAR * pszXml, LPPARSEINFO pi = &PARSEINFO::piDefault );
+		LPTSTR	Load( const TCHAR * pszXml, LPVALUEPARSEINFO vpi = &VALUEPARSEINFO::vpiDefault, LPPARSEINFO pi = &PARSEINFO::piDefault );
 		CString GetXML( LPDISP_OPT opt = &DISP_OPT::optDefault );
 		CString GetText( LPDISP_OPT opt = &DISP_OPT::optDefault );
 
 		// internal load functions
-		LPTSTR	LoadAttributes( const TCHAR * pszAttrs, LPPARSEINFO pi = &PARSEINFO::piDefault );
-		LPTSTR	LoadAttributes( const TCHAR * pszAttrs, const TCHAR * pszEnd, LPPARSEINFO pi = &PARSEINFO::piDefault );
-		LPTSTR	LoadProcessingInstrunction( const TCHAR * pszXml, LPPARSEINFO pi = &PARSEINFO::piDefault );
-		LPTSTR	LoadComment( const TCHAR * pszXml, LPPARSEINFO pi = &PARSEINFO::piDefault ); 
-		LPTSTR	LoadCDATA( const TCHAR * pszXml, LPPARSEINFO pi = &PARSEINFO::piDefault ); 
+		LPTSTR	LoadAttributes( const TCHAR * pszAttrs,LPVALUEPARSEINFO vpi = &VALUEPARSEINFO::vpiDefault, LPPARSEINFO pi = &PARSEINFO::piDefault);
+		LPTSTR	LoadAttributes( const TCHAR * pszAttrs, const TCHAR * pszEnd, LPVALUEPARSEINFO vpi = &VALUEPARSEINFO::vpiDefault, LPPARSEINFO pi = &PARSEINFO::piDefault );
+		LPTSTR	LoadProcessingInstrunction( const TCHAR * pszXml, LPVALUEPARSEINFO vpi = &VALUEPARSEINFO::vpiDefault, LPPARSEINFO pi = &PARSEINFO::piDefault);
+		LPTSTR	LoadComment( const TCHAR * pszXml, LPVALUEPARSEINFO vpi = &VALUEPARSEINFO::vpiDefault, LPPARSEINFO pi = &PARSEINFO::piDefault ); 
+		LPTSTR	LoadCDATA( const TCHAR * pszXml, LPVALUEPARSEINFO vpi = &VALUEPARSEINFO::vpiDefault, LPPARSEINFO pi = &PARSEINFO::piDefault ); 
 
 		// in own attribute list
 		LPXAttr	GetAttr( const TCHAR * attrname ); 
@@ -222,10 +222,11 @@ namespace epl
 	typedef struct EP_FOUNDATION _tagXMLDocument : public XNode
 	{
 		PARSEINFO	m_parse_info;
+		VALUEPARSEINFO m_valueParse_info;
 
 		_tagXMLDocument() { m_parent = NULL; m_doc = this; m_type = XNODE_DOC; }
 		
-		LPTSTR	Load( const TCHAR * pszXml, LPPARSEINFO pi = NULL );
+		LPTSTR	Load( const TCHAR * pszXml, LPVALUEPARSEINFO vpi = NULL,LPPARSEINFO pi = NULL);
 		LPXNode	GetRoot();
 
 	}XDoc, *LPXDoc;

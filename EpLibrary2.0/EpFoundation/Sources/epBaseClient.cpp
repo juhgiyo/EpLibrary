@@ -139,7 +139,7 @@ EpTString BaseClient::GetHostName() const
 
 #if defined(_UNICODE) || defined(UNICODE)
 	EpTString retString;
-	TCHAR *hostName=EP_NEW TCHAR[m_hostName.length()+1];
+	wchar_t *hostName=EP_NEW wchar_t[m_hostName.length()+1];
 	System::MultiByteToWideChar(m_hostName.c_str(),m_hostName.length(),hostName);
 	retString=hostName;
 	EP_DELETE[] hostName;
@@ -156,7 +156,7 @@ EpTString BaseClient::GetPort() const
 
 #if defined(_UNICODE) || defined(UNICODE)
 	EpTString retString;
-	TCHAR *port=EP_NEW TCHAR[m_port.length()+1];
+	wchar_t *port=EP_NEW wchar_t[m_port.length()+1];
 	System::MultiByteToWideChar(m_port.c_str(),m_port.length(),port);
 	retString=port;
 	EP_DELETE[] port;
