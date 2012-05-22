@@ -67,6 +67,7 @@ namespace epl
 		Default Constructor
 
 		Initializes the XML File 
+		@param[in] xmlInfo the xml parsing info
 		@param[in] encodingType the encoding type for this file
 		@param[in] lockPolicyType The lock policy
 		*/
