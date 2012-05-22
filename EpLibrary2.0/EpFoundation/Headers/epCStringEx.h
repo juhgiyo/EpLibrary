@@ -3,7 +3,7 @@
 @author Marc Clifton
 	edited by Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
 @date August 08, 2010
-@brief A CStringEx Interface
+@brief CStringEx Interface
 
 @section LICENSE
 

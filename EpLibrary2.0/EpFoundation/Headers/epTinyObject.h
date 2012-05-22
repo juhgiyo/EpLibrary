@@ -3,7 +3,7 @@
 @author Andrei Alexandrescu
   recreated by Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
 @date April 16, 2011
-@brief A Tiny Object Header Interface
+@brief Tiny Object Header Interface
 @version 2.0
 
 @section LICENSE

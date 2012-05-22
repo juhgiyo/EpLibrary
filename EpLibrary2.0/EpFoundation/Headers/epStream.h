@@ -2,7 +2,7 @@
 @file epStream.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
 @date April 17, 2010
-@brief A Stream Interface
+@brief Stream Interface
 @version 2.0
 
 @section LICENSE

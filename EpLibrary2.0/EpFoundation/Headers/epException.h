@@ -2,7 +2,7 @@
 @file epException.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
 @date July 07, 2010
-@brief A Exception Interface
+@brief Exception Interface
 @version 2.0
 
 @section LICENSE

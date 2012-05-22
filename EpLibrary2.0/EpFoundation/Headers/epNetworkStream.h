@@ -2,7 +2,7 @@
 @file epNetworkStream.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
 @date April 17, 2011
-@brief A Network Stream Interface
+@brief Network Stream Interface
 @version 2.0
 
 @section LICENSE

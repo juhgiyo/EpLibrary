@@ -2,7 +2,7 @@
 @file epFileStream.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
 @date April 17, 2011
-@brief A File Stream Interface
+@brief File Stream Interface
 @version 2.0
 
 @section LICENSE

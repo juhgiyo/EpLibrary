@@ -2,7 +2,7 @@
 @file epWorkerThreadDelegate.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
 @date July 15, 2010
-@brief An Interface of Worker Thread Delegate .
+@brief Interface of Worker Thread Delegate .
 @version 2.0
 
 @section LICENSE

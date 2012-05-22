@@ -3,7 +3,7 @@
 @author John O'Byrne
 	edited by Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
 @date October 01, 2011
-@brief A TaskbarNotifier Interface
+@brief TaskbarNotifier Interface
 
 @section LICENSE
 

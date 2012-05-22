@@ -2,7 +2,7 @@
 @file epBaseServerWorker.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
 @date February 13, 2012
-@brief A Base Worker Interface
+@brief Base Worker Interface
 @version 2.0
 
 @section LICENSE

@@ -2,7 +2,7 @@
 @file epBaseWorkerThread.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
 @date July 07, 2010
-@brief A Base Worker Thread Class Interface.
+@brief Base Worker Thread Class Interface.
 @version 2.0
 
 @section LICENSE

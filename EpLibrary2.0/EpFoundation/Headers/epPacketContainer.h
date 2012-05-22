@@ -3,7 +3,7 @@
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com> 
 		
 @date March 27, 2012
-@brief A Packet Container Interface
+@brief Packet Container Interface
 @version 2.0
 
 @section LICENSE

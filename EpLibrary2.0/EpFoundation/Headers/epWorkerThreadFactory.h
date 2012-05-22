@@ -2,7 +2,7 @@
 @file epWorkerThreadFactory.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
 @date July 07, 2010
-@brief An Interface of Factory Class for Worker Thread .
+@brief Interface of Factory Class for Worker Thread .
 @version 2.0
 
 @section LICENSE

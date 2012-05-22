@@ -2,7 +2,7 @@
 @file epDynamicArray.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
 @date August 08, 2010
-@brief A Dynamic Array Data Structure Interface
+@brief Dynamic Array Data Structure Interface
 @version 2.0
 
 @section LICENSE
