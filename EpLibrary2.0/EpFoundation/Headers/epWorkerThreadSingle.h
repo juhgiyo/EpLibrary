@@ -2,7 +2,7 @@
 @file epWorkerThreadSingle.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
 @date July 07, 2010
-@brief A Worker Thread Class Interface with single job.
+@brief Worker Thread Class Interface with single job.
 @version 2.0
 
 @section LICENSE

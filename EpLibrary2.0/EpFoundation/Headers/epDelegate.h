@@ -2,7 +2,7 @@
 @file epDelegate.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
 @date March 08, 2012
-@brief A C# Style Delegate Interface
+@brief C# Style Delegate Interface
 @version 2.0
 
 @section LICENSE

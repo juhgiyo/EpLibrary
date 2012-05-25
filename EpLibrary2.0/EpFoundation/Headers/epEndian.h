@@ -2,7 +2,7 @@
 @file epEndian.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
 @date April 16, 2011
-@brief A Endian Interface
+@brief Endian Interface
 @version 2.0
 
 @section LICENSE

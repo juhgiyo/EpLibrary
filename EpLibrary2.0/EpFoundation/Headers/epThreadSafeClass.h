@@ -2,7 +2,7 @@
 @file epThreadSafeClass.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
 @date April 16, 2010
-@brief A Thread Policy Interface
+@brief Thread Safe Class Interface
 @version 2.0
 
 @section LICENSE

@@ -2,7 +2,7 @@
 @file epBaseServerWorker.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
 @date February 13, 2012
-@brief An Account Worker Interface
+@brief Base Worker Interface
 @version 2.0
 
 @section LICENSE
@@ -24,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 @section DESCRIPTION
 
-An Interface for Account Worker.
+An Interface for Base Worker.
 (Send->Receive->Send->Receive Model)
 
 */

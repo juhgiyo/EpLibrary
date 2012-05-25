@@ -2,7 +2,7 @@
 @file epMemory.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
 @date April 16, 2011
-@brief A Memory Dependencies Interface
+@brief Memory Dependencies Interface
 @version 2.0
 
 @section LICENSE

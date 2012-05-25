@@ -2,7 +2,7 @@
 @file epThreadSafePQueue.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
 @date September 02, 2010
-@brief A ThreadSafePQueue Interface
+@brief ThreadSafe Priority Queue Interface
 @version 2.0
 
 @section LICENSE

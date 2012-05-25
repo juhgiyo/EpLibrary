@@ -3,7 +3,7 @@
 @author Cho,Kyung Min: bro@shinbiro.com
 	edited by Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
 @date August 08, 2010
-@brief A XMLite Interface
+@brief XMLite Interface
 
 @section LICENSE
 

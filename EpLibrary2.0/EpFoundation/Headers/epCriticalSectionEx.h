@@ -2,7 +2,7 @@
 @file epCriticalSectionEx.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
 @date April 16, 2011
-@brief A CriticalSectionEx Interface
+@brief CriticalSectionEx Interface
 @version 2.0
 
 @section LICENSE

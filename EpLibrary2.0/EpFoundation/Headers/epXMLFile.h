@@ -42,6 +42,10 @@ namespace epl
 	struct _tagXMLNode;
 	typedef _tagXMLNode XNode;
 
+	/*!
+	@struct XMLInfo epXMLFile.h
+	@brief A structure for XML parsing information.
+	*/
 	typedef struct EP_FOUNDATION _xmlInfo
 	{
 		/// string for xml version
@@ -52,8 +56,15 @@ namespace epl
 		bool m_isWriteComment;
 		/// Escape Character for Value
 		TCHAR m_escapeValue; 
-		_xmlInfo() { m_xmlVersion = _T("1.0"); m_xmlEncoding =  _T("UTF-16"); m_isWriteComment = false;m_escapeValue=_T('\\'); }
 
+		/*!
+		Default Constructor
+
+		Initializes the XML parsing info with default values 
+		*/
+		_xmlInfo() { m_xmlVersion = _T("1.0"); m_xmlEncoding =  _T("UTF-16"); m_isWriteComment = false;m_escapeValue=_T('\\'); }
+		
+		/// Default XML parsing information
 		static _xmlInfo xmlDefault;
 	}XMLInfo;
 

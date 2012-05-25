@@ -2,7 +2,7 @@
 @file epSemaphore.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
 @date April 16, 2011
-@brief A Semaphore Interface
+@brief Semaphore Interface
 @version 2.0
 
 @section LICENSE

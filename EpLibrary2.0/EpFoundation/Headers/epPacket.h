@@ -2,7 +2,7 @@
 @file epPacket.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
 @date February 13, 2012
-@brief An Packet Interface
+@brief Packet Interface
 @version 2.0
 
 @section LICENSE
