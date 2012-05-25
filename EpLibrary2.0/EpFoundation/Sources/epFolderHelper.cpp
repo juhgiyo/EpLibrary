@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "epFolderHelper.h"
 #include <Shlwapi.h>
-
+#include <io.h>
 using namespace epl;
 
 
@@ -64,8 +64,7 @@ void FolderHelper::removeDir( const TCHAR * strPath)
 	EpTString strFile;  
 	long bRet;  
 	EpTString inputPath=strPath;
-
-	if(_waccess(inputPath.c_str(),00) != 0)  
+	if(_taccess(inputPath.c_str(),00) != 0)
 		return;  
 
 	strFile.append(inputPath);
@@ -87,7 +86,11 @@ void FolderHelper::removeDir( const TCHAR * strPath)
 }
 bool FolderHelper::CreateFolder(const TCHAR * strPath)
 {
+#if defined(_UNICODE) || defined(UNICODE)
 	if(SHCreateDirectory(NULL,strPath)==ERROR_SUCCESS)
+#else //defined(_UNICODE) || defined(UNICODE)
+	if(SHCreateDirectory(NULL,System::MultiByteToWideChar(strPath).c_str())==ERROR_SUCCESS)
+#endif //defined(_UNICODE) || defined(UNICODE)
 		return true;
 	return false;
 }

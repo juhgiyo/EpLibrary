@@ -42,8 +42,11 @@ EpTString ConsoleHelper::ExecuteConsoleCommand(const TCHAR * command)
 	sInfo.hStdInput=NULL;
 	sInfo.hStdOutput=wPipe;
 	sInfo.hStdError=wPipe;
-
+#if defined(_UNICODE) || defined(UNICODE)
 	CreateProcess(0,reinterpret_cast<LPWSTR>(const_cast<wchar_t*>(csExecute.c_str())),0,0,TRUE,NORMAL_PRIORITY_CLASS|CREATE_NO_WINDOW,0,0,&sInfo,&pInfo);
+#else // defined(_UNICODE) || defined(UNICODE)
+	CreateProcess(0,reinterpret_cast<LPSTR>(const_cast<char*>(csExecute.c_str())),0,0,TRUE,NORMAL_PRIORITY_CLASS|CREATE_NO_WINDOW,0,0,&sInfo,&pInfo);
+#endif // defined(_UNICODE) || defined(UNICODE)
 	CloseHandle(wPipe);
 
 	TCHAR buf[100];
