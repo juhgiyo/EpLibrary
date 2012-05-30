@@ -47,7 +47,7 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				WarningLevel="3"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -85,7 +85,7 @@
 			ConfigurationType="4"
 			UseOfMFC="0"
 			CharacterSet="0"
-			WholeProgramOptimization="1"
+			WholeProgramOptimization="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -109,7 +109,7 @@
 				AdditionalIncludeDirectories="..\.\EPFoundation\Headers"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="true"
+				EnableFunctionLevelLinking="false"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
@@ -175,7 +175,7 @@
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough="epPCH.h"
 				WarningLevel="3"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -223,7 +223,7 @@
 			ConfigurationType="2"
 			UseOfMFC="0"
 			CharacterSet="0"
-			WholeProgramOptimization="1"
+			WholeProgramOptimization="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -247,7 +247,7 @@
 				AdditionalIncludeDirectories="..\.\EPFoundation\Headers"
 				PreprocessorDefinitions="WIN32;NDEBUG;EP_FOUNDATION_DLL_EXPORT"
 				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="true"
+				EnableFunctionLevelLinking="false"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough=""
 				WarningLevel="3"
@@ -324,7 +324,7 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				WarningLevel="3"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -389,7 +389,7 @@
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough="epPCH.h"
 				WarningLevel="3"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -437,7 +437,7 @@
 			ConfigurationType="4"
 			UseOfMFC="0"
 			CharacterSet="1"
-			WholeProgramOptimization="1"
+			WholeProgramOptimization="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -461,7 +461,7 @@
 				AdditionalIncludeDirectories="..\.\EPFoundation\Headers"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="true"
+				EnableFunctionLevelLinking="false"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
@@ -501,7 +501,7 @@
 			ConfigurationType="2"
 			UseOfMFC="0"
 			CharacterSet="1"
-			WholeProgramOptimization="1"
+			WholeProgramOptimization="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -525,7 +525,7 @@
 				AdditionalIncludeDirectories="..\.\EPFoundation\Headers"
 				PreprocessorDefinitions="WIN32;NDEBUG;EP_FOUNDATION_DLL_EXPORT"
 				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="true"
+				EnableFunctionLevelLinking="false"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough=""
 				WarningLevel="3"
