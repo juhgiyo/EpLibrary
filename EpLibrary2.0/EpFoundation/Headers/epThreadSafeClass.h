@@ -1,6 +1,7 @@
 /*! 
 @file epThreadSafeClass.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
+		<http://github.com/juhgiyo/eplibrary>
 @date April 16, 2010
 @brief Thread Safe Class Interface
 @version 2.0

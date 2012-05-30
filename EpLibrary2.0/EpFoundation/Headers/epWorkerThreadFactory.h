@@ -1,6 +1,7 @@
 /*! 
 @file epWorkerThreadFactory.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
+		<http://github.com/juhgiyo/eplibrary>
 @date July 07, 2010
 @brief Interface of Factory Class for Worker Thread .
 @version 2.0

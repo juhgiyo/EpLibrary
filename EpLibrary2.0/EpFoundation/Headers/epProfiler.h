@@ -1,6 +1,7 @@
 /*! 
 @file epProfiler.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
+		<http://github.com/juhgiyo/eplibrary>
 @date April 17, 2011
 @brief ProfileManager Interface
 @version 2.0

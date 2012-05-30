@@ -1,6 +1,7 @@
 /*! 
 @file epThread.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
+		<http://github.com/juhgiyo/eplibrary>
 @date July 07, 2010
 @brief Thread Class Frame Interface
 @version 2.0

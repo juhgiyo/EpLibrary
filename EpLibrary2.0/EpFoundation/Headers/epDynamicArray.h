@@ -1,6 +1,7 @@
 /*! 
 @file epDynamicArray.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
+		<http://github.com/juhgiyo/eplibrary>
 @date August 08, 2010
 @brief Dynamic Array Data Structure Interface
 @version 2.0

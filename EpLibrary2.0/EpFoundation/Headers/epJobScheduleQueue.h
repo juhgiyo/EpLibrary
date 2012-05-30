@@ -1,6 +1,7 @@
 /*! 
 @file epJobScheduleQueue.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
+		<http://github.com/juhgiyo/eplibrary>
 @date September 10, 2010
 @brief JobScheduleQueue Interface
 @version 2.0

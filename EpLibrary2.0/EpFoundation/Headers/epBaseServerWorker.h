@@ -1,6 +1,7 @@
 /*! 
 @file epBaseServerWorker.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
+		<http://github.com/juhgiyo/eplibrary>
 @date February 13, 2012
 @brief Base Worker Interface
 @version 2.0

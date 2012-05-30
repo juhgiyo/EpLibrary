@@ -2,6 +2,7 @@
 @file epCStringEx.h
 @author Marc Clifton
 	edited by Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
+			  <http://github.com/juhgiyo/eplibrary>
 @date August 08, 2010
 @brief CStringEx Interface
 

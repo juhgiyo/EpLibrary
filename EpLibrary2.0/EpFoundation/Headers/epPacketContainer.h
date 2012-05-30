@@ -1,7 +1,7 @@
 /*! 
 @file epPacketContainer.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com> 
-		
+		<http://github.com/juhgiyo/eplibrary>
 @date March 27, 2012
 @brief Packet Container Interface
 @version 2.0

@@ -1,6 +1,7 @@
 /*! 
 @file epSingletonHolder.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
+		<http://github.com/juhgiyo/eplibrary>
 @date April 16, 2009
 @brief Singleton Holder Interface
 @version 2.0

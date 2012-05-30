@@ -1,6 +1,7 @@
 /*! 
 @file epDelegate.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
+		<http://github.com/juhgiyo/eplibrary>
 @date March 08, 2012
 @brief C# Style Delegate Interface
 @version 2.0

@@ -1,6 +1,7 @@
 /*! 
 @file epPatriciaTree.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
+		<http://github.com/juhgiyo/eplibrary>
 @date June 09, 2008
 @brief Patricia Tree Interface
 @version 2.0

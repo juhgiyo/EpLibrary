@@ -1,6 +1,7 @@
 /*! 
 @file epWorkerThreadSingle.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
+		<http://github.com/juhgiyo/eplibrary>
 @date July 07, 2010
 @brief Worker Thread Class Interface with single job.
 @version 2.0

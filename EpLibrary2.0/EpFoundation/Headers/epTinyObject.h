@@ -2,6 +2,7 @@
 @file epTinyObject.h
 @author Andrei Alexandrescu
   recreated by Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
+  			   <http://github.com/juhgiyo/eplibrary>
 @date April 16, 2011
 @brief Tiny Object Header Interface
 @version 2.0

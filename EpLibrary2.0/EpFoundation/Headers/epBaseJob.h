@@ -1,6 +1,7 @@
 /*! 
 @file epBaseJob.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
+		<http://github.com/juhgiyo/eplibrary>
 @date August 27, 2010
 @brief Base Job Class Interface
 @version 2.0

@@ -1,6 +1,7 @@
 /*! 
 @file epKAryHeap.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
+		<http://github.com/juhgiyo/eplibrary>
 @date June 09, 2008
 @brief K-ary Heap Interface
 @version 2.0

@@ -1,6 +1,7 @@
 /*! 
 @file epWorkerThreadDelegate.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
+		<http://github.com/juhgiyo/eplibrary>
 @date July 15, 2010
 @brief Interface of Worker Thread Delegate .
 @version 2.0

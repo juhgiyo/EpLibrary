@@ -2,6 +2,7 @@
 @file epXMLite.h
 @author Cho,Kyung Min: bro@shinbiro.com
 	edited by Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
+			  <http://github.com/juhgiyo/eplibrary>
 @date August 08, 2010
 @brief XMLite Interface
 

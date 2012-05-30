@@ -1,6 +1,7 @@
 /*! 
 @file epConsoleHelper.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
+		<http://github.com/juhgiyo/eplibrary>
 @date October 01, 2011
 @brief Console Processing Function Class Interface
 @version 2.0
