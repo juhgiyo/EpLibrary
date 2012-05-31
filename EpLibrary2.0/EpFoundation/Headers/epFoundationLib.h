@@ -53,14 +53,10 @@ An Interface for EP Library.
 #endif  //EP_FOUNDATION_DLL_EXPORT
 
 
-#ifdef EP_FOUNDATION_USING_PROFILE
+#ifdef _DEBUG
 #define EP_ENABLE_PROFILE
-#endif //EP_FOUNDATION_USING_PROFILE
-
-#ifdef EP_FOUNDATION_USING_LOG
 #define EP_ENABLE_LOG
-#endif //EP_FOUNDATION_USING_LOG
-
+#endif //_DEBUG
 
 #define WIDEN2(x) L ## x
 #define WIDEN(x) WIDEN2(x)
