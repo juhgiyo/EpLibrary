@@ -60,7 +60,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\$(ProjectName).lib"
+				OutputFile="$(OutDir)\$(ProjectName)_D.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -188,7 +188,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)\$(ProjectName)_DLL.dll"
+				OutputFile="$(OutDir)\$(ProjectName)_DLL_D.dll"
 				IgnoreDefaultLibraryNames=""
 				SubSystem="2"
 				ImportLibrary="$(TargetDir)$(TargetName).lib"
@@ -337,7 +337,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\$(ProjectName)U.lib"
+				OutputFile="$(OutDir)\$(ProjectName)U_D.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -402,7 +402,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)\$(ProjectName)U_DLL.dll"
+				OutputFile="$(OutDir)\$(ProjectName)U_DLL_D.dll"
 				IgnoreDefaultLibraryNames=""
 				SubSystem="2"
 				ImportLibrary="$(TargetDir)$(TargetName).lib"
