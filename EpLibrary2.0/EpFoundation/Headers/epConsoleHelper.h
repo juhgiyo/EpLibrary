@@ -47,9 +47,10 @@ namespace epl
 		/*!
 		Execute the given command to the console and return the result
 		@param[in] command the command to execute
+		@param[in] isWaitForTerminate flag for waiting for process to terminate or not
 		@return the result of the console command
 		*/
-		static EpTString ExecuteConsoleCommand(const TCHAR * command);
+		static EpTString ExecuteConsoleCommand(const TCHAR * command,bool isWaitForTerminate=true);
 
 		/*!
 		Execute the given executable file

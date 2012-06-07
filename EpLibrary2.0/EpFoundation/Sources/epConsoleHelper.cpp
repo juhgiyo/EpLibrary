@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace epl;
 
-EpTString ConsoleHelper::ExecuteConsoleCommand(const TCHAR * command)
+EpTString ConsoleHelper::ExecuteConsoleCommand(const TCHAR * command,bool isWaitForTerminate)
 {
 	EpTString csExecute;
 	csExecute=command;
@@ -31,7 +31,10 @@ EpTString ConsoleHelper::ExecuteConsoleCommand(const TCHAR * command)
 
 	HANDLE rPipe, wPipe;
 
-	CreatePipe(&rPipe,&wPipe,&secattr,0);
+	if(!CreatePipe(&rPipe,&wPipe,&secattr,0))
+	{
+		return _T("[Error]ConsoleHelper::ExecuteConsoleCommand:Creating Pipe");
+	}
 
 	STARTUPINFO sInfo;
 	ZeroMemory(&sInfo, sizeof(sInfo));
@@ -39,26 +42,51 @@ EpTString ConsoleHelper::ExecuteConsoleCommand(const TCHAR * command)
 	ZeroMemory(&pInfo,sizeof(pInfo));
 	sInfo.cb=sizeof(sInfo);
 	sInfo.dwFlags=STARTF_USESTDHANDLES;
+	sInfo.wShowWindow=SW_HIDE;
 	sInfo.hStdInput=NULL;
 	sInfo.hStdOutput=wPipe;
 	sInfo.hStdError=wPipe;
 #if defined(_UNICODE) || defined(UNICODE)
-	CreateProcess(0,reinterpret_cast<LPWSTR>(const_cast<wchar_t*>(csExecute.c_str())),0,0,TRUE,NORMAL_PRIORITY_CLASS|CREATE_NO_WINDOW,0,0,&sInfo,&pInfo);
+	if(!CreateProcess(0,reinterpret_cast<LPWSTR>(const_cast<wchar_t*>(csExecute.c_str())),0,0,TRUE,NORMAL_PRIORITY_CLASS|CREATE_NO_WINDOW,0,0,&sInfo,&pInfo))
 #else // defined(_UNICODE) || defined(UNICODE)
-	CreateProcess(0,reinterpret_cast<LPSTR>(const_cast<char*>(csExecute.c_str())),0,0,TRUE,NORMAL_PRIORITY_CLASS|CREATE_NO_WINDOW,0,0,&sInfo,&pInfo);
+	if(!CreateProcess(0,reinterpret_cast<LPSTR>(const_cast<char*>(csExecute.c_str())),0,0,TRUE,NORMAL_PRIORITY_CLASS|CREATE_NO_WINDOW,0,0,&sInfo,&pInfo))
 #endif // defined(_UNICODE) || defined(UNICODE)
+	{
+		return _T("[Error]ConsoleHelper::ExecuteConsoleCommand:Creating Process");
+	}
+	if(isWaitForTerminate)
+	{
+		WaitForSingleObject(pInfo.hProcess,INFINITE);
+	}
+
 	CloseHandle(wPipe);
 
-	TCHAR buf[100];
+	char buf[100];
+	
 	unsigned long reDword;
 	EpTString m_csOutput,csTemp;
+	m_csOutput=_T("");
 	long res;
-	do
+	unsigned long dwAvail;
+	if(PeekNamedPipe(rPipe, NULL, 0, NULL, &dwAvail, NULL) && dwAvail>0)
 	{
-		res=::ReadFile(rPipe,buf,100,&reDword,0);
-		csTemp=buf;
-		m_csOutput+=csTemp.substr(0,reDword);
-	}while(res);
+		do
+		{
+			memset(buf,0,sizeof(char)*100);
+			res=::ReadFile(rPipe,buf,100,&reDword,0);
+#if defined(_UNICODE) || defined(UNICODE)
+			csTemp=System::MultiByteToWideChar(buf);
+			m_csOutput+=csTemp;
+#else // defined(_UNICODE) || defined(UNICODE)
+			csTemp=buf;
+			m_csOutput+=csTemp.substr(0,reDword);
+#endif // defined(_UNICODE) || defined(UNICODE)
+		}while(res);
+
+	}
+	
+	CloseHandle(pInfo.hProcess);
+	CloseHandle(pInfo.hThread);
 	return m_csOutput;
 
 }
