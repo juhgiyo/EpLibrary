@@ -62,7 +62,6 @@ EpTString ConsoleHelper::ExecuteConsoleCommand(const TCHAR * command,bool isWait
 	CloseHandle(wPipe);
 
 	char buf[100];
-	
 	unsigned long reDword;
 	EpTString m_csOutput,csTemp;
 	m_csOutput=_T("");
@@ -75,7 +74,7 @@ EpTString ConsoleHelper::ExecuteConsoleCommand(const TCHAR * command,bool isWait
 			memset(buf,0,sizeof(char)*100);
 			res=::ReadFile(rPipe,buf,100,&reDword,0);
 #if defined(_UNICODE) || defined(UNICODE)
-			csTemp=System::MultiByteToWideChar(buf);
+			csTemp=System::MultiByteToWideChar(buf,reDword);
 			m_csOutput+=csTemp;
 #else // defined(_UNICODE) || defined(UNICODE)
 			csTemp=buf;
