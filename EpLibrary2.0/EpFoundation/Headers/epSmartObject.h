@@ -93,7 +93,7 @@ namespace epl
 		{
 			LockObj lock(m_refCounterLock);
 			m_refCount++;
-			LOG_THIS_MSG(_T("%s::%s(%d) Retained Object : %d (Current Refence Count = %d)"),__TFILE__,__TFUNCTION__,__LINE__,this, this->m_refCount);
+			LOG_THIS_MSG(_T("Retained Object : %d (Current Refence Count = %d)"),this, this->m_refCount);
 		}
 
 		/*!
@@ -104,7 +104,7 @@ namespace epl
 		{
 			LockObj lock(m_refCounterLock);
 			m_refCount--;
-			LOG_THIS_MSG(_T("%s::%s(%d) Released Object : %d (Current Refence Count = %d)"),__TFILE__,__TFUNCTION__,__LINE__,this, this->m_refCount);
+			LOG_THIS_MSG(_T("Released Object : %d (Current Refence Count = %d)"),this, this->m_refCount);
 			if(m_refCount==0)
 			{
 				m_refCount++; // this increment is dummy addition to make pair with destructor.
@@ -128,7 +128,7 @@ namespace epl
 		__forceinline SmartObject(LockPolicy lockPolicyType=EP_LOCK_POLICY)
 		{
 			m_refCount=1;
-			LOG_THIS_MSG(_T("%s::%s(%d) Allocated Object : %d (Current Refence Count = %d)"),__TFILE__,__TFUNCTION__,__LINE__,this, this->m_refCount);
+			LOG_THIS_MSG(_T("Allocated Object : %d (Current Refence Count = %d)"),this, this->m_refCount);
 			m_lockPolicy=lockPolicyType;
 			switch(lockPolicyType)
 			{
@@ -154,7 +154,7 @@ namespace epl
 		__forceinline SmartObject(const SmartObject& b)
 		{
 			m_refCount=1;
-			LOG_THIS_MSG(_T("%s::%s(%d) Allocated Object : %d (Current Refence Count = %d)"),__TFILE__,__TFUNCTION__,__LINE__,this, this->m_refCount);
+			LOG_THIS_MSG(_T("Allocated Object : %d (Current Refence Count = %d)"),this, this->m_refCount);
 			m_lockPolicy=b.m_lockPolicy;
 			switch(m_lockPolicy)
 			{
