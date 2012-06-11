@@ -1001,6 +1001,10 @@
 				Name="System"
 				>
 				<File
+					RelativePath=".\Headers\epAssert.h"
+					>
+				</File>
+				<File
 					RelativePath=".\Headers\epConsoleHelper.h"
 					>
 				</File>

@@ -95,6 +95,7 @@ An Interface for EP Foundation Library
 #include "epPacketContainer.h"
 
 //System
+#include "epAssert.h"
 #include "epConsoleHelper.h"
 #include "epDateTimeHelper.h"
 #include "epEndian.h"
