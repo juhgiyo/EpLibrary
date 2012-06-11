@@ -178,11 +178,9 @@ int System::SPrintf_V(EpString &retDest,const char *format,va_list args)
 	int length;
 	char *tmpString=NULL;
 	int retVal=0;
-	va_start(args, format);
 	length=StrLen_V(format,args);
 	tmpString=EP_NEW char[length+1];
 	retVal=SPrintf_V(tmpString,length+1,format,args);
-	va_end(args);
 	retDest=tmpString;
 	if(tmpString)
 		EP_DELETE[] tmpString;
@@ -240,11 +238,9 @@ int System::SWPrintf_V(EpWString &retDest,const wchar_t *format,va_list args)
 	int length;
 	wchar_t *tmpString=NULL;
 	int retVal=0;
-	va_start(args, format);
 	length=WcsLen_V(format,args);
 	tmpString=EP_NEW wchar_t[length+1];
 	retVal=SWPrintf_V(tmpString,length+1,format,args);
-	va_end(args);
 	retDest=tmpString;
 	if(tmpString)
 		EP_DELETE[] tmpString;
@@ -301,11 +297,9 @@ int System::STPrintf_V(EpTString &retDest,const TCHAR *format,va_list args)
 	int length;
 	TCHAR *tmpString=NULL;
 	int retVal=0;
-	va_start(args, format);
 	length=TcsLen_V(format,args);
 	tmpString=EP_NEW TCHAR[length+1];
 	retVal=STPrintf_V(tmpString,length+1,format,args);
-	va_end(args);
 	retDest=tmpString;
 	if(tmpString)
 		EP_DELETE[] tmpString;
