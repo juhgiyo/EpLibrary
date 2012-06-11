@@ -203,7 +203,7 @@ bool BaseServerEx::StartServer()
 	m_listenSocket = socket(m_result->ai_family, m_result->ai_socktype, m_result->ai_protocol);
 	if (m_listenSocket == INVALID_SOCKET) {
 		EP_NOTICEBOX(_T("socket failed with error\n"));
-		StopServer();
+		stopServer();
 		return false;
 	}
 
@@ -211,14 +211,14 @@ bool BaseServerEx::StartServer()
 	iResult = bind( m_listenSocket, m_result->ai_addr, static_cast<int>(m_result->ai_addrlen));
 	if (iResult == SOCKET_ERROR) {
 		EP_NOTICEBOX(_T("bind failed with error\n"));
-		StopServer();
+		stopServer();
 		return false;
 	}
 
 	iResult = listen(m_listenSocket, SOMAXCONN);
 	if (iResult == SOCKET_ERROR) {
 		EP_NOTICEBOX(_T("listen failed with error\n"));
-		StopServer();
+		stopServer();
 		return false;
 	}
 	m_isServerStarted=true;
@@ -236,6 +236,11 @@ bool BaseServerEx::StartServer()
 void BaseServerEx::ShutdownAllClient()
 {
 	LockObj lock(m_lock);
+	shutdownAllClient();
+}
+
+void BaseServerEx::shutdownAllClient()
+{
 	if(!m_isServerStarted)
 		return;
 	// shutdown the connection since we're done
@@ -246,7 +251,6 @@ void BaseServerEx::ShutdownAllClient()
 			(*iter)->Release();
 	}
 	m_clientList.clear();
-
 }
 
 bool BaseServerEx::IsServerStarted() const
@@ -256,9 +260,14 @@ bool BaseServerEx::IsServerStarted() const
 void BaseServerEx::StopServer()
 {
 	LockObj lock(m_lock);
+	stopServer();
+}
+
+void BaseServerEx::stopServer()
+{
 	if(m_isServerStarted==true)
 	{
-		ShutdownAllClient();	
+		shutdownAllClient();	
 		// No longer need server socket
 	}
 	if(m_serverThreadHandle)

@@ -172,6 +172,16 @@ namespace epl{
 		*/
 		virtual BaseServerWorkerEx* createNewWorker()=0;
 
+		/*!
+		Actually terminate all clients' socket connected.
+		*/
+		void shutdownAllClient();
+
+		/*!
+		Actually Stop the server
+		*/
+		void stopServer();
+
 		/// port number
 		EpString m_port;
 		/// listening socket
