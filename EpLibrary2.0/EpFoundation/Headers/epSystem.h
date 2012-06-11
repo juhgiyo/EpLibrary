@@ -78,15 +78,15 @@ An Interface for System Class.
 #define EP_ASSERT_EXPR(_Expression,formatString, ...)\
 	do{\
 	if(!!!(_Expression)){\
-	int len=_scprintf(formatString,__VA_ARGS__)+1;\
-	char * expression=EP_NEW char[len];\
-	sprintf_s(expression,len,formatString,__VA_ARGS__);\
+	int len=_scwprintf(_CRT_WIDE(formatString),__VA_ARGS__)+1;\
+	wchar_t * expression=EP_NEW wchar_t[len];\
+	swprintf_s(expression,len,_CRT_WIDE(formatString),__VA_ARGS__);\
 	\
-	int len2=_scprintf("%s\r\n\r\nMessage: %s",_Expression,expression )+1;\
+	int len2=_scwprintf(_T("%s\r\n\r\nMessage: %s"),_CRT_WIDE(#_Expression),expression )+1;\
 	wchar_t * expression2=EP_NEW wchar_t[len2];\
-	sprintf_s(expression2,len2,"%s\r\n\r\nMessage: %s",_Expression,expression);\
+	swprintf_s(expression2,len2,_T("%s\r\n\r\nMessage: %s"),_CRT_WIDE(#_Expression),expression);\
 	\
-	(void) (1 != _CrtDbgReport(_CRT_ASSERT, __FILE__, __LINE__, NULL, expression2), 0));\
+	(void)( (_wassert(expression2,__TFILE__, __LINE__), 0) );\
 	EP_DELETE[] expression;\
 	EP_DELETE[] expression2;\
 	}\
@@ -96,12 +96,11 @@ An Interface for System Class.
 #endif //defined(_DEBUG)
 
 /*!
-@def EP_ASSERT
-@brief Macro Function for assert
+@def EP_tASSERT_EXPR
+@brief Macro Function for assert with message
 @param[in] _Expression the boolean expression to evaluate the assert
+@param[in] formatString the format string for the message
 */
-#define EP_ASSERT _ASSERT
-
 #if defined(_DEBUG)
 #if defined(_UNICODE) || defined(UNICODE)
 #define EP_TASSERT_EXPR(_Expression,formatString, ...) EP_WASSERT_EXPR(_Expression,formatString,__VA_ARGS__)
@@ -109,6 +108,13 @@ An Interface for System Class.
 #define EP_TASSERT_EXPR(_Expression,formatString, ...) EP_ASSERT_EXPR(_Expression,formatString,__VA_ARGS__)
 #endif //defined(_UNICODE) || defined(UNICODE)
 #endif //defined(_DEBUG)
+
+/*!
+@def EP_ASSERT
+@brief Macro Function for assert
+@param[in] _Expression the boolean expression to evaluate the assert
+*/
+#define EP_ASSERT _ASSERT
 
 
 /*!
@@ -184,7 +190,7 @@ namespace epl
 		Copy the source buffer to destination buffer.
 		@param[in] dest The destination for copying.
 		@param[in] source The source buffer to be copied.
-		@param[in] srcSize the size of source to copy.
+		@param[in] srcSizeInByte the size of source to copy.
 		@return the resulting buffer.
 		*/
 		static void* Memcpy (void* dest, const void* source, unsigned int srcSizeInByte);
@@ -193,7 +199,7 @@ namespace epl
 		Set the source buffer with given value.
 		@param[in] source The source to be set.
 		@param[in] val The value to set.
-		@param[in] srcSize the size of source.
+		@param[in] srcSizeInByte the size of source.
 		@return the resulting buffer.
 		*/
 		static void* Memset(void* source,int val,unsigned int srcSizeInByte);
