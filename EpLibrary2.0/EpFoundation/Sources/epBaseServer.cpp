@@ -22,11 +22,6 @@ using namespace epl;
 
 BaseServer::BaseServer(const TCHAR *  port, LockPolicy lockPolicyType)
 {
-	SetPort(port);
-	m_serverThreadHandle=0;
-	m_listenSocket=NULL;
-	m_result=0;
-	m_isServerStarted=false;
 	m_lockPolicy=lockPolicyType;
 	switch(lockPolicyType)
 	{
@@ -43,6 +38,11 @@ BaseServer::BaseServer(const TCHAR *  port, LockPolicy lockPolicyType)
 		m_lock=NULL;
 		break;
 	}
+	SetPort(port);
+	m_serverThreadHandle=0;
+	m_listenSocket=NULL;
+	m_result=0;
+	m_isServerStarted=false;
 }
 
 BaseServer::BaseServer(const BaseServer& b)

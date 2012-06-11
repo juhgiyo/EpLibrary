@@ -22,11 +22,8 @@ using namespace epl;
 
 BaseServerEx::BaseServerEx(const TCHAR * port, LockPolicy lockPolicyType)
 {
-	SetPort(port);
-	m_serverThreadHandle=0;
-	m_listenSocket=NULL;
-	m_result=0;
-	m_isServerStarted=false;
+
+	m_lockPolicy=lockPolicyType;
 	switch(lockPolicyType)
 	{
 	case LOCK_POLICY_CRITICALSECTION:
@@ -42,6 +39,12 @@ BaseServerEx::BaseServerEx(const TCHAR * port, LockPolicy lockPolicyType)
 		m_lock=NULL;
 		break;
 	}
+	SetPort(port);
+	m_serverThreadHandle=0;
+	m_listenSocket=NULL;
+	m_result=0;
+	m_isServerStarted=false;
+
 }
 
 BaseServerEx::BaseServerEx(const BaseServerEx& b)

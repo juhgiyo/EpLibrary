@@ -22,12 +22,7 @@ using namespace epl;
 
 BaseClientEx::BaseClientEx(const TCHAR * hostName, const TCHAR * port,LockPolicy lockPolicyType)
 {
-	SetHostName(hostName);
-	SetPort(port);
-	m_connectSocket=NULL;
-	m_result=0;
-	m_ptr=0;
-	m_isConnected=false;
+	m_lockPolicy=lockPolicyType;
 	switch(lockPolicyType)
 	{
 	case LOCK_POLICY_CRITICALSECTION:
@@ -47,6 +42,12 @@ BaseClientEx::BaseClientEx(const TCHAR * hostName, const TCHAR * port,LockPolicy
 		m_generalLock=NULL;
 		break;
 	}
+	SetHostName(hostName);
+	SetPort(port);
+	m_connectSocket=NULL;
+	m_result=0;
+	m_ptr=0;
+	m_isConnected=false;
 }
 
 BaseClientEx::BaseClientEx(const BaseClientEx& b)

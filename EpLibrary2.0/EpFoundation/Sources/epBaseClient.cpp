@@ -20,12 +20,6 @@ using namespace epl;
 
 BaseClient::BaseClient(const TCHAR * hostName, const TCHAR * port,LockPolicy lockPolicyType)
 {
-	SetHostName(hostName);
-	SetPort(port);
-	m_connectSocket=NULL;
-	m_result=0;
-	m_ptr=0;
-	m_isConnected=false;
 	m_lockPolicy=lockPolicyType;
 	switch(lockPolicyType)
 	{
@@ -46,6 +40,12 @@ BaseClient::BaseClient(const TCHAR * hostName, const TCHAR * port,LockPolicy loc
 		m_generalLock=NULL;
 		break;
 	}
+	SetHostName(hostName);
+	SetPort(port);
+	m_connectSocket=NULL;
+	m_result=0;
+	m_ptr=0;
+	m_isConnected=false;
 }
 
 BaseClient::BaseClient(const BaseClient& b)
