@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace epl;
 
-Packet::Packet(const char *packet, unsigned int byteSize, bool shouldAllocate, LockPolicy lockPolicyType):SmartObject(lockPolicyType)
+Packet::Packet(const void *packet, unsigned int byteSize, bool shouldAllocate, LockPolicy lockPolicyType):SmartObject(lockPolicyType)
 {
 	m_packet=NULL;
 	m_packetSize=0;
@@ -38,7 +38,7 @@ Packet::Packet(const char *packet, unsigned int byteSize, bool shouldAllocate, L
 	}
 	else
 	{
-		m_packet=const_cast<char*>(packet);
+		m_packet=reinterpret_cast<char*>(const_cast<void*>(packet));
 		m_packetSize=byteSize;
 	}
 	m_lockPolicy=lockPolicyType;
@@ -148,7 +148,7 @@ const char *Packet::GetPacket() const
 	return m_packet;	
 }
 
-void Packet::SetPacket(const char* packet, unsigned int packetByteSize)
+void Packet::SetPacket(const void* packet, unsigned int packetByteSize)
 {
 	LockObj lock(m_lock);
 	if(m_isAllocated)
@@ -170,7 +170,7 @@ void Packet::SetPacket(const char* packet, unsigned int packetByteSize)
 	}
 	else
 	{
-		m_packet=const_cast<char*>(packet);
+		m_packet=reinterpret_cast<char*>(const_cast<void*>(packet));
 		m_packetSize=packetByteSize;
 	}
 }
