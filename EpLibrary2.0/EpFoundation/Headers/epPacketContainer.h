@@ -81,7 +81,7 @@ namespace epl
 		@param[in] shouldAllocate flag for the allocation of memory for itself
 		@param[in] lockPolicyType The lock policy
 		*/
-		PacketContainer(void * rawData, unsigned int byteSize, bool shouldAllocate=true, LockPolicy lockPolicyType=EP_LOCK_POLICY);
+		PacketContainer(const void * rawData, unsigned int byteSize, bool shouldAllocate=true, LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Copy Constructor
@@ -125,7 +125,7 @@ namespace epl
 		@param[in] byteSize the byte size of raw data given.
 		@return true if successful otherwise false
 		*/
-		bool SetPacket(void * rawData, unsigned int byteSize);
+		bool SetPacket(const void * rawData, unsigned int byteSize);
 
 		/*!
 		Get the pointer to the array
@@ -140,7 +140,7 @@ namespace epl
 		@param[in] offset the offset for start position of copying
 		@return true if successful otherwise false
 		*/
-		bool SetArray(ArrayType *arr,unsigned int arraySize, unsigned int offset=0);
+		bool SetArray(const ArrayType *arr,unsigned int arraySize, unsigned int offset=0);
 		
 		/*!
 		Get the length of the array
@@ -300,7 +300,7 @@ namespace epl
 	}
 
 	template<typename PacketStruct, typename ArrayType>
-	PacketContainer<PacketStruct,ArrayType>::PacketContainer(void * rawData, unsigned int byteSize, bool shouldAllocate, LockPolicy lockPolicyType)
+	PacketContainer<PacketStruct,ArrayType>::PacketContainer(const void * rawData, unsigned int byteSize, bool shouldAllocate, LockPolicy lockPolicyType)
 	{
 
 
@@ -323,7 +323,7 @@ namespace epl
 		}
 		else
 		{
-			m_packetContainer=(PacketContainerStruct*)rawData;
+			m_packetContainer=reinterpret_cast<PacketContainerStruct*>(const_cast<void*>(rawData));
 			m_length=(byteSize-sizeof(PacketContainerStruct))/sizeof(ArrayType);
 		}
 		m_lockPolicy=lockPolicyType;
@@ -430,7 +430,7 @@ namespace epl
 	}
 
 	template<typename PacketStruct, typename ArrayType>
-	bool PacketContainer<PacketStruct,ArrayType>::SetPacket(void * rawData, unsigned int byteSize)
+	bool PacketContainer<PacketStruct,ArrayType>::SetPacket(const void * rawData, unsigned int byteSize)
 	{
 		LockObj lock(m_lock);
 		if(byteSize<sizeof(PacketStruct))
@@ -454,7 +454,7 @@ namespace epl
 		}
 		else
 		{
-			m_packetContainer=(PacketContainerStruct*)rawData;
+			m_packetContainer=reinterpret_cast<PacketContainerStruct*>(const_cast<void*>(rawData));
 			m_length=(byteSize-sizeof(PacketContainerStruct))/sizeof(ArrayType);
 		}
 		return true;
@@ -469,7 +469,7 @@ namespace epl
 	}
 
 	template<typename PacketStruct, typename ArrayType>
-	bool PacketContainer<PacketStruct,ArrayType>::SetArray(ArrayType *arr,unsigned int arraySize, unsigned int offset=0)
+	bool PacketContainer<PacketStruct,ArrayType>::SetArray(const ArrayType *arr,unsigned int arraySize, unsigned int offset=0)
 	{
 		LockObj lock(m_lock);
 		if(m_isAllocated)

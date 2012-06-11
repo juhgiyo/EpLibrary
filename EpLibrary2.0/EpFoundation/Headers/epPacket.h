@@ -57,7 +57,7 @@ namespace epl{
 		@param[in] shouldAllocate flag for the allocation of memory for itself
 		@param[in] lockPolicyType The lock policy
 		*/
-		Packet(char *packet=NULL, unsigned int byteSize=0, bool shouldAllocate=true, LockPolicy lockPolicyType=EP_LOCK_POLICY);
+		Packet(const char *packet=NULL, unsigned int byteSize=0, bool shouldAllocate=true, LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Copy Constructor
@@ -109,7 +109,7 @@ namespace epl{
 		@param[in] packet the packet data
 		@param[in] packetByteSize the size of packet given
 		*/
-		void SetPacket(char* packet, unsigned int packetByteSize);
+		void SetPacket(const char* packet, unsigned int packetByteSize);
 
 	private:
 		/// packet
