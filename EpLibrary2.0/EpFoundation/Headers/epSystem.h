@@ -96,7 +96,7 @@ An Interface for System Class.
 #endif //defined(_DEBUG)
 
 /*!
-@def EP_tASSERT_EXPR
+@def EP_TASSERT_EXPR
 @brief Macro Function for assert with message
 @param[in] _Expression the boolean expression to evaluate the assert
 @param[in] formatString the format string for the message
