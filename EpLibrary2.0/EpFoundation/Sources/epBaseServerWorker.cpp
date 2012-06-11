@@ -137,10 +137,7 @@ void BaseServerWorker::execute()
 
 			if (iResult == shouldReceive) {
 				// Process Received Packet and Send Result to Client
-				if(parsePacket(recvPacket)<=0)
-				{
-					break;
-				}
+				parsePacket(recvPacket);
 			}
 			else if (iResult == 0)
 			{

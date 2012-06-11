@@ -183,9 +183,8 @@ namespace epl{
 		Parse the given packet and do relevant operation.
 		@remark  Subclasses must implement this
 		@param[in] packet the packet to parse
-		@return status of the process
 		*/
-		virtual int parsePacket(const Packet &packet )=0;
+		virtual void parsePacket(const Packet &packet )=0;
 	private:
 		/*!
 		Receive the packet from the server

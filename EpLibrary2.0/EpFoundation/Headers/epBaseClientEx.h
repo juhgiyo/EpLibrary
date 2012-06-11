@@ -185,7 +185,7 @@ namespace epl{
 		@param[in] packet the packet to parse
 		@return status of the process
 		*/
-		virtual int parsePacket(const Packet &packet )=0;
+		virtual void parsePacket(const Packet &packet )=0;
 	private:
 
 

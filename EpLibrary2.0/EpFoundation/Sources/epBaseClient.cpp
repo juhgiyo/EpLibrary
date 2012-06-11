@@ -305,10 +305,7 @@ unsigned long BaseClient::ClientThread( LPVOID lpParam )
 
 			if (iResult == shouldReceive) {
 				// Process Received Packet and Send Result to Client
-				if(pMainClass->parsePacket(recvPacket)<=0)
-				{
-					break;
-				}
+				pMainClass->parsePacket(recvPacket);
 			}
 			else if (iResult == 0)
 			{
