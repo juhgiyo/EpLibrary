@@ -42,31 +42,58 @@ An Interface for System Class.
 
 
 /*!
-@def EP_WASSERT
+@def EP_WASSERT_EXPR
 @brief Macro Function for assert with message
 @param[in] _Expression the boolean expression to evaluate the assert
 @param[in] formatString the format string for the message
 */
 #if defined(_DEBUG)
-#define EP_WASSERT(_Expression,formatString, ...)\
+#define EP_WASSERT_EXPR(_Expression,formatString, ...)\
 	do{\
 	if(!!!(_Expression)){\
 	int len=_scwprintf(formatString,__VA_ARGS__)+1;\
 	wchar_t * expression=EP_NEW wchar_t[len];\
 	swprintf_s(expression,len,formatString,__VA_ARGS__);\
 	\
-	int len2=_scwprintf(_T("%s\n\nMessage: %s"),_CRT_WIDE(#_Expression),expression )+1;\
+	int len2=_scwprintf(_T("%s\r\n\r\nMessage: %s"),_CRT_WIDE(#_Expression),expression )+1;\
 	wchar_t * expression2=EP_NEW wchar_t[len2];\
-	swprintf_s(expression2,len2,_T("%s\n\nMessage: %s"),_CRT_WIDE(#_Expression),expression);\
+	swprintf_s(expression2,len2,_T("%s\r\n\r\nMessage: %s"),_CRT_WIDE(#_Expression),expression);\
 	\
 	(void)( (_wassert(expression2,__TFILE__, __LINE__), 0) );\
 	EP_DELETE[] expression;\
 	EP_DELETE[] expression2;\
 	}\
 	}while(0)
-#else
-#define EP_WASSERT(_Expression,formatString, ...) ((void)0)
-#endif
+#else //defined(_DEBUG)
+#define EP_WASSERT_EXPR(_Expression,formatString, ...) ((void)0)
+#endif //defined(_DEBUG)
+
+/*!
+@def EP_ASSERT_EXPR
+@brief Macro Function for assert with message
+@param[in] _Expression the boolean expression to evaluate the assert
+@param[in] formatString the format string for the message
+*/
+#if defined(_DEBUG)
+#define EP_ASSERT_EXPR(_Expression,formatString, ...)\
+	do{\
+	if(!!!(_Expression)){\
+	int len=_scprintf(formatString,__VA_ARGS__)+1;\
+	char * expression=EP_NEW char[len];\
+	sprintf_s(expression,len,formatString,__VA_ARGS__);\
+	\
+	int len2=_scprintf("%s\r\n\r\nMessage: %s",_Expression,expression )+1;\
+	wchar_t * expression2=EP_NEW wchar_t[len2];\
+	sprintf_s(expression2,len2,"%s\r\n\r\nMessage: %s",_Expression,expression);\
+	\
+	(void) (1 != _CrtDbgReport(_CRT_ASSERT, __FILE__, __LINE__, NULL, expression2), 0));\
+	EP_DELETE[] expression;\
+	EP_DELETE[] expression2;\
+	}\
+	}while(0)
+#else //defined(_DEBUG)
+#define EP_ASSERT_EXPR(_Expression,formatString, ...) ((void)0)
+#endif //defined(_DEBUG)
 
 /*!
 @def EP_ASSERT
@@ -74,6 +101,15 @@ An Interface for System Class.
 @param[in] _Expression the boolean expression to evaluate the assert
 */
 #define EP_ASSERT _ASSERT
+
+#if defined(_DEBUG)
+#if defined(_UNICODE) || defined(UNICODE)
+#define EP_TASSERT_EXPR(_Expression,formatString, ...) EP_WASSERT_EXPR(_Expression,formatString,__VA_ARGS__)
+#else //defined(_UNICODE) || defined(UNICODE)
+#define EP_TASSERT_EXPR(_Expression,formatString, ...) EP_ASSERT_EXPR(_Expression,formatString,__VA_ARGS__)
+#endif //defined(_UNICODE) || defined(UNICODE)
+#endif //defined(_DEBUG)
+
 
 /*!
 @def EP_NOTICEBOX
@@ -137,12 +173,12 @@ namespace epl
 		/*!
 		Copy the source buffer to destination buffer.
 		@param[in] dest The destination for copying.
-		@param[in] dstSize the maximum destination size.
+		@param[in] dstSizeInByte the maximum destination size.
 		@param[in] source The source buffer to be copied.
-		@param[in] srcSize the size of source to copy.
+		@param[in] srcSizeInByte the size of source to copy.
 		@return the resulting buffer.
 		*/
-		static void* Memcpy (void* dest, unsigned int dstSize, const void* source, unsigned int srcSize);
+		static void* Memcpy (void* dest, unsigned int dstSizeInByte, const void* source, unsigned int srcSizeInByte);
 
 		/*!
 		Copy the source buffer to destination buffer.
@@ -151,7 +187,7 @@ namespace epl
 		@param[in] srcSize the size of source to copy.
 		@return the resulting buffer.
 		*/
-		static void* Memcpy (void* dest, const void* source, unsigned int srcSize);
+		static void* Memcpy (void* dest, const void* source, unsigned int srcSizeInByte);
 
 		/*!
 		Set the source buffer with given value.
@@ -160,7 +196,7 @@ namespace epl
 		@param[in] srcSize the size of source.
 		@return the resulting buffer.
 		*/
-		static void* Memset(void* source,int val,unsigned int srcSize);
+		static void* Memset(void* source,int val,unsigned int srcSizeInByte);
 
 
 		/*!
@@ -232,21 +268,21 @@ namespace epl
 		/*!
 		Print the given buffer to the console.
 		@param[in] dest The destination location for output.
-		@param[in] sizeOfBuffer Maximum number of characters to store.
+		@param[in] dstSizeInCharacter Maximum number of characters to store.
 		@param[in] format The format buffer to print out.
 		@return the number of characters written, not including the terminating null character, or a negative value if an output error occurs.
 		*/
-		static int SPrintf(char *dest,unsigned int sizeOfBuffer,const char *format,...);
+		static int SPrintf(char *dest,unsigned int dstSizeInCharacter,const char *format,...);
 
 		/*!
 		Print the given buffer to the console.
 		@param[in] dest The destination location for output.
-		@param[in] sizeOfBuffer Maximum number of characters to store.
+		@param[in] dstSizeInCharacter Maximum number of characters to store.
 		@param[in] format The format buffer to print out.
 		@param[in] args Pointer to a list of arguments.
 		@return the number of characters written, not including the terminating null character, or a negative value if an output error occurs.
 		*/
-		static int SPrintf_V(char *dest,unsigned int sizeOfBuffer,const char *format,va_list args);
+		static int SPrintf_V(char *dest,unsigned int dstSizeInCharacter,const char *format,va_list args);
 
 				/*!
 		Print the given buffer to the console.
@@ -285,21 +321,21 @@ namespace epl
 		/*!
 		Print the given buffer to the console.
 		@param[out] dest The destination location for output.
-		@param[in] sizeOfBuffer Maximum number of characters to store.
+		@param[in] dstSizeInCharacter Maximum number of characters to store.
 		@param[in] format The format buffer to print out.
 		@return the number of characters written, not including the terminating null character, or a negative value if an output error occurs.
 		*/
-		static int SWPrintf(wchar_t *dest,unsigned int sizeOfBuffer,const wchar_t *format,...);
+		static int SWPrintf(wchar_t *dest,unsigned int dstSizeInCharacter,const wchar_t *format,...);
 
 		/*!
 		Print the given buffer to the console.
 		@param[out] dest The destination location for output.
-		@param[in] sizeOfBuffer Maximum number of characters to store.
+		@param[in] dstSizeInCharacter Maximum number of characters to store.
 		@param[in] format The format buffer to print out.
 		@param[in] args Pointer to a list of arguments.
 		@return the number of characters written, not including the terminating null character, or a negative value if an output error occurs.
 		*/
-		static int SWPrintf_V(wchar_t *dest,unsigned int sizeOfBuffer,const wchar_t *format,va_list args);
+		static int SWPrintf_V(wchar_t *dest,unsigned int dstSizeInCharacter,const wchar_t *format,va_list args);
 
 		/*!
 		Print the given buffer to the console.
@@ -339,21 +375,21 @@ namespace epl
 		/*!
 		Print the given buffer to the console.
 		@param[out] dest The destination location for output.
-		@param[in] sizeOfBuffer Maximum number of characters to store.
+		@param[in] dstSizeInCharacter Maximum number of characters to store.
 		@param[in] format The format buffer to print out.
 		@return the number of characters written, not including the terminating null character, or a negative value if an output error occurs.
 		*/
-		static int STPrintf(TCHAR *dest,unsigned int sizeOfBuffer,const TCHAR *format,...);
+		static int STPrintf(TCHAR *dest,unsigned int dstSizeInCharacter,const TCHAR *format,...);
 
 		/*!
 		Print the given buffer to the console.
 		@param[out] dest The destination location for output.
-		@param[in] sizeOfBuffer Maximum number of characters to store.
+		@param[in] dstSizeInCharacter Maximum number of characters to store.
 		@param[in] format The format buffer to print out.
 		@param[in] args Pointer to a list of arguments.
 		@return the number of characters written, not including the terminating null character, or a negative value if an output error occurs.
 		*/
-		static int STPrintf_V(TCHAR *dest,unsigned int sizeOfBuffer,const TCHAR *format,va_list args);
+		static int STPrintf_V(TCHAR *dest,unsigned int dstSizeInCharacter,const TCHAR *format,va_list args);
 		
 		/*!
 		Print the given buffer to the console.
@@ -384,21 +420,21 @@ namespace epl
 		/*!
 		Concatenate the source string to destination string.
 		@param[in] dest The destination for copying.
-		@param[in] dstSize the maximum destination size.
+		@param[in] dstSizeInCharacter the maximum destination size.
 		@param[in] source The source string to be concatenated.
 		@return the resulting buffer.
 		*/
-		static char* StrCat (char* dest, unsigned int dstSize, const char* source);
+		static char* StrCat (char* dest, unsigned int dstSizeInCharacter, const char* source);
 
 		/*!
 		Copy the source strings to destination string.
 		@param[in] dest The destination for copying.
-		@param[in] dstSize the maximum destination size.
+		@param[in] dstSizeInCharacter the maximum destination size.
 		@param[in] source The source strings to be copied.
-		@param[in] srcSize the number of source strings.
+		@param[in] srcSizeInCharacter the number of source strings.
 		@return the resulting buffer.
 		*/
-		static char* StrNCpy (char* dest, unsigned int dstSize, const char* source, unsigned int srcSize);
+		static char* StrNCpy (char* dest, unsigned int dstSizeInCharacter, const char* source, unsigned int srcSizeInCharacter);
 
 		/*!
 		Tokenize the string by delimiters.
@@ -444,21 +480,21 @@ namespace epl
 		/*!
 		Concatenate the source string to destination string.
 		@param[in] dest The destination for copying.
-		@param[in] dstSize the maximum destination size.
+		@param[in] dstSizeInCharacter the maximum destination size.
 		@param[in] source The source string to be concatenated.
 		@return the resulting buffer.
 		*/
-		static unsigned char* MbsCat (unsigned char* dest, unsigned int dstSize, const unsigned char* source);
+		static unsigned char* MbsCat (unsigned char* dest, unsigned int dstSizeInCharacter, const unsigned char* source);
 
 		/*!
 		Copy the source strings to destination string.
 		@param[in] dest The destination for copying.
-		@param[in] dstSize the maximum destination size.
+		@param[in] dstSizeInCharacter the maximum destination size.
 		@param[in] source The source strings to be copied.
-		@param[in] srcSize the number of source strings.
+		@param[in] srcSizeInCharacter the number of source strings.
 		@return the resulting buffer.
 		*/
-		static unsigned char* MbsNCpy (unsigned char* dest, unsigned int dstSize, const unsigned char* source, unsigned int srcSize);
+		static unsigned char* MbsNCpy (unsigned char* dest, unsigned int dstSizeInCharacter, const unsigned char* source, unsigned int srcSizeInCharacter);
 
 		/*!
 		Tokenize the string by delimiters.
@@ -503,21 +539,21 @@ namespace epl
 		/*!
 		Concatenate the source string to destination string.
 		@param[in] dest The destination for copying.
-		@param[in] dstSize the maximum destination size.
+		@param[in] dstSizeInCharacter the maximum destination size.
 		@param[in] source The source string to be concatenated.
 		@return the resulting buffer.
 		*/
-		static wchar_t* WcsCat (wchar_t* dest, unsigned int dstSize, const wchar_t* source);
+		static wchar_t* WcsCat (wchar_t* dest, unsigned int dstSizeInCharacter, const wchar_t* source);
 
 		/*!
 		Copy the source strings to destination string.
 		@param[in] dest The destination for copying.
-		@param[in] dstSize the maximum destination size.
+		@param[in] dstSizeInCharacter the maximum destination size.
 		@param[in] source The source strings to be copied.
-		@param[in] srcSize the number of source strings.
+		@param[in] srcSizeInCharacter the number of source strings.
 		@return the resulting buffer.
 		*/
-		static wchar_t* WcsNCpy (wchar_t* dest, unsigned int dstSize, const wchar_t* source, unsigned int srcSize);
+		static wchar_t* WcsNCpy (wchar_t* dest, unsigned int dstSizeInCharacter, const wchar_t* source, unsigned int srcSizeInCharacter);
 
 		/*!
 		Tokenize the string by delimiters.
@@ -565,21 +601,21 @@ namespace epl
 		/*!
 		Concatenate the source string to destination string.
 		@param[in] dest The destination for copying.
-		@param[in] dstSize the maximum destination size.
+		@param[in] dstSizeInCharacter the maximum destination size.
 		@param[in] source The source string to be concatenated.
 		@return the resulting buffer.
 		*/
-		static TCHAR* TcsCat (TCHAR* dest, unsigned int dstSize, const TCHAR* source);
+		static TCHAR* TcsCat (TCHAR* dest, unsigned int dstSizeInCharacter, const TCHAR* source);
 
 		/*!
 		Copy the source strings to destination string.
 		@param[in] dest The destination for copying.
-		@param[in] dstSize the maximum destination size.
+		@param[in] dstSizeInCharacter the maximum destination size.
 		@param[in] source The source strings to be copied.
-		@param[in] srcSize the number of source strings.
+		@param[in] srcSizeInCharacter the number of source strings.
 		@return the resulting buffer.
 		*/
-		static TCHAR* TcsNCpy (TCHAR* dest, unsigned int dstSize, const TCHAR* source, unsigned int srcSize);
+		static TCHAR* TcsNCpy (TCHAR* dest, unsigned int dstSizeInCharacter, const TCHAR* source, unsigned int srcSizeInCharacter);
 
 		/*!
 		Tokenize the string by delimiters.
@@ -706,22 +742,22 @@ namespace epl
 		/*!
 		Write the given buffer to the given file stream.
 		@param[in] buffer Pointer to data to be written.
-		@param[in] size Item size in bytes.
+		@param[in] sizeInByte Item size in bytes.
 		@param[in] count Maximum number of items to be written.
 		@param[in] fileStream Pointer to FILE structure.
 		@return the number of full items actually written.
 		*/
-		static unsigned int FWrite(const void* buffer,unsigned int size, unsigned int count, EpFile * const fileStream);
+		static unsigned int FWrite(const void* buffer,unsigned int sizeInByte, unsigned int count, EpFile * const fileStream);
 		
 		/*!
 		Read from the given file stream and write to the given buffer.
 		@param[out] retBuff Pointer to data to be read.
-		@param[in] size Item size in bytes.
+		@param[in] sizeInByte Item size in bytes.
 		@param[in] count Maximum number of items to be read.
 		@param[in] fileStream Pointer to FILE structure.
 		@return the number of full items actually read.
 		*/
-		static unsigned int FRead(void *retBuff,unsigned int size, unsigned int count,EpFile * const fileStream);
+		static unsigned int FRead(void *retBuff,unsigned int sizeInByte, unsigned int count,EpFile * const fileStream);
 
 		/*!
 		Return the file size in byte.

@@ -70,11 +70,11 @@ unsigned int System::GetTickCount()
 }
 
 
-void* System::Memcpy (void* dest, unsigned int dstSize, const void* source, unsigned int srcSize)
+void* System::Memcpy (void* dest, unsigned int dstSizeInByte, const void* source, unsigned int srcSizeInByte)
 {
-	if(dstSize<srcSize)
+	if(dstSizeInByte<srcSizeInByte)
 		return 0;
-	int err = memcpy_s(dest,dstSize,source,srcSize);
+	int err = memcpy_s(dest,dstSizeInByte,source,srcSizeInByte);
 	if (err == 0)
 	{
 		return dest;
@@ -85,13 +85,13 @@ void* System::Memcpy (void* dest, unsigned int dstSize, const void* source, unsi
 	}
 }
 
-void* System::Memcpy (void* dest, const void* source, unsigned int srcSize)
+void* System::Memcpy (void* dest, const void* source, unsigned int srcSizeInByte)
 {
-	return System::Memcpy(dest,srcSize,source,srcSize);
+	return System::Memcpy(dest,srcSizeInByte,source,srcSizeInByte);
 }
-void* System::Memset(void* source,int val,unsigned int srcSize)
+void* System::Memset(void* source,int val,unsigned int srcSizeInByte)
 {
-	return memset(source,val,srcSize);
+	return memset(source,val,srcSizeInByte);
 }
 
 
@@ -142,19 +142,19 @@ int System::Printf_V(const char* format, va_list args)
 }
 
 
-int System::SPrintf(char *dest,unsigned int sizeOfBuffer,const char *format,...)
+int System::SPrintf(char *dest,unsigned int dstSizeInCharacter,const char *format,...)
 {
 	va_list args=NULL;
 	int retVal=0;
 	va_start(args, format); 
-	retVal=vsprintf_s(dest,sizeOfBuffer,format,args);
+	retVal=vsprintf_s(dest,dstSizeInCharacter,format,args);
 	va_end(args); 
 	return retVal;
 }
 
-int System::SPrintf_V(char *dest,unsigned int sizeOfBuffer,const char *format,va_list args)
+int System::SPrintf_V(char *dest,unsigned int dstSizeInCharacter,const char *format,va_list args)
 {
-	return vsprintf_s(dest,sizeOfBuffer,format,args);
+	return vsprintf_s(dest,dstSizeInCharacter,format,args);
 }
 
 int System::SPrintf(EpString &retDest,const char *format,...)
@@ -205,19 +205,19 @@ int System::WPrintf_V(const wchar_t* format, va_list args)
 }
 
 
-int System::SWPrintf(wchar_t *dest,unsigned int sizeOfBuffer,const wchar_t *format,...)
+int System::SWPrintf(wchar_t *dest,unsigned int dstSizeInCharacter,const wchar_t *format,...)
 {
 	va_list args=NULL;
 	int retVal=0;
 	va_start(args, format); 
-	retVal=vswprintf_s(dest,sizeOfBuffer,format,args);
+	retVal=vswprintf_s(dest,dstSizeInCharacter,format,args);
 	va_end(args); 
 	return retVal;
 }
 
-int System::SWPrintf_V(wchar_t *dest,unsigned int sizeOfBuffer,const wchar_t *format,va_list args)
+int System::SWPrintf_V(wchar_t *dest,unsigned int dstSizeInCharacter,const wchar_t *format,va_list args)
 {
-	return vswprintf_s(dest,sizeOfBuffer,format,args);
+	return vswprintf_s(dest,dstSizeInCharacter,format,args);
 }
 int System::SWPrintf(EpWString &retDest,const wchar_t *format,...)
 {
@@ -264,19 +264,19 @@ int System::TPrintf_V(const TCHAR* format, va_list args)
 {
 	return _vtprintf_s(format,args);
 }
-int System::STPrintf(TCHAR *dest,unsigned int sizeOfBuffer,const TCHAR *format,...)
+int System::STPrintf(TCHAR *dest,unsigned int dstSizeInCharacter,const TCHAR *format,...)
 {
 	va_list args=NULL; 
 	int retVal=0;
 	va_start(args, format); 
-	retVal=_vstprintf_s(dest,sizeOfBuffer,format,args);
+	retVal=_vstprintf_s(dest,dstSizeInCharacter,format,args);
 	va_end(args); 
 	return retVal;
 }
 
-int System::STPrintf_V(TCHAR *dest,unsigned int sizeOfBuffer,const TCHAR *format,va_list args)
+int System::STPrintf_V(TCHAR *dest,unsigned int dstSizeInCharacter,const TCHAR *format,va_list args)
 {
-	return _vstprintf_s(dest,sizeOfBuffer,format,args);
+	return _vstprintf_s(dest,dstSizeInCharacter,format,args);
 }
 
 
@@ -322,9 +322,9 @@ int System::StrLen(const char *format,...)
 	return retVal;
 }
 
-char* System::StrCat (char* dest, unsigned int dstSize, const char* source)
+char* System::StrCat (char* dest, unsigned int dstSizeInCharacter, const char* source)
 {
-	int err = strcat_s(dest,dstSize,source);
+	int err = strcat_s(dest,dstSizeInCharacter,source);
 	if (err == 0)
 	{
 		return dest;
@@ -335,9 +335,9 @@ char* System::StrCat (char* dest, unsigned int dstSize, const char* source)
 	}
 }
 
-char* System::StrNCpy (char* dest, unsigned int dstSize, const char* source, unsigned int srcSize)
+char* System::StrNCpy (char* dest, unsigned int dstSizeInCharacter, const char* source, unsigned int srcSizeInCharacter)
 {
-	int err = strncpy_s(dest,dstSize,source,srcSize);
+	int err = strncpy_s(dest,dstSizeInCharacter,source,srcSizeInCharacter);
 	if (err == 0)
 	{
 		return dest;
@@ -379,9 +379,9 @@ int System::MbsLen(const unsigned char *format,...)
 	return retVal;
 }
 
-unsigned char* System::MbsCat (unsigned char* dest, unsigned int dstSize, const unsigned char* source)
+unsigned char* System::MbsCat (unsigned char* dest, unsigned int dstSizeInCharacter, const unsigned char* source)
 {
-	int err = _mbscat_s(dest,dstSize,source);
+	int err = _mbscat_s(dest,dstSizeInCharacter,source);
 	if (err == 0)
 	{
 		return dest;
@@ -392,9 +392,9 @@ unsigned char* System::MbsCat (unsigned char* dest, unsigned int dstSize, const 
 	}
 }
 
-unsigned char* System::MbsNCpy (unsigned char* dest, unsigned int dstSize, const unsigned char* source, unsigned int srcSize)
+unsigned char* System::MbsNCpy (unsigned char* dest, unsigned int dstSizeInCharacter, const unsigned char* source, unsigned int srcSizeInCharacter)
 {
-	int err = _mbsncpy_s(dest,dstSize,source,srcSize);
+	int err = _mbsncpy_s(dest,dstSizeInCharacter,source,srcSizeInCharacter);
 	if (err == 0)
 	{
 		return dest;
@@ -434,9 +434,9 @@ int System::WcsLen(const wchar_t *format,...)
 	return retVal;
 }
 
-wchar_t* System::WcsCat (wchar_t* dest, unsigned int dstSize, const wchar_t* source)
+wchar_t* System::WcsCat (wchar_t* dest, unsigned int dstSizeInCharacter, const wchar_t* source)
 {
-	int err = wcscat_s(dest,dstSize,source);
+	int err = wcscat_s(dest,dstSizeInCharacter,source);
 	if (err == 0)
 	{
 		return dest;
@@ -447,9 +447,9 @@ wchar_t* System::WcsCat (wchar_t* dest, unsigned int dstSize, const wchar_t* sou
 	}
 }
 
-wchar_t* System::WcsNCpy (wchar_t* dest, unsigned int dstSize, const wchar_t* source, unsigned int srcSize)
+wchar_t* System::WcsNCpy (wchar_t* dest, unsigned int dstSizeInCharacter, const wchar_t* source, unsigned int srcSizeInCharacter)
 {
-	int err = wcsncpy_s(dest,dstSize,source,srcSize);
+	int err = wcsncpy_s(dest,dstSizeInCharacter,source,srcSizeInCharacter);
 	if (err == 0)
 	{
 		return dest;
@@ -489,9 +489,9 @@ int System::TcsLen(const TCHAR *format,...)
 	va_end(args); 
 	return retVal;
 }
-TCHAR* System::TcsCat (TCHAR* dest, unsigned int dstSize, const TCHAR* source)
+TCHAR* System::TcsCat (TCHAR* dest, unsigned int dstSizeInCharacter, const TCHAR* source)
 {
-	int err = _tcscat_s(dest,dstSize,source);
+	int err = _tcscat_s(dest,dstSizeInCharacter,source);
 	if (err == 0)
 	{
 		return dest;
@@ -501,9 +501,9 @@ TCHAR* System::TcsCat (TCHAR* dest, unsigned int dstSize, const TCHAR* source)
 		return 0;
 	}
 }
-TCHAR* System::TcsNCpy (TCHAR* dest, unsigned int dstSize, const TCHAR* source, unsigned int srcSize)
+TCHAR* System::TcsNCpy (TCHAR* dest, unsigned int dstSizeInCharacter, const TCHAR* source, unsigned int srcSizeInCharacter)
 {
-	int err = _tcsncpy_s(dest,dstSize,source,srcSize);
+	int err = _tcsncpy_s(dest,dstSizeInCharacter,source,srcSizeInCharacter);
 	if (err == 0)
 	{
 		return dest;
@@ -603,9 +603,9 @@ int System::FClose(EpFile * const fileStream)
 	return fclose(fileStream);
 }
 
-unsigned int System::FWrite(const void* buffer,unsigned int size, unsigned int count, EpFile * const fileStream)
+unsigned int System::FWrite(const void* buffer,unsigned int sizeInByte, unsigned int count, EpFile * const fileStream)
 {
-	return fwrite(buffer,size,count,fileStream);
+	return fwrite(buffer,sizeInByte,count,fileStream);
 }
 
 
@@ -617,9 +617,9 @@ long System::FSize(EpFile* const fileStream)
 	return fileSize;
 }
 
-unsigned int System::FRead(void *retBuff,unsigned int size, unsigned int count,EpFile * const fileStream)
+unsigned int System::FRead(void *retBuff,unsigned int sizeInByte, unsigned int count,EpFile * const fileStream)
 {
-	return fread(retBuff,size,count,fileStream);
+	return fread(retBuff,sizeInByte,count,fileStream);
 }
 
 
