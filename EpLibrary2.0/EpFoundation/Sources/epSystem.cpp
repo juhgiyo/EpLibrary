@@ -128,7 +128,7 @@ EpErrno System::TcsTime(TCHAR * buffer, unsigned int numberOfElements)
 
 int System::Printf(const char * format, ... )
 {
-	va_list args; 
+	va_list args=NULL;
 	int retVal=0;
 	va_start(args, format); 
 	retVal=vprintf_s(format,args);
@@ -144,7 +144,7 @@ int System::Printf_V(const char* format, va_list args)
 
 int System::SPrintf(char *dest,unsigned int sizeOfBuffer,const char *format,...)
 {
-	va_list args; 
+	va_list args=NULL;
 	int retVal=0;
 	va_start(args, format); 
 	retVal=vsprintf_s(dest,sizeOfBuffer,format,args);
@@ -162,11 +162,11 @@ int System::SPrintf(EpString &retDest,const char *format,...)
 	int length;
 	char *tmpString=NULL;
 	int retVal=0;
-	va_list args;
+	va_list args=NULL;
 	va_start(args, format);
 	length=StrLen_V(format,args);
 	tmpString=EP_NEW char[length+1];
-	retVal=SPrintf_V(tmpString,length,format,args);
+	retVal=SPrintf_V(tmpString,length+1,format,args);
 	va_end(args);
 	retDest=tmpString;
 	if(tmpString)
@@ -181,7 +181,7 @@ int System::SPrintf_V(EpString &retDest,const char *format,va_list args)
 	va_start(args, format);
 	length=StrLen_V(format,args);
 	tmpString=EP_NEW char[length+1];
-	retVal=SPrintf_V(tmpString,length,format,args);
+	retVal=SPrintf_V(tmpString,length+1,format,args);
 	va_end(args);
 	retDest=tmpString;
 	if(tmpString)
@@ -191,7 +191,7 @@ int System::SPrintf_V(EpString &retDest,const char *format,va_list args)
 
 int System::WPrintf(const wchar_t * format, ... )
 {
-	va_list args; 
+	va_list args=NULL; 
 	int retVal=0;
 	va_start(args, format); 
 	retVal=vwprintf_s(format,args);
@@ -207,7 +207,7 @@ int System::WPrintf_V(const wchar_t* format, va_list args)
 
 int System::SWPrintf(wchar_t *dest,unsigned int sizeOfBuffer,const wchar_t *format,...)
 {
-	va_list args; 
+	va_list args=NULL;
 	int retVal=0;
 	va_start(args, format); 
 	retVal=vswprintf_s(dest,sizeOfBuffer,format,args);
@@ -224,11 +224,11 @@ int System::SWPrintf(EpWString &retDest,const wchar_t *format,...)
 	int length;
 	wchar_t *tmpString=NULL;
 	int retVal=0;
-	va_list args;
+	va_list args=NULL;
 	va_start(args, format);
 	length=WcsLen_V(format,args);
 	tmpString=EP_NEW wchar_t[length+1];
-	retVal=SWPrintf_V(tmpString,length,format,args);
+	retVal=SWPrintf_V(tmpString,length+1,format,args);
 	va_end(args);
 	retDest=tmpString;
 	if(tmpString)
@@ -243,7 +243,7 @@ int System::SWPrintf_V(EpWString &retDest,const wchar_t *format,va_list args)
 	va_start(args, format);
 	length=WcsLen_V(format,args);
 	tmpString=EP_NEW wchar_t[length+1];
-	retVal=SWPrintf_V(tmpString,length,format,args);
+	retVal=SWPrintf_V(tmpString,length+1,format,args);
 	va_end(args);
 	retDest=tmpString;
 	if(tmpString)
@@ -253,7 +253,7 @@ int System::SWPrintf_V(EpWString &retDest,const wchar_t *format,va_list args)
 
 int System::TPrintf(const TCHAR * format, ... )
 {
-	va_list args; 
+	va_list args=NULL;
 	int retVal=0;
 	va_start(args, format); 
 	retVal=_vtprintf_s(format,args);
@@ -266,7 +266,7 @@ int System::TPrintf_V(const TCHAR* format, va_list args)
 }
 int System::STPrintf(TCHAR *dest,unsigned int sizeOfBuffer,const TCHAR *format,...)
 {
-	va_list args; 
+	va_list args=NULL; 
 	int retVal=0;
 	va_start(args, format); 
 	retVal=_vstprintf_s(dest,sizeOfBuffer,format,args);
@@ -285,11 +285,11 @@ int System::STPrintf(EpTString &retDest,const TCHAR *format,...)
 	int length;
 	TCHAR *tmpString=NULL;
 	int retVal=0;
-	va_list args;
+	va_list args=NULL;
 	va_start(args, format);
 	length=TcsLen_V(format,args);
 	tmpString=EP_NEW TCHAR[length+1];
-	retVal=STPrintf_V(tmpString,length,format,args);
+	retVal=STPrintf_V(tmpString,length+1,format,args);
 	va_end(args);
 	retDest=tmpString;
 	if(tmpString)
@@ -304,7 +304,7 @@ int System::STPrintf_V(EpTString &retDest,const TCHAR *format,va_list args)
 	va_start(args, format);
 	length=TcsLen_V(format,args);
 	tmpString=EP_NEW TCHAR[length+1];
-	retVal=STPrintf_V(tmpString,length,format,args);
+	retVal=STPrintf_V(tmpString,length+1,format,args);
 	va_end(args);
 	retDest=tmpString;
 	if(tmpString)
@@ -314,7 +314,7 @@ int System::STPrintf_V(EpTString &retDest,const TCHAR *format,va_list args)
 
 int System::StrLen(const char *format,...)
 {
-	va_list args; 
+	va_list args=NULL;
 	int retVal; 
 	va_start(args, format); 
 	retVal=_vscprintf(format,args);
@@ -371,7 +371,7 @@ int System::StrLen_V(const char*format, va_list args)
 
 int System::MbsLen(const unsigned char *format,...)
 {
-	va_list args; 
+	va_list args=NULL;
 	int retVal; 
 	va_start(args, format); 
 	retVal=_vscprintf(reinterpret_cast<const char*>(format),args);
@@ -426,7 +426,7 @@ int System::MbsLen_V(const unsigned char*format, va_list args)
 
 int System::WcsLen(const wchar_t *format,...)
 {
-	va_list args; 
+	va_list args=NULL;
 	int retVal; 
 	va_start(args, format); 
 	retVal=_vscwprintf(format,args);
@@ -482,7 +482,7 @@ int System::WcsLen_V(const wchar_t*format, va_list args)
 
 int System::TcsLen(const TCHAR *format,...)
 {
-	va_list args; 
+	va_list args=NULL; 
 	int retVal; 
 	va_start(args, format); 
 	retVal=_vsctprintf(format,args);
@@ -535,7 +535,7 @@ int System::TcsLen_V(const TCHAR*format, va_list args)
 
 int System::FPrintf(EpFile* const fileStream, const char* format,...)
 {
-	va_list args; 
+	va_list args=NULL;
 	int retVal; 
 	va_start(args, format); 
 	retVal=vfprintf(fileStream,format,args);
@@ -551,7 +551,7 @@ int System::FPrintf_V(EpFile* const fileStream, const char* format,va_list args)
 
 int System::FWPrintf(EpFile* const fileStream, const wchar_t* format,...)
 {
-	va_list args; 
+	va_list args=NULL;
 	int retVal; 
 	va_start(args, format); 
 	retVal=vfwprintf(fileStream,format,args);
@@ -567,7 +567,7 @@ int System::FWPrintf_V(EpFile* const fileStream, const wchar_t* format,va_list a
 
 int System::FTPrintf(EpFile* const fileStream, const TCHAR* format,...)
 {
-	va_list args; 
+	va_list args=NULL;
 	int retVal; 
 	va_start(args, format); 
 	retVal=_vftprintf(fileStream,format,args);
@@ -734,15 +734,16 @@ int System::NoticeBox(const TCHAR* fileName, const TCHAR* funcName, const unsign
 	int length,fullLength;
 	TCHAR *tmpString=NULL;
 	TCHAR *tmpSTring2=NULL;
-	va_list args;
+	va_list args=NULL;
 	va_start(args, format);
 	length=TcsLen_V(format,args);
 	tmpString=EP_NEW TCHAR[length+1];
-	STPrintf_V(tmpString,length,format,args);
+	STPrintf_V(tmpString,length+1,format,args);
+	va_end(args);
 	fullLength=TcsLen(_T("File Name : %s\nFunction Name : %s\nLine Number : %d\n\nMessage : %s\n"),fileName,funcName,lineNum,tmpString);
 	tmpSTring2=EP_NEW TCHAR[fullLength+1];
-	STPrintf(tmpSTring2,fullLength,_T("File Name : %s\nFunction Name : %s\nLine Number : %d\n\nMessage : %s\n"),fileName,funcName,lineNum,tmpString);
-	va_end(args);
+	STPrintf(tmpSTring2,fullLength+1,_T("File Name : %s\nFunction Name : %s\nLine Number : %d\n\nMessage : %s\n"),fileName,funcName,lineNum,tmpString);
+	
 	int retVal=0;
 	retVal=MessageBox(NULL,tmpSTring2,_T("Notice"),MB_OK);
 	if(tmpString)

@@ -186,6 +186,11 @@ namespace epl{
 		*/
 		virtual void parsePacket(const Packet &packet )=0;
 	private:
+		
+		/*!
+		Actually Disconnect from the server
+		*/
+		void disconnect();
 		/*!
 		Receive the packet from the server
 		@param[out] packet the packet received

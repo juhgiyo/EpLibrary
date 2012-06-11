@@ -184,7 +184,7 @@ int BaseClientEx::Send(const Packet &packet)
 		writeLength+=sentLength;
 		if(sentLength<=0)
 		{
-			Disconnect();
+			disconnect();
 			return writeLength;
 		}
 		length-=sentLength;
@@ -260,7 +260,7 @@ bool BaseClientEx::Connect()
 			m_ptr->ai_protocol);
 		if (m_connectSocket == INVALID_SOCKET) {
 			EP_NOTICEBOX(_T("socket failed with error\n"));
-			Disconnect();
+			disconnect();
 			return false;
 		}
 
@@ -275,7 +275,7 @@ bool BaseClientEx::Connect()
 	}
 	if (m_connectSocket == INVALID_SOCKET) {
 		EP_NOTICEBOX(_T("Unable to connect to server!\n"));
-		Disconnect();
+		disconnect();
 		return false;
 	}
 	m_isConnected=true;
@@ -347,6 +347,12 @@ void BaseClientEx::Disconnect()
 {
 	LockObj lock(m_generalLock);
 	// No longer need server socket
+	disconnect();
+}
+
+void BaseClientEx::disconnect()
+{
+
 	if(m_result)
 		freeaddrinfo(m_result);
 

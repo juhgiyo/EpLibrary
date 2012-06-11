@@ -185,7 +185,7 @@ int BaseClient::Send(const Packet &packet)
 		writeLength+=sentLength;
 		if(sentLength<=0)
 		{
-			Disconnect();
+			disconnect();
 			return writeLength;
 		}
 		length-=sentLength;
@@ -261,7 +261,7 @@ bool BaseClient::Connect()
 			m_ptr->ai_protocol);
 		if (m_connectSocket == INVALID_SOCKET) {
 			EP_NOTICEBOX(_T("socket failed with error\n"));
-			Disconnect();
+			disconnect();
 			return false;
 		}
 
@@ -276,7 +276,7 @@ bool BaseClient::Connect()
 	}
 	if (m_connectSocket == INVALID_SOCKET) {
 		EP_NOTICEBOX(_T("Unable to connect to server!\n"));
-		Disconnect();
+		disconnect();
 		return false;
 	}
 	m_isConnected=true;
@@ -331,11 +331,8 @@ bool BaseClient::IsConnected() const
 	return m_isConnected;
 }
 
-
-void BaseClient::Disconnect()
+void BaseClient::disconnect()
 {
-	LockObj lock(m_generalLock);
-	// No longer need server socket
 	if(m_result)
 		freeaddrinfo(m_result);
 
@@ -352,6 +349,13 @@ void BaseClient::Disconnect()
 	m_connectSocket = INVALID_SOCKET;
 	m_result=NULL;
 	WSACleanup();
+}
+
+void BaseClient::Disconnect()
+{
+	LockObj lock(m_generalLock);
+	// No longer need server socket
+	disconnect();
 }
 
 

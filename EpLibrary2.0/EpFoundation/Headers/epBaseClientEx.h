@@ -197,6 +197,11 @@ namespace epl{
 		int receive(Packet &packet);
 
 		/*!
+		Actually Disconnect from the server
+		*/
+		void disconnect();
+
+		/*!
 		Handle the packet parsing thread.
 		@param[in] param the packet Pass Unit
 		@return status of thread execution
