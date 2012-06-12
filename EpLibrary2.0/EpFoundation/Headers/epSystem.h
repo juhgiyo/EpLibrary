@@ -39,7 +39,7 @@ An Interface for System Class.
 
 #include "epMemory.h"
 #include "epAssert.h"
-
+#include "epLocale.h"
 
 /*!
 @def EP_NOTICEBOX
@@ -58,16 +58,7 @@ An Interface for System Class.
 
 namespace epl
 {
-	/// A type definition for EpString Type
-	typedef std::string EpString;
-	/// A type definition for EpWString Type
-	typedef std::wstring EpWString;
-	/// A type definition for EpTString Type
-#if defined(_UNICODE) || defined(UNICODE)
-	typedef EpWString EpTString;
-#else //defined(_UNICODE) || defined(UNICODE)
-	typedef EpString EpTString;
-#endif //defined(_UNICODE) || defined(UNICODE)
+
 
 	/// A type definition for EpTime Type
 	typedef double EpTime;

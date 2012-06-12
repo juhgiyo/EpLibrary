@@ -161,12 +161,20 @@ bool BaseFile::LoadFromFile(const TCHAR *filename)
 		System::FRead(cFileBuf,sizeof(char),length,m_file);
 		System::FClose(m_file);
 
-		wchar_t *tFileBuf=EP_NEW wchar_t[length+1];
-		System::Memset(tFileBuf,0,sizeof(wchar_t)*(length+1));
-		System::MultiByteToWideChar(cFileBuf,length,tFileBuf);
-		rest=tFileBuf;
+		if(m_encodingType==FILE_ENCODING_TYPE_UTF16)
+		{
+			rest=reinterpret_cast<wchar_t*>(cFileBuf);
+		}
+		else
+		{
+			wchar_t *tFileBuf=EP_NEW wchar_t[length+1];
+			System::Memset(tFileBuf,0,sizeof(wchar_t)*(length+1));
+			System::MultiByteToWideChar(cFileBuf,length,tFileBuf);
+			rest=tFileBuf;
+			EP_DELETE[] tFileBuf;
+		}
 		EP_DELETE[] cFileBuf;
-		EP_DELETE[] tFileBuf;
+		
 #else //defined(_UNICODE) || defined(UNICODE)
 		//Find the actual length of file
 		unsigned int length= static_cast<unsigned int>(System::FSize(m_file));
@@ -176,7 +184,16 @@ bool BaseFile::LoadFromFile(const TCHAR *filename)
 		System::FRead(cFileBuf,sizeof(char),length,m_file);
 		System::FClose(m_file);
 
-		rest=cFileBuf;
+		if(m_encodingType==FILE_ENCODING_TYPE_UTF16)
+		{
+			EpString resultString=System::WideCharToMultiByte(reinterpret_cast<wchar_t*>(cFileBuf));
+			rest=resultString.c_str();
+		}
+		else
+		{
+			rest=cFileBuf;
+		}
+		
 		EP_DELETE[] cFileBuf;
 #endif //defined(_UNICODE) || defined(UNICODE)
 

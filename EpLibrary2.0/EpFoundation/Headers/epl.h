@@ -96,6 +96,7 @@ An Interface for EP Foundation Library
 
 //System
 #include "epAssert.h"
+#include "epLocale.h"
 #include "epConsoleHelper.h"
 #include "epDateTimeHelper.h"
 #include "epEndian.h"

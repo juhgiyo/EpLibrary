@@ -667,6 +667,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Sources\epLocale.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\Sources\epRegistryHelper.cpp"
 					>
 				</File>
@@ -1018,6 +1022,10 @@
 				</File>
 				<File
 					RelativePath=".\Headers\epException.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Headers\epLocale.h"
 					>
 				</File>
 				<File

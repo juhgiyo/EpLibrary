@@ -18,9 +18,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epSystem.h"
 #include "epCriticalSectionEx.h"
 #include <sys/timeb.h>
+
 using namespace epl;
 
 #define MAX_UNSIGNED_INT ((unsigned int)(0xffffffff))
+
+
 EpTime System::GetTime()
 {
 	static long s_lInitialSec = 0;

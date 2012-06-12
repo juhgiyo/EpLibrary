@@ -35,14 +35,14 @@ PropertiesFile::~PropertiesFile()
 bool PropertiesFile::SetProperty(const TCHAR *  key, const TCHAR * val)
 {
 	LockObj lock(m_lock);
-	EpTString opKey=key;
+	EpTString opKey=Locale::Trim(key);
 	opKey.append(_T("="));
 	vector<Pair<EpTString, EpTString> >::iterator iter;
 	for(iter=m_propertyList.begin();iter != m_propertyList.end();iter++)
 	{
 		if(iter->first.compare(opKey)==0)
 		{
-			iter->second=val;
+			iter->second=Locale::Trim(val);
 			return true;
 		}
 	}
@@ -52,7 +52,7 @@ bool PropertiesFile::SetProperty(const TCHAR *  key, const TCHAR * val)
 bool PropertiesFile::GetProperty(const TCHAR * key,EpTString &retVal) const
 {
 	LockObj lock(m_lock);
-	EpTString opKey=key;
+	EpTString opKey=Locale::Trim(key);
 	opKey.append(_T("="));
 	vector<Pair<EpTString, EpTString> >::const_iterator iter;
 	for(iter=m_propertyList.begin();iter != m_propertyList.end();iter++)
@@ -69,7 +69,7 @@ bool PropertiesFile::GetProperty(const TCHAR * key,EpTString &retVal) const
 EpTString &PropertiesFile::GetProperty(const TCHAR * key)
 {
 	LockObj lock(m_lock);
-	EpTString opKey=key;
+	EpTString opKey=Locale::Trim(key);
 	opKey.append(_T("="));
 	vector<Pair<EpTString, EpTString> >::iterator iter;
 	for(iter=m_propertyList.begin();iter != m_propertyList.end();iter++)
@@ -85,7 +85,7 @@ EpTString &PropertiesFile::GetProperty(const TCHAR * key)
 const EpTString &PropertiesFile::GetProperty(const TCHAR * key) const
 {
 	LockObj lock(m_lock);
-	EpTString opKey=key;
+	EpTString opKey=Locale::Trim(key);
 	opKey.append(_T("="));
 	vector<Pair<EpTString, EpTString> >::const_iterator iter;
 	for(iter=m_propertyList.begin();iter != m_propertyList.end();iter++)
@@ -101,7 +101,7 @@ const EpTString &PropertiesFile::GetProperty(const TCHAR * key) const
 bool PropertiesFile::AddProperty(const TCHAR * key, const TCHAR * val)
 {
 	LockObj lock(m_lock);
-	EpTString opKey=key;
+	EpTString opKey=Locale::Trim(key);
 	opKey.append(_T("="));
 	vector<Pair<EpTString, EpTString> >::iterator iter;
 	for(iter=m_propertyList.begin();iter != m_propertyList.end();iter++)
@@ -113,7 +113,7 @@ bool PropertiesFile::AddProperty(const TCHAR * key, const TCHAR * val)
 	}
 	Pair<EpTString,EpTString> insertPair;
 	insertPair.first=opKey;
-	insertPair.second=val;
+	insertPair.second=Locale::Trim(val);
 	m_propertyList.push_back(insertPair);
 	return true;
 }
@@ -121,7 +121,7 @@ bool PropertiesFile::AddProperty(const TCHAR * key, const TCHAR * val)
 bool PropertiesFile::RemoveProperty(const TCHAR * key)
 {
 	LockObj lock(m_lock);
-	EpTString opKey=key;
+	EpTString opKey=Locale::Trim(key);
 	opKey.append(_T("="));
 	vector<Pair<EpTString, EpTString> >::iterator iter;
 	for(iter=m_propertyList.begin();iter != m_propertyList.end();iter++)
@@ -146,8 +146,7 @@ void PropertiesFile::writeLoop()
 	EpTString toFileString;
 	for(iter=m_propertyList.begin();iter!=m_propertyList.end();iter++)
 	{
-		toFileString=_T("");
-		toFileString.append(iter->first);
+		toFileString=iter->first;
 		toFileString.append(iter->second);
 		toFileString.append(_T("\n"));
 		writeToFile(toFileString.c_str());
@@ -157,7 +156,7 @@ void PropertiesFile::writeLoop()
 EpTString& PropertiesFile::operator [](const TCHAR * key)
 {
 	LockObj lock(m_lock);
-	EpTString opKey=key;
+	EpTString opKey=Locale::Trim(key);
 	opKey.append(_T("="));
 	vector<Pair<EpTString, EpTString> >::iterator iter;
 	for(iter=m_propertyList.begin();iter != m_propertyList.end();iter++)
@@ -177,7 +176,7 @@ EpTString& PropertiesFile::operator [](const TCHAR * key)
 const EpTString& PropertiesFile::operator [](const TCHAR * key) const
 {
 	LockObj lock(m_lock);
-	EpTString opKey=key;
+	EpTString opKey=Locale::Trim(key);
 	opKey.append(_T("="));
 	vector<Pair<EpTString, EpTString> >::const_iterator iter;
 	for(iter=m_propertyList.begin();iter != m_propertyList.end();iter++)
@@ -199,14 +198,14 @@ void PropertiesFile::loadFromFile(EpTString lines)
 		if(getValueKeyFromLine(line,key,val))
 		{
 			Pair<EpTString,EpTString> inputPair;
-			inputPair.first=key;
-			inputPair.second=val;
+			inputPair.first=Locale::Trim(key);
+			inputPair.second=Locale::Trim(val);
 			m_propertyList.push_back(inputPair);
 		}
 		else
 		{
 			Pair<EpTString,EpTString> inputPair;
-			inputPair.first=line;
+			inputPair.first=Locale::Trim(line);
 			inputPair.second=_T("");
 			m_propertyList.push_back(inputPair);
 		}
