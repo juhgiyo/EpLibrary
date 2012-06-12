@@ -101,7 +101,7 @@ void XMLFile::writeLoop()
 	}
 
 	toFileString=GetXML().GetString();
-	toFileString.append(_T("\r\n"));
+	toFileString.append(_T("\n"));
 	writeToFile(toFileString.c_str());
 	Close();
 }

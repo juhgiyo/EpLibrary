@@ -19,6 +19,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace epl;
 
+
+SmartObject & SmartObject::operator=(const SmartObject&b)
+{
+	return *this;
+}
+
 #if !defined(_DEBUG)
 void SmartObject::Retain()
 {
@@ -87,7 +93,7 @@ SmartObject::SmartObject(const SmartObject& b)
 	}
 }
 
-#endif //defined(_DEBUG)
+
 
 SmartObject::~SmartObject()
 {
@@ -102,4 +108,4 @@ SmartObject::~SmartObject()
 		EP_DELETE m_refCounterLock;
 }
 
-
+#endif //!defined(_DEBUG)

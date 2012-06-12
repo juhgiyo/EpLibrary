@@ -78,7 +78,7 @@ namespace epl
 		++numBlocksAvailable;
 	}
 
-	void StaticAllocator::Fragment::Release()
+	void StaticAllocator::Fragment::Clear()
 	{
 		if (m_Data)
 			EP_DELETE[] m_Data;
@@ -183,7 +183,7 @@ namespace epl
 
 		DoDeallocate(p,type);
 	}
-	void StaticAllocator::Release()
+	void StaticAllocator::Clear()
 	{
 		EP_VERIFY_RUNTIME_ERROR(m_fragments.empty());
 		m_fragments.clear();
@@ -196,7 +196,7 @@ namespace epl
 		{
 			tmp=&(m_fragments.at(trav));
 			if( !tmp ) continue; 
-			tmp->Release();
+			tmp->Clear();
 		}
 		m_fragments.clear();
 		m_blockSize=0;
@@ -214,7 +214,7 @@ namespace epl
 				Fragment *tmp=&(m_fragments.at(trav));
 				if(tmp->numBlocksAvailable==m_numBlocks)
 				{
-					tmp->Release();
+					tmp->Clear();
 					m_fragments.erase(m_fragments.begin()+trav);
 				}
 			}
@@ -290,7 +290,7 @@ namespace epl
 			}
 			else
 			{
-				lastFragment->Release();
+				lastFragment->Clear();
 				m_fragments.erase(m_fragments.begin()+(m_fragments.size()-1));
 			}
 			m_deallocFragment=NULL;
@@ -423,7 +423,7 @@ namespace epl
 			m_lastDealloc->Compress(type);
 			if(m_lastDealloc->IsEmpty())
 			{
-				m_lastDealloc->Release();
+				m_lastDealloc->Clear();
 				m_pool.erase(m_pool.begin()+idx);
 				m_lastDealloc=0;
 				m_lastAlloc=0;

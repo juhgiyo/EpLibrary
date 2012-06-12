@@ -55,10 +55,8 @@ namespace epl
 		@param[in] b the second object
 		@return the new copied object
 		*/
-		SmartObject & operator=(const SmartObject&b)
-		{
-			return *this;
-		}
+		SmartObject & operator=(const SmartObject&b);
+
 
 	#if !defined(_DEBUG)
 		/*!
@@ -84,27 +82,32 @@ namespace epl
 		@param[in] b the second object
 		*/
 		SmartObject(const SmartObject& b);
+
+		/*!
+		Default Destructor
+		*/
+		virtual ~SmartObject();
 		
 	#else //!defined(_DEBUG)
 		/*!
 		Increment this object's reference count
 		*/
-		__forceinline void Retain()
+		__forceinline void Retain(TCHAR *fileName, TCHAR *funcName, unsigned int lineNum)
 		{
 			LockObj lock(m_refCounterLock);
 			m_refCount++;
-			LOG_THIS_MSG(_T("Retained Object : %d (Current Refence Count = %d)"),this, this->m_refCount);
+			LOG_THIS_MSG(_T("%s::%s(%d) Retained Object : %d (Current Reference Count = %d)"),fileName,funcName,lineNum,this, this->m_refCount);
 		}
 
 		/*!
 		Decrement this object's reference count
 		if the reference count is 0 then delete this object.
 		*/
-		__forceinline  void Release()
+		__forceinline  void Release(TCHAR *fileName, TCHAR *funcName, unsigned int lineNum)
 		{
 			LockObj lock(m_refCounterLock);
 			m_refCount--;
-			LOG_THIS_MSG(_T("Released Object : %d (Current Refence Count = %d)"),this, this->m_refCount);
+			LOG_THIS_MSG(_T("%s::%s(%d) Released Object : %d (Current Reference Count = %d)"),fileName,funcName,lineNum,this, this->m_refCount);
 			if(m_refCount==0)
 			{
 				m_refCount++; // this increment is dummy addition to make pair with destructor.
@@ -125,10 +128,10 @@ namespace epl
 		Default Contructor
 		@param[in] lockPolicyType The lock policy
 		*/
-		__forceinline SmartObject(LockPolicy lockPolicyType=EP_LOCK_POLICY)
+		__forceinline SmartObject(TCHAR *fileName, TCHAR *funcName, unsigned int lineNum,LockPolicy lockPolicyType=EP_LOCK_POLICY)
 		{
 			m_refCount=1;
-			LOG_THIS_MSG(_T("Allocated Object : %d (Current Refence Count = %d)"),this, this->m_refCount);
+			LOG_THIS_MSG(_T("%s::%s(%d) Allocated Object : %d (Current Reference Count = %d)"),fileName,funcName,lineNum,this, this->m_refCount);
 			m_lockPolicy=lockPolicyType;
 			switch(lockPolicyType)
 			{
@@ -151,10 +154,10 @@ namespace epl
 		Default Copy Constructor
 		@param[in] b the second object
 		*/
-		__forceinline SmartObject(const SmartObject& b)
+		__forceinline SmartObject(TCHAR *fileName, TCHAR *funcName, unsigned int lineNum,const SmartObject& b)
 		{
 			m_refCount=1;
-			LOG_THIS_MSG(_T("Allocated Object : %d (Current Refence Count = %d)"),this, this->m_refCount);
+			LOG_THIS_MSG(_T("%s::%s(%d) Allocated Object : %d (Current Reference Count = %d)"),fileName,funcName,lineNum,this, this->m_refCount);
 			m_lockPolicy=b.m_lockPolicy;
 			switch(m_lockPolicy)
 			{
@@ -172,11 +175,25 @@ namespace epl
 				break;
 			}
 		}
-	#endif //!defined(_DEBUG)
+
 		/*!
 		Default Destructor
 		*/
-		virtual ~SmartObject();
+		__forceinline virtual ~SmartObject()
+		{
+			m_refCount--;
+			LOG_THIS_MSG(_T("Deleted Object : %d (Current Reference Count = %d)"),this, this->m_refCount);
+			if(m_refCount!=0)
+			{
+				EpString errMsg;
+				System::SPrintf(errMsg,"The Reference Count is not 0!! Reference Count : %d",m_refCount);
+				EP_VERIFY_RUNTIME_ERROR_W_MSG(m_refCount==0, errMsg);
+			}
+			if(m_refCounterLock)
+				EP_DELETE m_refCounterLock;
+		}
+	#endif //!defined(_DEBUG)
+
 
 		
 	private:
@@ -188,5 +205,10 @@ namespace epl
 		/// Lock Policy
 		LockPolicy m_lockPolicy;
 	};
+#if defined(_DEBUG)
+#define SmartObject(...) SmartObject(__TFILE__,__TFUNCTION__,__LINE__,__VA_ARGS__)
+#define Release() Release(__TFILE__,__TFUNCTION__,__LINE__)
+#define Retain() Retain(__TFILE__,__TFUNCTION__,__LINE__)
+#endif//defined(_DEBUG)
 }
 #endif //__EP_SMART_OBJECT_H__

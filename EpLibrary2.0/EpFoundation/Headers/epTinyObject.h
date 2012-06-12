@@ -80,7 +80,7 @@ namespace epl {
 			void *Allocate(unsigned int blockSize);
 			void Deallocate(void *p, unsigned int blockSize);
 			void Reset(unsigned int blockSize, unsigned char blocks);
-			void Release();
+			void Clear();
 			unsigned char *m_Data;
 			unsigned char firstAvailableBlock;
 			unsigned char numBlocksAvailable;
@@ -94,7 +94,7 @@ namespace epl {
 
 		void* Allocate();
 		void Deallocate(void *p, CacheType type);
-		void Release();
+		void Clear();
 		void Compress(CacheType type);
 		void Delete();
 

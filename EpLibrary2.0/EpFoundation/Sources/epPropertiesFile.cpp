@@ -112,7 +112,7 @@ bool PropertiesFile::AddProperty(const TCHAR * key, const TCHAR * val)
 		}
 	}
 	Pair<EpTString,EpTString> insertPair;
-	insertPair.first=key;
+	insertPair.first=opKey;
 	insertPair.second=val;
 	m_propertyList.push_back(insertPair);
 	return true;
@@ -149,7 +149,7 @@ void PropertiesFile::writeLoop()
 		toFileString=_T("");
 		toFileString.append(iter->first);
 		toFileString.append(iter->second);
-		toFileString.append(_T("\r\n"));
+		toFileString.append(_T("\n"));
 		writeToFile(toFileString.c_str());
 	}
 }
