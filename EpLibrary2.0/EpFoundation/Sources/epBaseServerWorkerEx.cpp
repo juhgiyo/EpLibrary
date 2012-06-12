@@ -124,6 +124,7 @@ unsigned long BaseServerWorkerEx::passPacket(void *param)
 {
 	Packet *recvPacket=( reinterpret_cast<PacketPassUnit*>(param))->m_packet;
 	BaseServerWorkerEx *worker=( reinterpret_cast<PacketPassUnit*>(param))->m_this;
+	EP_DELETE reinterpret_cast<PacketPassUnit*>(param);
 	worker->parsePacket(*recvPacket);
 	recvPacket->Release();
 	return 0;
@@ -145,10 +146,10 @@ void BaseServerWorkerEx::execute()
 
 			if (iResult == shouldReceive) {
 				ThreadID threadID;
-				PacketPassUnit passUnit;
-				passUnit.m_packet=recvPacket;
-				passUnit.m_this=this;
-				::CreateThread(NULL,0,passPacket,&passUnit,THREAD_OPCODE_CREATE_START,(LPDWORD)&threadID);
+				PacketPassUnit *passUnit=EP_NEW PacketPassUnit() ;
+				passUnit->m_packet=recvPacket;
+				passUnit->m_this=this;
+				::CreateThread(NULL,0,passPacket,passUnit,THREAD_OPCODE_CREATE_START,(LPDWORD)&threadID);
 			}
 			else if (iResult == 0)
 			{

@@ -34,12 +34,13 @@ void SmartObject::Retain()
 
 void SmartObject::Release()
 {
-	LockObj lock(m_refCounterLock);
+	m_refCounterLock->Lock();
 	m_refCount--;
 
 	if(m_refCount==0)
 	{
 		m_refCount++; // this increment is dummy addition to make pair with destructor.
+		m_refCounterLock->Unlock();
 		EP_DELETE this;
 		return;
 	}
@@ -49,6 +50,7 @@ void SmartObject::Release()
 		System::SPrintf(errMsg,"Reference Count is negative Value! Reference Count : %d",m_refCount);
 		EP_VERIFY_RUNTIME_ERROR_W_MSG(m_refCount>=0, errMsg);
 	}
+	m_refCounterLock->Unlock();
 }
 
 SmartObject::SmartObject(LockPolicy lockPolicyType)
@@ -97,6 +99,7 @@ SmartObject::SmartObject(const SmartObject& b)
 
 SmartObject::~SmartObject()
 {
+	m_refCounterLock->Lock();
 	m_refCount--;
 	if(m_refCount!=0)
 	{
@@ -104,8 +107,11 @@ SmartObject::~SmartObject()
 		System::SPrintf(errMsg,"The Reference Count is not 0!! Reference Count : %d",m_refCount);
 		EP_VERIFY_RUNTIME_ERROR_W_MSG(m_refCount==0, errMsg);
 	}
+	m_refCounterLock->Unlock();
 	if(m_refCounterLock)
+	{
 		EP_DELETE m_refCounterLock;
+	}
 }
 
 #endif //!defined(_DEBUG)

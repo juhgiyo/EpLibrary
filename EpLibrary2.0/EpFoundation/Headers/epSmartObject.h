@@ -105,12 +105,13 @@ namespace epl
 		*/
 		__forceinline  void Release(TCHAR *fileName, TCHAR *funcName, unsigned int lineNum)
 		{
-			LockObj lock(m_refCounterLock);
+			m_refCounterLock->Lock();
 			m_refCount--;
 			LOG_THIS_MSG(_T("%s::%s(%d) Released Object : %d (Current Reference Count = %d)"),fileName,funcName,lineNum,this, this->m_refCount);
 			if(m_refCount==0)
 			{
 				m_refCount++; // this increment is dummy addition to make pair with destructor.
+				m_refCounterLock->Unlock();
 				EP_DELETE this;
 				return;
 			}
@@ -120,6 +121,7 @@ namespace epl
 				System::SPrintf(errMsg,"Reference Count is negative Value! Reference Count : %d",m_refCount);
 				EP_VERIFY_DOMAIN_ERROR_W_MSG(m_refCount>=0, errMsg);
 			}
+			m_refCounterLock->Unlock();
 
 		}
 
@@ -181,6 +183,7 @@ namespace epl
 		*/
 		__forceinline virtual ~SmartObject()
 		{
+			m_refCounterLock->Lock();
 			m_refCount--;
 			LOG_THIS_MSG(_T("Deleted Object : %d (Current Reference Count = %d)"),this, this->m_refCount);
 			if(m_refCount!=0)
@@ -189,8 +192,11 @@ namespace epl
 				System::SPrintf(errMsg,"The Reference Count is not 0!! Reference Count : %d",m_refCount);
 				EP_VERIFY_RUNTIME_ERROR_W_MSG(m_refCount==0, errMsg);
 			}
+			m_refCounterLock->Unlock();
 			if(m_refCounterLock)
+			{
 				EP_DELETE m_refCounterLock;
+			}
 		}
 	#endif //!defined(_DEBUG)
 
