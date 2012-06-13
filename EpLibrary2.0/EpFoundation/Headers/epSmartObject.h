@@ -185,6 +185,7 @@ namespace epl
 		{
 			m_refCounterLock->Lock();
 			m_refCount--;
+			m_refCounterLock->Unlock();
 			LOG_THIS_MSG(_T("Deleted Object : %d (Current Reference Count = %d)"),this, this->m_refCount);
 			if(m_refCount!=0)
 			{
@@ -192,7 +193,6 @@ namespace epl
 				System::SPrintf(errMsg,"The Reference Count is not 0!! Reference Count : %d",m_refCount);
 				EP_VERIFY_RUNTIME_ERROR_W_MSG(m_refCount==0, errMsg);
 			}
-			m_refCounterLock->Unlock();
 			if(m_refCounterLock)
 			{
 				EP_DELETE m_refCounterLock;

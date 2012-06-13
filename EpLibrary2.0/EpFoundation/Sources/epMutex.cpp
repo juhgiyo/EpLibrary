@@ -26,6 +26,10 @@ Mutex::Mutex(const TCHAR *mutexName, LPSECURITY_ATTRIBUTES lpsaAttributes) :Base
 	m_lpsaAttributes=lpsaAttributes;
 	m_mutex=EP_NEW CMutex(FALSE,mutexName,lpsaAttributes);
 	m_singleLock=EP_NEW CSingleLock(m_mutex,FALSE);
+#if defined(_DEBUG)
+	m_mutexDebug=EP_NEW CMutex(FALSE,NULL,lpsaAttributes);
+	m_singleLockDebug=EP_NEW CSingleLock(m_mutexDebug,FALSE);
+#endif //defined(_DEBUG)
 }
 
 Mutex::Mutex(const Mutex& b)
@@ -33,6 +37,10 @@ Mutex::Mutex(const Mutex& b)
 	m_lpsaAttributes=b.m_lpsaAttributes;
 	m_mutex=EP_NEW CMutex(FALSE,NULL,m_lpsaAttributes);
 	m_singleLock=EP_NEW CSingleLock(m_mutex,FALSE);
+#if defined(_DEBUG)
+	m_mutexDebug=EP_NEW CMutex(FALSE,NULL,m_lpsaAttributes);
+	m_singleLockDebug=EP_NEW CSingleLock(m_mutexDebug,FALSE);
+#endif //defined(_DEBUG)
 }
 
 Mutex::~Mutex()
@@ -41,12 +49,19 @@ Mutex::~Mutex()
 		EP_DELETE m_singleLock;
 	if(m_mutex)	
 		EP_DELETE m_mutex;
+#if defined(_DEBUG)
+	if(m_singleLockDebug)
+		EP_DELETE m_singleLockDebug;
+	if(m_mutexDebug)	
+		EP_DELETE m_mutexDebug;
+#endif //defined(_DEBUG)
 }
 
 void Mutex::Lock()
 {
 
 #if _DEBUG
+	m_singleLockDebug->Lock();
 	std::vector<int>::iterator iter;
 	int threadID=GetCurrentThreadId();
 	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
@@ -56,30 +71,51 @@ void Mutex::Lock()
 #endif //_DEBUG
 
 	m_singleLock->Lock();
+
+#if defined(_DEBUG)
+	m_threadList.push_back(threadID);
+	m_singleLockDebug->Unlock();
+#endif //defined(_DEBUG)
 }
 
 long Mutex::TryLock()
 {
+#if defined(_DEBUG)
+	m_singleLockDebug->Lock();
+	std::vector<int>::iterator iter;
+	int threadID=GetCurrentThreadId();
+	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
+	{
+		EP_VERIFY_THREAD_DEADLOCK_ERROR(*iter!=threadID);
+	}
+	m_singleLockDebug->Unlock();
+#endif //defined(_DEBUG)
 	long ret=0;
 	ret=(long)m_singleLock->Lock(0);
-#if _DEBUG
+#if defined(_DEBUG)
 	if(ret)
 	{
-		std::vector<int>::iterator iter;
-		int threadID=GetCurrentThreadId();
-		for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
-		{
-			EP_VERIFY_THREAD_DEADLOCK_ERROR(*iter!=threadID);
-		}
+		m_singleLockDebug->Lock();
 		m_threadList.push_back(threadID);
+		m_singleLockDebug->Unlock();
 	}
-#endif //_DEBUG
+#endif //defined(_DEBUG)
 	return ret;
 
 }
 
 long Mutex::TryLockFor(const unsigned int dwMilliSecond)
 {
+#if defined(_DEBUG)
+	m_singleLockDebug->Lock();
+	std::vector<int>::iterator iter;
+	int threadID=GetCurrentThreadId();
+	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
+	{
+		EP_VERIFY_THREAD_DEADLOCK_ERROR(*iter!=threadID);
+	}
+	m_singleLockDebug->Unlock();
+#endif //defined(_DEBUG)
 	long ret=0;
 
 	ret=static_cast<long>(m_singleLock->Lock(dwMilliSecond));
@@ -87,13 +123,9 @@ long Mutex::TryLockFor(const unsigned int dwMilliSecond)
 #if _DEBUG
 	if(ret)
 	{
-		std::vector<int>::iterator iter;
-		int threadID=GetCurrentThreadId();
-		for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
-		{
-			EP_VERIFY_THREAD_DEADLOCK_ERROR(*iter!=threadID);
-		}
+		m_singleLockDebug->Lock();
 		m_threadList.push_back(threadID);
+		m_singleLockDebug->Unlock();
 	}
 #endif //_DEBUG
 	return ret;
@@ -102,6 +134,7 @@ long Mutex::TryLockFor(const unsigned int dwMilliSecond)
 void Mutex::Unlock()
 {
 #if _DEBUG
+	m_singleLockDebug->Lock();
 	std::vector<int>::iterator iter;
 	int threadID=GetCurrentThreadId();
 	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
@@ -112,7 +145,7 @@ void Mutex::Unlock()
 			break;
 		}
 	}
+	m_singleLockDebug->Unlock();
 #endif //_DEBUG
-
 	m_singleLock->Unlock();
 }

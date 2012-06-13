@@ -35,9 +35,9 @@ An Interface for Mutex Class.
 #include "epSystem.h"
 #include "epBaseLock.h"
 
-#if _DEBUG
+#if defined(_DEBUG)
 #include <vector>
-#endif //_DEBUG
+#endif //defined(_DEBUG)
 
 namespace epl
 {
@@ -124,9 +124,13 @@ namespace epl
 		/// Creation Security Info
 		LPSECURITY_ATTRIBUTES m_lpsaAttributes;
 
-#if _DEBUG
+#if defined(_DEBUG)
 		std::vector<int> m_threadList;
-#endif //_DEBUG
+		/// Mutex Debug
+		CMutex *m_mutexDebug;
+		/// Lock Object Debug
+		CSingleLock *m_singleLockDebug;
+#endif //defined(_DEBUG)
 	};
 
 }

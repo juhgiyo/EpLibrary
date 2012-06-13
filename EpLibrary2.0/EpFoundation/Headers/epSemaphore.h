@@ -37,9 +37,9 @@ An Interface for Semaphore Class.
 #include "epBaseLock.h"
 
 
-#if _DEBUG
+#if defined(_DEBUG)
 #include <vector>
-#endif //_DEBUG
+#endif //defined(_DEBUG)
 
 namespace epl
 {
@@ -125,9 +125,13 @@ namespace epl
 		LPSECURITY_ATTRIBUTES m_lpsaAttributes;
 		/// Semaphore Flag
 		unsigned int m_count;
-#if _DEBUG
+#if defined(_DEBUG)
 		std::vector<int> m_threadList;
-#endif //_DEBUG
+		/// Semaphore Debug	
+		CSemaphore *m_semDebug;
+		/// Single Lock Debug
+		CSingleLock *m_singleLockDebug;
+#endif //defined(_DEBUG)
 	};
 
 }

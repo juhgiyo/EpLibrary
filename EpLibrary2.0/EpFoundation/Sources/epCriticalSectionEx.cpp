@@ -24,56 +24,91 @@ using namespace epl;
 CriticalSectionEx::CriticalSectionEx() :BaseLock()
 {
 	InitializeCriticalSection(&m_criticalSection);
+#if defined(_DEBUG)
+	InitializeCriticalSection(&m_criticalSectionDebug);
+#endif //defined(_DEBUG)
 }
 
 CriticalSectionEx::CriticalSectionEx(const CriticalSectionEx& b):BaseLock()
 {
 	InitializeCriticalSection(&m_criticalSection);
+#if defined(_DEBUG)
+	InitializeCriticalSection(&m_criticalSectionDebug);
+#endif //defined(_DEBUG)
 }
 
 CriticalSectionEx::~CriticalSectionEx()
 {
 	DeleteCriticalSection(&m_criticalSection);
+#if defined(_DEBUG)
+	DeleteCriticalSection(&m_criticalSectionDebug);
+#endif //defined(_DEBUG)
 }
 
 void CriticalSectionEx::Lock()
 {
-#if _DEBUG
+#if defined(_DEBUG)
+	EnterCriticalSection(&m_criticalSectionDebug);
 	std::vector<int>::iterator iter;
 	int threadID=GetCurrentThreadId();
 	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
 	{
 		EP_VERIFY_THREAD_DEADLOCK_ERROR(*iter!=threadID);
 	}
-#endif //_DEBUG
+	LeaveCriticalSection(&m_criticalSectionDebug);
+#endif //defined(_DEBUG)
 	EnterCriticalSection(&m_criticalSection);
-#if _DEBUG
+#if defined(_DEBUG)
+	EnterCriticalSection(&m_criticalSectionDebug);
 	m_threadList.push_back(threadID);
-#endif //_DEBUG
+	LeaveCriticalSection(&m_criticalSectionDebug);
+#endif //defined(_DEBUG)
 }
 
 long CriticalSectionEx::TryLock()
 {
+#if defined(_DEBUG)
+	EnterCriticalSection(&m_criticalSectionDebug);
+	std::vector<int>::iterator iter;
+	int threadID=GetCurrentThreadId();
+	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
+	{
+		EP_VERIFY_THREAD_DEADLOCK_ERROR(*iter!=threadID);
+	}
+	LeaveCriticalSection(&m_criticalSectionDebug);
+#endif //defined(_DEBUG)
 	long ret=TryEnterCriticalSection(&m_criticalSection);
-#if _DEBUG
+#if defined(_DEBUG)
 	if(ret)
 	{
-		std::vector<int>::iterator iter;
-		int threadID=GetCurrentThreadId();
-		for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
-		{
-			EP_VERIFY_THREAD_DEADLOCK_ERROR(*iter!=threadID);
-		}
+		EnterCriticalSection(&m_criticalSectionDebug);
 		m_threadList.push_back(threadID);
+		LeaveCriticalSection(&m_criticalSectionDebug);
 	}
-#endif //_DEBUG
+	
+#endif //defined(_DEBUG)
 	return ret;
 }
 long CriticalSectionEx::TryLockFor(const unsigned int dwMilliSecond)
 {
+#if defined(_DEBUG)
+	EnterCriticalSection(&m_criticalSectionDebug);
+	std::vector<int>::iterator iter;
+	int threadID=GetCurrentThreadId();
+	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
+	{
+		EP_VERIFY_THREAD_DEADLOCK_ERROR(*iter!=threadID);
+	}
+	LeaveCriticalSection(&m_criticalSectionDebug);
+#endif //defined(_DEBUG)
 	long ret=0;
 	if(ret=TryEnterCriticalSection(&m_criticalSection))
 	{
+#if defined(_DEBUG)
+		EnterCriticalSection(&m_criticalSectionDebug);
+		m_threadList.push_back(threadID);
+		LeaveCriticalSection(&m_criticalSectionDebug);
+#endif //defined(_DEBUG)
 		return ret;	
 	}
 	else
@@ -85,15 +120,11 @@ long CriticalSectionEx::TryLockFor(const unsigned int dwMilliSecond)
 		{
 			if(ret=TryEnterCriticalSection(&m_criticalSection))
 			{
-#if _DEBUG
-				std::vector<int>::iterator iter;
-				int threadID=GetCurrentThreadId();
-				for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
-				{
-					EP_VERIFY_THREAD_DEADLOCK_ERROR(*iter!=threadID);
-				}
+#if defined(_DEBUG)
+				EnterCriticalSection(&m_criticalSectionDebug);
 				m_threadList.push_back(threadID);
-#endif //_DEBUG
+				LeaveCriticalSection(&m_criticalSectionDebug);
+#endif //defined(_DEBUG)
 				return ret;	
 			}		
 			timeUsed=System::GetTickCount()-startTime;
@@ -105,7 +136,8 @@ long CriticalSectionEx::TryLockFor(const unsigned int dwMilliSecond)
 }
 void CriticalSectionEx::Unlock()
 {
-#if _DEBUG
+#if defined(_DEBUG)
+	EnterCriticalSection(&m_criticalSectionDebug);
 	std::vector<int>::iterator iter;
 	int threadID=GetCurrentThreadId();
 	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
@@ -116,7 +148,8 @@ void CriticalSectionEx::Unlock()
 			break;
 		}
 	}
-#endif //_DEBUG
+	LeaveCriticalSection(&m_criticalSectionDebug);
+#endif //defined(_DEBUG)
 	LeaveCriticalSection(&m_criticalSection);
 }
 

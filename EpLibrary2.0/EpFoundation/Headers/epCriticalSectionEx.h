@@ -34,9 +34,9 @@ An Interface for CriticalSectionEx Class.
 #include "epSystem.h"
 #include "epBaseLock.h"
 
-#if _DEBUG
+#if defined(_DEBUG)
 #include <vector>
-#endif //_DEBUG
+#endif //defined(_DEBUG)
 
 namespace epl
 {
@@ -112,9 +112,11 @@ namespace epl
 	private:
 		/// the actual lock member.
 		CRITICAL_SECTION m_criticalSection;
-#if _DEBUG
+#if defined(_DEBUG)
 		std::vector<int> m_threadList;
-#endif //_DEBUG
+		/// thelock member Debug
+		CRITICAL_SECTION m_criticalSectionDebug;
+#endif //defined(_DEBUG)
 	};
 
 }

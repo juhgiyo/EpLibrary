@@ -27,6 +27,10 @@ Semaphore::Semaphore(unsigned int count,const TCHAR *semName, LPSECURITY_ATTRIBU
 	m_count=count;
 	m_sem=EP_NEW CSemaphore(count,count,semName,lpsaAttributes);
 	m_singleLock=EP_NEW CSingleLock(m_sem,FALSE);
+#if defined(_DEBUG)
+	m_semDebug=EP_NEW CSemaphore(1,1,NULL,lpsaAttributes);
+	m_singleLockDebug=EP_NEW CSingleLock(m_semDebug,FALSE);
+#endif //defined(_DEBUG)
 }
 Semaphore::Semaphore(const Semaphore& b) :BaseLock()
 {
@@ -34,59 +38,87 @@ Semaphore::Semaphore(const Semaphore& b) :BaseLock()
 	m_count=b.m_count;
 	m_sem=EP_NEW CSemaphore(m_count,m_count,NULL,m_lpsaAttributes);
 	m_singleLock=EP_NEW CSingleLock(m_sem,FALSE);
+#if defined(_DEBUG)
+	m_semDebug=EP_NEW CSemaphore(1,1,NULL,m_lpsaAttributes);
+	m_singleLockDebug=EP_NEW CSingleLock(m_semDebug,FALSE);
+#endif //defined(_DEBUG)
 }
 Semaphore::~Semaphore()
 {
-	EP_DELETE m_singleLock;
-	EP_DELETE m_sem;
+	if(m_singleLock)
+		EP_DELETE m_singleLock;
+	if(m_sem)
+		EP_DELETE m_sem;
+#if defined(_DEBUG)
+	if(m_singleLockDebug)
+		EP_DELETE m_singleLockDebug;
+	if(m_semDebug)
+		EP_DELETE m_semDebug;
+#endif //defined(_DEBUG)
 }
 
 void Semaphore::Lock()
 {
 #if _DEBUG
+	m_singleLockDebug->Lock();
 	std::vector<int>::iterator iter;
 	int threadID=GetCurrentThreadId();
 	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
 	{
 		EP_VERIFY_THREAD_DEADLOCK_ERROR(*iter!=threadID);
 	}
+	m_singleLockDebug->Unlock();
 #endif //_DEBUG
 	m_singleLock->Lock();
-#if _DEBUG
+#if defined(_DEBUG)
+	m_singleLockDebug->Lock();
 	m_threadList.push_back(threadID);
-#endif //_DEBUG
+	m_singleLockDebug->Unlock();
+#endif //defined(_DEBUG)
 }
 
 long Semaphore::TryLock()
 {
+#if defined(_DEBUG)
+	m_singleLockDebug->Lock();
+	std::vector<int>::iterator iter;
+	int threadID=GetCurrentThreadId();
+	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
+	{
+		EP_VERIFY_THREAD_DEADLOCK_ERROR(*iter!=threadID);
+	}
+	m_singleLockDebug->Unlock();
+#endif //defined(_DEBUG)
 	long ret=static_cast<long>( m_singleLock->Lock(0) );
-#if _DEBUG
+#if defined(_DEBUG)
 	if(ret)
 	{
-		std::vector<int>::iterator iter;
-		int threadID=GetCurrentThreadId();
-		for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
-		{
-			EP_VERIFY_THREAD_DEADLOCK_ERROR(*iter!=threadID);
-		}
+		m_singleLockDebug->Lock();
 		m_threadList.push_back(threadID);
+		m_singleLockDebug->Unlock();
 	}
-#endif //_DEBUG
+#endif //defined(_DEBUG)
 	return ret;
 }
 long Semaphore::TryLockFor(const unsigned int dwMilliSecond)
 {
+#if defined(_DEBUG)
+	m_singleLockDebug->Lock();
+	std::vector<int>::iterator iter;
+	int threadID=GetCurrentThreadId();
+	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
+	{
+		EP_VERIFY_THREAD_DEADLOCK_ERROR(*iter!=threadID);
+	}
+	m_singleLockDebug->Unlock();
+#endif //defined(_DEBUG)
 	long ret=static_cast<long>( m_singleLock->Lock(dwMilliSecond) );
 #if _DEBUG
 	if(ret)
 	{
-		std::vector<int>::iterator iter;
-		int threadID=GetCurrentThreadId();
-		for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
-		{
-			EP_VERIFY_THREAD_DEADLOCK_ERROR(*iter!=threadID);
-		}
+		m_singleLockDebug->Lock();
 		m_threadList.push_back(threadID);
+		m_singleLockDebug->Unlock();
 	}
 #endif //_DEBUG
 	return ret;
@@ -94,6 +126,7 @@ long Semaphore::TryLockFor(const unsigned int dwMilliSecond)
 void Semaphore::Unlock()
 {
 #if _DEBUG
+	m_singleLockDebug->Lock();
 	std::vector<int>::iterator iter;
 	int threadID=GetCurrentThreadId();
 	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
@@ -104,6 +137,7 @@ void Semaphore::Unlock()
 			break;
 		}
 	}
+	m_singleLockDebug->Unlock();
 #endif //_DEBUG
 	m_singleLock->Unlock();
 }
