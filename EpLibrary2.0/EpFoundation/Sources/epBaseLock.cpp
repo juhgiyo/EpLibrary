@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "epBaseLock.h"
 #include "epSystem.h"
+#include "epException.h"
 using namespace epl;
 
 
@@ -34,6 +35,7 @@ BaseLock::BaseLockObj::BaseLockObj(BaseLock *lock)
 	m_lock=lock;
 	if(m_lock)
 		m_lock->Lock();
+	EP_VERIFY_INVALID_ARGUMENT_W_MSG(lock,"Lock is NULL!");
 }
 
 BaseLock::BaseLockObj::~BaseLockObj()
