@@ -66,7 +66,7 @@ void SimpleLogManager::SimpleLogNode::Print() const
 
 void SimpleLogManager::SimpleLogNode::Write(EpFile* const file)
 {
-	EP_VERIFY_INVALID_ARGUMENT_W_MSG(file,"The File Pointer is NULL!");
+	EP_ASSERT_EXPR(file,_T("The File Pointer is NULL!"));
 	if(m_userStr.length())
 	{
 		System::FTPrintf(file,_T("%s::%s(%d) %s %s - %s\n"),m_fileName.c_str(),m_funcName.c_str(),m_lineNum,m_dateStr,m_timeStr,m_userStr.c_str());

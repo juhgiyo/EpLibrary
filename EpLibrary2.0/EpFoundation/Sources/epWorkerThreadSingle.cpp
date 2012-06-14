@@ -25,7 +25,7 @@ void WorkerThreadSingle::execute()
 	{
 		if(m_workPool.IsEmpty())
 			break;
-		EP_VERIFY_RUNTIME_ERROR_W_MSG(m_arg,"Job Processor is NULL!");
+		EP_ASSERT_EXPR(m_arg,_T("Job Processor is NULL!"));
 		if(m_arg)
 			break;
 		BaseJob * jobPtr=m_workPool.Front();

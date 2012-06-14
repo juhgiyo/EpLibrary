@@ -35,7 +35,7 @@ BaseLock::BaseLockObj::BaseLockObj(BaseLock *lock)
 	m_lock=lock;
 	if(m_lock)
 		m_lock->Lock();
-	EP_VERIFY_INVALID_ARGUMENT_W_MSG(lock,"Lock is NULL!");
+	EP_ASSERT_EXPR(lock,_T("Lock is NULL!"));
 }
 
 BaseLock::BaseLockObj::~BaseLockObj()

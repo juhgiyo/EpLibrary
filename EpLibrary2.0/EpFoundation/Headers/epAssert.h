@@ -69,17 +69,17 @@ An Interface for Assert.
 	sprintf_s(expression,len,formatString,__VA_ARGS__);\
 	\
 	int len2=_scprintf("%s\r\n\r\nMessage: %s",#_Expression,expression )+1;\
-	char * expression2=EP_NEW char[len2];\
-	sprintf_s(expression2,len2,"%s\r\n\r\nMessage: %s"),#_Expression,expression);\
+	wchar_t * expression2=EP_NEW wchar_t[len2];\
+	swprintf_s(expression2,len2,WIDEN("%s\r\n\r\nMessage: %s"),WIDEN(#_Expression),expression);\
 	\
-	(void)( (_wassert(WIDEN(expression2),__WFILE__, __LINE__), 0) );\
+	(void)( (_wassert(expression2,__WFILE__, __LINE__), 0) );\
 	EP_DELETE[] expression;\
 	EP_DELETE[] expression2;\
 	}\
 	}while(0)
 #endif // defined(_UNICODE) || defined(UNICODE)
 #else //defined(_DEBUG)
-#define EP_WASSERT_EXPR(_Expression,formatString, ...) ((void)0)
+#define EP_ASSERT_EXPR(_Expression,formatString, ...) ((void)0)
 #endif //defined(_DEBUG)
 
 

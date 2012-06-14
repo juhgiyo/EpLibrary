@@ -92,7 +92,7 @@ namespace epl
 		/*!
 		Increment this object's reference count
 		*/
-		__forceinline void Retain(TCHAR *fileName, TCHAR *funcName, unsigned int lineNum)
+		void Retain(TCHAR *fileName, TCHAR *funcName, unsigned int lineNum)
 		{
 			LockObj lock(m_refCounterLock);
 			m_refCount++;
@@ -103,7 +103,7 @@ namespace epl
 		Decrement this object's reference count
 		if the reference count is 0 then delete this object.
 		*/
-		__forceinline  void Release(TCHAR *fileName, TCHAR *funcName, unsigned int lineNum)
+		void Release(TCHAR *fileName, TCHAR *funcName, unsigned int lineNum)
 		{
 			m_refCounterLock->Lock();
 			m_refCount--;
@@ -115,12 +115,7 @@ namespace epl
 				EP_DELETE this;
 				return;
 			}
-			if(m_refCount<0)
-			{
-				EpString errMsg;
-				System::SPrintf(errMsg,"Reference Count is negative Value! Reference Count : %d",m_refCount);
-				EP_VERIFY_DOMAIN_ERROR_W_MSG(m_refCount>=0, errMsg);
-			}
+			EP_ASSERT_EXPR(m_refCount>=0, _T("Reference Count is negative Value! Reference Count : %d"),m_refCount);
 			m_refCounterLock->Unlock();
 
 		}
@@ -130,7 +125,7 @@ namespace epl
 		Default Contructor
 		@param[in] lockPolicyType The lock policy
 		*/
-		__forceinline SmartObject(TCHAR *fileName, TCHAR *funcName, unsigned int lineNum,LockPolicy lockPolicyType=EP_LOCK_POLICY)
+		SmartObject(TCHAR *fileName, TCHAR *funcName, unsigned int lineNum,LockPolicy lockPolicyType=EP_LOCK_POLICY)
 		{
 			m_refCount=1;
 			LOG_THIS_MSG(_T("%s::%s(%d) Allocated Object : %d (Current Reference Count = %d)"),fileName,funcName,lineNum,this, this->m_refCount);
@@ -156,7 +151,7 @@ namespace epl
 		Default Copy Constructor
 		@param[in] b the second object
 		*/
-		__forceinline SmartObject(TCHAR *fileName, TCHAR *funcName, unsigned int lineNum,const SmartObject& b)
+		SmartObject(TCHAR *fileName, TCHAR *funcName, unsigned int lineNum,const SmartObject& b)
 		{
 			m_refCount=1;
 			LOG_THIS_MSG(_T("%s::%s(%d) Allocated Object : %d (Current Reference Count = %d)"),fileName,funcName,lineNum,this, this->m_refCount);
@@ -181,18 +176,13 @@ namespace epl
 		/*!
 		Default Destructor
 		*/
-		__forceinline virtual ~SmartObject()
+		virtual ~SmartObject()
 		{
 			m_refCounterLock->Lock();
 			m_refCount--;
 			m_refCounterLock->Unlock();
 			LOG_THIS_MSG(_T("Deleted Object : %d (Current Reference Count = %d)"),this, this->m_refCount);
-			if(m_refCount!=0)
-			{
-				EpString errMsg;
-				System::SPrintf(errMsg,"The Reference Count is not 0!! Reference Count : %d",m_refCount);
-				EP_VERIFY_RUNTIME_ERROR_W_MSG(m_refCount==0, errMsg);
-			}
+			EP_ASSERT_EXPR(m_refCount==0,_T("The Reference Count is not 0!! Reference Count : %d"),m_refCount);
 			if(m_refCounterLock)
 			{
 				EP_DELETE m_refCounterLock;

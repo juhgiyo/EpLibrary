@@ -60,17 +60,30 @@ namespace epl
 
 		The default constructor is protected to protect the singleton property.
 		*/
-		SingletonHolder(){}
+		SingletonHolder()
+		{
+			
+		}
 
 		/*
 		Default Desturctor
 		*/
-		virtual ~SingletonHolder(){}
+		virtual ~SingletonHolder()
+		{
+		}
 	};
 
 	template<typename SingletonClass>
 	SingletonClass &SingletonHolder<SingletonClass>::Instance()
 	{
+#if (EP_LOCK_POLICY==LOCK_POLICY_CRITICALSECTION)
+		static CriticalSectionEx m_lock;
+#elif (EP_LOCK_POLICY==LOCK_POLICY_MUTEX)
+		static Mutex m_lock;
+#elif (EP_LOCK_POLICY==LOCK_POLICY_NONE)
+		static NoLock m_lock;
+#endif //(EP_LOCK_POLICY==LOCK_POLICY_CRITICALSECTION)
+		LockObj lock(&m_lock);
 		static SingletonClass holder;
 		return holder;
 

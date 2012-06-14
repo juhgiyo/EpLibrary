@@ -309,7 +309,7 @@ namespace epl
 		if(byteSize<sizeof(PacketStruct))
 		{
 			EpString errMsg;
-			System::SPrintf(errMsg,"byteSize is smaller than PacketStruct size.\nbyteSize must be greater than sizeof(PacketStruct)=%d.\nbyteSize = %d\n",sizeof(PacketStruct),byteSize);
+			System::SPrintf(errMsg,"byteSize is smaller than PacketStruct size.\r\nbyteSize must be greater than sizeof(PacketStruct)=%d.\r\nbyteSize = %d\r\n",sizeof(PacketStruct),byteSize);
 			EP_VERIFY_INVALID_ARGUMENT_W_MSG(byteSize>=sizeof(PacketStruct),errMsg);
 		}
 
@@ -436,7 +436,7 @@ namespace epl
 		if(byteSize<sizeof(PacketStruct))
 		{
 			EpString errMsg;
-			System::SPrintf(errMsg,"byteSize is smaller than PacketStruct size.\nbyteSize must be greater than sizeof(PacketStruct)=%d.\nbyteSize = %d\n",sizeof(PacketStruct),byteSize);
+			System::SPrintf(errMsg,"byteSize is smaller than PacketStruct size.\r\nbyteSize must be greater than sizeof(PacketStruct)=%d.\r\nbyteSize = %d\r\n",sizeof(PacketStruct),byteSize);
 			EP_VERIFY_INVALID_ARGUMENT_W_MSG(byteSize>=sizeof(PacketStruct),errMsg);
 		}
 
@@ -571,7 +571,7 @@ namespace epl
 		if(m_isAllocated)
 			m_packetContainer->m_packet=b;
 		else
-			EP_VERIFY_LOGIC_ERROR_W_MSG(0,"This Function Should NOT be used when m_isAllocated is false.\nInstead USE SetPacket Function.");
+			EP_VERIFY_LOGIC_ERROR_W_MSG(0,"This Function Should NOT be used when m_isAllocated is false.\r\nInstead USE SetPacket Function.");
 		return *this;
 	}
 	
@@ -587,7 +587,7 @@ namespace epl
 			if(arrSize<=m_length)
 			{
 				EpString errMsg;
-				System::SPrintf(errMsg,"Given size = %d is smaller than the original = %d.\nNew array size must be (greater than/equal to) original array size.",arrSize,m_length);
+				System::SPrintf(errMsg,"Given size = %d is smaller than the original = %d.\r\nNew array size must be (greater than/equal to) original array size.",arrSize,m_length);
 				EP_VERIFY_INVALID_ARGUMENT_W_MSG(arrSize>=m_length,errMsg);
 			}
 			
@@ -599,7 +599,7 @@ namespace epl
 		}
 		else
 		{
-			EP_VERIFY_LOGIC_ERROR_W_MSG(0,"This Function Should NOT be used when m_isAllocated is false.\nInstead USE SetPacket Function.");
+			EP_VERIFY_LOGIC_ERROR_W_MSG(0,"This Function Should NOT be used when m_isAllocated is false.\r\nInstead USE SetPacket Function.");
 			return false;
 		}
 	}

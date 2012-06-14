@@ -135,7 +135,7 @@ void ProfileManager::ProfileNode::Print() const
 
 void ProfileManager::ProfileNode::Write(EpFile* const file)
 {
-	EP_VERIFY_INVALID_ARGUMENT_W_MSG(file,"The File Pointer is NULL!");
+	EP_ASSERT_EXPR(file,_T("The File Pointer is NULL!"));
 	System::FTPrintf(file,_T("%s Average : %d ms Total : %d ms Call : %d\n"),m_uniqueName.c_str(),m_totalTime/m_cnt,m_totalTime,m_cnt);
 }
 

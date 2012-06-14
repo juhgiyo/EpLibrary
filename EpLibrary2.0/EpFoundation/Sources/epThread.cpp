@@ -97,11 +97,10 @@ bool Thread::Start(void * arg,const ThreadOpCode opCode, const ThreadType thread
 			m_threadHandle=::CreateThread(NULL,stackSize,Thread::entryPoint2,this,opCode,reinterpret_cast<LPDWORD>(&m_threadId));
 		if(!m_threadHandle)
 		{
-			EpString errMsg,lastErrMsg;
+			EpTString lastErrMsg;
 			unsigned long lastErrNum=0;
 			System::FormatLastErrorMessage(lastErrMsg,&lastErrNum);
-			System::SPrintf(errMsg,"Cannot create the thread!\nError Code: %d\nError Message: %s",lastErrNum,lastErrMsg);
-			EP_VERIFY_THREAD_CREATION_ERROR_W_MSG(0,errMsg);
+			EP_ASSERT_EXPR(0,_T("Cannot create the thread!\r\nError Code: %d\r\nError Message: %s"),lastErrNum,lastErrMsg);
 			return false;
 
 		}
@@ -181,11 +180,10 @@ bool Thread::Terminate()
 		else
 		{
 			// TerminateThread Failed
-			EpString errMsg,lastErrMsg;
+			EpTString lastErrMsg;
 			unsigned long lastErrNum=0;
 			System::FormatLastErrorMessage(lastErrMsg,&lastErrNum);
-			System::SPrintf(errMsg,"Cannot terminate thread!\nThread ID: %d\n Error Code: %d\nError Message: %s",lastErrNum,lastErrMsg);
-			EP_VERIFY_THREAD_TERMINATION_ERROR_W_MSG(0,errMsg);
+			EP_ASSERT_EXPR(0,_T("Cannot terminate thread!\r\nThread ID: %d\r\n Error Code: %d\r\nError Message: %s"),lastErrNum,lastErrMsg);
 		}
 	}
 	else

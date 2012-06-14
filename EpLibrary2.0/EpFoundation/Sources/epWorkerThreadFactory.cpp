@@ -31,9 +31,7 @@ BaseWorkerThread *WorkerThreadFactory::GetWorkerThread(const BaseWorkerThread::T
 		return dynamic_cast<BaseWorkerThread*>(EP_NEW WorkerThreadInfinite(policy));
 	else
 	{
-		EpString errMsg;
-		System::SPrintf(errMsg,"Unknown Thread Life Policy Input! Thread Life Policy Input : %d",policy);
-		EP_VERIFY_INVALID_ARGUMENT_W_MSG(0,errMsg);
+		EP_ASSERT_EXPR(0,_T("Unknown Thread Life Policy Input! Thread Life Policy Input : %d"),policy);
 	}
 	return NULL;
 }

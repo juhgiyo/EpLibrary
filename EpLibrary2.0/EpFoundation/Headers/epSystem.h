@@ -716,6 +716,7 @@ namespace epl
 		@return if succeeds, the number of TCHARs stored in the output buffer, excluding the terminating null character otherwise zero.
 		*/
 		static unsigned long FormatLastErrorMessage(EpString &retString,unsigned long *retErrNo) ;
+
 		/*!
 		Show Notice Message Box with message given including File Name, Function Name, and Line Number.
 		@param[in] fileName the file name of this function called.

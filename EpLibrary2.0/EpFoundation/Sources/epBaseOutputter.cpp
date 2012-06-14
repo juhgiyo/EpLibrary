@@ -101,12 +101,7 @@ void BaseOutputter::FlushToFile()
 	LockObj lock(m_nodeListLock);
 	EpFile *file=NULL;
 	System::FTOpen(file,m_fileName.c_str(),_T("wt"));
-	if(!file)
-	{
-		EpString errMsg;
-		System::SPrintf(errMsg,"Cannot open the file(%s)!",m_fileName.c_str());
-		EP_VERIFY_RUNTIME_ERROR_W_MSG(file,errMsg);
-	}
+	EP_ASSERT_EXPR(file,_T("Cannot open the file(%s)!"),m_fileName.c_str());
 	writeToFile(file);
 	System::FClose(file);
 }

@@ -737,9 +737,9 @@ int System::NoticeBox(const TCHAR* fileName, const TCHAR* funcName, const unsign
 	tmpString=EP_NEW TCHAR[length+1];
 	STPrintf_V(tmpString,length+1,format,args);
 	va_end(args);
-	fullLength=TcsLen(_T("File Name : %s\nFunction Name : %s\nLine Number : %d\n\nMessage : %s\n"),fileName,funcName,lineNum,tmpString);
+	fullLength=TcsLen(_T("File Name : %s\r\nFunction Name : %s\r\nLine Number : %d\r\n\r\nMessage : %s\r\n"),fileName,funcName,lineNum,tmpString);
 	tmpSTring2=EP_NEW TCHAR[fullLength+1];
-	STPrintf(tmpSTring2,fullLength+1,_T("File Name : %s\nFunction Name : %s\nLine Number : %d\n\nMessage : %s\n"),fileName,funcName,lineNum,tmpString);
+	STPrintf(tmpSTring2,fullLength+1,_T("File Name : %s\r\nFunction Name : %s\r\nLine Number : %d\r\n\r\nMessage : %s\r\n"),fileName,funcName,lineNum,tmpString);
 	
 	int retVal=0;
 	retVal=MessageBox(NULL,tmpSTring2,_T("Notice"),MB_OK);
