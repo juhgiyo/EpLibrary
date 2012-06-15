@@ -1116,7 +1116,7 @@ CString _tagXMLNode::GetXML( LPDISP_OPT opt /*= &optDefault*/ )
 	if( m_childs.empty() && m_value.IsEmpty() )
 	{
 		// <TAG Attr1="Val1"/> alone tag 
-		os << "/>";	
+		os << _T("/>");	
 	}
 	else
 	{

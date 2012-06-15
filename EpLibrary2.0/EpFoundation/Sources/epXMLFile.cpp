@@ -94,14 +94,14 @@ void XMLFile::writeLoop()
 	{
 		EpTString commentToFile=_T("<?xml version=\"");
 		commentToFile.append(m_xmlInfo.m_xmlVersion);
-		commentToFile.append(_T("\" encoding=\'"));
+		commentToFile.append(_T("\" encoding=\""));
 		commentToFile.append(m_xmlInfo.m_xmlEncoding);
-		commentToFile.append(_T("\'?>"));
+		commentToFile.append(_T("\" ?>"));
 		writeToFile(commentToFile.c_str());
 	}
 
 	toFileString=GetXML().GetString();
-	toFileString.append(_T("\n"));
+	toFileString.append(_T("\r\n"));
 	writeToFile(toFileString.c_str());
 	Close();
 }
