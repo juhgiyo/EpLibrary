@@ -161,11 +161,9 @@ namespace epl
 
 	/// Enumerator for File Encoding
 	typedef enum _fileEncodingType{
-		///Unicode
-		FILE_ENCODING_TYPE_UNICODE=0,
 		///UTF-8
-		FILE_ENCODING_TYPE_UTF8,
-		///UTF-16
+		FILE_ENCODING_TYPE_UTF8=0,
+		///UTF-16 Little Endian (Default)
 		FILE_ENCODING_TYPE_UTF16LE,
 		///ANSI
 		FILE_ENCODING_TYPE_ANSI,
