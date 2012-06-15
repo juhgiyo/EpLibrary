@@ -89,10 +89,7 @@ bool BaseServerEx::SetPort(const TCHAR * port)
 	else
 	{
 #if defined(_UNICODE) || defined(UNICODE)
-		char *tmpString=EP_NEW char[strLength+1];
-		System::WideCharToMultiByte(port,tmpString);
-		m_port=tmpString;
-		EP_DELETE[] tmpString;
+		m_port=System::WideCharToMultiByte(port);
 #else// defined(_UNICODE) || defined(UNICODE)
 		m_port=port;
 #endif// defined(_UNICODE) || defined(UNICODE)
@@ -105,11 +102,7 @@ EpTString BaseServerEx::GetPort() const
 	if(!m_port.length())
 		return _T("");
 #if defined(_UNICODE) || defined(UNICODE)
-	EpTString retString;
-	wchar_t *port=EP_NEW wchar_t[m_port.length()+1];
-	System::MultiByteToWideChar(m_port.c_str(),m_port.length(),port);
-	retString=port;
-	EP_DELETE[] port;
+	EpTString retString=System::MultiByteToWideChar(m_port.c_str());
 	return retString;
 #else //defined(_UNICODE) || defined(UNICODE)
 	return m_port;

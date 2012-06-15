@@ -666,12 +666,7 @@ unsigned long System::FormatLastErrorMessage(EpString &retString,unsigned long *
 	{
 
 #if defined(_UNICODE) || defined(UNICODE)
-		unsigned int strLength=System::WcsLen(errMsg);
-		char *multiByteString=EP_NEW char[strLength+1];
-		System::Memset(multiByteString,0,strLength+1);
-		System::WideCharToMultiByte(errMsg,multiByteString);
-		retString=multiByteString;
-		EP_DELETE[] multiByteString;
+		retString=System::WideCharToMultiByte(errMsg);
 #else// defined(_UNICODE) || defined(UNICODE)
 		retString=errMsg;
 #endif// defined(_UNICODE) || defined(UNICODE)
@@ -711,12 +706,7 @@ unsigned long System::FormatLastErrorMessage(EpWString &retString,unsigned long 
 #if defined(_UNICODE) || defined(UNICODE)
 		retString=errMsg;
 #else// defined(_UNICODE) || defined(UNICODE)
-		unsigned int strLength=System::StrLen(errMsg);
-		wchar_t *wideCharString=EP_NEW wchar_t[strLength+1];
-		System::Memset(wideCharString,0,(strLength+1)*sizeof(wchar_t));
-		System::MultiByteToWideChar(errMsg,wideCharString);
-		retString=wideCharString;
-		EP_DELETE[] wideCharString;
+		retString=System::MultiByteToWideChar(errMsg);
 #endif// defined(_UNICODE) || defined(UNICODE)
 
 		// release memory allocated by FormatMessage()
