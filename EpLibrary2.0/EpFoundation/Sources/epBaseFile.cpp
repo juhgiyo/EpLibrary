@@ -92,12 +92,13 @@ void BaseFile::writeToFile(const TCHAR *toFileString)
 		if(m_file)
 			System::FWrite(toFileString,sizeof(wchar_t),strLength,m_file);
 #else //defined(_UNICODE) || defined(UNICODE)
-		wchar_t *wideCharToFile = EP_NEW wchar_t[strLength+1];
+		unsigned int sizeNeeded=System::MultiByteToWideChar(toFileString,(wchar_t*)NULL);
+		wchar_t *wideCharToFile = EP_NEW wchar_t[sizeNeeded+1];
 
-		System::Memset(wideCharToFile,0,(strLength+1)*sizeof(wchar_t));
+		System::Memset(wideCharToFile,0,(sizeNeeded+1)*sizeof(wchar_t));
 		System::MultiByteToWideChar(toFileString,wideCharToFile);
 		if(m_file)
-			System::FWrite(toFileString,sizeof(wchar_t),strLength,m_file);
+			System::FWrite(toFileString,sizeof(wchar_t),sizeNeeded,m_file);
 		EP_DELETE[] wideCharToFile;
 #endif //defined(_UNICODE) || defined(UNICODE)
 	}
@@ -208,7 +209,7 @@ bool BaseFile::LoadFromFile(const TCHAR *filename)
 		System::Memset(tFileBuf,0,(length+1)*sizeof(wchar_t));
 		System::FRead(tFileBuf,sizeof(wchar_t),length,m_file);
 		System::FClose(m_file);
-		rest=System::WideCharToMultiByte(reinterpret_cast<wchar_t*>(tFileBuf));;
+		rest=System::WideCharToMultiByte(tFileBuf);;
 		EP_DELETE[] tFileBuf;
 	}
 	else
