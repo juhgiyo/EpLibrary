@@ -54,7 +54,7 @@ namespace epl{
 		@param[in] encodingType the encoding type for this file
 		@param[in] lockPolicyType The lock policy
 		*/
-		PropertiesFile(FileEncodingType encodingType=FILE_ENCODING_TYPE_UTF16, LockPolicy lockPolicyType=EP_LOCK_POLICY);
+		PropertiesFile(FileEncodingType encodingType=FILE_ENCODING_TYPE_UTF16LE, LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Copy Constructor
