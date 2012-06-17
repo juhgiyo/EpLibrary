@@ -114,10 +114,12 @@ void BaseOutputter::writeToFile(EpFile* const file)
 {
 	if(file)
 	{		
+		System::FTPrintf(file,_T("Log Starts...\n"));
 		std::vector<OutputNode*>::iterator iter;
 		for(iter=m_list.begin();iter!=m_list.end();iter++)
 		{
 			(*iter)->Write(file);
 		}
+		System::FTPrintf(file,_T("Log Ends...\n"));
 	}
 }
