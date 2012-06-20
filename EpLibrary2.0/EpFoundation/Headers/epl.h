@@ -68,6 +68,7 @@ An Interface for EP Foundation Library
 #include "epPropertiesFile.h"
 #include "epXMLFile.h"
 #include "epXMLite.h"
+#include "epTextFile.h"
 
 //Frameworks
 #include "epBaseLock.h"
