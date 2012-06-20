@@ -190,6 +190,7 @@ const EpTString& PropertiesFile::operator [](const TCHAR * key) const
 }
 void PropertiesFile::loadFromFile(EpTString lines)
 {
+	m_propertyList.clear();
 	EpTString line=_T("");
 	while(getLine(lines,line,lines))
 	{
