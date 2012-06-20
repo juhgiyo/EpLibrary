@@ -103,7 +103,6 @@ void XMLFile::writeLoop()
 	toFileString=GetXML().GetString();
 	toFileString.append(_T("\r\n"));
 	writeToFile(toFileString.c_str());
-	Close();
 }
 void XMLFile::loadFromFile(EpTString lines)
 {

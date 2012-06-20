@@ -408,7 +408,7 @@ namespace epl
 	}
 	
 	template<typename PacketStruct, typename ArrayType>
-	void PacketContainer<PacketStruct,ArrayType>::SetPacket(const PacketStruct & packet, unsigned int arraySize=0)
+	void PacketContainer<PacketStruct,ArrayType>::SetPacket(const PacketStruct & packet, unsigned int arraySize)
 	{
 		LockObj lock(m_lock);
 		if(m_isAllocated && m_packetContainer)
@@ -469,7 +469,7 @@ namespace epl
 	}
 
 	template<typename PacketStruct, typename ArrayType>
-	bool PacketContainer<PacketStruct,ArrayType>::SetArray(const ArrayType *arr,unsigned int arraySize, unsigned int offset=0)
+	bool PacketContainer<PacketStruct,ArrayType>::SetArray(const ArrayType *arr,unsigned int arraySize, unsigned int offset)
 	{
 		LockObj lock(m_lock);
 		if(m_isAllocated)

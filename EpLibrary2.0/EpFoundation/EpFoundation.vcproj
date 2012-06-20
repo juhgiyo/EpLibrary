@@ -807,6 +807,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Sources\epTextFile.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\Sources\epXMLFile.cpp"
 					>
 				</File>
@@ -1154,6 +1158,10 @@
 				</File>
 				<File
 					RelativePath=".\Headers\epPropertiesFile.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Headers\epTextFile.h"
 					>
 				</File>
 				<File
