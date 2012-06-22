@@ -27,7 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 An Interface for Packet Container with variable length array.
 
-@secion SPECIAL THANKS TO
+@section SPECIAL THANKS TO
  
 Sang Yong Yoon <flyingshiri@gmail.com>
 
