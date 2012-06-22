@@ -198,6 +198,10 @@ bool BaseServer::StartServer()
 		return false;
 	}
 
+	// set SO_REUSEADDR for setsockopt function to reuse the port immediately as soon as the service exits.
+	int sockoptval = 1;
+	setsockopt(m_listenSocket, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<char*>(&sockoptval), sizeof(int));
+
 	// Setup the TCP listening socket
 	iResult = bind( m_listenSocket, m_result->ai_addr, static_cast<int>(m_result->ai_addrlen));
 	if (iResult == SOCKET_ERROR) {
