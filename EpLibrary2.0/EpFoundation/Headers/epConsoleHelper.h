@@ -50,7 +50,7 @@ namespace epl
 		@param[in] isWaitForTerminate flag for waiting for process to terminate or not
 		@return the result of the console command
 		*/
-		static EpTString ExecuteConsoleCommand(const TCHAR * command,bool isWaitForTerminate=true);
+		static EpTString ExecuteConsoleCommand(const TCHAR * command,bool isWaitForTerminate=true, int priority=CONSOLE_PRIORITY_NORMAL);
 
 		/*!
 		Execute the given executable file

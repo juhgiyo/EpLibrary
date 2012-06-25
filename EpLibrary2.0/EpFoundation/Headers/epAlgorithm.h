@@ -181,6 +181,14 @@ namespace epl
 		/// a multi process environment
 		LOCK_POLICY_MUTEX,
 	}LockPolicy;
+
+	/// Console Priority
+	typedef enum _consolePriority{
+		CONSOLE_PRIORITY_NORMAL = 0x00000020,
+		CONSOLE_PRIORITY_IDLE   = 0x00000040,
+		CONSOLE_PRIORITY_HIGH   = 0x00000080,
+		CONSOLE_PRIORITY_REALTIME = 0x00000100,
+	};
 }
 
 #endif //__EP_ALGORITHM_H__
