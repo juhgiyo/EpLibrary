@@ -19,7 +19,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace epl;
 
-EpTString ConsoleHelper::ExecuteConsoleCommand(const TCHAR * command,bool isWaitForTerminate)
+
+WaitTimeStruct _waitTimeStruct::wtsDefault=WaitTimeStruct();
+
+EpTString ConsoleHelper::ExecuteConsoleCommand(const TCHAR * command, bool isWaitForTerminate, int priority, WaitTimeStruct waitStruct)
 {
 	EpTString csExecute;
 	csExecute=command;
@@ -47,16 +50,26 @@ EpTString ConsoleHelper::ExecuteConsoleCommand(const TCHAR * command,bool isWait
 	sInfo.hStdOutput=wPipe;
 	sInfo.hStdError=wPipe;
 #if defined(_UNICODE) || defined(UNICODE)
-	if(!CreateProcess(0,reinterpret_cast<LPWSTR>(const_cast<wchar_t*>(csExecute.c_str())),0,0,TRUE,NORMAL_PRIORITY_CLASS|CREATE_NO_WINDOW,0,0,&sInfo,&pInfo))
+	if(!CreateProcess(0,reinterpret_cast<LPWSTR>(const_cast<wchar_t*>(csExecute.c_str())),0,0,TRUE,priority|CREATE_NO_WINDOW,0,0,&sInfo,&pInfo))
 #else // defined(_UNICODE) || defined(UNICODE)
-	if(!CreateProcess(0,reinterpret_cast<LPSTR>(const_cast<char*>(csExecute.c_str())),0,0,TRUE,NORMAL_PRIORITY_CLASS|CREATE_NO_WINDOW,0,0,&sInfo,&pInfo))
+	if(!CreateProcess(0,reinterpret_cast<LPSTR>(const_cast<char*>(csExecute.c_str())),0,0,TRUE,priority|CREATE_NO_WINDOW,0,0,&sInfo,&pInfo))
 #endif // defined(_UNICODE) || defined(UNICODE)
 	{
 		return _T("[Error]ConsoleHelper::ExecuteConsoleCommand:Creating Process");
 	}
 	if(isWaitForTerminate)
 	{
-		WaitForSingleObject(pInfo.hProcess,INFINITE);
+		//WaitForSingleObject(pInfo.hProcess,INFINITE);
+
+		// Below implementation meant to do same functionality as above function ( WaitForSingleObject(pInfo.hProcess,INFINITE) )
+		// If wait for infinite like above, the child process get performance degradation, and sometimes child process gets hanged.
+		// Below implementation solves the problem, however need to set relevant time for different environment. 
+		unsigned long ret;
+		do {     
+			Sleep(waitStruct.sleepTimeMilliSec);     
+			ret = WaitForSingleObject(pInfo.hProcess, waitStruct.waitTimeMilliSec); 
+		} 
+		while (ret == WAIT_TIMEOUT); 
 	}
 
 	CloseHandle(wPipe);

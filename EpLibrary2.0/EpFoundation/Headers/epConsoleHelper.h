@@ -35,6 +35,18 @@ An Interface for the Console Processing Operation.
 
 namespace epl
 {
+	/// Console Helper ExecuteConsoleCommand WaitTimeStruct
+	typedef struct EP_FOUNDATION _waitTimeStruct{
+		/// Sleep time for calling thread for each waiting iteration
+		unsigned long sleepTimeMilliSec;
+		/// Wait time for each iteration
+		unsigned long waitTimeMilliSec;
+
+		_waitTimeStruct() { sleepTimeMilliSec=100; waitTimeMilliSec=10;}
+		/// default wait time struct
+		static _waitTimeStruct wtsDefault; 
+	}WaitTimeStruct;
+
 	/*! 
 	@class ConsoleHelper epConsoleHelper.h
 	@brief This is a class for Console Processing Class
@@ -46,11 +58,15 @@ namespace epl
 	public:
 		/*!
 		Execute the given command to the console and return the result
+
+		** waitStruct is ignored when isWaitForTerminate is false.
 		@param[in] command the command to execute
 		@param[in] isWaitForTerminate flag for waiting for process to terminate or not
+		@param[in] priority the priority of the process executing
+		@param[in] waitStruct the wait time and sleep time for current thread if waiting for termination.
 		@return the result of the console command
 		*/
-		static EpTString ExecuteConsoleCommand(const TCHAR * command,bool isWaitForTerminate=true, int priority=CONSOLE_PRIORITY_NORMAL);
+		static EpTString ExecuteConsoleCommand(const TCHAR * command, bool isWaitForTerminate=true, int priority=CONSOLE_PRIORITY_NORMAL,WaitTimeStruct waitStruct=WaitTimeStruct::wtsDefault);
 
 		/*!
 		Execute the given executable file
