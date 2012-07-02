@@ -20,9 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using namespace epl;
 
 
-WaitTimeStruct _waitTimeStruct::wtsDefault=WaitTimeStruct();
-
-EpTString ConsoleHelper::ExecuteConsoleCommand(const TCHAR * command, bool isWaitForTerminate, int priority, WaitTimeStruct waitStruct)
+EpTString ConsoleHelper::ExecuteConsoleCommand(const TCHAR * command, bool isWaitForTerminate, ConsolePriority priority)
 {
 	EpTString csExecute;
 	csExecute=command;
@@ -59,17 +57,7 @@ EpTString ConsoleHelper::ExecuteConsoleCommand(const TCHAR * command, bool isWai
 	}
 	if(isWaitForTerminate)
 	{
-		//WaitForSingleObject(pInfo.hProcess,INFINITE);
-
-		// Below implementation meant to do same functionality as above function ( WaitForSingleObject(pInfo.hProcess,INFINITE) )
-		// If wait for infinite like above, the child process get performance degradation, and sometimes child process gets hanged.
-		// Below implementation solves the problem, however need to set relevant time for different environment. 
-		unsigned long ret;
-		do {     
-			Sleep(waitStruct.sleepTimeMilliSec);     
-			ret = WaitForSingleObject(pInfo.hProcess, waitStruct.waitTimeMilliSec); 
-		} 
-		while (ret == WAIT_TIMEOUT); 
+		WaitForSingleObject(pInfo.hProcess,INFINITE);
 	}
 
 	CloseHandle(wPipe);
