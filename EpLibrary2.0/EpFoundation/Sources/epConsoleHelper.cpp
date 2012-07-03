@@ -42,15 +42,19 @@ EpTString ConsoleHelper::ExecuteConsoleCommand(const TCHAR * command, bool isWai
 	PROCESS_INFORMATION pInfo;
 	ZeroMemory(&pInfo,sizeof(pInfo));
 	sInfo.cb=sizeof(sInfo);
-	sInfo.dwFlags=STARTF_USESTDHANDLES;
+	//sInfo.dwFlags=STARTF_USESTDHANDLES;
+	sInfo.dwFlags=STARTF_USESTDHANDLES|STARTF_USESHOWWINDOW;
+
 	sInfo.wShowWindow=SW_HIDE;
 	sInfo.hStdInput=NULL;
 	sInfo.hStdOutput=wPipe;
 	sInfo.hStdError=wPipe;
 #if defined(_UNICODE) || defined(UNICODE)
-	if(!CreateProcess(0,reinterpret_cast<LPWSTR>(const_cast<wchar_t*>(csExecute.c_str())),0,0,TRUE,priority|CREATE_NO_WINDOW,0,0,&sInfo,&pInfo))
+	//if(!CreateProcess(0,reinterpret_cast<LPWSTR>(const_cast<wchar_t*>(csExecute.c_str())),0,0,TRUE,priority|CREATE_NO_WINDOW,0,0,&sInfo,&pInfo))
+	if(!CreateProcess(0,reinterpret_cast<LPWSTR>(const_cast<wchar_t*>(csExecute.c_str())),0,0,TRUE,priority|CREATE_NEW_CONSOLE,0,0,&sInfo,&pInfo))
 #else // defined(_UNICODE) || defined(UNICODE)
-	if(!CreateProcess(0,reinterpret_cast<LPSTR>(const_cast<char*>(csExecute.c_str())),0,0,TRUE,priority|CREATE_NO_WINDOW,0,0,&sInfo,&pInfo))
+	//if(!CreateProcess(0,reinterpret_cast<LPSTR>(const_cast<char*>(csExecute.c_str())),0,0,TRUE,priority|CREATE_NO_WINDOW,0,0,&sInfo,&pInfo))
+	if(!CreateProcess(0,reinterpret_cast<LPSTR>(const_cast<char*>(csExecute.c_str())),0,0,TRUE,priority|CREATE_NEW_CONSOLE,0,0,&sInfo,&pInfo))
 #endif // defined(_UNICODE) || defined(UNICODE)
 	{
 		return _T("[Error]ConsoleHelper::ExecuteConsoleCommand:Creating Process");
