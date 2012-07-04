@@ -26,7 +26,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 @section DESCRIPTION
 
 An Interface for Base Server.
-(Send->Receive->Send->Receive Model)
 
 */
 #ifndef __EP_BASE_SERVER_H__
