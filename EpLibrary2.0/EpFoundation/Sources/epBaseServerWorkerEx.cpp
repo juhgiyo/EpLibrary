@@ -42,7 +42,7 @@ BaseServerWorkerEx::BaseServerWorkerEx(LockPolicy lockPolicyType): Thread(lockPo
 BaseServerWorkerEx::BaseServerWorkerEx(const BaseServerWorkerEx& b) : Thread(b),SmartObject(b)
 {
 	m_lockPolicy=b.m_lockPolicy;
-	switch(b.m_lockPolicy)
+	switch(m_lockPolicy)
 	{
 	case LOCK_POLICY_CRITICALSECTION:
 		m_sendLock=EP_NEW CriticalSectionEx();
@@ -69,18 +69,19 @@ BaseServerWorkerEx::~BaseServerWorkerEx()
 		closesocket(m_clientSocket);
 	}
 	m_sendLock->Unlock();
-	EP_DELETE m_sendLock;
+	if(m_sendLock)
+		EP_DELETE m_sendLock;
 }
 
 void BaseServerWorkerEx::SetArg(void* a)
 {
-	SOCKET clientSocket=(SOCKET)a;
+	SOCKET clientSocket=reinterpret_cast<SOCKET>(a);
 	m_clientSocket=clientSocket;
 }
 
 int BaseServerWorkerEx::Send(const Packet &packet)
 {
-
+	
 	LockObj lock(m_sendLock);
 	int writeLength=0;
 	const char *packetData=packet.GetPacket();
@@ -134,7 +135,7 @@ void BaseServerWorkerEx::execute()
 {
 	int iResult;
 	Packet recvSizePacket(NULL,4);
-
+	
 	// Receive until the peer shuts down the connection
 	do {
 		int size =receive(recvSizePacket);
