@@ -20,10 +20,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using namespace epl;
 
 
-EpTString ConsoleHelper::ExecuteConsoleCommand(const TCHAR * command, bool isWaitForTerminate, ConsolePriority priority)
+EpTString ConsoleHelper::ExecuteConsoleCommand(const TCHAR * command, bool isDosCommand, bool isWaitForTerminate, ConsolePriority priority)
 {
 	EpTString csExecute;
-	csExecute=command;
+	if(isDosCommand)
+	{
+		csExecute=_T("cmd /c ");
+		csExecute.append(command);
+	}
+	else
+		csExecute=command;
 
 	SECURITY_ATTRIBUTES secattr;
 	ZeroMemory(&secattr,sizeof(secattr));

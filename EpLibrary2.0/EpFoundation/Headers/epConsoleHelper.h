@@ -49,11 +49,12 @@ namespace epl
 
 		** waitStruct is ignored when isWaitForTerminate is false.
 		@param[in] command the command to execute
+		@param[in] isDosCommand flag whether the command is standard DOS command or not
 		@param[in] isWaitForTerminate flag for waiting for process to terminate or not
 		@param[in] priority the priority of the process executing
 		@return the result of the console command
 		*/
-		static EpTString ExecuteConsoleCommand(const TCHAR * command, bool isWaitForTerminate=true, ConsolePriority priority=CONSOLE_PRIORITY_NORMAL);
+		static EpTString ExecuteConsoleCommand(const TCHAR * command, bool isDosCommand=false, bool isWaitForTerminate=true, ConsolePriority priority=CONSOLE_PRIORITY_NORMAL);
 
 		/*!
 		Execute the given executable file
