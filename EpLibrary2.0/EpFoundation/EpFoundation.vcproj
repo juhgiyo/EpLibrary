@@ -763,37 +763,45 @@
 				Name="Server"
 				>
 				<File
-					RelativePath=".\Sources\epBaseClient.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Sources\epBaseClientEx.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Sources\epBaseClientSimple.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Sources\epBaseServer.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Sources\epBaseServerWorker.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Sources\epBaseServerWorkerEx.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Sources\epBaseServerWorkerSimple.cpp"
-					>
-				</File>
-				<File
 					RelativePath=".\Sources\epPacket.cpp"
 					>
 				</File>
+				<Filter
+					Name="Server Side"
+					>
+					<File
+						RelativePath=".\Sources\epBaseServer.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Sources\epBaseServerWorker.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Sources\epBaseServerWorkerEx.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Sources\epBaseServerWorkerSimple.cpp"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Client Side"
+					>
+					<File
+						RelativePath=".\Sources\epBaseClient.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Sources\epBaseClientEx.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Sources\epBaseClientSimple.cpp"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="File System"
@@ -1117,34 +1125,6 @@
 				Name="Server"
 				>
 				<File
-					RelativePath=".\Headers\epBaseClient.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Headers\epBaseClientEx.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Headers\epBaseClientSimple.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Headers\epBaseServer.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Headers\epBaseServerWorker.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Headers\epBaseServerWorkerEx.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Headers\epBaseServerWorkerSimple.h"
-					>
-				</File>
-				<File
 					RelativePath=".\Headers\epPacket.h"
 					>
 				</File>
@@ -1152,6 +1132,42 @@
 					RelativePath=".\Headers\epPacketContainer.h"
 					>
 				</File>
+				<Filter
+					Name="Server Side"
+					>
+					<File
+						RelativePath=".\Headers\epBaseServer.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Headers\epBaseServerWorker.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Headers\epBaseServerWorkerEx.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Headers\epBaseServerWorkerSimple.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Client Side"
+					>
+					<File
+						RelativePath=".\Headers\epBaseClient.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Headers\epBaseClientEx.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Headers\epBaseClientSimple.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="File System"
