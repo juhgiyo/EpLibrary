@@ -277,38 +277,7 @@ bool BaseClient::Connect()
 unsigned long BaseClient::ClientThread( LPVOID lpParam ) 
 {
 	BaseClient *pMainClass=reinterpret_cast<BaseClient*>(lpParam);
-	int iResult;
-	/// Receive buffer
-	Packet recvSizePacket(NULL,4);
-	// Receive until the peer shuts down the connection
-	do {
-		int size =pMainClass->receive(recvSizePacket);
-		if(size>0)
-		{
-			unsigned int shouldReceive=(reinterpret_cast<unsigned int*>(const_cast<char*>(recvSizePacket.GetPacket())))[0];
-			Packet recvPacket(NULL,shouldReceive);
-			iResult = pMainClass->receive(recvPacket);
-
-			if (iResult == shouldReceive) {
-				// Process Received Packet and Send Result to Client
-				pMainClass->parsePacket(recvPacket);
-			}
-			else if (iResult == 0)
-			{
-				LOG_THIS_MSG(_T("Connection closing...\n"));
-				break;
-			}
-			else  {
-				LOG_THIS_MSG(_T("recv failed with error\n"));
-				break;
-			}
-		}
-		else
-		{
-			break;
-		}
-
-	} while (iResult > 0);
+	pMainClass->processClientThread();
 	return 0; 
 }
 

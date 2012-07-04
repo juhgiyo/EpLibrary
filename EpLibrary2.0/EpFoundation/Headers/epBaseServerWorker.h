@@ -115,29 +115,30 @@ namespace epl
 	protected:
 		/*!
 		Parse the given packet and do relevant operation
+		@remark  Subclasses must implement this
 		@param[in] packet the packet to parse
 		*/
 		virtual void parsePacket(const Packet &packet)=0;
 
-	private:
+		/*!
+		thread loop function
+		*/
+		virtual void execute()=0;
+
 		/*!
 		Receive the packet from the client
+		@remark  Subclasses must implement this
 		@param[out] packet the packet received
 		@return received byte size
 		*/
 		int receive(Packet &packet);
-
+	
+	private:	
 		/*!
 		Set the argument for the base server worker thread.
 		@param[in] a The client socket from server.
 		*/
 		virtual void SetArg(void* a);
-
-		/*!
-		thread loop function
-		*/
-		virtual void execute();
-
 	
 		/// client socket
 		SOCKET m_clientSocket;

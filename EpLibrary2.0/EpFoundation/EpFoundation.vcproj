@@ -771,11 +771,11 @@
 					>
 				</File>
 				<File
-					RelativePath=".\Sources\epBaseServer.cpp"
+					RelativePath=".\Sources\epBaseClientSimple.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\Sources\epBaseServerEx.cpp"
+					RelativePath=".\Sources\epBaseServer.cpp"
 					>
 				</File>
 				<File
@@ -784,6 +784,10 @@
 				</File>
 				<File
 					RelativePath=".\Sources\epBaseServerWorkerEx.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Sources\epBaseServerWorkerSimple.cpp"
 					>
 				</File>
 				<File
@@ -1121,11 +1125,11 @@
 					>
 				</File>
 				<File
-					RelativePath=".\Headers\epBaseServer.h"
+					RelativePath=".\Headers\epBaseClientSimple.h"
 					>
 				</File>
 				<File
-					RelativePath=".\Headers\epBaseServerEx.h"
+					RelativePath=".\Headers\epBaseServer.h"
 					>
 				</File>
 				<File
@@ -1134,6 +1138,10 @@
 				</File>
 				<File
 					RelativePath=".\Headers\epBaseServerWorkerEx.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Headers\epBaseServerWorkerSimple.h"
 					>
 				</File>
 				<File

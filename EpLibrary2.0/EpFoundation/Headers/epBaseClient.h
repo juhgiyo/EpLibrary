@@ -185,12 +185,13 @@ namespace epl{
 		@param[in] packet the packet to parse
 		*/
 		virtual void parsePacket(const Packet &packet )=0;
-	private:
-		
+
 		/*!
-		Actually Disconnect from the server
+		Actually processing the client thread
+		@remark  Subclasses must implement this
 		*/
-		void disconnect();
+		virtual void processClientThread()=0;
+
 		/*!
 		Receive the packet from the server
 		@param[out] packet the packet received
@@ -198,12 +199,19 @@ namespace epl{
 		*/
 		int receive(Packet &packet);
 
+	private:
 		/*!
 		Receiving Loop Function
 		@param[in] lpParam self class object
 		@return the thread terminating status
 		*/
 		static unsigned long ClientThread( LPVOID lpParam ) ;
+
+		/*!
+		Actually Disconnect from the server
+		*/
+		void disconnect();
+
 
 		/// port
 		EpString m_port;

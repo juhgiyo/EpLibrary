@@ -1,5 +1,5 @@
 /*! 
-BaseServerWorkerEx for the EpLibrary
+BaseClientSimple for the EpLibrary
 Copyright (C) 2012  Woong Gyu La <juhgiyo@gmail.com>
 
 This program is free software: you can redistribute it and/or modify
@@ -15,63 +15,48 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "epBaseServerWorkerEx.h"
-#include "epSimpleLogger.h"
-
+#include "epBaseClientSimple.h"
 using namespace epl;
-BaseServerWorkerEx::BaseServerWorkerEx(LockPolicy lockPolicyType): BaseServerWorker(lockPolicyType)
+
+BaseClientSimple::BaseClientSimple(const TCHAR * hostName, const TCHAR * port,LockPolicy lockPolicyType):BaseClient(hostName,port,lockPolicyType)
 {
 }
 
-BaseServerWorkerEx::BaseServerWorkerEx(const BaseServerWorkerEx& b)  : BaseServerWorker(b)
+BaseClientSimple::BaseClientSimple(const BaseClientSimple& b):BaseClient(b)
+{
+
+}
+BaseClientSimple::~BaseClientSimple()
 {
 }
 
-BaseServerWorkerEx::~BaseServerWorkerEx()
-{
-}
 
 
-unsigned long BaseServerWorkerEx::passPacket(void *param)
-{
-	Packet *recvPacket=( reinterpret_cast<PacketPassUnit*>(param))->m_packet;
-	BaseServerWorkerEx *worker=( reinterpret_cast<PacketPassUnit*>(param))->m_this;
-	EP_DELETE reinterpret_cast<PacketPassUnit*>(param);
-	worker->parsePacket(*recvPacket);
-	recvPacket->Release();
-	return 0;
-}
-
-void BaseServerWorkerEx::execute()
+void BaseClientSimple::processClientThread() 
 {
 	int iResult;
+	/// Receive buffer
 	Packet recvSizePacket(NULL,4);
-	
 	// Receive until the peer shuts down the connection
 	do {
 		int size =receive(recvSizePacket);
 		if(size>0)
 		{
 			unsigned int shouldReceive=(reinterpret_cast<unsigned int*>(const_cast<char*>(recvSizePacket.GetPacket())))[0];
-			Packet *recvPacket=EP_NEW Packet(NULL,shouldReceive);
-			iResult = receive(*recvPacket);
+			Packet recvPacket(NULL,shouldReceive);
+			iResult = receive(recvPacket);
 
 			if (iResult == shouldReceive) {
-				ThreadID threadID;
-				PacketPassUnit *passUnit=EP_NEW PacketPassUnit() ;
-				passUnit->m_packet=recvPacket;
-				passUnit->m_this=this;
-				::CreateThread(NULL,0,passPacket,passUnit,THREAD_OPCODE_CREATE_START,(LPDWORD)&threadID);
+				// Process Received Packet and Send Result to Client
+				parsePacket(recvPacket);
 			}
 			else if (iResult == 0)
 			{
 				LOG_THIS_MSG(_T("Connection closing...\n"));
-				recvPacket->Release();
 				break;
 			}
 			else  {
 				LOG_THIS_MSG(_T("recv failed with error\n"));
-				recvPacket->Release();
 				break;
 			}
 		}
@@ -82,3 +67,4 @@ void BaseServerWorkerEx::execute()
 
 	} while (iResult > 0);
 }
+

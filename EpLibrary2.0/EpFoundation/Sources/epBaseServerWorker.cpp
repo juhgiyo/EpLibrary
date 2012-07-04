@@ -121,38 +121,3 @@ int BaseServerWorker::receive(Packet &packet)
 }
 
 
-void BaseServerWorker::execute()
-{
-	int iResult;
-	Packet recvSizePacket(NULL,4);
-	
-	// Receive until the peer shuts down the connection
-	do {
-		int size =receive(recvSizePacket);
-		if(size>0)
-		{
-			unsigned int shouldReceive=(reinterpret_cast<unsigned int*>(const_cast<char*>(recvSizePacket.GetPacket())))[0];
-			Packet recvPacket(NULL,shouldReceive);
-			iResult = receive(recvPacket);
-
-			if (iResult == shouldReceive) {
-				// Process Received Packet and Send Result to Client
-				parsePacket(recvPacket);
-			}
-			else if (iResult == 0)
-			{
-				LOG_THIS_MSG(_T("Connection closing...\n"));
-				break;
-			}
-			else  {
-				LOG_THIS_MSG(_T("recv failed with error\n"));
-				break;
-			}
-		}
-		else
-		{
-			break;
-		}
-
-	} while (iResult > 0);
-}

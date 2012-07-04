@@ -1,9 +1,9 @@
 /*! 
-@file epBaseServerWorkerEx.h
+@file epBaseServerWorkerSimple.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
 		<http://github.com/juhgiyo/eplibrary>
 @date February 13, 2012
-@brief Base Worker Extension Interface
+@brief Simple Base Worker Interface
 @version 2.0
 
 @section LICENSE
@@ -25,23 +25,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 @section DESCRIPTION
 
-An Interface for Base Server Worker Extension.
-(Send Receive Independent Model)
+An Interface for Simple Base Worker.
+(Send->Receive->Send->Receive Model)
 
 */
-#ifndef __EP_BASE_SERVER_WORKER_EX_H__
-#define __EP_BASE_SERVER_WORKER_EX_H__
+#ifndef __EP_BASE_SERVER_WORKER_SIMPLE_H__
+#define __EP_BASE_SERVER_WORKER_SIMPLE_H__
 
 #include "epFoundationLib.h"
 #include "epBaseServerWorker.h"
 namespace epl
 {
 	/*! 
-	@class BaseServerWorkerEx epBaseServerWorkerEx.h
-	@brief A class for Base Server Worker Extension.
+	@class BaseServerWorkerSimple epBaseServerWorkerSimple.h
+	@brief A class for Simple Base Server Worker.
 	*/
-	class EP_FOUNDATION BaseServerWorkerEx:public BaseServerWorker
+	class EP_FOUNDATION BaseServerWorkerSimple:public BaseServerWorker
 	{
+		
 	public:
 		/*!
 		Default Constructor
@@ -49,7 +50,7 @@ namespace epl
 		Initializes the Worker
 		@param[in] lockPolicyType The lock policy
 		*/
-		BaseServerWorkerEx(LockPolicy lockPolicyType=EP_LOCK_POLICY);
+		BaseServerWorkerSimple(LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Copy Constructor
@@ -57,21 +58,21 @@ namespace epl
 		Initializes the BaseServer
 		@param[in] b the second object
 		*/
-		BaseServerWorkerEx(const BaseServerWorkerEx& b);
+		BaseServerWorkerSimple(const BaseServerWorkerSimple& b);
 
 		/*!
 		Default Destructor
 
 		Destroy the Worker
 		*/
-		virtual ~BaseServerWorkerEx();
-		
+		virtual ~BaseServerWorkerSimple();
+
 		/*!
 		Assignment operator overloading
 		@param[in] b the second object
 		@return the new copied object
 		*/
-		BaseServerWorkerEx & operator=(const BaseServerWorkerEx&b)
+		BaseServerWorkerSimple & operator=(const BaseServerWorkerSimple&b)
 		{
 			if(this!=&b)
 			{
@@ -80,11 +81,10 @@ namespace epl
 			return *this;
 		}
 
-	
 	protected:
 		/*!
-		Parse the given packet and do relevant operation.
-		@remark Subclasses must implement this
+		Parse the given packet and do relevant operation
+		@remark  Subclasses must implement this
 		@param[in] packet the packet to parse
 		*/
 		virtual void parsePacket(const Packet &packet)=0;
@@ -94,28 +94,8 @@ namespace epl
 		thread loop function
 		*/
 		virtual void execute();
-	
-		/*!
-		Handle the packet parsing thread.
-		@param[in] param the packet Pass Unit
-		@return status of thread execution
-		*/
-		static unsigned long __stdcall passPacket(void *param);
-
-		/*! 
-		@struct PacketPassUnit epBaseServerWorkerEx.h
-		@brief A class for Packet Passing Unit for Packet Parsing Thread.
-		*/
-		struct PacketPassUnit{
-			/// BaseServerWorkerEx Object
-			BaseServerWorkerEx *m_this;
-			/// Packet to parse
-			Packet *m_packet;
-		};
-
-
 	};
 
 }
 
-#endif //__EP_BASE_SERVER_WORKER_EX_H__
+#endif //__EP_BASE_SERVER_WORKER_SIMPLE_H__
