@@ -45,7 +45,7 @@ namespace epl
 	@class Delegate epDelegate.h
 	@brief A class for C# Style Delegate.
 	*/
-	template<typename RetType,typename ArgType>
+	template<typename RetType,typename ArgType=void>
 	class Delegate{
 	public:
 		/// Function Pointer Type Definition
@@ -142,7 +142,7 @@ namespace epl
 			if(m_lock)
 				EP_DELETE m_lock;
 		}	
-
+		
 		/*!
 		Assignment Operator Overloading
 
@@ -158,6 +158,33 @@ namespace epl
 				m_funcList=b.m_funcList;
 			}
 			return *this;
+		}
+
+		/*!
+		Check if the delegate is empty.
+		@returns Returns true if the delegate is empty, otherwise false.
+		*/
+		bool IsEmpty() const
+		{
+			return m_funcList.empty();
+		}
+
+		/*!
+		Return the size of the delegate.
+		@return the size of the delegate.
+		*/
+		int Size() const
+		{
+			return m_funcList.size();
+		}
+
+		/*!
+		Clear the delegate.
+		*/
+		void Clear()
+		{
+			LockObj lock(m_lock);
+			m_funcList.clear();
 		}
 
 		/*!
@@ -206,6 +233,16 @@ namespace epl
 		{
 			LockObj lock(m_lock);
 			vector<RetType (*)(ArgType)>::const_iterator iter;
+			if(this==&right)
+			{
+				Delegate<RetType,ArgType> tempDel(right);
+				for(iter=tempDel.m_funcList.begin();iter!=tempDel.m_funcList.end();iter++)
+				{
+					m_funcList.push_back(*iter);
+				}
+				return *this;
+			}
+
 			for(iter=right.m_funcList.begin();iter!=right.m_funcList.end();iter++)
 			{
 				m_funcList.push_back(*iter);
@@ -267,15 +304,33 @@ namespace epl
 		virtual Delegate<RetType,ArgType> & operator -=(const Delegate<RetType,ArgType> &right)
 		{
 			LockObj lock(m_lock);
+
 			vector<RetType (*)(ArgType)>::const_iterator rightIter;
 			vector<RetType (*)(ArgType)>::iterator iter;
+			if(this==&right)
+			{
+				Delegate<RetType,ArgType> tempDel(right);
+				for(rightIter=tempDel.m_funcList.begin();rightIter!=tempDel.m_funcList.end();rightIter++)
+				{
+					for(iter=m_funcList.begin();iter!=m_funcList.end();)
+					{
+						if(*iter==*rightIter)
+						{
+							iter=m_funcList.erase(iter);
+						}
+						else 
+							iter++;
+					}
+				}
+				return *this;
+			}
 			for(rightIter=right.m_funcList.begin();rightIter!=right.m_funcList.end();rightIter++)
 			{
 				for(iter=m_funcList.begin();iter!=m_funcList.end();)
 				{
 					if(*iter==*rightIter)
 					{
-						m_funcList.erase(iter);
+						iter=m_funcList.erase(iter);
 					}
 					else 
 						iter++;
@@ -303,7 +358,7 @@ namespace epl
 		*/
 		virtual FuncType operator [](unsigned int idx) const
 		{
-			EP_VERIFY_OUT_OF_RANGE(idx<m_funcList.size());
+			EP_ASSERT(idx<m_funcList.size());
 			vector<RetType (*)(ArgType)>::const_iterator iter=m_funcList.begin();
 			iter+=idx;
 			return *iter;
@@ -317,6 +372,7 @@ namespace epl
 		*/
 		virtual RetType operator ()(ArgType arg)
 		{
+			EP_ASSERT(m_funcList.size());
 			vector<RetType (*)(ArgType)>::iterator iter;
 			vector<RetType (*)(ArgType)>::iterator lastIterCheck;
 			for(iter=m_funcList.begin();iter!=m_funcList.end();iter++)
@@ -460,6 +516,33 @@ namespace epl
 		}
 
 		/*!
+		Check if the delegate is empty.
+		@returns Returns true if the delegate is empty, otherwise false.
+		*/
+		bool IsEmpty() const
+		{
+			return m_funcList.empty();
+		}
+
+		/*!
+		Return the size of the delegate.
+		@return the size of the delegate.
+		*/
+		int Size() const
+		{
+			return m_funcList.size();
+		}
+
+		/*!
+		Clear the delegate.
+		*/
+		void Clear()
+		{
+			LockObj lock(m_lock);
+			m_funcList.clear();
+		}
+
+		/*!
 		Initialize the delegate with given function pointer
 		@param[in] func The initial function pointer
 		@return reference to this delegate
@@ -505,6 +588,16 @@ namespace epl
 		{
 			LockObj lock(m_lock);
 			vector<RetType (*)(void)>::const_iterator iter;
+			if(this==&right)
+			{
+				Delegate<RetType,void> tempDel(right);
+				for(iter=tempDel.m_funcList.begin();iter!=tempDel.m_funcList.end();iter++)
+				{
+					m_funcList.push_back(*iter);
+				}
+				return *this;
+			}
+			
 			for(iter=right.m_funcList.begin();iter!=right.m_funcList.end();iter++)
 			{
 				m_funcList.push_back(*iter);
@@ -537,7 +630,7 @@ namespace epl
 			{
 				if(*iter==func)
 				{
-					m_funcList.erase(iter);
+					iter=m_funcList.erase(iter);
 				}
 				else 
 					iter++;
@@ -566,15 +659,33 @@ namespace epl
 		virtual Delegate<RetType,void> & operator -=(const Delegate<RetType,void> &right)
 		{
 			LockObj lock(m_lock);
-			vector<RetType (*)(void)>::iterator rightIter;
+
+			vector<RetType (*)(void)>::const_iterator rightIter;
 			vector<RetType (*)(void)>::iterator iter;
+			if(this==&right)
+			{
+				Delegate<RetType,void> tempDel(right);
+				for(rightIter=tempDel.m_funcList.begin();rightIter!=tempDel.m_funcList.end();rightIter++)
+				{
+					for(iter=m_funcList.begin();iter!=m_funcList.end();)
+					{
+						if(*iter==*rightIter)
+						{
+							iter=m_funcList.erase(iter);
+						}
+						else 
+							iter++;
+					}
+				}
+				return *this;
+			}
 			for(rightIter=right.m_funcList.begin();rightIter!=right.m_funcList.end();rightIter++)
 			{
 				for(iter=m_funcList.begin();iter!=m_funcList.end();)
 				{
 					if(*iter==*rightIter)
 					{
-						m_funcList.erase(iter);
+						iter=m_funcList.erase(iter);
 					}
 					else 
 						iter++;
@@ -602,7 +713,7 @@ namespace epl
 		*/
 		virtual FuncType operator [](unsigned int idx) const
 		{
-			EP_VERIFY_OUT_OF_RANGE(idx<m_funcList.size());
+			EP_ASSERT(idx<m_funcList.size());
 			vector<RetType (*)(void)>::const_iterator iter=m_funcList.begin();
 			iter+=idx;
 			return *iter;
@@ -615,6 +726,7 @@ namespace epl
 		*/
 		virtual RetType operator ()()
 		{
+			EP_ASSERT(m_funcList.size());
 			vector<RetType (*)(void)>::iterator iter;
 			vector<RetType (*)(void)>::iterator lastIterCheck;
 			for(iter=m_funcList.begin();iter!=m_funcList.end();iter++)
@@ -622,10 +734,11 @@ namespace epl
 				lastIterCheck=iter;
 				lastIterCheck++;
 				if(lastIterCheck==m_funcList.end())
-					return (*iter)();
+					break;
 				else
 					(*iter)();
 			}
+			return (*iter)();
 		}
 
 	private:
