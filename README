@@ -76,7 +76,7 @@ FEATURES
 
 DOCUMENTATION
 
-For detailed documentation, please download the full document (EPLibrary Documentation.chm).
+For detailed documentation, please download the full document (EPLibrary Documentation.chm) at <https://github.com/downloads/juhgiyo/EpLibrary/EpLibrary%20Documentation.chm>.
 
 If the documentation file is not visible after finishing download,
 * Solution 1.
@@ -87,6 +87,11 @@ If the documentation file is not visible after finishing download,
   1. Right-click the CHM file, and then click Properties.
   2. Click Unblock.
   3. Double-click the .chm file to open the file.
+
+
+USAGE
+
+To find the usage examples, please see the wiki page at <https://github.com/juhgiyo/EpLibrary/wiki>
 
 
 LICENSE
