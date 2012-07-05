@@ -93,12 +93,12 @@ namespace epl
 		@param[in] failIfExist if this is true and the destination file exist then fail copy
 		@return true if the copied successfully, otherwise false
 		*/
-		static bool CopyTheFile(const TCHAR * strFromFile, const TCHAR *strToFile,bool failIfExist);
+		static bool CopyFile(const TCHAR * strFromFile, const TCHAR *strToFile,bool failIfExist=false);
 
 		/*!
-		Return actual file length of the given file
+		Return actual file length of the given file in byte size
 		@param[in] file the file to find the length
-		@return the actual length of the given file
+		@return the actual length of the given file in byte size
 		*/
 		static unsigned int GetActualFileLength(CFile &file);
 

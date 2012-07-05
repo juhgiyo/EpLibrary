@@ -139,9 +139,9 @@ bool FolderHelper::GetSpecialFolderPath(int csidl,bool isCreateIfNotExist,EpTStr
 }
 
 
-bool FolderHelper::CopyTheFile(const TCHAR *strFromFile, const TCHAR * strToFile,bool failIfExist)
+bool FolderHelper::CopyFile(const TCHAR *strFromFile, const TCHAR * strToFile,bool failIfExist)
 {
-	if(CopyFile(strFromFile,strToFile,failIfExist))
+	if(::CopyFile(strFromFile,strToFile,failIfExist))
 		return true;
 	return false;
 }

@@ -88,7 +88,7 @@ An Interface for Assert.
 @brief Macro Function for assert
 @param[in] _Expression the boolean expression to evaluate the assert
 */
-#define EP_ASSERT _ASSERT
+#define EP_ASSERT(expr) _ASSERT(expr)
 
 
 #endif //__EP_ASSERT_H__

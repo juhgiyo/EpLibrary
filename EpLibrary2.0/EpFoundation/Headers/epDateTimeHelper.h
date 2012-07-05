@@ -53,11 +53,22 @@ namespace epl
 
 		/*!
 		Find the difference between two time and return the difference in microsecond 
+		@remark result = time1 - time2
 		@param[in] time1 the first time to find the difference
 		@param[in] time2 the second time to find the difference
 		@return the difference between two given time in microsecond
+		
 		*/
 		static __int64 Diff(const SYSTEMTIME time1, const SYSTEMTIME time2);
+
+		/*!
+		Find the absolute difference between two time and return the difference in microsecond 
+		@remark result = absolute value of (time1-time2)
+		@param[in] time1 the first time to find the difference
+		@param[in] time2 the second time to find the difference
+		@return the absolute difference between two given time in microsecond
+		*/
+		static __int64 AbsDiff(const SYSTEMTIME time1, const SYSTEMTIME time2);
 
 		/*!
 		Translate the given SYSTEMTIME date part to Date String 

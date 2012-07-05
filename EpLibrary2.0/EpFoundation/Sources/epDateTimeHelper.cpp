@@ -40,8 +40,26 @@ __int64 DateTimeHelper::Diff(const SYSTEMTIME time1, const SYSTEMTIME time2)
 	SystemTimeToFileTime(&time1, &ft1.fileTime);
 	SystemTimeToFileTime(&time2, &ft2.fileTime);
 
-	return (ft2.ul.QuadPart - ft1.ul.QuadPart)/10; 
+	return (ft1.ul.QuadPart - ft2.ul.QuadPart)/10; 
 }
+
+__int64 DateTimeHelper::AbsDiff(const SYSTEMTIME time1, const SYSTEMTIME time2)
+{
+	union timeunion 
+	{ 
+		FILETIME fileTime; 
+		ULARGE_INTEGER ul; 
+	};
+
+	timeunion ft1;
+	timeunion ft2;
+
+	SystemTimeToFileTime(&time1, &ft1.fileTime);
+	SystemTimeToFileTime(&time2, &ft2.fileTime);
+
+	return _abs64((ft1.ul.QuadPart - ft2.ul.QuadPart)/10); 
+}
+
 
 EpTString DateTimeHelper::DateToString(const SYSTEMTIME date)
 {

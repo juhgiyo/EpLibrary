@@ -42,6 +42,7 @@ FEATURES
   1. Folder Operation
   2. Properties File Operation
   3. XML File Operation
+  4. Text File Operation
 
 * Other Frameworks
   1. Mutex
