@@ -205,10 +205,10 @@ namespace epl
 		virtual Delegate<RetType,ArgType> & operator +=(const Delegate<RetType,ArgType> &right)
 		{
 			LockObj lock(m_lock);
-			vector<RetType (*)(ArgType)>::iterator iter;
+			vector<RetType (*)(ArgType)>::const_iterator iter;
 			for(iter=right.m_funcList.begin();iter!=right.m_funcList.end();iter++)
 			{
-				m_funcList.push_back(iter);
+				m_funcList.push_back(*iter);
 			}
 			return *this;
 		}
@@ -267,7 +267,7 @@ namespace epl
 		virtual Delegate<RetType,ArgType> & operator -=(const Delegate<RetType,ArgType> &right)
 		{
 			LockObj lock(m_lock);
-			vector<RetType (*)(ArgType)>::iterator rightIter;
+			vector<RetType (*)(ArgType)>::const_iterator rightIter;
 			vector<RetType (*)(ArgType)>::iterator iter;
 			for(rightIter=right.m_funcList.begin();rightIter!=right.m_funcList.end();rightIter++)
 			{
@@ -304,7 +304,7 @@ namespace epl
 		virtual FuncType operator [](unsigned int idx) const
 		{
 			EP_VERIFY_OUT_OF_RANGE(idx<m_funcList.size());
-			vector<RetType (*)(ArgType)>::iterator iter=m_funcList.begin();
+			vector<RetType (*)(ArgType)>::const_iterator iter=m_funcList.begin();
 			iter+=idx;
 			return *iter;
 		
@@ -504,10 +504,10 @@ namespace epl
 		virtual Delegate<RetType,void> & operator +=(const Delegate<RetType,void> &right)
 		{
 			LockObj lock(m_lock);
-			vector<RetType (*)(void)>::iterator iter;
+			vector<RetType (*)(void)>::const_iterator iter;
 			for(iter=right.m_funcList.begin();iter!=right.m_funcList.end();iter++)
 			{
-				m_funcList.push_back(iter);
+				m_funcList.push_back(*iter);
 			}
 			return *this;
 		}
@@ -603,7 +603,7 @@ namespace epl
 		virtual FuncType operator [](unsigned int idx) const
 		{
 			EP_VERIFY_OUT_OF_RANGE(idx<m_funcList.size());
-			vector<RetType (*)(void)>::iterator iter=m_funcList.begin();
+			vector<RetType (*)(void)>::const_iterator iter=m_funcList.begin();
 			iter+=idx;
 			return *iter;
 
