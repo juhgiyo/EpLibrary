@@ -136,6 +136,18 @@ namespace epl
 		*/
 		void Clear();
 
+		/*!
+		Check if the tree is empty
+		@return true if tree is empty otherwise false
+		*/
+		bool IsEmpty() const;
+
+
+		/*!
+		return the number of element in the tree.
+		@return the number of element in the tree
+		*/
+		unsigned int Size() const;
 	protected:
 
 		/*! 
@@ -626,6 +638,22 @@ namespace epl
 		if(m_root)
 			EP_DELETE m_root;
 		m_root=EP_NEW PatriciaTreeNode(Terminator);
+	}
+
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	bool PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::IsEmpty() const
+	{
+		LockObj lock(m_lock);
+		if(m_totalCount)
+			return true;
+		return false;
+	}
+
+	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
+	unsigned int PatriciaTree<CharacterType,DataType,Terminator,CharCompareFunc>::Size() const
+	{
+		LockObj lock(m_lock);
+		return m_totalCount;
 	}
 
 

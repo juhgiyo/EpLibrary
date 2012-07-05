@@ -129,6 +129,11 @@ namespace epl
 		*/
 		virtual void Pop();
 
+		/*!
+		Clear the queue.
+		*/
+		void Clear();
+
 	protected:
 		/// Actual queue structure
 		std::vector<DataType> m_queue;
@@ -216,6 +221,15 @@ namespace epl
 		return false;
 		
 	}
+
+	template <typename DataType>
+	void ThreadSafeQueue<DataType>::Clear()
+	{
+		LockObj lock(m_queueLock);
+		m_queue.clear();
+
+	}
+
 	template <typename DataType>
 	int ThreadSafeQueue<DataType>::Size() const
 	{

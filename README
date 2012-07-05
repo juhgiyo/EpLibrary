@@ -31,7 +31,7 @@ FEATURES
   2. Dynamic Array
   3. Delegate
   4. Memory Enhanced Patricia Tree
-  5. K-ary Tree
+  5. K-ary Heap
 
 * Simple Debugger Framework
   1. Profiler
@@ -44,16 +44,15 @@ FEATURES
   3. XML File Operation
   4. Text File Operation
 
-* Other Frameworks
-  1. Mutex
-  2. Semaphore
-  3. CiriticalSectionEx
-  4. NoLock
-  5. Singleton Holder
-  6. Smart Object
-
 * Server/Client Template Framework
-
+  * Server Side
+    1. BaseServer
+    2. BaseServerWorkerSimple
+    3. BaseServerWorkerEx
+  * Client Side
+    1. BaseClientSimple
+    2. BaseClientEx
+    
 * System Framework
   1. Console Operation
   2. DateTime Operation
@@ -65,6 +64,14 @@ FEATURES
   1. Simple Thread Scheduler
   2. Thread Class
   3. Worker Thread System
+
+* Other Frameworks
+  1. Mutex
+  2. Semaphore
+  3. CiriticalSectionEx
+  4. NoLock
+  5. Singleton Holder
+  6. Smart Object
 
 
 DOCUMENTATION
