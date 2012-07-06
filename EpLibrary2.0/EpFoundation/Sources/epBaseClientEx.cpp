@@ -37,7 +37,7 @@ unsigned long BaseClientEx::passPacket(void *param)
 	BaseClientEx *worker=( reinterpret_cast<PacketPassUnit*>(param))->m_this;
 	EP_DELETE reinterpret_cast<PacketPassUnit*>(param);
 	worker->parsePacket(*recvPacket);
-	recvPacket->Release();
+	recvPacket->ReleaseObj();
 	return 0;
 }
 
@@ -65,12 +65,12 @@ void BaseClientEx::processClientThread()
 			else if (iResult == 0)
 			{
 				LOG_THIS_MSG(_T("Connection closing...\n"));
-				recvPacket->Release();
+				recvPacket->ReleaseObj();
 				break;
 			}
 			else  {
 				LOG_THIS_MSG(_T("recv failed with error\n"));
-				recvPacket->Release();
+				recvPacket->ReleaseObj();
 				break;
 			}
 		}

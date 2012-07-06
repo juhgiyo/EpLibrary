@@ -134,7 +134,7 @@ unsigned long BaseServer::ServerThread( LPVOID lpParam )
 		{
 			if((*iter)->GetStatus()==Thread::THREAD_STATUS_TERMINATED)
 			{
-				(*iter)->Release();
+				(*iter)->ReleaseObj();
 				iter=pMainClass->m_clientList.erase(iter);
 			}
 			else
@@ -242,7 +242,7 @@ void BaseServer::shutdownAllClient()
 	for(iter=m_clientList.begin();iter!=m_clientList.end();iter++)
 	{
 		if(*iter)
-			(*iter)->Release();
+			(*iter)->ReleaseObj();
 	}
 	m_clientList.clear();
 }

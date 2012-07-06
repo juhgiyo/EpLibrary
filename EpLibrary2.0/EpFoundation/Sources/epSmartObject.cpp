@@ -26,13 +26,13 @@ SmartObject & SmartObject::operator=(const SmartObject&b)
 }
 
 #if !defined(_DEBUG)
-void SmartObject::Retain()
+void SmartObject::RetainObj()
 {
 	LockObj lock(m_refCounterLock);
 	m_refCount++;
 }
 
-void SmartObject::Release()
+void SmartObject::ReleaseObj()
 {
 	m_refCounterLock->Lock();
 	m_refCount--;

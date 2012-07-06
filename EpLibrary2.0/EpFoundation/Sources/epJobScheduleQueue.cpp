@@ -32,7 +32,7 @@ JobScheduleQueue::~JobScheduleQueue()
 
 void JobScheduleQueue::Push(BaseJob* const &data, BaseJob::JobStatus status)
 {
-	data->Retain();
+	data->RetainObj();
 	ThreadSafePQueue::Push(data);
 	if(status!=BaseJob::JOB_STATUS_NONE)
 	{
@@ -42,7 +42,7 @@ void JobScheduleQueue::Push(BaseJob* const &data, BaseJob::JobStatus status)
 void JobScheduleQueue::Pop()
 {
 	BaseJob* jobObj=Front();
-	jobObj->Release();
+	jobObj->ReleaseObj();
 	ThreadSafePQueue::Pop();
 
 }
@@ -58,7 +58,7 @@ bool JobScheduleQueue::Erase(BaseJob * const object)
 		if(*iter==object)
 		{
 			(*iter)->JobReport(BaseJob::JOB_STATUS_TIMEOUT);
-			(*iter)->Release();
+			(*iter)->ReleaseObj();
 			m_queue.erase(iter);
 			return true;
 		}

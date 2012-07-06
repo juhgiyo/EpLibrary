@@ -181,7 +181,7 @@ namespace epl
 		m_deallocFragment  = VicinityFind(p);
 		EP_ASSERT(m_deallocFragment);
 
-		DoDeallocate(p,type);
+		Release(p,type);
 	}
 	void StaticAllocator::Clear()
 	{
@@ -269,7 +269,7 @@ namespace epl
 		}
 	}
 
-	void StaticAllocator::DoDeallocate(void* p, CacheType type)
+	void StaticAllocator::Release(void* p, CacheType type)
 	{
 		EP_ASSERT(m_deallocFragment->m_Data <= p);
 		EP_ASSERT(m_deallocFragment->m_Data + m_numBlocks * m_blockSize > p);

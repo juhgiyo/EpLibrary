@@ -116,7 +116,7 @@ namespace epl {
 			return m_fragments.empty();
 		}
 	private:
-		void DoDeallocate(void* p, CacheType type);
+		void Release(void* p, CacheType type);
 		Fragment* VicinityFind(void* p);
 		unsigned int m_blockSize;
 		unsigned char m_numBlocks;

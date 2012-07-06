@@ -29,12 +29,12 @@ void WorkerThreadSingle::execute()
 		if(m_arg)
 			break;
 		BaseJob * jobPtr=m_workPool.Front();
-		jobPtr->Retain();
+		jobPtr->RetainObj();
 		m_workPool.Pop();
 		jobPtr->JobReport(BaseJob::JOB_STATUS_IN_PROCESS);
 		(reinterpret_cast<BaseJobProcessor*>(m_arg))->DoJob(m_threadId,m_lifePolicy,jobPtr);
 		jobPtr->JobReport(BaseJob::JOB_STATUS_DONE);
-		jobPtr->Release();
+		jobPtr->ReleaseObj();
 	}
 	callCallBack();
 }

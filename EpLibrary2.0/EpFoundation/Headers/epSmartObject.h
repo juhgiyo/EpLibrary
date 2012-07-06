@@ -62,13 +62,13 @@ namespace epl
 		/*!
 		Increment this object's reference count
 		*/
-		void Retain();
+		void RetainObj();
 
 		/*!
 		Decrement this object's reference count
 		if the reference count is 0 then delete this object.
 		*/
-		void Release();
+		void ReleaseObj();
 
 	protected:
 		/*!
@@ -92,7 +92,7 @@ namespace epl
 		/*!
 		Increment this object's reference count
 		*/
-		void Retain(TCHAR *fileName, TCHAR *funcName, unsigned int lineNum)
+		void RetainObj(TCHAR *fileName, TCHAR *funcName, unsigned int lineNum)
 		{
 			LockObj lock(m_refCounterLock);
 			m_refCount++;
@@ -103,7 +103,7 @@ namespace epl
 		Decrement this object's reference count
 		if the reference count is 0 then delete this object.
 		*/
-		void Release(TCHAR *fileName, TCHAR *funcName, unsigned int lineNum)
+		void ReleaseObj(TCHAR *fileName, TCHAR *funcName, unsigned int lineNum)
 		{
 			m_refCounterLock->Lock();
 			m_refCount--;
@@ -203,8 +203,8 @@ namespace epl
 	};
 #if defined(_DEBUG)
 #define SmartObject(...) SmartObject(__TFILE__,__TFUNCTION__,__LINE__,__VA_ARGS__)
-#define Release() Release(__TFILE__,__TFUNCTION__,__LINE__)
-#define Retain() Retain(__TFILE__,__TFUNCTION__,__LINE__)
+#define ReleaseObj() ReleaseObj(__TFILE__,__TFUNCTION__,__LINE__)
+#define RetainObj() RetainObj(__TFILE__,__TFUNCTION__,__LINE__)
 #endif//defined(_DEBUG)
 }
 #endif //__EP_SMART_OBJECT_H__

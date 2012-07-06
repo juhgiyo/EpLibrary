@@ -36,7 +36,7 @@ BaseWorkerThread::~BaseWorkerThread()
 {
 	if(m_arg)
 	{
-		(reinterpret_cast<SmartObject*>(m_arg))->Release();
+		(reinterpret_cast<SmartObject*>(m_arg))->ReleaseObj();
 	}
 	while(!m_workPool.IsEmpty())
 	{
@@ -64,7 +64,7 @@ bool BaseWorkerThread::Erase(BaseJob *const work)
 	bool retVal=false;
 	if(m_workPool.Erase(work))
 	{
-		work->Release();
+		work->ReleaseObj();
 		retVal=true;
 	}
 	return retVal;
@@ -78,10 +78,10 @@ void BaseWorkerThread::SetArg(void* a)
 	if(m_status!=THREAD_STATUS_STARTED)
 	{
 		if(m_arg)
-			(reinterpret_cast<SmartObject*>(m_arg))->Release();
+			(reinterpret_cast<SmartObject*>(m_arg))->ReleaseObj();
 		m_arg=a;
 		if(m_arg)
-			(reinterpret_cast<SmartObject*>(m_arg))->Retain();
+			(reinterpret_cast<SmartObject*>(m_arg))->RetainObj();
 	}
 	else
 	{
