@@ -25,8 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 @section DESCRIPTION
 
-An Interface for Base Worker.
-(Send->Receive->Send->Receive Model)
+An Interface for Base Server Worker.
 
 */
 #ifndef __EP_BASE_SERVER_WORKER_H__

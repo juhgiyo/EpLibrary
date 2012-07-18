@@ -103,7 +103,7 @@ namespace epl
 		static unsigned long __stdcall passPacket(void *param);
 
 		/*! 
-		@struct PacketPassUnit epBaseServerWorkerEx.h
+		@struct PacketPassUnit epBaseClientEx.h
 		@brief A class for Packet Passing Unit for Packet Parsing Thread.
 		*/
 		struct PacketPassUnit{

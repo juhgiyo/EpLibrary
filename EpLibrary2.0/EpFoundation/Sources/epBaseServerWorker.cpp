@@ -89,7 +89,7 @@ int BaseServerWorker::Send(const Packet &packet)
 	{
 		int sentLength=send(m_clientSocket,reinterpret_cast<char*>(&length),4,0);
 		if(sentLength<=0)
-			return false;
+			return sentLength;
 	}
 	while(length>0)
 	{
