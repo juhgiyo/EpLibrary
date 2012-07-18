@@ -144,8 +144,6 @@ unsigned long BaseServer::ServerThread( LPVOID lpParam )
 		}
 	}
 	pMainClass->m_serverThreadHandle=0;
-	pMainClass->StopServer();
-
 	return 0; 
 } 
 
