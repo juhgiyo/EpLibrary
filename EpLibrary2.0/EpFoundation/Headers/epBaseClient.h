@@ -90,8 +90,10 @@ namespace epl{
 	*/
 	class EP_FOUNDATION BaseClient{
 
+		friend class BaseClientEx;
+		friend class BaseClientSimple;
 	public:
-				/*!
+		/*!
 		Default Constructor
 
 		Initializes the Client
@@ -185,6 +187,7 @@ namespace epl{
 		*/
 		virtual void parsePacket(const Packet &packet )=0;
 
+	private:
 		/*!
 		Actually processing the client thread
 		@remark  Subclasses must implement this
@@ -198,7 +201,7 @@ namespace epl{
 		*/
 		int receive(Packet &packet);
 
-	private:
+	
 		/*!
 		Receiving Loop Function
 		@param[in] lpParam self class object

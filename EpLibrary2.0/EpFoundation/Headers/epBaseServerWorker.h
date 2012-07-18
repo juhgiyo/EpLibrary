@@ -144,7 +144,7 @@ namespace epl
 
 		/// send lock
 		BaseLock *m_sendLock;
-
+		
 		/// Lock Policy
 		LockPolicy m_lockPolicy;
 	};

@@ -278,6 +278,7 @@ unsigned long BaseClient::ClientThread( LPVOID lpParam )
 {
 	BaseClient *pMainClass=reinterpret_cast<BaseClient*>(lpParam);
 	pMainClass->processClientThread();
+	pMainClass->m_clientThreadHandle=0;
 	return 0; 
 }
 
@@ -293,8 +294,10 @@ void BaseClient::disconnect()
 
 	if(m_isConnected)
 	{
+		if(m_clientThreadHandle)
+			TerminateThread(m_clientThreadHandle,0);
 		// shutdown the connection since no more data will be sent
-		int iResult = shutdown(m_connectSocket, SD_SEND);
+		int iResult = shutdown(m_connectSocket, SD_BOTH);
 		if (iResult == SOCKET_ERROR) {
 			LOG_THIS_MSG(_T("shutdown failed with error: %d\n"), WSAGetLastError());
 		}

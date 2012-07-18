@@ -118,6 +118,7 @@ unsigned long BaseServer::ServerThread( LPVOID lpParam )
 	SOCKET clientSocket;
 	while(clientSocket=accept(pMainClass->m_listenSocket, NULL, NULL))
 	{
+		LockObj lock(pMainClass->m_lock);
 		if(clientSocket == INVALID_SOCKET)
 		{
 			continue;			

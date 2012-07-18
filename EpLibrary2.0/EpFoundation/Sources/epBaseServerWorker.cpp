@@ -62,12 +62,13 @@ BaseServerWorker::~BaseServerWorker()
 {
 	m_sendLock->Lock();
 	int iResult;
-	iResult = shutdown(m_clientSocket, SD_SEND);
+	iResult = shutdown(m_clientSocket, SD_BOTH);
 	if (iResult == SOCKET_ERROR) {
 		LOG_THIS_MSG(_T("shutdown failed with error\n"));
-		closesocket(m_clientSocket);
 	}
+	closesocket(m_clientSocket);
 	m_sendLock->Unlock();
+	
 	if(m_sendLock)
 		EP_DELETE m_sendLock;
 }

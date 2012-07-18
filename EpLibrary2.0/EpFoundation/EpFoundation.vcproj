@@ -769,50 +769,66 @@
 				<Filter
 					Name="Server Side"
 					>
-					<File
-						RelativePath=".\Sources\epBaseServer.cpp"
+					<Filter
+						Name="TCP"
 						>
-					</File>
-					<File
-						RelativePath=".\Sources\epBaseServerUDP.cpp"
+						<File
+							RelativePath=".\Sources\epBaseServer.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\Sources\epBaseServerWorker.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\Sources\epBaseServerWorkerEx.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\Sources\epBaseServerWorkerSimple.cpp"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="UDP"
 						>
-					</File>
-					<File
-						RelativePath=".\Sources\epBaseServerWorker.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\Sources\epBaseServerWorkerEx.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\Sources\epBaseServerWorkerSimple.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\Sources\epBaseServerWorkerUDP.cpp"
-						>
-					</File>
+						<File
+							RelativePath=".\Sources\epBaseServerUDP.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\Sources\epBaseServerWorkerUDP.cpp"
+							>
+						</File>
+					</Filter>
 				</Filter>
 				<Filter
 					Name="Client Side"
 					>
-					<File
-						RelativePath=".\Sources\epBaseClient.cpp"
+					<Filter
+						Name="TCP"
 						>
-					</File>
-					<File
-						RelativePath=".\Sources\epBaseClientEx.cpp"
+						<File
+							RelativePath=".\Sources\epBaseClient.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\Sources\epBaseClientEx.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\Sources\epBaseClientSimple.cpp"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="UDP"
 						>
-					</File>
-					<File
-						RelativePath=".\Sources\epBaseClientSimple.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\Sources\epBaseClientUDP.cpp"
-						>
-					</File>
+						<File
+							RelativePath=".\Sources\epBaseClientUDP.cpp"
+							>
+						</File>
+					</Filter>
 				</Filter>
 			</Filter>
 			<Filter
