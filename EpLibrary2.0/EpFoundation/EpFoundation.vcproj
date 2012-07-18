@@ -1163,50 +1163,66 @@
 				<Filter
 					Name="Server Side"
 					>
-					<File
-						RelativePath=".\Headers\epBaseServer.h"
+					<Filter
+						Name="TCP"
 						>
-					</File>
-					<File
-						RelativePath=".\Headers\epBaseServerUDP.h"
+						<File
+							RelativePath=".\Headers\epBaseServer.h"
+							>
+						</File>
+						<File
+							RelativePath=".\Headers\epBaseServerWorker.h"
+							>
+						</File>
+						<File
+							RelativePath=".\Headers\epBaseServerWorkerEx.h"
+							>
+						</File>
+						<File
+							RelativePath=".\Headers\epBaseServerWorkerSimple.h"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="UDP"
 						>
-					</File>
-					<File
-						RelativePath=".\Headers\epBaseServerWorker.h"
-						>
-					</File>
-					<File
-						RelativePath=".\Headers\epBaseServerWorkerEx.h"
-						>
-					</File>
-					<File
-						RelativePath=".\Headers\epBaseServerWorkerSimple.h"
-						>
-					</File>
-					<File
-						RelativePath=".\Headers\epBaseServerWorkerUDP.h"
-						>
-					</File>
+						<File
+							RelativePath=".\Headers\epBaseServerUDP.h"
+							>
+						</File>
+						<File
+							RelativePath=".\Headers\epBaseServerWorkerUDP.h"
+							>
+						</File>
+					</Filter>
 				</Filter>
 				<Filter
 					Name="Client Side"
 					>
-					<File
-						RelativePath=".\Headers\epBaseClient.h"
+					<Filter
+						Name="TCP"
 						>
-					</File>
-					<File
-						RelativePath=".\Headers\epBaseClientEx.h"
+						<File
+							RelativePath=".\Headers\epBaseClient.h"
+							>
+						</File>
+						<File
+							RelativePath=".\Headers\epBaseClientEx.h"
+							>
+						</File>
+						<File
+							RelativePath=".\Headers\epBaseClientSimple.h"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="UDP"
 						>
-					</File>
-					<File
-						RelativePath=".\Headers\epBaseClientSimple.h"
-						>
-					</File>
-					<File
-						RelativePath=".\Headers\epBaseClientUDP.h"
-						>
-					</File>
+						<File
+							RelativePath=".\Headers\epBaseClientUDP.h"
+							>
+						</File>
+					</Filter>
 				</Filter>
 			</Filter>
 			<Filter

@@ -89,10 +89,13 @@ An Interface for EP Foundation Library
 #include "epBaseClient.h"
 #include "epBaseClientEx.h"
 #include "epBaseClientSimple.h"
+#include "epBaseClientUDP.h"
 #include "epBaseServer.h"
+#include "epBaseServerUDP.h"
 #include "epBaseServerWorker.h"
 #include "epBaseServerWorkerEx.h"
 #include "epBaseServerWorkerSimple.h"
+#include "epBaseServerWorkerUDP.h"
 #include "epPacket.h"
 #include "epPacketContainer.h"
 
