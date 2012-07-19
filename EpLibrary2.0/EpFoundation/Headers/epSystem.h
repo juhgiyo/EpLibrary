@@ -890,6 +890,19 @@ namespace epl
 		*/
 		static unsigned long WaitForSingleObject(HANDLE handle,unsigned long milliSec);
 
+		/*!
+		Return the current thread handle
+		@return current thread handle
+		*/
+		static HANDLE GetCurrentThread();
+
+		/*!
+		Terminate the given thread with given exit code
+		@param[in] threadHandle thread to terminate
+		@param[in] exitCode the eixt code for the thread to exit
+		@return result of the termination
+		*/
+		static long TerminateThread(HANDLE threadHandle, unsigned long exitCode);
 	};
 
 }

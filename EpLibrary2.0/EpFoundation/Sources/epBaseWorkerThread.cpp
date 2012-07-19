@@ -85,7 +85,7 @@ void BaseWorkerThread::SetArg(void* a)
 	}
 	else
 	{
-		EP_NOTICEBOX(_T("Cannot Set Argument during Thread Running!"));
+		EP_ASSERT_EXPR(0,_T("Cannot Set Argument during Thread Running!"));
 	}
 }
 void BaseWorkerThread::SetCallBackClass(void *callBackClass)

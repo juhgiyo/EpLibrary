@@ -170,7 +170,7 @@ bool BaseServer::StartServer()
 	iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
 	if (iResult != 0) {
 
-		EP_NOTICEBOX(_T("WSAStartup failed with error\n"));
+		System::OutputDebugString(_T("%s::%s(%d) WSAStartup failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__);
 		return false;
 	}
 
@@ -184,7 +184,7 @@ bool BaseServer::StartServer()
 	// Resolve the server address and port
 	iResult = getaddrinfo(NULL, m_port.c_str(), &m_hints, &m_result);
 	if ( iResult != 0 ) {
-		EP_NOTICEBOX(_T("getaddrinfo failed with error\n"));
+		System::OutputDebugString(_T("%s::%s(%d) getaddrinfo failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__);		
 		WSACleanup();
 		return false;
 	}
@@ -192,7 +192,7 @@ bool BaseServer::StartServer()
 	// Create a SOCKET for connecting to server
 	m_listenSocket = socket(m_result->ai_family, m_result->ai_socktype, m_result->ai_protocol);
 	if (m_listenSocket == INVALID_SOCKET) {
-		EP_NOTICEBOX(_T("socket failed with error\n"));
+		System::OutputDebugString(_T("%s::%s(%d) socket failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__);
 		stopServer();
 		return false;
 	}
@@ -204,14 +204,14 @@ bool BaseServer::StartServer()
 	// Setup the TCP listening socket
 	iResult = bind( m_listenSocket, m_result->ai_addr, static_cast<int>(m_result->ai_addrlen));
 	if (iResult == SOCKET_ERROR) {
-		EP_NOTICEBOX(_T("bind failed with error\n"));
+		System::OutputDebugString(_T("%s::%s(%d) bind failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__);
 		stopServer();
 		return false;
 	}
 
 	iResult = listen(m_listenSocket, SOMAXCONN);
 	if (iResult == SOCKET_ERROR) {
-		EP_NOTICEBOX(_T("listen failed with error\n"));
+		System::OutputDebugString(_T("%s::%s(%d) listen failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__);
 		stopServer();
 		return false;
 	}
@@ -279,8 +279,8 @@ void BaseServer::stopServer()
 			closesocket(m_listenSocket);
 		if(m_serverThreadHandle)
 		{
-			if(System::WaitForSingleObject(m_serverThreadHandle, m_waitTime)!=WAIT_OBJECT_0)
-				TerminateThread(m_serverThreadHandle,0);
+			if(System::WaitForSingleObject(m_serverThreadHandle, m_waitTime)==WAIT_TIMEOUT)
+				System::TerminateThread(m_serverThreadHandle,0);
 		}
 	}
 	m_serverThreadHandle=0;

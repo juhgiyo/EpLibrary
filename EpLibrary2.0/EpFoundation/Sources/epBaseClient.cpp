@@ -229,7 +229,7 @@ bool BaseClient::Connect()
 	// Initialize Winsock
 	iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
 	if (iResult != 0) {
-		EP_NOTICEBOX(_T("WSAStartup failed with error\n"));
+		System::OutputDebugString(_T("%s::%s(%d) WSAStartup failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__);
 		return false;
 	}
 
@@ -241,7 +241,7 @@ bool BaseClient::Connect()
 	// Resolve the server address and port
 	iResult = getaddrinfo(m_hostName.c_str(), m_port.c_str(), &hints, &m_result);
 	if ( iResult != 0 ) {
-		EP_NOTICEBOX(_T("getaddrinfo failed with error\n"));
+		System::OutputDebugString(_T("%s::%s(%d) getaddrinfo failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__);
 		WSACleanup();
 		return false;
 	}
@@ -253,7 +253,7 @@ bool BaseClient::Connect()
 		m_connectSocket = socket(m_ptr->ai_family, m_ptr->ai_socktype, 
 			m_ptr->ai_protocol);
 		if (m_connectSocket == INVALID_SOCKET) {
-			EP_NOTICEBOX(_T("socket failed with error\n"));
+			System::OutputDebugString(_T("%s::%s(%d) Socket failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__);
 			disconnect();
 			return false;
 		}
@@ -268,7 +268,7 @@ bool BaseClient::Connect()
 		break;
 	}
 	if (m_connectSocket == INVALID_SOCKET) {
-		EP_NOTICEBOX(_T("Unable to connect to server!\n"));
+		System::OutputDebugString(_T("%s::%s(%d) Unable to connect to server!\n"),__TFILE__,__TFUNCTION__,__LINE__);
 		disconnect();
 		return false;
 	}
@@ -309,8 +309,8 @@ void BaseClient::disconnect()
 		closesocket(m_connectSocket);
 		if(m_clientThreadHandle)
 		{
-			if(System::WaitForSingleObject(m_clientThreadHandle, m_waitTime)!=WAIT_OBJECT_0)
-				TerminateThread(m_clientThreadHandle,0);
+			if(System::WaitForSingleObject(m_clientThreadHandle, m_waitTime)==WAIT_TIMEOUT)
+				System::TerminateThread(m_clientThreadHandle,0);
 		}
 	}
 	m_clientThreadHandle=0;

@@ -77,7 +77,7 @@ Thread::~Thread()
 {
 	if(m_status!=THREAD_STATUS_TERMINATED)
 	{
-		TerminateThread(m_threadHandle,0);
+		System::TerminateThread(m_threadHandle,0);
 	}
 	if(m_threadLock)
 		EP_DELETE m_threadLock;
@@ -172,7 +172,7 @@ bool Thread::Terminate()
 		m_threadHandle=0;
 		m_threadId=0;
 
-		if(TerminateThread(m_threadHandle,exitCode))
+		if(System::TerminateThread(m_threadHandle,exitCode))
 		{
 			CloseHandle(m_threadHandle);
 			return true;
@@ -203,7 +203,7 @@ unsigned long Thread::WaitFor(const unsigned long tMilliseconds)
 	else
 	{
 		System::OutputDebugString(_T("The thread (%x): Thread is not started!"),m_threadId);
-		return WAIT_OBJECT_0;
+		return WAIT_FAILED;
 	}
 }
 
@@ -218,14 +218,8 @@ bool Thread::TerminateAfter(const unsigned long tMilliseconds)
 		case WAIT_ABANDONED:
 		case WAIT_TIMEOUT:
 		case WAIT_FAILED:
-			try
-			{
-				Terminate();
-			}
-			catch(ExceptionThreadTerminationError e)
-			{
-				throw;
-			}
+
+			return Terminate();
 			break;
 		default:
 			break;

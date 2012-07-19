@@ -34,6 +34,10 @@ An Interface for Base Server Worker Extension.
 
 #include "epFoundationLib.h"
 #include "epBaseServerWorker.h"
+#include <vector>
+
+using namespace std;
+
 namespace epl
 {
 	/*! 
@@ -48,9 +52,10 @@ namespace epl
 
 		Initializes the Worker
 		@param[in] waitTimeMilliSec the wait time in millisecond for terminating thread
+		@param[in] parserWaitTimeMilliSec the wait time in millisecond for terminating parser thread
 		@param[in] lockPolicyType The lock policy
 		*/
-		BaseServerWorkerEx(unsigned int waitTimeMilliSec=DEFAULT_WAITTIME,LockPolicy lockPolicyType=EP_LOCK_POLICY);
+		BaseServerWorkerEx(unsigned int waitTimeMilliSec=DEFAULT_WAITTIME,unsigned int parserWaitTimeMilliSec=DEFAULT_WAITTIME,LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Copy Constructor
@@ -77,11 +82,22 @@ namespace epl
 			if(this!=&b)
 			{
 				BaseServerWorker::operator =(b);
+				m_parserWaitTime=b.m_parserWaitTime;
 			}
 			return *this;
 		}
 
-	
+		/*!
+		Set the wait time for the parser thread termination
+		@param[in] milliSec the time for waiting in millisecond
+		*/
+		void SetWaitTimeForParserTerminate(unsigned int milliSec);
+
+		/*!
+		Get the wait time for the parser thread termination
+		@return the current time for waiting in millisecond
+		*/
+		unsigned int GetWaitTimeForParserTerminate();
 	protected:
 		/*!
 		Parse the given packet and do relevant operation.
@@ -116,6 +132,14 @@ namespace epl
 			Packet *m_packet;
 		};
 
+		/// list lock
+		BaseLock *m_listLock;
+
+		/// parser thread list
+		vector<HANDLE> m_parserList;
+
+		/// wait time in millisecond for terminating parser thread
+		unsigned int m_parserWaitTime;
 
 	};
 

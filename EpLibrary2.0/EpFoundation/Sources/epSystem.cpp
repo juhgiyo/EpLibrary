@@ -1028,3 +1028,13 @@ unsigned long System::WaitForSingleObject(HANDLE handle,unsigned long milliSec)
 {
 	return ::WaitForSingleObject(handle,milliSec);
 }
+
+HANDLE System::GetCurrentThread()
+{
+	return ::GetCurrentThread();
+}
+
+long System::TerminateThread(HANDLE threadHandle, unsigned long exitCode)
+{
+	return ::TerminateThread(threadHandle,exitCode);
+}

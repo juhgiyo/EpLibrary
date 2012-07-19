@@ -19,18 +19,68 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epSimpleLogger.h"
 
 using namespace epl;
-BaseServerWorkerEx::BaseServerWorkerEx(unsigned int waitTimeMilliSec,LockPolicy lockPolicyType): BaseServerWorker(waitTimeMilliSec,lockPolicyType)
+BaseServerWorkerEx::BaseServerWorkerEx(unsigned int waitTimeMilliSec,unsigned int parserWaitTimeMilliSec,LockPolicy lockPolicyType): BaseServerWorker(waitTimeMilliSec,lockPolicyType)
 {
+	switch(lockPolicyType)
+	{
+	case LOCK_POLICY_CRITICALSECTION:
+		m_listLock=EP_NEW CriticalSectionEx();
+		break;
+	case LOCK_POLICY_MUTEX:
+		m_listLock=EP_NEW Mutex();
+		break;
+	case LOCK_POLICY_NONE:
+		m_listLock=EP_NEW NoLock();
+		break;
+	default:
+		m_listLock=NULL;
+		break;
+	}
+	m_parserWaitTime=parserWaitTimeMilliSec;
 }
 
 BaseServerWorkerEx::BaseServerWorkerEx(const BaseServerWorkerEx& b)  : BaseServerWorker(b)
 {
+	switch(b.m_lockPolicy)
+	{
+	case LOCK_POLICY_CRITICALSECTION:
+		m_listLock=EP_NEW CriticalSectionEx();
+		break;
+	case LOCK_POLICY_MUTEX:
+		m_listLock=EP_NEW Mutex();
+		break;
+	case LOCK_POLICY_NONE:
+		m_listLock=EP_NEW NoLock();
+		break;
+	default:
+		m_listLock=NULL;
+		break;
+	}
+	m_parserWaitTime=b.m_parserWaitTime;
 }
 
 BaseServerWorkerEx::~BaseServerWorkerEx()
 {
+	m_listLock->Lock();
+	vector<HANDLE>::iterator iter;
+	for(iter=m_parserList.begin();iter!=m_parserList.end();iter++)
+	{
+		if(System::WaitForSingleObject(*iter,m_parserWaitTime)==WAIT_TIMEOUT)
+			System::TerminateThread(*iter,0);
+	}
+	m_listLock->Unlock();
+	if(m_listLock)
+		EP_DELETE m_listLock;
 }
 
+void BaseServerWorkerEx::SetWaitTimeForParserTerminate(unsigned int milliSec)
+{
+	m_parserWaitTime=milliSec;
+}
+unsigned int BaseServerWorkerEx::GetWaitTimeForParserTerminate()
+{
+	return m_parserWaitTime;
+}
 
 unsigned long BaseServerWorkerEx::passPacket(void *param)
 {
@@ -39,6 +89,17 @@ unsigned long BaseServerWorkerEx::passPacket(void *param)
 	EP_DELETE reinterpret_cast<PacketPassUnit*>(param);
 	worker->parsePacket(*recvPacket);
 	recvPacket->ReleaseObj();
+
+	LockObj(worker->m_listLock);
+	vector<HANDLE>::iterator iter;
+	for(iter=worker->m_parserList.begin();iter!=worker->m_parserList.end();iter++)
+	{
+		if(*iter == GetCurrentThread())
+		{
+			worker->m_parserList.erase(iter);
+			break;
+		}
+	}
 	return 0;
 }
 
@@ -61,7 +122,10 @@ void BaseServerWorkerEx::execute()
 				PacketPassUnit *passUnit=EP_NEW PacketPassUnit() ;
 				passUnit->m_packet=recvPacket;
 				passUnit->m_this=this;
-				::CreateThread(NULL,0,passPacket,passUnit,THREAD_OPCODE_CREATE_START,(LPDWORD)&threadID);
+				HANDLE parserThreadHandle=::CreateThread(NULL,0,passPacket,passUnit,THREAD_OPCODE_CREATE_START,(LPDWORD)&threadID);
+				
+				LockObj lock(m_listLock);
+				m_parserList.push_back(parserThreadHandle);
 			}
 			else if (iResult == 0)
 			{
