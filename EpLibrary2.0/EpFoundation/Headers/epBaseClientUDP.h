@@ -84,6 +84,16 @@ namespace epl{
 	#define DEFAULT_PORT "80808"
 #endif //DEFAULT_PORT
 
+#ifndef DEFAULT_WAITTIME
+/*!
+@def DEFAULT_WAITTIME
+@brief default wait time
+
+Macro for the default wait time in millisec.
+*/
+#define DEFAULT_WAITTIME 100
+#endif //DEFAULT_WAITTIME
+
 	/*! 
 	@class BaseClient epBaseClient.h
 	@brief A class for Base Client.
@@ -97,9 +107,10 @@ namespace epl{
 		Initializes the Client
 		@param[in] hostName the hostname string
 		@param[in] port the port string
+		@param[in] waitTimeMilliSec the wait time in millisecond for terminating thread
 		@param[in] lockPolicyType The lock policy
 		*/
-		BaseClientUDP(const TCHAR * hostName=_T(DEFAULT_HOSTNAME), const TCHAR * port=_T(DEFAULT_PORT),LockPolicy lockPolicyType=EP_LOCK_POLICY);
+		BaseClientUDP(const TCHAR * hostName=_T(DEFAULT_HOSTNAME), const TCHAR * port=_T(DEFAULT_PORT), unsigned int waitTimeMilliSec=DEFAULT_WAITTIME,LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Copy Constructor
@@ -183,6 +194,18 @@ namespace epl{
 		*/
 		int Send(const Packet &packet);
 
+		/*!
+		Set the wait time for the thread termination
+		@param[in] milliSec the time for waiting in millisecond
+		*/
+		void SetWaitTimeForSafeTerminate(unsigned int milliSec);
+
+		/*!
+		Get the wait time for the thread termination
+		@return the current time for waiting in millisecond
+		*/
+		unsigned int GetWaitTimeForSafeTerminate();
+
 	protected:
 		/*!
 		Parse the given packet and do relevant operation.
@@ -263,6 +286,9 @@ namespace epl{
 		BaseLock *m_generalLock;
 		/// Lock Policy
 		LockPolicy m_lockPolicy;
+
+		/// wait time in millisecond for terminating thread
+		unsigned int m_waitTime;
 
 		/// Maximum UDP Datagram byte size
 		unsigned int m_maxPacketSize;

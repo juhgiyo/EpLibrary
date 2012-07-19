@@ -876,6 +876,20 @@ namespace epl
 		*/
 		static bool IsMultiByte(byte *multiByteString, unsigned int byteLength);
 
+		/*!
+		Output the debug message
+		@param[in] format the string to output
+		*/
+		static void OutputDebugString(TCHAR * format,...);
+
+		/*!
+		Wait for a handle for given time
+		@param[in] handle the handle to wait for
+		@param[in] milliSec the time for waiting (INFINITE to wait forever)
+		@return one of (WAIT_ABANDONED, WAIT_OBJECT_0, WAIT_TIMEOUT)
+		*/
+		static unsigned long WaitForSingleObject(HANDLE handle,unsigned long milliSec);
+
 	};
 
 }

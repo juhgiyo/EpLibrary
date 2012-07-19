@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epSimpleLogger.h"
 
 using namespace epl;
-BaseServerWorker::BaseServerWorker(LockPolicy lockPolicyType): Thread(lockPolicyType), SmartObject(lockPolicyType)
+BaseServerWorker::BaseServerWorker(unsigned int waitTimeMilliSec,LockPolicy lockPolicyType): Thread(lockPolicyType), SmartObject(lockPolicyType)
 {
 	m_lockPolicy=lockPolicyType;
 	switch(lockPolicyType)
@@ -37,6 +37,7 @@ BaseServerWorker::BaseServerWorker(LockPolicy lockPolicyType): Thread(lockPolicy
 		m_sendLock=NULL;
 		break;
 	}
+	m_waitTime=waitTimeMilliSec;
 	m_recvSizePacket=Packet(NULL,4);
 }
 BaseServerWorker::BaseServerWorker(const BaseServerWorker& b) : Thread(b),SmartObject(b)
@@ -57,6 +58,7 @@ BaseServerWorker::BaseServerWorker(const BaseServerWorker& b) : Thread(b),SmartO
 		m_sendLock=NULL;
 		break;
 	}
+	m_waitTime=b.m_waitTime;
 	m_recvSizePacket=Packet(NULL,4);
 }
 
@@ -70,7 +72,7 @@ BaseServerWorker::~BaseServerWorker()
 	}
 	closesocket(m_clientSocket);
 	m_sendLock->Unlock();
-	
+	System::WaitForSingleObject(m_threadHandle,m_waitTime);
 	if(m_sendLock)
 		EP_DELETE m_sendLock;
 }
@@ -104,6 +106,15 @@ int BaseServerWorker::Send(const Packet &packet)
 		packetData+=sentLength;
 	}
 	return writeLength;
+}
+void BaseServerWorker::SetWaitTimeForSafeTerminate(unsigned int milliSec)
+{
+	m_waitTime=milliSec;
+}
+
+unsigned int BaseServerWorker::GetWaitTimeForSafeTerminate()
+{
+	return m_waitTime;
 }
 
 int BaseServerWorker::receive(Packet &packet)

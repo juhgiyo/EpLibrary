@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epSimpleLogger.h"
 using namespace epl;
 
-BaseClientUDP::BaseClientUDP(const TCHAR * hostName, const TCHAR * port,LockPolicy lockPolicyType)
+BaseClientUDP::BaseClientUDP(const TCHAR * hostName, const TCHAR * port, unsigned int waitTimeMilliSec,LockPolicy lockPolicyType)
 {
 	m_lockPolicy=lockPolicyType;
 	switch(lockPolicyType)
@@ -44,6 +44,7 @@ BaseClientUDP::BaseClientUDP(const TCHAR * hostName, const TCHAR * port,LockPoli
 	}
 	SetHostName(hostName);
 	SetPort(port);
+	m_waitTime=waitTimeMilliSec;
 	m_connectSocket=NULL;
 	m_result=0;
 	m_ptr=0;
@@ -59,6 +60,7 @@ BaseClientUDP::BaseClientUDP(const BaseClientUDP& b)
 	m_isConnected=false;
 	m_hostName=b.m_hostName;
 	m_port=b.m_port;
+	m_waitTime=b.m_waitTime;
 	m_lockPolicy=b.m_lockPolicy;
 	m_maxPacketSize=b.m_maxPacketSize;
 	switch(m_lockPolicy)
@@ -182,6 +184,15 @@ int BaseClientUDP::Send(const Packet &packet)
 	return sentLength;
 }
 
+void BaseClientUDP::SetWaitTimeForSafeTerminate(unsigned int milliSec)
+{
+	m_waitTime=milliSec;
+}
+
+unsigned int BaseClientUDP::GetWaitTimeForSafeTerminate()
+{
+	return m_waitTime;
+}
 int BaseClientUDP::receive(Packet &packet)
 {
 
@@ -286,12 +297,15 @@ void BaseClientUDP::disconnect()
 
 	if(m_isConnected)
 	{
-		if(m_clientThreadHandle)
-			TerminateThread(m_clientThreadHandle,0);
 		int iResult = shutdown(m_connectSocket, SD_SEND);
 		if (iResult == SOCKET_ERROR)
 			LOG_THIS_MSG(_T("shutdown failed with error: %d\n"), WSAGetLastError());
 		closesocket(m_connectSocket);
+		if(m_clientThreadHandle)
+		{
+			if(System::WaitForSingleObject(m_clientThreadHandle, m_waitTime)!=WAIT_OBJECT_0)
+				TerminateThread(m_clientThreadHandle,0);
+		}
 	}
 	m_isConnected=false;
 	m_connectSocket = INVALID_SOCKET;
@@ -326,7 +340,6 @@ void BaseClientUDP::processClientThread()
 		iResult = receive(recvPacket);
 		
 		if (iResult > 0) {
-			LockObj lock(m_generalLock);
 			Thread::ThreadID threadID;
 			PacketPassUnit *passUnit=EP_NEW PacketPassUnit();
 			passUnit->m_packet=EP_NEW Packet(recvPacket.GetPacket(),iResult);

@@ -70,7 +70,15 @@ namespace epl{
 	#define DEFAULT_PORT "80808"
 #endif //DEFAULT_PORT
 
+#ifndef DEFAULT_WAITTIME
+	/*!
+	@def DEFAULT_WAITTIME
+	@brief default wait time
 
+	Macro for the default wait time in millisec.
+	*/
+	#define DEFAULT_WAITTIME INFINITE
+#endif //DEFAULT_WAITTIME
 
 	/*! 
 	@class BaseServer epBaseServerUDP.h
@@ -86,9 +94,10 @@ namespace epl{
 
 		Initializes the Server
 		@param[in] port the port string
+		@param[in] waitTimeMilliSec the wait time in millisecond for terminating thread
 		@param[in] lockPolicyType The lock policy
 		*/
-		BaseServerUDP(const TCHAR * port=_T(DEFAULT_PORT), LockPolicy lockPolicyType=EP_LOCK_POLICY);
+		BaseServerUDP(const TCHAR * port=_T(DEFAULT_PORT), unsigned int waitTimeMilliSec=DEFAULT_WAITTIME, LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Copy Constructor
@@ -161,6 +170,18 @@ namespace epl{
 		*/
 		void ShutdownAllClient();
 
+		/*!
+		Set the wait time for the thread termination
+		@param[in] milliSec the time for waiting in millisecond
+		*/
+		void SetWaitTimeForSafeTerminate(unsigned int milliSec);
+
+		/*!
+		Get the wait time for the thread termination
+		@return the current time for waiting in millisecond
+		*/
+		unsigned int GetWaitTimeForSafeTerminate();
+
 	protected:
 		/*!
 		Return the new server worker.
@@ -227,6 +248,9 @@ namespace epl{
 
 		/// Lock Policy
 		LockPolicy m_lockPolicy;
+
+		/// wait time in millisecond for terminating thread
+		unsigned int m_waitTime;
 	};
 }
 #endif //__EP_BASE_SERVER_UDP_H__

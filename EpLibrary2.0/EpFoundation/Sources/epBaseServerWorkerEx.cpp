@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epSimpleLogger.h"
 
 using namespace epl;
-BaseServerWorkerEx::BaseServerWorkerEx(LockPolicy lockPolicyType): BaseServerWorker(lockPolicyType)
+BaseServerWorkerEx::BaseServerWorkerEx(unsigned int waitTimeMilliSec,LockPolicy lockPolicyType): BaseServerWorker(waitTimeMilliSec,lockPolicyType)
 {
 }
 

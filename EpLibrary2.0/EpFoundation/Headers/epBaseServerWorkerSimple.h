@@ -50,7 +50,7 @@ namespace epl
 		Initializes the Worker
 		@param[in] lockPolicyType The lock policy
 		*/
-		BaseServerWorkerSimple(LockPolicy lockPolicyType=EP_LOCK_POLICY);
+		BaseServerWorkerSimple(unsigned int waitTimeMilliSec=DEFAULT_WAITTIME,LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Copy Constructor

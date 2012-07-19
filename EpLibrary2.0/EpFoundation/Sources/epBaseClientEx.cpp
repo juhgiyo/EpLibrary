@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epSimpleLogger.h"
 using namespace epl;
 
-BaseClientEx::BaseClientEx(const TCHAR * hostName, const TCHAR * port,LockPolicy lockPolicyType):BaseClient(hostName,port,lockPolicyType)
+BaseClientEx::BaseClientEx(const TCHAR * hostName, const TCHAR * port, unsigned int waitTimeMilliSec,LockPolicy lockPolicyType):BaseClient(hostName,port,waitTimeMilliSec,lockPolicyType)
 {
 }
 

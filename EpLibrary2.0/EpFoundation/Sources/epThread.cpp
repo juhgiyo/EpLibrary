@@ -117,7 +117,7 @@ bool Thread::Start(void * arg,const ThreadOpCode opCode, const ThreadType thread
 	else
 	{
 		// Error Thread already exists
-		EP_NOTICEBOX(_T("Thread already exists! Thread ID: %d"),m_threadId);
+		System::OutputDebugString(_T("The thread (%x): Thread already exists!"),m_threadId);
 	}
 	return false;
 
@@ -136,7 +136,7 @@ bool Thread::Resume()
 	else
 	{
 		// Thread Not in Suspended State
-		EP_NOTICEBOX(_T("Thread must be in suspended state in order to resume! Thread ID: %d"),m_threadId);
+		System::OutputDebugString(_T("The thread (%x): Thread must be in suspended state in order to resume!"),m_threadId);
 
 	}
 	return false;
@@ -155,7 +155,7 @@ bool Thread::Suspend()
 	else
 	{
 		// Thread Not in Started State
-		EP_NOTICEBOX(_T("Thread must be in running state in order to suspend! Thread ID: %d"),m_threadId);
+		System::OutputDebugString(_T("The thread (%x): Thread must be in running state in order to suspend!"),m_threadId);
 
 	}
 	return false;
@@ -184,25 +184,26 @@ bool Thread::Terminate()
 			unsigned long lastErrNum=0;
 			System::FormatLastErrorMessage(lastErrMsg,&lastErrNum);
 			EP_ASSERT_EXPR(0,_T("Cannot terminate thread!\r\nThread ID: %d\r\n Error Code: %d\r\nError Message: %s"),lastErrNum,lastErrMsg);
+			return false;
 		}
 	}
 	else
 	{
 		// No Thread Exists
-		EP_NOTICEBOX(_T("There is no thread to terminate! Thread ID: %d"),m_threadId);
+		System::OutputDebugString(_T("The thread (%x): There is no thread to terminate!"),m_threadId);
 	}
-	return false;
+	return true;
 }
 
 
 unsigned long Thread::WaitFor(const unsigned long tMilliseconds)
 {
 	if(m_status!=THREAD_STATUS_TERMINATED && m_threadHandle)
-		return ::WaitForSingleObject(m_threadHandle,tMilliseconds);
+		return System::WaitForSingleObject(m_threadHandle,tMilliseconds);
 	else
 	{
-		EP_NOTICEBOX(_T("Thread %d is not Running state!"),m_threadId);
-		return 0;
+		System::OutputDebugString(_T("The thread (%x): Thread is not started!"),m_threadId);
+		return WAIT_OBJECT_0;
 	}
 }
 
@@ -211,7 +212,7 @@ bool Thread::TerminateAfter(const unsigned long tMilliseconds)
 {
 	if(m_status!=THREAD_STATUS_TERMINATED && m_threadHandle)
 	{
-		unsigned long status=::WaitForSingleObject(m_threadHandle,tMilliseconds);
+		unsigned long status=System::WaitForSingleObject(m_threadHandle,tMilliseconds);
 		switch(status)
 		{
 		case WAIT_ABANDONED:
@@ -233,8 +234,8 @@ bool Thread::TerminateAfter(const unsigned long tMilliseconds)
 	}
 	else
 	{
-		EP_NOTICEBOX(_T("Thread %d is not Running state!"),m_threadId);
-		return false;
+		System::OutputDebugString(_T("The thread (%x): Thread is not started!"),m_threadId);
+		return true;
 	}
 
 }

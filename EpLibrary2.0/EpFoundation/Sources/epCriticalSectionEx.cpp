@@ -116,7 +116,7 @@ long CriticalSectionEx::TryLockFor(const unsigned int dwMilliSecond)
 		unsigned int startTime,timeUsed;
 		unsigned int waitTime=dwMilliSecond;
 		startTime=System::GetTickCount();
-		while(WaitForSingleObject(m_criticalSection.LockSemaphore,waitTime)==WAIT_OBJECT_0)
+		while(System::WaitForSingleObject(m_criticalSection.LockSemaphore,waitTime)==WAIT_OBJECT_0)
 		{
 			if(ret=TryEnterCriticalSection(&m_criticalSection))
 			{

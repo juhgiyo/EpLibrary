@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace epl;
 
-BaseServerUDP::BaseServerUDP(const TCHAR *  port, LockPolicy lockPolicyType)
+BaseServerUDP::BaseServerUDP(const TCHAR *  port, unsigned int waitTimeMilliSec, LockPolicy lockPolicyType)
 {
 	m_lockPolicy=lockPolicyType;
 	switch(lockPolicyType)
@@ -43,6 +43,7 @@ BaseServerUDP::BaseServerUDP(const TCHAR *  port, LockPolicy lockPolicyType)
 		break;
 	}
 	SetPort(port);
+	m_waitTime=waitTimeMilliSec;
 	m_serverThreadHandle=0;
 	m_listenSocket=NULL;
 	m_result=0;
@@ -57,6 +58,7 @@ BaseServerUDP::BaseServerUDP(const BaseServerUDP& b)
 	m_result=0;
 	m_isServerStarted=false;
 	m_port=b.m_port;
+	m_waitTime=b.m_waitTime;
 	m_lockPolicy=b.m_lockPolicy;
 	m_maxPacketSize=b.m_maxPacketSize;
 	switch(m_lockPolicy)
@@ -123,6 +125,15 @@ unsigned int BaseServerUDP::GetMaxPacketByteSize() const
 {
 	return m_maxPacketSize;
 }
+void BaseServerUDP::SetWaitTimeForSafeTerminate(unsigned int milliSec)
+{
+	m_waitTime=milliSec;
+}
+
+unsigned int BaseServerUDP::GetWaitTimeForSafeTerminate()
+{
+	return m_waitTime;
+}
 
 
 int BaseServerUDP::send(const Packet &packet,const sockaddr &clientSockAddr)
@@ -161,7 +172,6 @@ unsigned long BaseServerUDP::ServerThread( LPVOID lpParam )
 		int recvLength=recvfrom(pMainClass->m_listenSocket,packetData,length, 0,&clientSockAddr,&sockAddrSize);
 		if(recvLength<=0)
 			continue;
-		LockObj lock(pMainClass->m_lock);
 		/// Create Worker Thread
 		BaseServerWorkerUDP *accWorker=pMainClass->createNewWorker();
 		pMainClass->m_clientList.push_back(accWorker);
@@ -298,8 +308,8 @@ void BaseServerUDP::StopServer()
 
 void BaseServerUDP::stopServer()
 {
-	if(m_serverThreadHandle)
-		TerminateThread(m_serverThreadHandle,0);
+	if(m_result)
+		freeaddrinfo(m_result);
 	if(m_isServerStarted==true)
 	{
 		shutdownAllClient();	
@@ -313,13 +323,16 @@ void BaseServerUDP::stopServer()
 			LOG_THIS_MSG(_T("shutdown failed with error\n"));
 		}
 		closesocket(m_listenSocket);
+		if(m_serverThreadHandle)
+		{
+			if(System::WaitForSingleObject(m_serverThreadHandle, m_waitTime)!=WAIT_OBJECT_0)
+				TerminateThread(m_serverThreadHandle,0);
+		}
 	}
+	m_serverThreadHandle=0;
 	m_isServerStarted=false;
-	if(m_result)
-		freeaddrinfo(m_result);
 	m_maxPacketSize=0;
 	m_result=NULL;
-	m_serverThreadHandle=0;
 	WSACleanup();
 }
 

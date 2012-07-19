@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace epl;
 
-BaseServer::BaseServer(const TCHAR *  port, LockPolicy lockPolicyType)
+BaseServer::BaseServer(const TCHAR *  port, unsigned int waitTimeMilliSec, LockPolicy lockPolicyType)
 {
 	m_lockPolicy=lockPolicyType;
 	switch(lockPolicyType)
@@ -39,6 +39,7 @@ BaseServer::BaseServer(const TCHAR *  port, LockPolicy lockPolicyType)
 		break;
 	}
 	SetPort(port);
+	m_waitTime=waitTimeMilliSec;
 	m_serverThreadHandle=0;
 	m_listenSocket=NULL;
 	m_result=0;
@@ -52,6 +53,7 @@ BaseServer::BaseServer(const BaseServer& b)
 	m_result=0;
 	m_isServerStarted=false;
 	m_port=b.m_port;
+	m_waitTime=b.m_waitTime;
 	m_lockPolicy=b.m_lockPolicy;
 	switch(m_lockPolicy)
 	{
@@ -119,10 +121,9 @@ unsigned long BaseServer::ServerThread( LPVOID lpParam )
 	while(1)
 	{
 		clientSocket=accept(pMainClass->m_listenSocket, NULL, NULL);
-		LockObj lock(pMainClass->m_lock);
 		if(clientSocket == INVALID_SOCKET)
 		{
-			continue;			
+			break;			
 		}
 		else
 		{
@@ -233,6 +234,16 @@ void BaseServer::ShutdownAllClient()
 	shutdownAllClient();
 }
 
+void BaseServer::SetWaitTimeForSafeTerminate(unsigned int milliSec)
+{
+	m_waitTime=milliSec;
+}
+
+unsigned int BaseServer::GetWaitTimeForSafeTerminate()
+{
+	return m_waitTime;
+}
+
 void BaseServer::shutdownAllClient()
 {
 	if(!m_isServerStarted)
@@ -260,20 +271,23 @@ void BaseServer::StopServer()
 
 void BaseServer::stopServer()
 {
-	if(m_serverThreadHandle)
-		TerminateThread(m_serverThreadHandle,0);
+	if(m_result)
+		freeaddrinfo(m_result);
 	if(m_isServerStarted==true)
 	{
 		shutdownAllClient();	
 		// No longer need server socket
+		if(m_listenSocket)
+			closesocket(m_listenSocket);
+		if(m_serverThreadHandle)
+		{
+			if(System::WaitForSingleObject(m_serverThreadHandle, m_waitTime)!=WAIT_OBJECT_0)
+				TerminateThread(m_serverThreadHandle,0);
+		}
 	}
-	if(m_listenSocket)
-		closesocket(m_listenSocket);
-	m_isServerStarted=false;
-	if(m_result)
-		freeaddrinfo(m_result);
-	m_result=NULL;
 	m_serverThreadHandle=0;
+	m_isServerStarted=false;
+	m_result=NULL;
 	WSACleanup();
 }
 

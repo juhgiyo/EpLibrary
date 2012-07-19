@@ -1007,3 +1007,24 @@ bool System::IsMultiByte(byte *multiByteString, unsigned int byteLength)
 	}
 	return false;
 }
+
+void System::OutputDebugString(TCHAR * format,...)
+{
+	int length;
+	TCHAR *tmpString=NULL;
+	int retVal=0;
+	va_list args=NULL;
+	va_start(args, format);
+	length=TcsLen_V(format,args);
+	tmpString=EP_NEW TCHAR[length+1];
+	retVal=STPrintf_V(tmpString,length+1,format,args);
+	va_end(args);
+	::OutputDebugString(tmpString);
+	if(tmpString)
+		EP_DELETE[] tmpString;	
+}
+
+unsigned long System::WaitForSingleObject(HANDLE handle,unsigned long milliSec)
+{
+	return ::WaitForSingleObject(handle,milliSec);
+}

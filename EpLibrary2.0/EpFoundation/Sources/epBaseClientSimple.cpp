@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epBaseClientSimple.h"
 using namespace epl;
 
-BaseClientSimple::BaseClientSimple(const TCHAR * hostName, const TCHAR * port,LockPolicy lockPolicyType):BaseClient(hostName,port,lockPolicyType)
+BaseClientSimple::BaseClientSimple(const TCHAR * hostName, const TCHAR * port, unsigned int waitTimeMilliSec,LockPolicy lockPolicyType):BaseClient(hostName,port,waitTimeMilliSec,lockPolicyType)
 {
 }
 

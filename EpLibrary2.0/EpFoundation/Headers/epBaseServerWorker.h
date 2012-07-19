@@ -54,6 +54,17 @@ An Interface for Base Server Worker.
 // Need to link with Ws2_32.lib
 #pragma comment (lib, "Ws2_32.lib")
 
+
+#ifndef DEFAULT_WAITTIME
+	/*!
+	@def DEFAULT_WAITTIME
+	@brief default wait time
+
+	Macro for the default wait time in millisec.
+	*/
+	#define DEFAULT_WAITTIME INFINITE
+#endif //DEFAULT_WAITTIME
+
 namespace epl
 {
 	/*! 
@@ -71,7 +82,7 @@ namespace epl
 		Initializes the Worker
 		@param[in] lockPolicyType The lock policy
 		*/
-		BaseServerWorker(LockPolicy lockPolicyType=EP_LOCK_POLICY);
+		BaseServerWorker(unsigned int waitTimeMilliSec=DEFAULT_WAITTIME,LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Copy Constructor
@@ -112,7 +123,17 @@ namespace epl
 		*/
 		int Send(const Packet &packet);
 
+		/*!
+		Set the wait time for the thread termination
+		@param[in] milliSec the time for waiting in millisecond
+		*/
+		void SetWaitTimeForSafeTerminate(unsigned int milliSec);
 
+		/*!
+		Get the wait time for the thread termination
+		@return the current time for waiting in millisecond
+		*/
+		unsigned int GetWaitTimeForSafeTerminate();
 	protected:
 		/*!
 		Parse the given packet and do relevant operation
@@ -152,6 +173,9 @@ namespace epl
 
 		/// Temp Packet;
 		Packet m_recvSizePacket;
+
+		/// wait time in millisecond for terminating thread
+		unsigned int m_waitTime;
 	};
 
 }

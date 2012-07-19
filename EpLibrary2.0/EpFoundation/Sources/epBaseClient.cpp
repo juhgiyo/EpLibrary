@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epBaseClient.h"
 using namespace epl;
 
-BaseClient::BaseClient(const TCHAR * hostName, const TCHAR * port,LockPolicy lockPolicyType)
+BaseClient::BaseClient(const TCHAR * hostName, const TCHAR * port, unsigned int waitTimeMilliSec,LockPolicy lockPolicyType)
 {
 	m_lockPolicy=lockPolicyType;
 	switch(lockPolicyType)
@@ -43,6 +43,7 @@ BaseClient::BaseClient(const TCHAR * hostName, const TCHAR * port,LockPolicy loc
 	m_recvSizePacket=Packet(NULL,4);
 	SetHostName(hostName);
 	SetPort(port);
+	m_waitTime=waitTimeMilliSec;
 	m_connectSocket=NULL;
 	m_result=0;
 	m_ptr=0;
@@ -57,6 +58,7 @@ BaseClient::BaseClient(const BaseClient& b)
 	m_isConnected=false;
 	m_hostName=b.m_hostName;
 	m_port=b.m_port;
+	m_waitTime=b.m_waitTime;
 	m_recvSizePacket=Packet(NULL,4);
 	m_lockPolicy=b.m_lockPolicy;
 	switch(m_lockPolicy)
@@ -182,6 +184,16 @@ int BaseClient::Send(const Packet &packet)
 	return writeLength;
 }
 
+void BaseClient::SetWaitTimeForSafeTerminate(unsigned int milliSec)
+{
+	m_waitTime=milliSec;
+}
+
+unsigned int BaseClient::GetWaitTimeForSafeTerminate()
+{
+	return m_waitTime;
+}
+
 int BaseClient::receive(Packet &packet)
 {
 	
@@ -296,15 +308,19 @@ void BaseClient::disconnect()
 
 	if(m_isConnected)
 	{
-		if(m_clientThreadHandle)
-			TerminateThread(m_clientThreadHandle,0);
 		// shutdown the connection since no more data will be sent
 		int iResult = shutdown(m_connectSocket, SD_SEND);
 		if (iResult == SOCKET_ERROR) {
 			LOG_THIS_MSG(_T("shutdown failed with error: %d\n"), WSAGetLastError());
 		}
 		closesocket(m_connectSocket);
+		if(m_clientThreadHandle)
+		{
+			if(System::WaitForSingleObject(m_clientThreadHandle, m_waitTime)!=WAIT_OBJECT_0)
+				TerminateThread(m_clientThreadHandle,0);
+		}
 	}
+	m_clientThreadHandle=0;
 	m_isConnected=false;
 	m_connectSocket = INVALID_SOCKET;
 	m_result=NULL;
