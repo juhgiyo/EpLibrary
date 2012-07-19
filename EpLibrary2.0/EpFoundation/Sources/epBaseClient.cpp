@@ -90,11 +90,9 @@ BaseClient::~BaseClient()
 		EP_DELETE m_generalLock;
 }
 
-bool BaseClient::SetHostName(const TCHAR * hostName)
+void  BaseClient::SetHostName(const TCHAR * hostName)
 {
 	LockObj lock(m_generalLock);
-	if(m_isConnected)
-		return false;
 
 	unsigned int strLength=System::TcsLen(hostName);
 	if(strLength==0)
@@ -107,14 +105,11 @@ bool BaseClient::SetHostName(const TCHAR * hostName)
 		m_hostName=hostName;
 #endif// defined(_UNICODE) || defined(UNICODE)
 	}
-	return true;
 }
 
-bool BaseClient::SetPort(const TCHAR *port)
+void  BaseClient::SetPort(const TCHAR *port)
 {
 	LockObj lock(m_generalLock);
-	if(m_isConnected)
-		return false;
 
 	unsigned int strLength=System::TcsLen(port);
 	if(strLength==0)
@@ -127,8 +122,6 @@ bool BaseClient::SetPort(const TCHAR *port)
 		m_port=port;
 #endif// defined(_UNICODE) || defined(UNICODE)
 	}
-	return true;
-
 }
 EpTString BaseClient::GetHostName() const
 {

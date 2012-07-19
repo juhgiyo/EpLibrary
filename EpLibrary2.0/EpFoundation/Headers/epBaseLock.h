@@ -108,10 +108,9 @@ namespace epl
 			Unlock when this object destroyed.
 			*/
 			virtual ~BaseLockObj();
-
+			
 			/*!
 			Assignment operator overloading
-
 			@param[in] b the second object
 			@return the new copied object
 			*/
@@ -121,6 +120,9 @@ namespace epl
 			}
 
 		private:
+
+			
+
 			/*!
 			Default Constructor
 

@@ -38,6 +38,7 @@ An Interface for Base UDP Client.
 #include "epCriticalSectionEx.h"
 #include "epMutex.h"
 #include "epNoLock.h"
+#include "epServerConf.h"
 
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
@@ -63,36 +64,6 @@ using namespace std;
 
 
 namespace epl{
-
-#ifndef DEFAULT_HOSTNAME
-	/*!
-	@def DEFAULT_HOSTNAME
-	@brief default hostname
-
-	Macro for the default hostname.
-	*/
-	#define DEFAULT_HOSTNAME "localhost"
-#endif //DEFAULT_HOSTNAME
-
-#ifndef DEFAULT_PORT
-	/*!
-	@def DEFAULT_PORT
-	@brief default port
-
-	Macro for the default port.
-	*/
-	#define DEFAULT_PORT "80808"
-#endif //DEFAULT_PORT
-
-#ifndef DEFAULT_WAITTIME
-/*!
-@def DEFAULT_WAITTIME
-@brief default wait time
-
-Macro for the default wait time in millisec.
-*/
-#define DEFAULT_WAITTIME 100
-#endif //DEFAULT_WAITTIME
 
 	/*! 
 	@class BaseClient epBaseClient.h
@@ -133,25 +104,29 @@ Macro for the default wait time in millisec.
 		*/
 		BaseClientUDP & operator=(const BaseClientUDP&b)
 		{
+			if(this!=&b)
+			{
+				LockObj lock(m_generalLock);
+				m_waitTime=b.m_waitTime;
+				m_port=b.m_port;
+				m_hostName=b.m_hostName;
+			}
 			return *this;
 		}
-
 
 		/*!
 		Set the hostname for the server.
 		@remark Cannot be changed while connected to server
 		@param[in] hostName The hostname to set.
-		@return true if succeeded otherwise false
 		*/
-		bool SetHostName(const TCHAR * hostName);
+		void SetHostName(const TCHAR * hostName);
 
 		/*!
 		Set the port for the server.
 		@remark Cannot be changed while connected to server
 		@param[in] port The port to set.
-		@return true if succeeded otherwise false
 		*/
-		bool SetPort(const TCHAR * port);
+		void SetPort(const TCHAR * port);
 
 		/*!
 		Get the hostname of server
@@ -216,6 +191,7 @@ Macro for the default wait time in millisec.
 
 
 	private:
+		
 		
 		/*!
 		Receive the packet from the server

@@ -1160,6 +1160,10 @@
 					RelativePath=".\Headers\epPacketContainer.h"
 					>
 				</File>
+				<File
+					RelativePath=".\Headers\epServerConf.h"
+					>
+				</File>
 				<Filter
 					Name="Server Side"
 					>

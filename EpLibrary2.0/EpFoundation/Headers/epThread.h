@@ -119,7 +119,7 @@ namespace epl
 		{
 			return *this;
 		}
-		
+
 		/*!
 		Start the Thread according to parameters given.
 		@param[in] arg The argument list for thread parameter.
@@ -196,6 +196,9 @@ namespace epl
 		virtual void SetArg(void* a);
 
 	private:
+
+		
+
 		/*!
 		Terminate the thread successfully.
 		*/

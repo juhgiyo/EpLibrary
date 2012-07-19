@@ -92,11 +92,9 @@ BaseClientUDP::~BaseClientUDP()
 		EP_DELETE m_generalLock;
 }
 
-bool BaseClientUDP::SetHostName(const TCHAR * hostName)
+void BaseClientUDP::SetHostName(const TCHAR * hostName)
 {
 	LockObj lock(m_generalLock);
-	if(m_isConnected)
-		return false;
 
 	unsigned int strLength=System::TcsLen(hostName);
 	if(strLength==0)
@@ -109,14 +107,11 @@ bool BaseClientUDP::SetHostName(const TCHAR * hostName)
 		m_hostName=hostName;
 #endif// defined(_UNICODE) || defined(UNICODE)
 	}
-	return true;
 }
 
-bool BaseClientUDP::SetPort(const TCHAR *port)
+void BaseClientUDP::SetPort(const TCHAR *port)
 {
 	LockObj lock(m_generalLock);
-	if(m_isConnected)
-		return false;
 
 	unsigned int strLength=System::TcsLen(port);
 	if(strLength==0)
@@ -129,7 +124,6 @@ bool BaseClientUDP::SetPort(const TCHAR *port)
 		m_port=port;
 #endif// defined(_UNICODE) || defined(UNICODE)
 	}
-	return true;
 
 }
 EpTString BaseClientUDP::GetHostName() const

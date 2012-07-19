@@ -82,10 +82,12 @@ namespace epl
 		*/
 		BaseClientEx & operator=(const BaseClientEx&b)
 		{
+			if(this!=&b)
+			{
+				BaseClient::operator =(b);
+			}
 			return *this;
 		}
-		
-	
 	protected:
 		/*!
 		Parse the given packet and do relevant operation.
@@ -95,6 +97,7 @@ namespace epl
 		*/
 		virtual void parsePacket(const Packet &packet )=0;
 	private:
+		
 
 		/*!
 		Handle the packet parsing thread.

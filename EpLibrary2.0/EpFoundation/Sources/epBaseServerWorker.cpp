@@ -72,7 +72,7 @@ BaseServerWorker::~BaseServerWorker()
 	}
 	closesocket(m_clientSocket);
 	m_sendLock->Unlock();
-	System::WaitForSingleObject(m_threadHandle,m_waitTime);
+	WaitFor(m_waitTime);
 	if(m_sendLock)
 		EP_DELETE m_sendLock;
 }

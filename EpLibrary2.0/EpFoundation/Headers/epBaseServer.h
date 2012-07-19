@@ -42,6 +42,7 @@ An Interface for Base Server.
 #include "epCriticalSectionEx.h"
 #include "epMutex.h"
 #include "epNoLock.h"
+#include "epServerConf.h"
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <stdlib.h>
@@ -57,28 +58,6 @@ An Interface for Base Server.
 using namespace std;
 
 namespace epl{
-
-	
-#ifndef DEFAULT_PORT
-	/*!
-	@def DEFAULT_PORT
-	@brief default port
-
-	Macro for the default port.
-	*/
-	#define DEFAULT_PORT "80808"
-#endif //DEFAULT_PORT
-
-#ifndef DEFAULT_WAITTIME
-	/*!
-	@def DEFAULT_WAITTIME
-	@brief default wait time
-
-	Macro for the default wait time in millisec.
-	*/
-	#define DEFAULT_WAITTIME INFINITE
-#endif //DEFAULT_WAITTIME
-
 	/*! 
 	@class BaseServer epBaseServer.h
 	@brief A class for Base Server.
@@ -117,9 +96,14 @@ namespace epl{
 		*/
 		BaseServer & operator=(const BaseServer&b)
 		{
+			if(this!=&b)
+			{
+				LockObj lock(m_lock);
+				m_waitTime=b.m_waitTime;
+				m_port=b.m_port;
+			}
 			return *this;
 		}
-
 
 		/*!
 		Get Client List
@@ -131,9 +115,8 @@ namespace epl{
 		Set the port for the server.
 		@remark Cannot be changed while connected to server
 		@param[in] port The port to set.
-		@return true if succeeded otherwise false
 		*/
-		bool SetPort(const TCHAR *  port);
+		void SetPort(const TCHAR *  port);
 
 		/*!
 		Get the port number of server
@@ -174,6 +157,8 @@ namespace epl{
 		unsigned int GetWaitTimeForSafeTerminate();
 
 	private:
+		
+
 		/*!
 		Listening Loop Function
 		@param[in] lpParam self class object

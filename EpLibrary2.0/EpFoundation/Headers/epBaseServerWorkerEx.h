@@ -47,6 +47,7 @@ namespace epl
 		Default Constructor
 
 		Initializes the Worker
+		@param[in] waitTimeMilliSec the wait time in millisecond for terminating thread
 		@param[in] lockPolicyType The lock policy
 		*/
 		BaseServerWorkerEx(unsigned int waitTimeMilliSec=DEFAULT_WAITTIME,LockPolicy lockPolicyType=EP_LOCK_POLICY);
@@ -90,6 +91,8 @@ namespace epl
 		virtual void parsePacket(const Packet &packet)=0;
 
 	private:
+
+
 		/*!
 		thread loop function
 		*/

@@ -40,6 +40,7 @@ An Interface for Base Server Worker.
 #include "epCriticalSectionEx.h"
 #include "epMutex.h"
 #include "epNoLock.h"
+#include "epServerConf.h"
 
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
@@ -53,17 +54,6 @@ An Interface for Base Server Worker.
 
 // Need to link with Ws2_32.lib
 #pragma comment (lib, "Ws2_32.lib")
-
-
-#ifndef DEFAULT_WAITTIME
-	/*!
-	@def DEFAULT_WAITTIME
-	@brief default wait time
-
-	Macro for the default wait time in millisec.
-	*/
-	#define DEFAULT_WAITTIME INFINITE
-#endif //DEFAULT_WAITTIME
 
 namespace epl
 {
@@ -80,6 +70,7 @@ namespace epl
 		Default Constructor
 
 		Initializes the Worker
+		@param[in] waitTimeMilliSec the wait time in millisecond for terminating thread
 		@param[in] lockPolicyType The lock policy
 		*/
 		BaseServerWorker(unsigned int waitTimeMilliSec=DEFAULT_WAITTIME,LockPolicy lockPolicyType=EP_LOCK_POLICY);
@@ -109,12 +100,12 @@ namespace epl
 			if(this!=&b)
 			{
 				LockObj lock(m_sendLock);
-				m_clientSocket=b.m_clientSocket;
+				m_waitTime=b.m_waitTime;
 				Thread::operator =(b);
 				SmartObject::operator =(b);
 			}
 			return *this;
-		}
+		}	
 
 		/*!
 		Send the packet to the client
@@ -148,6 +139,8 @@ namespace epl
 		virtual void execute()=0;
 
 	private:	
+		
+
 		/*!
 		Receive the packet from the client
 		@remark  Subclasses must implement this

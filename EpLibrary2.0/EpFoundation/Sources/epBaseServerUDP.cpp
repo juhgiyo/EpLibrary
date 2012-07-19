@@ -90,11 +90,9 @@ BaseServerUDP::~BaseServerUDP()
 		EP_DELETE m_sendLock;
 }
 
-bool BaseServerUDP::SetPort(const TCHAR *  port)
+void  BaseServerUDP::SetPort(const TCHAR *  port)
 {
 	LockObj lock(m_lock);
-	if(m_isServerStarted)
-		return false;
 	unsigned int strLength=System::TcsLen(port);
 	if(strLength==0)
 		m_port=DEFAULT_PORT;
@@ -106,7 +104,6 @@ bool BaseServerUDP::SetPort(const TCHAR *  port)
 		m_port=port;
 #endif// defined(_UNICODE) || defined(UNICODE)
 	}
-	return true;
 }
 
 EpTString BaseServerUDP::GetPort() const

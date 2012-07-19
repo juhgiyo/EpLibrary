@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epSimpleLogger.h"
 #include "epBaseServerUDP.h"
 using namespace epl;
-BaseServerWorkerUDP::BaseServerWorkerUDP(LockPolicy lockPolicyType): Thread(lockPolicyType), SmartObject(lockPolicyType)
+BaseServerWorkerUDP::BaseServerWorkerUDP(unsigned int waitTimeMilliSec,LockPolicy lockPolicyType): Thread(lockPolicyType), SmartObject(lockPolicyType)
 {
 	m_lockPolicy=lockPolicyType;
 	switch(lockPolicyType)
@@ -40,12 +40,14 @@ BaseServerWorkerUDP::BaseServerWorkerUDP(LockPolicy lockPolicyType): Thread(lock
 	m_packet=NULL;
 	m_server=NULL;
 	m_maxPacketSize=0;
+	m_waitTime=waitTimeMilliSec;
 }
 BaseServerWorkerUDP::BaseServerWorkerUDP(const BaseServerWorkerUDP& b) : Thread(b),SmartObject(b)
 {
 	m_packet=NULL;
 	m_server=NULL;
 	m_maxPacketSize=0;
+	m_waitTime=b.m_waitTime;
 	m_lockPolicy=b.m_lockPolicy;
 	switch(m_lockPolicy)
 	{
@@ -66,13 +68,13 @@ BaseServerWorkerUDP::BaseServerWorkerUDP(const BaseServerWorkerUDP& b) : Thread(
 
 BaseServerWorkerUDP::~BaseServerWorkerUDP()
 {
+	WaitFor(m_waitTime);
 	m_lock->Lock();
 	if(m_packet)
 	{
 		m_packet->ReleaseObj();	
 		m_packet=NULL;
 	}
-
 	if(m_server)
 		m_server->removeWorker(this);
 	m_lock->Unlock();
@@ -98,6 +100,17 @@ int BaseServerWorkerUDP::Send(const Packet &packet)
 		return m_server->send(packet,m_clientSocket);
 	return 0;
 }
+
+void BaseServerWorkerUDP::SetWaitTimeForSafeTerminate(unsigned int milliSec)
+{
+	m_waitTime=milliSec;
+}
+
+unsigned int BaseServerWorkerUDP::GetWaitTimeForSafeTerminate()
+{
+	return m_waitTime;
+}
+
 void BaseServerWorkerUDP::setServer(BaseServerUDP *server)
 {
 	LockObj lock(m_lock);

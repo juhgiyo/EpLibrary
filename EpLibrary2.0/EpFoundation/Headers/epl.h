@@ -98,6 +98,7 @@ An Interface for EP Foundation Library
 #include "epBaseServerWorkerUDP.h"
 #include "epPacket.h"
 #include "epPacketContainer.h"
+#include "epServerConf.h"
 
 //System
 #include "epAssert.h"

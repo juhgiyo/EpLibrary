@@ -78,11 +78,10 @@ BaseServer::~BaseServer()
 		EP_DELETE m_lock;
 }
 
-bool BaseServer::SetPort(const TCHAR *  port)
+void  BaseServer::SetPort(const TCHAR *  port)
 {
 	LockObj lock(m_lock);
-	if(m_isServerStarted)
-		return false;
+
 	unsigned int strLength=System::TcsLen(port);
 	if(strLength==0)
 		m_port=DEFAULT_PORT;
@@ -94,7 +93,6 @@ bool BaseServer::SetPort(const TCHAR *  port)
 		m_port=port;
 #endif// defined(_UNICODE) || defined(UNICODE)
 	}
-	return true;
 }
 
 EpTString BaseServer::GetPort() const

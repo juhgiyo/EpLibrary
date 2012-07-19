@@ -40,6 +40,7 @@ An Interface for Base UDP Server Worker.
 #include "epCriticalSectionEx.h"
 #include "epMutex.h"
 #include "epNoLock.h"
+#include "epServerConf.h"
 
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
@@ -69,9 +70,10 @@ namespace epl
 		Default Constructor
 
 		Initializes the Worker
+		@param[in] waitTimeMilliSec the wait time in millisecond for terminating thread
 		@param[in] lockPolicyType The lock policy
 		*/
-		BaseServerWorkerUDP(LockPolicy lockPolicyType=EP_LOCK_POLICY);
+		BaseServerWorkerUDP(unsigned int waitTimeMilliSec=DEFAULT_WAITTIME,LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Copy Constructor
@@ -98,9 +100,7 @@ namespace epl
 			if(this!=&b)
 			{
 				LockObj lock(m_lock);
-				m_server=b.m_server;
-				m_clientSocket=b.m_clientSocket;
-				m_maxPacketSize=b.m_maxPacketSize;
+				m_waitTime=b.m_waitTime;
 				Thread::operator =(b);
 				SmartObject::operator =(b);
 			}
@@ -120,6 +120,18 @@ namespace epl
 		*/
 		unsigned int GetMaxPacketByteSize() const;
 
+		/*!
+		Set the wait time for the thread termination
+		@param[in] milliSec the time for waiting in millisecond
+		*/
+		void SetWaitTimeForSafeTerminate(unsigned int milliSec);
+
+		/*!
+		Get the wait time for the thread termination
+		@return the current time for waiting in millisecond
+		*/
+		unsigned int GetWaitTimeForSafeTerminate();
+
 	protected:
 		/*!
 		Parse the given packet and do relevant operation
@@ -129,6 +141,8 @@ namespace epl
 		virtual void parsePacket(const Packet &packet)=0;
 
 	private:	
+
+
 		/*! 
 		@struct PacketPassUnit epBaseServerWorkerUDP.h
 		@brief A class for Packet Passing Unit for Packet Parsing Thread.
@@ -177,6 +191,8 @@ namespace epl
 		/// Lock Policy
 		LockPolicy m_lockPolicy;
         
+		/// wait time in millisecond for terminating thread
+		unsigned int m_waitTime;
 	};
 
 }

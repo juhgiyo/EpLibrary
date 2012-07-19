@@ -79,6 +79,10 @@ namespace epl{
 		*/
 		BaseClientSimple & operator=(const BaseClientSimple&b)
 		{
+			if(this!=&b)
+			{
+				BaseClient::operator =(b);
+			}
 			return *this;
 		}
 
@@ -90,6 +94,7 @@ namespace epl{
 		*/
 		virtual void parsePacket(const Packet &packet )=0;
 	private:
+
 
 		/*!
 		Actually processing the client thread
