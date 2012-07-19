@@ -50,6 +50,7 @@ void BaseClientEx::processClientThread()
 		if(size>0)
 		{
 			unsigned int shouldReceive=(reinterpret_cast<unsigned int*>(const_cast<char*>(m_recvSizePacket.GetPacket())))[0];
+			// TODO: Possible Memory Leak from here
 			Packet *recvPacket=EP_NEW Packet(NULL,shouldReceive);
 			iResult = receive(*recvPacket);
 
@@ -71,6 +72,7 @@ void BaseClientEx::processClientThread()
 				recvPacket->ReleaseObj();
 				break;
 			}
+			// To here
 		}
 		else
 		{
