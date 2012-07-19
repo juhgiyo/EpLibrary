@@ -98,7 +98,7 @@ Packet & Packet::operator=(const Packet&b)
 {
 	if(this!=&b)
 	{
-		if(m_isAllocated)
+		if(m_isAllocated && m_packet)
 		{
 			EP_DELETE[] m_packet;
 		}

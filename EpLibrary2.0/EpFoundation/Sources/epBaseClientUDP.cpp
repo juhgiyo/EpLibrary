@@ -288,6 +288,9 @@ void BaseClientUDP::disconnect()
 	{
 		if(m_clientThreadHandle)
 			TerminateThread(m_clientThreadHandle,0);
+		int iResult = shutdown(m_connectSocket, SD_SEND);
+		if (iResult == SOCKET_ERROR)
+			LOG_THIS_MSG(_T("shutdown failed with error: %d\n"), WSAGetLastError());
 		closesocket(m_connectSocket);
 	}
 	m_isConnected=false;
@@ -316,7 +319,7 @@ unsigned long BaseClientUDP::passPacket(void *param)
 
 void BaseClientUDP::processClientThread() 
 {
-	int iResult;
+	int iResult=0;
 	// Receive until the peer shuts down the connection
 	Packet recvPacket(NULL,m_maxPacketSize);
 	do {

@@ -62,6 +62,8 @@ namespace epl
 	*/
 	class EP_FOUNDATION BaseServerWorker:public Thread, public SmartObject
 	{
+		friend class BaseServerWorkerEx;
+		friend class BaseServerWorkerSimple;
 	public:
 		/*!
 		Default Constructor
@@ -124,6 +126,7 @@ namespace epl
 		*/
 		virtual void execute()=0;
 
+	private:	
 		/*!
 		Receive the packet from the client
 		@remark  Subclasses must implement this
@@ -132,7 +135,6 @@ namespace epl
 		*/
 		int receive(Packet &packet);
 	
-	private:	
 		/*!
 		Set the argument for the base server worker thread.
 		@param[in] a The client socket from server.
@@ -147,6 +149,9 @@ namespace epl
 		
 		/// Lock Policy
 		LockPolicy m_lockPolicy;
+
+		/// Temp Packet;
+		Packet m_recvSizePacket;
 	};
 
 }

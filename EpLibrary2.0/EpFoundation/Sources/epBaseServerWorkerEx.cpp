@@ -44,15 +44,14 @@ unsigned long BaseServerWorkerEx::passPacket(void *param)
 
 void BaseServerWorkerEx::execute()
 {
-	int iResult;
-	Packet recvSizePacket(NULL,4);
+	int iResult=0;
 	
 	// Receive until the peer shuts down the connection
 	do {
-		int size =receive(recvSizePacket);
-		if(size>0)
+		iResult =receive(m_recvSizePacket);
+		if(iResult>0)
 		{
-			unsigned int shouldReceive=(reinterpret_cast<unsigned int*>(const_cast<char*>(recvSizePacket.GetPacket())))[0];
+			unsigned int shouldReceive=(reinterpret_cast<unsigned int*>(const_cast<char*>(m_recvSizePacket.GetPacket())))[0];
 			Packet *recvPacket=EP_NEW Packet(NULL,shouldReceive);
 			iResult = receive(*recvPacket);
 

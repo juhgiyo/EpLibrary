@@ -44,14 +44,12 @@ unsigned long BaseClientEx::passPacket(void *param)
 void BaseClientEx::processClientThread() 
 {
 	int iResult;
-	/// Receive buffer
-	Packet recvSizePacket(NULL,4);
 	// Receive until the peer shuts down the connection
 	do {
-		int size =receive(recvSizePacket);
+		int size =receive(m_recvSizePacket);
 		if(size>0)
 		{
-			unsigned int shouldReceive=(reinterpret_cast<unsigned int*>(const_cast<char*>(recvSizePacket.GetPacket())))[0];
+			unsigned int shouldReceive=(reinterpret_cast<unsigned int*>(const_cast<char*>(m_recvSizePacket.GetPacket())))[0];
 			Packet *recvPacket=EP_NEW Packet(NULL,shouldReceive);
 			iResult = receive(*recvPacket);
 

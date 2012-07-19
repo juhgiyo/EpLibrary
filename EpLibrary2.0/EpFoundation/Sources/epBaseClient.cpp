@@ -40,6 +40,7 @@ BaseClient::BaseClient(const TCHAR * hostName, const TCHAR * port,LockPolicy loc
 		m_generalLock=NULL;
 		break;
 	}
+	m_recvSizePacket=Packet(NULL,4);
 	SetHostName(hostName);
 	SetPort(port);
 	m_connectSocket=NULL;
@@ -56,6 +57,7 @@ BaseClient::BaseClient(const BaseClient& b)
 	m_isConnected=false;
 	m_hostName=b.m_hostName;
 	m_port=b.m_port;
+	m_recvSizePacket=Packet(NULL,4);
 	m_lockPolicy=b.m_lockPolicy;
 	switch(m_lockPolicy)
 	{
@@ -297,7 +299,7 @@ void BaseClient::disconnect()
 		if(m_clientThreadHandle)
 			TerminateThread(m_clientThreadHandle,0);
 		// shutdown the connection since no more data will be sent
-		int iResult = shutdown(m_connectSocket, SD_BOTH);
+		int iResult = shutdown(m_connectSocket, SD_SEND);
 		if (iResult == SOCKET_ERROR) {
 			LOG_THIS_MSG(_T("shutdown failed with error: %d\n"), WSAGetLastError());
 		}

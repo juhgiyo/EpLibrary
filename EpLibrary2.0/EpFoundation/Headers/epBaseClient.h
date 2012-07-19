@@ -240,6 +240,9 @@ namespace epl{
 		BaseLock *m_generalLock;
 		/// Lock Policy
 		LockPolicy m_lockPolicy;
+
+		/// Temp Packet;
+		Packet m_recvSizePacket;
 	};
 }
 

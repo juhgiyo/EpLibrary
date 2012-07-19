@@ -37,6 +37,7 @@ BaseServerWorker::BaseServerWorker(LockPolicy lockPolicyType): Thread(lockPolicy
 		m_sendLock=NULL;
 		break;
 	}
+	m_recvSizePacket=Packet(NULL,4);
 }
 BaseServerWorker::BaseServerWorker(const BaseServerWorker& b) : Thread(b),SmartObject(b)
 {
@@ -56,13 +57,14 @@ BaseServerWorker::BaseServerWorker(const BaseServerWorker& b) : Thread(b),SmartO
 		m_sendLock=NULL;
 		break;
 	}
+	m_recvSizePacket=Packet(NULL,4);
 }
 
 BaseServerWorker::~BaseServerWorker()
 {
 	m_sendLock->Lock();
 	int iResult;
-	iResult = shutdown(m_clientSocket, SD_BOTH);
+	iResult = shutdown(m_clientSocket, SD_SEND);
 	if (iResult == SOCKET_ERROR) {
 		LOG_THIS_MSG(_T("shutdown failed with error\n"));
 	}

@@ -116,8 +116,9 @@ unsigned long BaseServer::ServerThread( LPVOID lpParam )
 	BaseServer *pMainClass=reinterpret_cast<BaseServer*>(lpParam);
 
 	SOCKET clientSocket;
-	while(clientSocket=accept(pMainClass->m_listenSocket, NULL, NULL))
+	while(1)
 	{
+		clientSocket=accept(pMainClass->m_listenSocket, NULL, NULL);
 		LockObj lock(pMainClass->m_lock);
 		if(clientSocket == INVALID_SOCKET)
 		{
@@ -126,7 +127,7 @@ unsigned long BaseServer::ServerThread( LPVOID lpParam )
 		else
 		{
 			BaseServerWorker *accWorker=pMainClass->createNewWorker();
-			pMainClass->GetClientList().push_back(accWorker);
+			pMainClass->m_clientList.push_back(accWorker);
 			accWorker->Start(reinterpret_cast<void*>(clientSocket));
 		}
 
@@ -259,13 +260,13 @@ void BaseServer::StopServer()
 
 void BaseServer::stopServer()
 {
+	if(m_serverThreadHandle)
+		TerminateThread(m_serverThreadHandle,0);
 	if(m_isServerStarted==true)
 	{
 		shutdownAllClient();	
 		// No longer need server socket
 	}
-	if(m_serverThreadHandle)
-		TerminateThread(m_serverThreadHandle,0);
 	if(m_listenSocket)
 		closesocket(m_listenSocket);
 	m_isServerStarted=false;

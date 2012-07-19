@@ -75,5 +75,4 @@ An Interface for EP Library.
 #endif
 
 #include "epPlatform.h"
-
 #endif //__EP_FOUNDATION_LIB_H__

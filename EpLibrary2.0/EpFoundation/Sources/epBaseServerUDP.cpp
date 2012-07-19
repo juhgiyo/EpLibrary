@@ -164,7 +164,7 @@ unsigned long BaseServerUDP::ServerThread( LPVOID lpParam )
 		LockObj lock(pMainClass->m_lock);
 		/// Create Worker Thread
 		BaseServerWorkerUDP *accWorker=pMainClass->createNewWorker();
-		pMainClass->GetClientList().push_back(accWorker);
+		pMainClass->m_clientList.push_back(accWorker);
 		BaseServerWorkerUDP::PacketPassUnit unit;
 		unit.m_clientSocket=clientSockAddr;
 		unit.m_packet=EP_NEW Packet(packetData,recvLength);
@@ -298,15 +298,22 @@ void BaseServerUDP::StopServer()
 
 void BaseServerUDP::stopServer()
 {
+	if(m_serverThreadHandle)
+		TerminateThread(m_serverThreadHandle,0);
 	if(m_isServerStarted==true)
 	{
 		shutdownAllClient();	
 		// No longer need server socket
 	}
-	if(m_serverThreadHandle)
-		TerminateThread(m_serverThreadHandle,0);
 	if(m_listenSocket)
+	{
+		int iResult;
+		iResult = shutdown(m_listenSocket, SD_SEND);
+		if (iResult == SOCKET_ERROR) {
+			LOG_THIS_MSG(_T("shutdown failed with error\n"));
+		}
 		closesocket(m_listenSocket);
+	}
 	m_isServerStarted=false;
 	if(m_result)
 		freeaddrinfo(m_result);
