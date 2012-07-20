@@ -42,6 +42,7 @@ An Interface for Base Client.
 #include "epBasePacketParser.h"
 #include "epServerConf.h"
 #include "epServerObjectList.h"
+#include "epBaseServerCallbackObject.h"
 
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
@@ -81,9 +82,10 @@ namespace epl{
 		Initializes the Client
 		@param[in] hostName the hostname string
 		@param[in] port the port string
+		@param[in] callbackObj the callback object to call when client disconnects
 		@param[in] lockPolicyType The lock policy
 		*/
-		BaseClient(const TCHAR * hostName=_T(DEFAULT_HOSTNAME), const TCHAR * port=_T(DEFAULT_PORT),LockPolicy lockPolicyType=EP_LOCK_POLICY);
+		BaseClient(const TCHAR * hostName=_T(DEFAULT_HOSTNAME), const TCHAR * port=_T(DEFAULT_PORT),BaseServerCallbackObject *callbackObj=NULL,LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Copy Constructor
@@ -108,10 +110,11 @@ namespace epl{
 		{
 			if(this!=&b)
 			{
-				BaseServerSendObject::operator =(b);
 				LockObj lock(m_generalLock);
+				BaseServerSendObject::operator =(b);
 				m_port=b.m_port;
 				m_hostName=b.m_hostName;
+				
 			}
 			return *this;
 		}
@@ -205,6 +208,11 @@ namespace epl{
 		static unsigned long ClientThread( LPVOID lpParam ) ;
 
 		/*!
+		Clean up the client initialization.
+		*/
+		void cleanUpClient();
+
+		/*!
 		Actually Disconnect from the server
 		@param[in] fromInternal flag to check if the call is from internal or not
 		*/
@@ -223,9 +231,6 @@ namespace epl{
 		struct addrinfo *m_ptr;
 		/// internal variable3
 		struct addrinfo m_hints;
-
-		/// flag for the connection
-		bool m_isConnected;
 	
 		/// send lock
 		BaseLock *m_sendLock;

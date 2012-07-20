@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epThread.h"
 using namespace epl;
 
-BaseClient::BaseClient(const TCHAR * hostName, const TCHAR * port,LockPolicy lockPolicyType) :BaseServerSendObject(lockPolicyType)
+BaseClient::BaseClient(const TCHAR * hostName, const TCHAR * port,BaseServerCallbackObject *callbackObj,LockPolicy lockPolicyType) :BaseServerSendObject(callbackObj,lockPolicyType)
 {
 	m_lockPolicy=lockPolicyType;
 	switch(lockPolicyType)
@@ -51,7 +51,6 @@ BaseClient::BaseClient(const TCHAR * hostName, const TCHAR * port,LockPolicy loc
 	m_connectSocket=INVALID_SOCKET;
 	m_result=0;
 	m_ptr=0;
-	m_isConnected=false;
 }
 
 BaseClient::BaseClient(const BaseClient& b) :BaseServerSendObject(b)
@@ -59,7 +58,6 @@ BaseClient::BaseClient(const BaseClient& b) :BaseServerSendObject(b)
 	m_connectSocket=INVALID_SOCKET;
 	m_result=0;
 	m_ptr=0;
-	m_isConnected=false;
 	m_hostName=b.m_hostName;
 	m_port=b.m_port;
 	m_recvSizePacket=Packet(NULL,4);
@@ -135,6 +133,7 @@ void  BaseClient::SetPort(const TCHAR *port)
 }
 EpTString BaseClient::GetHostName() const
 {
+	LockObj lock(m_generalLock);
 	if(!m_hostName.length())
 		return _T("");
 
@@ -148,6 +147,7 @@ EpTString BaseClient::GetHostName() const
 }
 EpTString BaseClient::GetPort() const
 {
+	LockObj lock(m_generalLock);
 	if(!m_port.length())
 		return _T("");
 
@@ -160,9 +160,12 @@ EpTString BaseClient::GetPort() const
 
 }
 
+
 int BaseClient::Send(const Packet &packet)
 {
 	LockObj lock(m_sendLock);
+	if(!IsConnected())
+		return 0;
 	int writeLength=0;
 	const char *packetData=packet.GetPacket();
 	int length=packet.GetPacketByteSize();
@@ -178,7 +181,6 @@ int BaseClient::Send(const Packet &packet)
 		writeLength+=sentLength;
 		if(sentLength<=0)
 		{
-			disconnect(true);
 			return writeLength;
 		}
 		length-=sentLength;
@@ -259,7 +261,7 @@ int BaseClient::receive(Packet &packet)
 bool BaseClient::Connect()
 {
 	LockObj lock(m_generalLock);
-	if(m_isConnected)
+	if(IsConnected())
 		return true;
 	if(!m_port.length())
 	{
@@ -305,7 +307,7 @@ bool BaseClient::Connect()
 			m_ptr->ai_protocol);
 		if (m_connectSocket == INVALID_SOCKET) {
 			System::OutputDebugString(_T("%s::%s(%d)(%x) Socket failed with error\r\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
-			disconnect(true);
+			cleanUpClient();
 			return false;
 		}
 
@@ -320,21 +322,38 @@ bool BaseClient::Connect()
 	}
 	if (m_connectSocket == INVALID_SOCKET) {
 		System::OutputDebugString(_T("%s::%s(%d)(%x) Unable to connect to server!\r\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
-		disconnect(true);
+		cleanUpClient();
 		return false;
 	}
 	if(Start())
 	{
-		m_isConnected=true;
 		return true;
 	}
+	cleanUpClient();
 	return false;
 }
 
 
 bool BaseClient::IsConnected() const
 {
-	return m_isConnected;
+	return (m_status==Thread::THREAD_STATUS_STARTED);
+}
+
+void BaseClient::cleanUpClient()
+{
+
+	if(m_connectSocket!=INVALID_SOCKET)
+	{
+		closesocket(m_connectSocket);
+		m_connectSocket = INVALID_SOCKET;
+	}
+	if(m_result)
+	{
+		freeaddrinfo(m_result);
+		m_result=NULL;
+	}
+	WSACleanup();
+
 }
 
 void BaseClient::disconnect(bool fromInternal)
@@ -343,13 +362,8 @@ void BaseClient::disconnect(bool fromInternal)
 	{
 		return;
 	}
-	if(m_result)
-	{
-		freeaddrinfo(m_result);
-		m_result=NULL;
-	}
 
-	if(m_isConnected)
+	if(IsConnected())
 	{
 		if(m_connectSocket!=INVALID_SOCKET)
 		{
@@ -366,16 +380,21 @@ void BaseClient::disconnect(bool fromInternal)
 			TerminateAfter(WAITTIME_INIFINITE);
 		m_parserList.Clear();
 	}
-	m_isConnected=false;
-	WSACleanup();
+
+	cleanUpClient();
+	
 	m_disconnectLock->Unlock();
 }
 
 void BaseClient::Disconnect()
 {
 	LockObj lock(m_generalLock);
-	// No longer need server socket
+	if(!IsConnected())
+	{
+		return;
+	}
 	disconnect(false);
 }
+
 
 

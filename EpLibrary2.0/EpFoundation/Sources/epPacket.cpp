@@ -98,6 +98,7 @@ Packet & Packet::operator=(const Packet&b)
 {
 	if(this!=&b)
 	{
+		SmartObject::operator =(b);
 		if(m_isAllocated && m_packet)
 		{
 			EP_DELETE[] m_packet;
@@ -120,7 +121,7 @@ Packet & Packet::operator=(const Packet&b)
 			m_packetSize=b.m_packetSize;
 		}
 		m_isAllocated=b.m_isAllocated;
-		SmartObject::operator =(b);
+
 	}
 	return *this;
 }

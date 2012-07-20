@@ -46,6 +46,7 @@ An Interface for Base UDP Server.
 #include "epServerConf.h"
 #include "epBaseServerObject.h"
 #include "epServerObjectList.h"
+#include "epBaseServerCallbackObject.h"
 
 #include <winsock2.h>
 #include <ws2tcpip.h>
@@ -76,9 +77,10 @@ namespace epl{
 
 		Initializes the Server
 		@param[in] port the port string
+		@param[in] callbackObj the callback object to call when server stops
 		@param[in] lockPolicyType The lock policy
 		*/
-		BaseServerUDP(const TCHAR * port=_T(DEFAULT_PORT), LockPolicy lockPolicyType=EP_LOCK_POLICY);
+		BaseServerUDP(const TCHAR * port=_T(DEFAULT_PORT),BaseServerCallbackObject *callbackObj=NULL, LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Copy Constructor
@@ -103,8 +105,8 @@ namespace epl{
 		{
 			if(this!=&b)
 			{
-				BaseServerObject::operator =(b);
 				LockObj lock(m_lock);
+				BaseServerObject::operator =(b);
 				m_port=b.m_port;
 			}
 			return *this;
@@ -128,7 +130,8 @@ namespace epl{
 		@return the port number in string
 		*/
 		EpTString GetPort() const;
-		
+	
+
 		/*!
 		Get the maximum packet byte size
 		@return the maximum packet byte size
@@ -188,6 +191,11 @@ namespace epl{
 		int send(const Packet &packet,const sockaddr &clientSockAddr);
 
 		/*!
+		Clean up the server initialization.
+		*/
+		void cleanUpServer();
+
+		/*!
 		Actually Stop the server
 		@param[in] fromInternal flag to check if the call is from internal or not
 		*/
@@ -203,9 +211,6 @@ namespace epl{
 		struct addrinfo m_hints;
 		/// Maximum UDP Datagram byte size
 		unsigned int m_maxPacketSize;
-
-		/// the status of the server
-		bool m_isServerStarted;
 
 		/// general lock 
 		BaseLock *m_lock;

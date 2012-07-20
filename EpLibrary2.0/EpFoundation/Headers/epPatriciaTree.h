@@ -1280,9 +1280,9 @@ namespace epl
 	{
 		if(this!=&b)
 		{
+			BasePatriciaTreeNode::operator =(b);
 			m_data=b.m_data;
 			m_string=b.m_string;
-			BasePatriciaTreeNode::operator =(b);
 		}
 		return *this;
 	}
@@ -1367,6 +1367,7 @@ namespace epl
 	{
 		if(this!=&b)
 		{
+			BasePatriciaTreeNode::operator =(b);
 			m_terminator=b.m_terminator;
 			BasePatriciaTreeNode *tmpNode=NULL;
 			for(int listTrav=0;listTrav<b.m_charList.size();listTrav++)
@@ -1388,7 +1389,6 @@ namespace epl
 					}
 				}
 			}
-			BasePatriciaTreeNode::operator =(b);
 		}
 		return *this;
 	}

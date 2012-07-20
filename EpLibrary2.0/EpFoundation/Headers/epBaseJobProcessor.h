@@ -114,8 +114,9 @@ namespace epl
 		{
 			if(this!=&b)
 			{
-				m_status=b.m_status;
 				SmartObject::operator =(b);
+				m_status=b.m_status;
+				
 			}
 			return *this;
 		}

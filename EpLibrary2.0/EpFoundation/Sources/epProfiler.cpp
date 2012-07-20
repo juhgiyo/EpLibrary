@@ -120,10 +120,10 @@ ProfileManager::ProfileNode & ProfileManager::ProfileNode::operator=(const Profi
 {
 	if(this!=&b)
 	{
+		BaseOutputter::OutputNode::operator =(b);
 		m_uniqueName=b.m_uniqueName;
 		m_cnt=b.m_cnt;
 		m_totalTime=b.m_totalTime;
-		BaseOutputter::OutputNode::operator =(b);
 	}
 	return *this;
 }

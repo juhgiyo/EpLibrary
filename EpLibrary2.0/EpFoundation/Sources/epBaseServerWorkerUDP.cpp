@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epBaseServerWorkerUDP.h"
 #include "epBaseServerUDP.h"
 using namespace epl;
-BaseServerWorkerUDP::BaseServerWorkerUDP(LockPolicy lockPolicyType): BaseServerSendObject(lockPolicyType)
+BaseServerWorkerUDP::BaseServerWorkerUDP(BaseServerCallbackObject *callbackObj,LockPolicy lockPolicyType): BaseServerSendObject(callbackObj,lockPolicyType)
 {
 	m_lockPolicy=lockPolicyType;
 	switch(lockPolicyType)

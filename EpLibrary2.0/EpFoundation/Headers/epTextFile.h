@@ -71,8 +71,9 @@ namespace epl{
 			if(this!=&b)
 			{
 				LockObj lock(m_lock);
-				m_text=b.m_text;
 				BaseFile::operator =(b);
+				m_text=b.m_text;
+				
 			}
 			return *this;
 		}

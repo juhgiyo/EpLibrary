@@ -34,8 +34,9 @@ FileStream & FileStream::operator=(const FileStream&b)
 	if(this!=&b)
 	{
 		LockObj lock(m_streamLock);
-		m_fileName=b.m_fileName;
 		Stream::operator =(b);
+		m_fileName=b.m_fileName;
+		
 	}
 	return *this;
 }

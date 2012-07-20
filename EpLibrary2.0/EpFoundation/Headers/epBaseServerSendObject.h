@@ -46,9 +46,10 @@ namespace epl{
 		Default Constructor
 
 		Initializes the Object
+		@param[in] callbackObj the callback object to call when thread stops
 		@param[in] lockPolicyType The lock policy
 		*/
-		BaseServerSendObject(LockPolicy lockPolicyType=EP_LOCK_POLICY):BaseServerObject(lockPolicyType)
+		BaseServerSendObject(BaseServerCallbackObject *callbackObj=NULL,LockPolicy lockPolicyType=EP_LOCK_POLICY):BaseServerObject(callbackObj,lockPolicyType)
 		{
 		}
 

@@ -88,9 +88,10 @@ namespace epl
 		{
 			if(this!=&b)
 			{
+				SmartObject::operator =(b);
 				m_status=b.m_status;
 				m_priority=m_priority;
-				SmartObject::operator =(b);
+				
 			}
 			return *this;
 		}

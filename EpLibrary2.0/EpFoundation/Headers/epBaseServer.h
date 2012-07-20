@@ -45,6 +45,7 @@ An Interface for Base Server.
 #include "epServerConf.h"
 #include "epBaseServerObject.h"
 #include "epServerObjectList.h"
+#include "epBaseServerCallbackObject.h"
 
 #include <winsock2.h>
 #include <ws2tcpip.h>
@@ -73,9 +74,10 @@ namespace epl{
 
 		Initializes the Server
 		@param[in] port the port string
+		@param[in] callbackObj the callback object to call when server stops
 		@param[in] lockPolicyType The lock policy
 		*/
-		BaseServer(const TCHAR * port=_T(DEFAULT_PORT), LockPolicy lockPolicyType=EP_LOCK_POLICY);
+		BaseServer(const TCHAR * port=_T(DEFAULT_PORT),BaseServerCallbackObject *callbackObj=NULL, LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Copy Constructor
@@ -100,8 +102,8 @@ namespace epl{
 		{
 			if(this!=&b)
 			{
-				BaseServerObject::operator =(b);
 				LockObj lock(m_lock);
+				BaseServerObject::operator =(b);
 				m_port=b.m_port;
 			}
 			return *this;
@@ -125,6 +127,7 @@ namespace epl{
 		@return the port number in string
 		*/
 		EpTString GetPort() const;
+
 
 		/*!
 		Start the server
@@ -169,6 +172,10 @@ namespace epl{
 		*/
 		virtual BaseServerWorker* createNewWorker()=0;
 
+		/*!
+		Clean up the server initialization.
+		*/
+		void cleanUpServer();
 
 		/*!
 		Actually Stop the server
@@ -184,9 +191,6 @@ namespace epl{
 		struct addrinfo *m_result;
 		/// internal use variable2
 		struct addrinfo m_hints;
-
-		/// the status of the server
-		bool m_isServerStarted;
 
 		/// general lock 
 		BaseLock *m_lock;

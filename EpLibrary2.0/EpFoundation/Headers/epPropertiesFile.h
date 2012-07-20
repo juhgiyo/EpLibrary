@@ -74,8 +74,9 @@ namespace epl{
 			if(this!=&b)
 			{
 				LockObj lock(m_lock);
-				m_propertyList=b.m_propertyList;
 				BaseFile::operator =(b);
+				m_propertyList=b.m_propertyList;
+				
 			}
 			return *this;
 		}

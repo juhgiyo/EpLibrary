@@ -134,8 +134,9 @@ namespace epl
 		{
 			if(this!=&b)
 			{
-				m_callBackClass=b.m_callBackClass;
 				Thread::operator =(b);
+				m_callBackClass=b.m_callBackClass;
+				
 			}
 			return *this;
 		}

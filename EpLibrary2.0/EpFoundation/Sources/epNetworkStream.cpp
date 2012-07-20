@@ -35,9 +35,10 @@ NetworkStream & NetworkStream::operator=(const NetworkStream&b)
 {
 	if(this!=&b)
 	{
+		Stream::operator =(b);
 		m_flushType=b.m_flushType;
 		m_readOffset=b.m_readOffset;
-		Stream::operator =(b);
+		
 	}
 	return *this;
 }

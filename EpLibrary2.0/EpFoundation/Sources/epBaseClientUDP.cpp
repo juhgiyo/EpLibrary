@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace epl;
 
-BaseClientUDP::BaseClientUDP(const TCHAR * hostName, const TCHAR * port,LockPolicy lockPolicyType)
+BaseClientUDP::BaseClientUDP(const TCHAR * hostName, const TCHAR * port,BaseServerCallbackObject *callbackObj,LockPolicy lockPolicyType): BaseServerSendObject(callbackObj,lockPolicyType)
 {
 	m_lockPolicy=lockPolicyType;
 	switch(lockPolicyType)
@@ -51,16 +51,14 @@ BaseClientUDP::BaseClientUDP(const TCHAR * hostName, const TCHAR * port,LockPoli
 	m_connectSocket=INVALID_SOCKET;
 	m_result=0;
 	m_ptr=0;
-	m_isConnected=false;
 	m_maxPacketSize=0;
 }
 
-BaseClientUDP::BaseClientUDP(const BaseClientUDP& b)
+BaseClientUDP::BaseClientUDP(const BaseClientUDP& b):BaseServerSendObject(b)
 {
 	m_connectSocket=INVALID_SOCKET;
 	m_result=0;
 	m_ptr=0;
-	m_isConnected=false;
 	m_hostName=b.m_hostName;
 	m_port=b.m_port;
 	m_lockPolicy=b.m_lockPolicy;
@@ -173,6 +171,8 @@ unsigned int BaseClientUDP::GetMaxPacketByteSize() const
 int BaseClientUDP::Send(const Packet &packet)
 {
 	LockObj lock(m_sendLock);
+	if(!IsConnected())
+		return 0;
 	int sentLength=0;
 	const char *packetData=packet.GetPacket();
 	int length=packet.GetPacketByteSize();
@@ -183,7 +183,6 @@ int BaseClientUDP::Send(const Packet &packet)
 		sentLength=sendto(m_connectSocket,packetData,length,0,m_ptr->ai_addr,sizeof(sockaddr));
 		if(sentLength<=0)
 		{
-			disconnect(true);
 			return sentLength;
 		}
 	}
@@ -211,7 +210,7 @@ vector<BaseServerObject*> BaseClientUDP::GetPacketParserList() const
 bool BaseClientUDP::Connect()
 {
 	LockObj lock(m_generalLock);
-	if(m_isConnected)
+	if(IsConnected())
 		return true;
 	if(!m_port.length())
 	{
@@ -258,14 +257,14 @@ bool BaseClientUDP::Connect()
 			m_ptr->ai_protocol);
 		if (m_connectSocket == INVALID_SOCKET) {
 			System::OutputDebugString(_T("%s::%s(%d)(%x) Socket failed with error\r\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
-			disconnect(true);
+			cleanUpClient();
 			return false;
 		}
 		break;
 	}
 	if (m_connectSocket == INVALID_SOCKET) {
 		System::OutputDebugString(_T("%s::%s(%d)(%x) Unable to connect to server!\r\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
-		disconnect(true);
+		cleanUpClient();
 		return false;
 	}
 
@@ -274,16 +273,33 @@ bool BaseClientUDP::Connect()
 
 	if(Start())
 	{
-		m_isConnected=true;
 		return true;
 	}
+	cleanUpClient();
 	return false;
 }
 
 
 bool BaseClientUDP::IsConnected() const
 {
-	return m_isConnected;
+	return (m_status==Thread::THREAD_STATUS_STARTED);
+}
+
+void BaseClientUDP::cleanUpClient()
+{
+	if(m_result)
+	{
+		freeaddrinfo(m_result);
+		m_result=NULL;
+	}
+	if(m_connectSocket!=INVALID_SOCKET)
+	{
+		closesocket(m_connectSocket);
+		m_connectSocket = INVALID_SOCKET;
+	}
+	m_maxPacketSize=0;
+	WSACleanup();
+
 }
 
 void BaseClientUDP::disconnect(bool fromInternal)
@@ -292,13 +308,9 @@ void BaseClientUDP::disconnect(bool fromInternal)
 	{
 		return;
 	}
-	if(m_result)
-	{
-		freeaddrinfo(m_result);
-		m_result=NULL;
-	}
 
-	if(m_isConnected)
+
+	if(IsConnected())
 	{
 		if(m_connectSocket!=INVALID_SOCKET)
 		{
@@ -314,17 +326,18 @@ void BaseClientUDP::disconnect(bool fromInternal)
 	
 		m_parserList.Clear();
 	}
-	m_isConnected=false;
-	m_maxPacketSize=0;
+	cleanUpClient();
 
-	WSACleanup();
 	m_disconnectLock->Unlock();
 }
 
 void BaseClientUDP::Disconnect()
 {
 	LockObj lock(m_generalLock);
-	// No longer need server socket
+	if(!IsConnected())
+	{
+		return;
+	}
 	disconnect(false);
 }
 

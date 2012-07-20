@@ -35,7 +35,6 @@ SimpleLogManager::SimpleLogNode::SimpleLogNode(const SimpleLogNode& b):OutputNod
 	m_userStr=b.m_userStr;
 	System::Memcpy(m_dateStr,b.m_dateStr,sizeof(TCHAR)*9);
 	System::Memcpy(m_timeStr,b.m_timeStr,sizeof(TCHAR)*9);
-	BaseOutputter::OutputNode::operator =(b);
 }
 SimpleLogManager::SimpleLogNode::~SimpleLogNode()
 {
@@ -45,13 +44,13 @@ SimpleLogManager::SimpleLogNode & SimpleLogManager::SimpleLogNode::operator=(con
 {
 	if(this!=&b)
 	{
+		BaseOutputter::OutputNode::operator =(b);
 		m_fileName=b.m_fileName;
 		m_funcName=b.m_funcName;
 		m_lineNum=b.m_lineNum;
 		m_userStr=b.m_userStr;
 		System::Memcpy(m_dateStr,b.m_dateStr,sizeof(TCHAR)*9);
 		System::Memcpy(m_timeStr,b.m_timeStr,sizeof(TCHAR)*9);
-		BaseOutputter::OutputNode::operator =(b);
 	}
 	return *this;
 }

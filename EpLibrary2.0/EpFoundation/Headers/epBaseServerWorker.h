@@ -73,9 +73,10 @@ namespace epl
 		Default Constructor
 
 		Initializes the Worker
+		@param[in] callbackObj the callback object to call when worker thread stops
 		@param[in] lockPolicyType The lock policy
 		*/
-		BaseServerWorker(LockPolicy lockPolicyType=EP_LOCK_POLICY);
+		BaseServerWorker(BaseServerCallbackObject *callbackObj=NULL,LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Copy Constructor

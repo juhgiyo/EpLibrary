@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace epl;
 
-BaseServer::BaseServer(const TCHAR *  port, LockPolicy lockPolicyType):BaseServerObject(lockPolicyType)
+BaseServer::BaseServer(const TCHAR *  port,BaseServerCallbackObject *callbackObj, LockPolicy lockPolicyType):BaseServerObject(callbackObj,lockPolicyType)
 {
 	m_lockPolicy=lockPolicyType;
 	switch(lockPolicyType)
@@ -45,14 +45,12 @@ BaseServer::BaseServer(const TCHAR *  port, LockPolicy lockPolicyType):BaseServe
 	SetPort(port);
 	m_listenSocket=INVALID_SOCKET;
 	m_result=0;
-	m_isServerStarted=false;
 }
 
 BaseServer::BaseServer(const BaseServer& b):BaseServerObject(b)
 {
 	m_listenSocket=INVALID_SOCKET;
 	m_result=0;
-	m_isServerStarted=false;
 	m_port=b.m_port;
 	m_lockPolicy=b.m_lockPolicy;
 	switch(m_lockPolicy)
@@ -104,6 +102,7 @@ void  BaseServer::SetPort(const TCHAR *  port)
 
 EpTString BaseServer::GetPort() const
 {
+	LockObj lock(m_lock);
 	if(!m_port.length())
 		return _T("");
 #if defined(_UNICODE) || defined(UNICODE)
@@ -113,6 +112,7 @@ EpTString BaseServer::GetPort() const
 	return m_port;
 #endif //defined(_UNICODE) || defined(UNICODE)
 }
+
 
 vector<BaseServerObject*> BaseServer::GetWorkerList() const
 {
@@ -144,7 +144,7 @@ void BaseServer::execute()
 bool BaseServer::StartServer()
 {
 	LockObj lock(m_lock);
-	if(m_isServerStarted)
+	if(IsServerStarted())
 		return true;
 	if(!m_port.length())
 	{
@@ -186,7 +186,7 @@ bool BaseServer::StartServer()
 	m_listenSocket = socket(m_result->ai_family, m_result->ai_socktype, m_result->ai_protocol);
 	if (m_listenSocket == INVALID_SOCKET) {
 		System::OutputDebugString(_T("%s::%s(%d)(%x) socket failed with error\r\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
-		stopServer(true);
+		cleanUpServer();
 		return false;
 	}
 
@@ -198,24 +198,23 @@ bool BaseServer::StartServer()
 	iResult = bind( m_listenSocket, m_result->ai_addr, static_cast<int>(m_result->ai_addrlen));
 	if (iResult == SOCKET_ERROR) {
 		System::OutputDebugString(_T("%s::%s(%d)(%x) bind failed with error\r\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
-		stopServer(true);
+		cleanUpServer();
 		return false;
 	}
 
 	iResult = listen(m_listenSocket, SOMAXCONN);
 	if (iResult == SOCKET_ERROR) {
 		System::OutputDebugString(_T("%s::%s(%d)(%x) listen failed with error\r\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
-		stopServer(true);
+		cleanUpServer();
 		return false;
 	}
-	m_isServerStarted=true;
 
 	// Create thread 1.
 	if(Start())
 	{
-		m_isServerStarted=true;
 		return true;
 	}
+	cleanUpServer();
 	return false;
 
 
@@ -240,13 +239,33 @@ void BaseServer::ShutdownAllClient()
 
 bool BaseServer::IsServerStarted() const
 {
-	return m_isServerStarted;
+	return (m_status==Thread::THREAD_STATUS_STARTED);
 }
 
 void BaseServer::StopServer()
 {
 	LockObj lock(m_lock);
+	if(!IsServerStarted())
+	{
+		return;
+	}
 	stopServer(false);
+}
+
+void BaseServer::cleanUpServer()
+{
+	if(m_result)
+	{
+		freeaddrinfo(m_result);
+		m_result=NULL;
+	}
+	if(m_listenSocket!=INVALID_SOCKET)
+	{
+		closesocket(m_listenSocket);
+		m_listenSocket=INVALID_SOCKET;
+	}
+	WSACleanup();
+
 }
 
 void BaseServer::stopServer(bool fromInternal)
@@ -255,12 +274,7 @@ void BaseServer::stopServer(bool fromInternal)
 	{
 		return;
 	}
-	if(m_result)
-	{
-		freeaddrinfo(m_result);
-		m_result=NULL;
-	}
-	if(m_isServerStarted==true)
+	if(IsServerStarted())
 	{
 		// No longer need server socket
 		if(m_listenSocket!=INVALID_SOCKET)
@@ -272,10 +286,10 @@ void BaseServer::stopServer(bool fromInternal)
 			TerminateAfter(WAITTIME_INIFINITE);
 		
 		ShutdownAllClient();
-
 	}
-	m_isServerStarted=false;
-	WSACleanup();
+	
+	cleanUpServer();
+
 	m_disconnectLock->Unlock();
 }
 
