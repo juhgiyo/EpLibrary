@@ -423,7 +423,6 @@ void CTaskbarNotifier::OnDestroy()
 {
 	CWnd::OnDestroy();
 
-	// TODO: Add your message handler code here
 }
 
 void CTaskbarNotifier::OnMouseMove(UINT nFlags, CPoint point)

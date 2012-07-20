@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epSimpleLogger.h"
 #include "epBaseServerUDP.h"
 using namespace epl;
-BaseServerWorkerUDP::BaseServerWorkerUDP(unsigned int waitTimeMilliSec,LockPolicy lockPolicyType): Thread(lockPolicyType), SmartObject(lockPolicyType)
+BaseServerWorkerUDP::BaseServerWorkerUDP(unsigned int parserWaitTimeMilliSec,LockPolicy lockPolicyType): Thread(lockPolicyType), SmartObject(lockPolicyType)
 {
 	m_lockPolicy=lockPolicyType;
 	switch(lockPolicyType)
@@ -40,14 +40,14 @@ BaseServerWorkerUDP::BaseServerWorkerUDP(unsigned int waitTimeMilliSec,LockPolic
 	m_packet=NULL;
 	m_server=NULL;
 	m_maxPacketSize=0;
-	m_waitTime=waitTimeMilliSec;
+	m_parserWaitTime=parserWaitTimeMilliSec;
 }
 BaseServerWorkerUDP::BaseServerWorkerUDP(const BaseServerWorkerUDP& b) : Thread(b),SmartObject(b)
 {
 	m_packet=NULL;
 	m_server=NULL;
 	m_maxPacketSize=0;
-	m_waitTime=b.m_waitTime;
+	m_parserWaitTime=b.m_parserWaitTime;
 	m_lockPolicy=b.m_lockPolicy;
 	switch(m_lockPolicy)
 	{
@@ -68,7 +68,7 @@ BaseServerWorkerUDP::BaseServerWorkerUDP(const BaseServerWorkerUDP& b) : Thread(
 
 BaseServerWorkerUDP::~BaseServerWorkerUDP()
 {
-	WaitFor(m_waitTime);
+	WaitFor(m_parserWaitTime);
 	m_lock->Lock();
 	if(m_packet)
 	{
@@ -101,14 +101,14 @@ int BaseServerWorkerUDP::Send(const Packet &packet)
 	return 0;
 }
 
-void BaseServerWorkerUDP::SetWaitTimeForSafeTerminate(unsigned int milliSec)
+void BaseServerWorkerUDP::SetWaitTimeForParserTerminate(unsigned int milliSec)
 {
-	m_waitTime=milliSec;
+	m_parserWaitTime=milliSec;
 }
 
-unsigned int BaseServerWorkerUDP::GetWaitTimeForSafeTerminate()
+unsigned int BaseServerWorkerUDP::GetWaitTimeForParserTerminate()
 {
-	return m_waitTime;
+	return m_parserWaitTime;
 }
 
 void BaseServerWorkerUDP::setServer(BaseServerUDP *server)

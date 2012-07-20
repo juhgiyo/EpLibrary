@@ -50,10 +50,12 @@ An Interface for Base Server Worker.
 #include <winsock2.h>
 #include <ws2tcpip.h>
 
-
+#include <vector>
 
 // Need to link with Ws2_32.lib
 #pragma comment (lib, "Ws2_32.lib")
+
+using namespace std;
 
 namespace epl
 {
@@ -63,17 +65,15 @@ namespace epl
 	*/
 	class EP_FOUNDATION BaseServerWorker:public Thread, public SmartObject
 	{
-		friend class BaseServerWorkerEx;
-		friend class BaseServerWorkerSimple;
 	public:
 		/*!
 		Default Constructor
 
 		Initializes the Worker
-		@param[in] waitTimeMilliSec the wait time in millisecond for terminating thread
+		@param[in] parserWaitTimeMilliSec the wait time in millisecond for terminating parser thread
 		@param[in] lockPolicyType The lock policy
 		*/
-		BaseServerWorker(unsigned int waitTimeMilliSec=DEFAULT_WAITTIME,LockPolicy lockPolicyType=EP_LOCK_POLICY);
+		BaseServerWorker(unsigned int parserWaitTimeMilliSec=DEFAULT_WAITTIME,LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Copy Constructor
@@ -100,7 +100,7 @@ namespace epl
 			if(this!=&b)
 			{
 				LockObj lock(m_sendLock);
-				m_waitTime=b.m_waitTime;
+				m_parserWaitTime=b.m_parserWaitTime;
 				Thread::operator =(b);
 				SmartObject::operator =(b);
 			}
@@ -115,16 +115,16 @@ namespace epl
 		int Send(const Packet &packet);
 
 		/*!
-		Set the wait time for the thread termination
+		Set the wait time for the parser thread termination
 		@param[in] milliSec the time for waiting in millisecond
 		*/
-		void SetWaitTimeForSafeTerminate(unsigned int milliSec);
+		void SetWaitTimeForParserTerminate(unsigned int milliSec);
 
 		/*!
-		Get the wait time for the thread termination
+		Get the wait time for the parser thread termination
 		@return the current time for waiting in millisecond
 		*/
-		unsigned int GetWaitTimeForSafeTerminate();
+		unsigned int GetWaitTimeForParserTerminate();
 	protected:
 		/*!
 		Parse the given packet and do relevant operation
@@ -133,13 +133,13 @@ namespace epl
 		*/
 		virtual void parsePacket(const Packet &packet)=0;
 
+
+
+	private:	
 		/*!
 		thread loop function
 		*/
-		virtual void execute()=0;
-
-	private:	
-		
+		virtual void execute();
 
 		/*!
 		Receive the packet from the client
@@ -154,6 +154,25 @@ namespace epl
 		@param[in] a The client socket from server.
 		*/
 		virtual void SetArg(void* a);
+
+		/*!
+		Handle the packet parsing thread.
+		@param[in] param the packet Pass Unit
+		@return status of thread execution
+		*/
+		static unsigned long __stdcall passPacket(void *param);
+
+		/*! 
+		@struct PacketPassUnit epBaseServerWorkerEx.h
+		@brief A class for Packet Passing Unit for Packet Parsing Thread.
+		*/
+		struct PacketPassUnit{
+			/// BaseServerWorkerEx Object
+			BaseServerWorker *m_this;
+			/// Packet to parse
+			Packet *m_packet;
+		};
+
 	
 		/// client socket
 		SOCKET m_clientSocket;
@@ -168,7 +187,13 @@ namespace epl
 		Packet m_recvSizePacket;
 
 		/// wait time in millisecond for terminating thread
-		unsigned int m_waitTime;
+		unsigned int m_parserWaitTime;
+
+		/// list lock
+		BaseLock *m_listLock;
+
+		/// parser thread list
+		vector<HANDLE> m_parserList;
 	};
 
 }

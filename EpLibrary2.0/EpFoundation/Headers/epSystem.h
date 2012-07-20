@@ -56,6 +56,22 @@ An Interface for System Class.
 #undef StrStr
 #endif //StrStr
 
+	/*!
+	@def WAITTIME_INIFINITE
+	@brief infinitely wait for the object
+
+	Macro for infinite wait time.
+	*/
+#define WAITTIME_INIFINITE 0xFFFFFFFF  // Infinite timeout
+
+	/*!
+	@def WAITTIME_IGNORE
+	@brief no waiting time
+
+	Macro no waiting time.
+	*/
+#define WAITTIME_IGNORE    0  // Ignore waiting
+
 namespace epl
 {
 
@@ -885,7 +901,7 @@ namespace epl
 		/*!
 		Wait for a handle for given time
 		@param[in] handle the handle to wait for
-		@param[in] milliSec the time for waiting (INFINITE to wait forever)
+		@param[in] milliSec the time for waiting (WAITTIME_INIFINITE to wait forever)
 		@return one of (WAIT_ABANDONED, WAIT_OBJECT_0, WAIT_TIMEOUT)
 		*/
 		static unsigned long WaitForSingleObject(HANDLE handle,unsigned long milliSec);

@@ -70,10 +70,10 @@ namespace epl
 		Default Constructor
 
 		Initializes the Worker
-		@param[in] waitTimeMilliSec the wait time in millisecond for terminating thread
+		@param[in] parserWaitTimeMilliSec the wait time in millisecond for terminating parser thread
 		@param[in] lockPolicyType The lock policy
 		*/
-		BaseServerWorkerUDP(unsigned int waitTimeMilliSec=DEFAULT_WAITTIME,LockPolicy lockPolicyType=EP_LOCK_POLICY);
+		BaseServerWorkerUDP(unsigned int parserWaitTimeMilliSec=DEFAULT_WAITTIME,LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Copy Constructor
@@ -100,7 +100,7 @@ namespace epl
 			if(this!=&b)
 			{
 				LockObj lock(m_lock);
-				m_waitTime=b.m_waitTime;
+				m_parserWaitTime=b.m_parserWaitTime;
 				Thread::operator =(b);
 				SmartObject::operator =(b);
 			}
@@ -121,16 +121,16 @@ namespace epl
 		unsigned int GetMaxPacketByteSize() const;
 
 		/*!
-		Set the wait time for the thread termination
+		Set the wait time for the parser thread termination
 		@param[in] milliSec the time for waiting in millisecond
 		*/
-		void SetWaitTimeForSafeTerminate(unsigned int milliSec);
+		void SetWaitTimeForParserTerminate(unsigned int milliSec);
 
 		/*!
-		Get the wait time for the thread termination
+		Get the wait time for the parser thread termination
 		@return the current time for waiting in millisecond
 		*/
-		unsigned int GetWaitTimeForSafeTerminate();
+		unsigned int GetWaitTimeForParserTerminate();
 
 	protected:
 		/*!
@@ -192,7 +192,7 @@ namespace epl
 		LockPolicy m_lockPolicy;
         
 		/// wait time in millisecond for terminating thread
-		unsigned int m_waitTime;
+		unsigned int m_parserWaitTime;
 	};
 
 }

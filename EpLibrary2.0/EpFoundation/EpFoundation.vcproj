@@ -780,14 +780,6 @@
 							RelativePath=".\Sources\epBaseServerWorker.cpp"
 							>
 						</File>
-						<File
-							RelativePath=".\Sources\epBaseServerWorkerEx.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\Sources\epBaseServerWorkerSimple.cpp"
-							>
-						</File>
 					</Filter>
 					<Filter
 						Name="UDP"
@@ -810,14 +802,6 @@
 						>
 						<File
 							RelativePath=".\Sources\epBaseClient.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\Sources\epBaseClientEx.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\Sources\epBaseClientSimple.cpp"
 							>
 						</File>
 					</Filter>
@@ -1178,14 +1162,6 @@
 							RelativePath=".\Headers\epBaseServerWorker.h"
 							>
 						</File>
-						<File
-							RelativePath=".\Headers\epBaseServerWorkerEx.h"
-							>
-						</File>
-						<File
-							RelativePath=".\Headers\epBaseServerWorkerSimple.h"
-							>
-						</File>
 					</Filter>
 					<Filter
 						Name="UDP"
@@ -1208,14 +1184,6 @@
 						>
 						<File
 							RelativePath=".\Headers\epBaseClient.h"
-							>
-						</File>
-						<File
-							RelativePath=".\Headers\epBaseClientEx.h"
-							>
-						</File>
-						<File
-							RelativePath=".\Headers\epBaseClientSimple.h"
 							>
 						</File>
 					</Filter>

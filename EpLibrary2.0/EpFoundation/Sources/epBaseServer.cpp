@@ -20,26 +20,29 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace epl;
 
-BaseServer::BaseServer(const TCHAR *  port, unsigned int waitTimeMilliSec, LockPolicy lockPolicyType)
+BaseServer::BaseServer(const TCHAR *  port, LockPolicy lockPolicyType)
 {
 	m_lockPolicy=lockPolicyType;
 	switch(lockPolicyType)
 	{
 	case LOCK_POLICY_CRITICALSECTION:
 		m_lock=EP_NEW CriticalSectionEx();
+		m_listLock=EP_NEW CriticalSectionEx();
 		break;
 	case LOCK_POLICY_MUTEX:
 		m_lock=EP_NEW Mutex();
+		m_listLock=EP_NEW Mutex();
 		break;
 	case LOCK_POLICY_NONE:
 		m_lock=EP_NEW NoLock();
+		m_listLock=EP_NEW NoLock();
 		break;
 	default:
 		m_lock=NULL;
+		m_listLock=NULL;
 		break;
 	}
 	SetPort(port);
-	m_waitTime=waitTimeMilliSec;
 	m_serverThreadHandle=0;
 	m_listenSocket=NULL;
 	m_result=0;
@@ -53,27 +56,33 @@ BaseServer::BaseServer(const BaseServer& b)
 	m_result=0;
 	m_isServerStarted=false;
 	m_port=b.m_port;
-	m_waitTime=b.m_waitTime;
 	m_lockPolicy=b.m_lockPolicy;
 	switch(m_lockPolicy)
 	{
 	case LOCK_POLICY_CRITICALSECTION:
 		m_lock=EP_NEW CriticalSectionEx();
+		m_listLock=EP_NEW CriticalSectionEx();
 		break;
 	case LOCK_POLICY_MUTEX:
 		m_lock=EP_NEW Mutex();
+		m_listLock=EP_NEW Mutex();
 		break;
 	case LOCK_POLICY_NONE:
 		m_lock=EP_NEW NoLock();
+		m_listLock=EP_NEW NoLock();
 		break;
 	default:
 		m_lock=NULL;
+		m_listLock=NULL;
 		break;
 	}
 }
 BaseServer::~BaseServer()
 {
 	StopServer();
+
+	if(m_listLock)
+		EP_DELETE m_listLock;
 	if(m_lock)
 		EP_DELETE m_lock;
 }
@@ -109,6 +118,7 @@ EpTString BaseServer::GetPort() const
 
 vector<BaseServerWorker*> BaseServer::GetClientList() const
 {
+	LockObj lock(m_listLock);
 	return m_clientList;
 }
 unsigned long BaseServer::ServerThread( LPVOID lpParam ) 
@@ -126,10 +136,11 @@ unsigned long BaseServer::ServerThread( LPVOID lpParam )
 		else
 		{
 			BaseServerWorker *accWorker=pMainClass->createNewWorker();
-			pMainClass->m_clientList.push_back(accWorker);
 			accWorker->Start(reinterpret_cast<void*>(clientSocket));
+			LockObj lock(pMainClass->m_listLock);
+			pMainClass->m_clientList.push_back(accWorker);
 		}
-
+		LockObj lock(pMainClass->m_listLock);
 		vector<BaseServerWorker*>::iterator iter;
 		for(iter=pMainClass->m_clientList.begin();iter!=pMainClass->m_clientList.end();)
 		{
@@ -228,18 +239,8 @@ bool BaseServer::StartServer()
 
 void BaseServer::ShutdownAllClient()
 {
-	LockObj lock(m_lock);
+	LockObj lock(m_listLock);
 	shutdownAllClient();
-}
-
-void BaseServer::SetWaitTimeForSafeTerminate(unsigned int milliSec)
-{
-	m_waitTime=milliSec;
-}
-
-unsigned int BaseServer::GetWaitTimeForSafeTerminate()
-{
-	return m_waitTime;
 }
 
 void BaseServer::shutdownAllClient()
@@ -273,15 +274,16 @@ void BaseServer::stopServer()
 		freeaddrinfo(m_result);
 	if(m_isServerStarted==true)
 	{
-		shutdownAllClient();	
 		// No longer need server socket
 		if(m_listenSocket)
 			closesocket(m_listenSocket);
 		if(m_serverThreadHandle)
 		{
-			if(System::WaitForSingleObject(m_serverThreadHandle, m_waitTime)==WAIT_TIMEOUT)
+			if(System::WaitForSingleObject(m_serverThreadHandle, WAITTIME_INIFINITE)==WAIT_TIMEOUT)
 				System::TerminateThread(m_serverThreadHandle,0);
 		}
+		ShutdownAllClient();
+
 	}
 	m_serverThreadHandle=0;
 	m_isServerStarted=false;

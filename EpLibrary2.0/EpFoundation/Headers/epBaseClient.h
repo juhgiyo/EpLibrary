@@ -71,8 +71,6 @@ namespace epl{
 	*/
 	class EP_FOUNDATION BaseClient{
 
-		friend class BaseClientEx;
-		friend class BaseClientSimple;
 	public:
 		/*!
 		Default Constructor
@@ -83,7 +81,7 @@ namespace epl{
 		@param[in] waitTimeMilliSec the wait time in millisecond for terminating thread
 		@param[in] lockPolicyType The lock policy
 		*/
-		BaseClient(const TCHAR * hostName=_T(DEFAULT_HOSTNAME), const TCHAR * port=_T(DEFAULT_PORT), unsigned int waitTimeMilliSec=DEFAULT_WAITTIME,LockPolicy lockPolicyType=EP_LOCK_POLICY);
+		BaseClient(const TCHAR * hostName=_T(DEFAULT_HOSTNAME), const TCHAR * port=_T(DEFAULT_PORT), unsigned int parserWaitTimeMilliSec=DEFAULT_WAITTIME,LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Copy Constructor
@@ -109,9 +107,9 @@ namespace epl{
 			if(this!=&b)
 			{
 				LockObj lock(m_generalLock);
-				m_waitTime=b.m_waitTime;
 				m_port=b.m_port;
 				m_hostName=b.m_hostName;
+				m_parserWaitTime=b.m_parserWaitTime;
 			}
 			return *this;
 		}
@@ -166,16 +164,16 @@ namespace epl{
 		int Send(const Packet &packet);
 
 		/*!
-		Set the wait time for the thread termination
+		Set the wait time for the parser thread termination
 		@param[in] milliSec the time for waiting in millisecond
 		*/
-		void SetWaitTimeForSafeTerminate(unsigned int milliSec);
+		void SetWaitTimeForParserTerminate(unsigned int milliSec);
 
 		/*!
-		Get the wait time for the thread termination
+		Get the wait time for the parser thread termination
 		@return the current time for waiting in millisecond
 		*/
-		unsigned int GetWaitTimeForSafeTerminate();
+		unsigned int GetWaitTimeForParserTerminate();
 
 	protected:
 		/*!
@@ -186,13 +184,28 @@ namespace epl{
 		virtual void parsePacket(const Packet &packet )=0;
 
 	private:
-		
+		/*!
+		Handle the packet parsing thread.
+		@param[in] param the packet Pass Unit
+		@return status of thread execution
+		*/
+		static unsigned long __stdcall passPacket(void *param);
+
+		/*! 
+		@struct PacketPassUnit epBaseClientEx.h
+		@brief A class for Packet Passing Unit for Packet Parsing Thread.
+		*/
+		struct PacketPassUnit{
+			/// BaseClientEx Object
+			BaseClient *m_this;
+			/// Packet to parse
+			Packet *m_packet;
+		};
 
 		/*!
 		Actually processing the client thread
-		@remark  Subclasses must implement this
 		*/
-		virtual void processClientThread()=0;
+		virtual void processClientThread();
 
 		/*!
 		Receive the packet from the server
@@ -244,8 +257,15 @@ namespace epl{
 		/// Temp Packet;
 		Packet m_recvSizePacket;
 
-		/// wait time in millisecond for terminating thread
-		unsigned int m_waitTime;
+
+		/// list lock
+		BaseLock *m_listLock;
+
+		/// parser thread list
+		vector<HANDLE> m_parserList;
+
+		/// wait time in millisecond for terminating parser thread
+		unsigned int m_parserWaitTime;
 	};
 }
 

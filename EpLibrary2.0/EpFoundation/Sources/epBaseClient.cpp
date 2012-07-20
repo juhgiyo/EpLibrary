@@ -16,9 +16,10 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "epBaseClient.h"
+#include "epThread.h"
 using namespace epl;
 
-BaseClient::BaseClient(const TCHAR * hostName, const TCHAR * port, unsigned int waitTimeMilliSec,LockPolicy lockPolicyType)
+BaseClient::BaseClient(const TCHAR * hostName, const TCHAR * port, unsigned int parserWaitTimeMilliSec,LockPolicy lockPolicyType)
 {
 	m_lockPolicy=lockPolicyType;
 	switch(lockPolicyType)
@@ -26,24 +27,28 @@ BaseClient::BaseClient(const TCHAR * hostName, const TCHAR * port, unsigned int 
 	case LOCK_POLICY_CRITICALSECTION:
 		m_sendLock=EP_NEW CriticalSectionEx();
 		m_generalLock=EP_NEW CriticalSectionEx();
+		m_listLock=EP_NEW CriticalSectionEx();
 		break;
 	case LOCK_POLICY_MUTEX:
 		m_sendLock=EP_NEW Mutex();
 		m_generalLock=EP_NEW Mutex();
+		m_listLock=EP_NEW Mutex();
 		break;
 	case LOCK_POLICY_NONE:
 		m_sendLock=EP_NEW NoLock();
 		m_generalLock=EP_NEW NoLock();
+		m_listLock=EP_NEW NoLock();
 		break;
 	default:
 		m_sendLock=NULL;
 		m_generalLock=NULL;
+		m_listLock=NULL;
 		break;
 	}
 	m_recvSizePacket=Packet(NULL,4);
 	SetHostName(hostName);
 	SetPort(port);
-	m_waitTime=waitTimeMilliSec;
+	m_parserWaitTime=parserWaitTimeMilliSec;
 	m_connectSocket=NULL;
 	m_result=0;
 	m_ptr=0;
@@ -58,7 +63,7 @@ BaseClient::BaseClient(const BaseClient& b)
 	m_isConnected=false;
 	m_hostName=b.m_hostName;
 	m_port=b.m_port;
-	m_waitTime=b.m_waitTime;
+	m_parserWaitTime=b.m_parserWaitTime;
 	m_recvSizePacket=Packet(NULL,4);
 	m_lockPolicy=b.m_lockPolicy;
 	switch(m_lockPolicy)
@@ -66,24 +71,32 @@ BaseClient::BaseClient(const BaseClient& b)
 	case LOCK_POLICY_CRITICALSECTION:
 		m_sendLock=EP_NEW CriticalSectionEx();
 		m_generalLock=EP_NEW CriticalSectionEx();
+		m_listLock=EP_NEW CriticalSectionEx();
 		break;
 	case LOCK_POLICY_MUTEX:
 		m_sendLock=EP_NEW Mutex();
 		m_generalLock=EP_NEW Mutex();
+		m_listLock=EP_NEW Mutex();
 		break;
 	case LOCK_POLICY_NONE:
 		m_sendLock=EP_NEW NoLock();
 		m_generalLock=EP_NEW NoLock();
+		m_listLock=EP_NEW NoLock();
 		break;
 	default:
 		m_sendLock=NULL;
 		m_generalLock=NULL;
+		m_listLock=NULL;
 		break;
 	}
 }
 BaseClient::~BaseClient()
 {
 	Disconnect();
+
+	if(m_listLock)
+		EP_DELETE m_listLock;
+
 	if(m_sendLock)
 		EP_DELETE m_sendLock;
 	if(m_generalLock)
@@ -177,15 +190,82 @@ int BaseClient::Send(const Packet &packet)
 	return writeLength;
 }
 
-void BaseClient::SetWaitTimeForSafeTerminate(unsigned int milliSec)
+void BaseClient::SetWaitTimeForParserTerminate(unsigned int milliSec)
 {
-	m_waitTime=milliSec;
+	m_parserWaitTime=milliSec;
 }
 
-unsigned int BaseClient::GetWaitTimeForSafeTerminate()
+unsigned int BaseClient::GetWaitTimeForParserTerminate()
 {
-	return m_waitTime;
+	return m_parserWaitTime;
 }
+
+unsigned long BaseClient::passPacket(void *param)
+{
+	Packet *recvPacket=( reinterpret_cast<PacketPassUnit*>(param))->m_packet;
+	BaseClient *client=( reinterpret_cast<PacketPassUnit*>(param))->m_this;
+	EP_DELETE reinterpret_cast<PacketPassUnit*>(param);
+	client->parsePacket(*recvPacket);
+	recvPacket->ReleaseObj();
+
+	LockObj(client->m_listLock);
+	vector<HANDLE>::iterator iter;
+	for(iter=client->m_parserList.begin();iter!=client->m_parserList.end();iter++)
+	{
+		if(*iter == GetCurrentThread())
+		{
+			client->m_parserList.erase(iter);
+			break;
+		}
+	}
+
+	return 0;
+}
+
+
+void BaseClient::processClientThread() 
+{
+	int iResult;
+	// Receive until the peer shuts down the connection
+	do {
+		int size =receive(m_recvSizePacket);
+		if(size>0)
+		{
+			unsigned int shouldReceive=(reinterpret_cast<unsigned int*>(const_cast<char*>(m_recvSizePacket.GetPacket())))[0];
+			Packet *recvPacket=EP_NEW Packet(NULL,shouldReceive);
+			iResult = receive(*recvPacket);
+
+			if (iResult == shouldReceive) {
+				Thread::ThreadID threadID;
+				PacketPassUnit *passUnit=EP_NEW PacketPassUnit();
+				passUnit->m_packet=recvPacket;
+				passUnit->m_this=this;
+				HANDLE parserThreadHandle=::CreateThread(NULL,0,passPacket,passUnit,Thread::THREAD_OPCODE_CREATE_START,(LPDWORD)&threadID);
+
+				LockObj lock(m_listLock);
+				m_parserList.push_back(parserThreadHandle);
+			}
+			else if (iResult == 0)
+			{
+				LOG_THIS_MSG(_T("Connection closing...\n"));
+				recvPacket->ReleaseObj();
+				break;
+			}
+			else  {
+				LOG_THIS_MSG(_T("recv failed with error\n"));
+				recvPacket->ReleaseObj();
+				break;
+			}
+			// To here
+		}
+		else
+		{
+			break;
+		}
+
+	} while (iResult > 0);
+}
+
 
 int BaseClient::receive(Packet &packet)
 {
@@ -309,9 +389,18 @@ void BaseClient::disconnect()
 		closesocket(m_connectSocket);
 		if(m_clientThreadHandle)
 		{
-			if(System::WaitForSingleObject(m_clientThreadHandle, m_waitTime)==WAIT_TIMEOUT)
+			if(System::WaitForSingleObject(m_clientThreadHandle, WAITTIME_INIFINITE)==WAIT_TIMEOUT)
 				System::TerminateThread(m_clientThreadHandle,0);
 		}
+
+		m_listLock->Lock();
+		vector<HANDLE>::iterator iter;
+		for(iter=m_parserList.begin();iter!=m_parserList.end();iter++)
+		{
+			if(m_parserWaitTime!=WAITTIME_SKIP && System::WaitForSingleObject(*iter,m_parserWaitTime)==WAIT_TIMEOUT)
+				System::TerminateThread(*iter,0);
+		}
+		m_listLock->Unlock();
 	}
 	m_clientThreadHandle=0;
 	m_isConnected=false;

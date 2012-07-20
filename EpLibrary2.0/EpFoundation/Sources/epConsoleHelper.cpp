@@ -67,7 +67,7 @@ EpTString ConsoleHelper::ExecuteConsoleCommand(const TCHAR * command, bool isDos
 	}
 	if(isWaitForTerminate)
 	{
-		System::WaitForSingleObject(pInfo.hProcess,INFINITE);
+		System::WaitForSingleObject(pInfo.hProcess,WAITTIME_INIFINITE);
 	}
 
 	CloseHandle(wPipe);

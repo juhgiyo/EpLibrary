@@ -33,8 +33,6 @@ An Interface for Server Configuration Defines.
 
 namespace epl{
 
-
-#ifndef DEFAULT_HOSTNAME
 	/*!
 	@def DEFAULT_HOSTNAME
 	@brief default hostname
@@ -42,9 +40,7 @@ namespace epl{
 	Macro for the default hostname.
 	*/
 	#define DEFAULT_HOSTNAME "localhost"
-#endif //DEFAULT_HOSTNAME
 
-#ifndef DEFAULT_PORT
 	/*!
 	@def DEFAULT_PORT
 	@brief default port
@@ -52,17 +48,22 @@ namespace epl{
 	Macro for the default port.
 	*/
 	#define DEFAULT_PORT "80808"
-#endif //DEFAULT_PORT
 
-#ifndef DEFAULT_WAITTIME
+	/*!
+	@def WAITTIME_SKIP
+	@brief skip the waiting and terminate
+
+	Macro skip the waiting and terminate.
+	*/
+#define WAITTIME_SKIP    0xFFFFFFFE  // skip Terminate
+
 	/*!
 	@def DEFAULT_WAITTIME
 	@brief default wait time
 
 	Macro for the default wait time in millisec.
 	*/
-	#define DEFAULT_WAITTIME INFINITE
-#endif //DEFAULT_WAITTIME
+	#define DEFAULT_WAITTIME WAITTIME_INIFINITE
 
 }
 #endif //__EP_SERVER_CONF_H__

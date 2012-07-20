@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epSimpleLogger.h"
 using namespace epl;
 
-BaseClientUDP::BaseClientUDP(const TCHAR * hostName, const TCHAR * port, unsigned int waitTimeMilliSec,LockPolicy lockPolicyType)
+BaseClientUDP::BaseClientUDP(const TCHAR * hostName, const TCHAR * port, unsigned int parserWaitTimeMilliSec,LockPolicy lockPolicyType)
 {
 	m_lockPolicy=lockPolicyType;
 	switch(lockPolicyType)
@@ -28,23 +28,27 @@ BaseClientUDP::BaseClientUDP(const TCHAR * hostName, const TCHAR * port, unsigne
 	case LOCK_POLICY_CRITICALSECTION:
 		m_sendLock=EP_NEW CriticalSectionEx();
 		m_generalLock=EP_NEW CriticalSectionEx();
+		m_listLock=EP_NEW CriticalSectionEx();
 		break;
 	case LOCK_POLICY_MUTEX:
 		m_sendLock=EP_NEW Mutex();
 		m_generalLock=EP_NEW Mutex();
+		m_listLock=EP_NEW Mutex();
 		break;
 	case LOCK_POLICY_NONE:
 		m_sendLock=EP_NEW NoLock();
 		m_generalLock=EP_NEW NoLock();
+		m_listLock=EP_NEW NoLock();
 		break;
 	default:
 		m_sendLock=NULL;
 		m_generalLock=NULL;
+		m_listLock=NULL;
 		break;
 	}
 	SetHostName(hostName);
 	SetPort(port);
-	m_waitTime=waitTimeMilliSec;
+	m_parserWaitTime=parserWaitTimeMilliSec;
 	m_connectSocket=NULL;
 	m_result=0;
 	m_ptr=0;
@@ -60,7 +64,7 @@ BaseClientUDP::BaseClientUDP(const BaseClientUDP& b)
 	m_isConnected=false;
 	m_hostName=b.m_hostName;
 	m_port=b.m_port;
-	m_waitTime=b.m_waitTime;
+	m_parserWaitTime=b.m_parserWaitTime;
 	m_lockPolicy=b.m_lockPolicy;
 	m_maxPacketSize=b.m_maxPacketSize;
 	switch(m_lockPolicy)
@@ -68,24 +72,33 @@ BaseClientUDP::BaseClientUDP(const BaseClientUDP& b)
 	case LOCK_POLICY_CRITICALSECTION:
 		m_sendLock=EP_NEW CriticalSectionEx();
 		m_generalLock=EP_NEW CriticalSectionEx();
+		m_listLock=EP_NEW CriticalSectionEx();
 		break;
 	case LOCK_POLICY_MUTEX:
 		m_sendLock=EP_NEW Mutex();
 		m_generalLock=EP_NEW Mutex();
+		m_listLock=EP_NEW Mutex();
 		break;
 	case LOCK_POLICY_NONE:
 		m_sendLock=EP_NEW NoLock();
 		m_generalLock=EP_NEW NoLock();
+		m_listLock=EP_NEW NoLock();
 		break;
 	default:
 		m_sendLock=NULL;
 		m_generalLock=NULL;
+		m_listLock=NULL;
 		break;
 	}
+
 }
 BaseClientUDP::~BaseClientUDP()
 {
 	Disconnect();
+
+	if(m_listLock)
+		EP_DELETE m_listLock;
+
 	if(m_sendLock)
 		EP_DELETE m_sendLock;
 	if(m_generalLock)
@@ -178,14 +191,14 @@ int BaseClientUDP::Send(const Packet &packet)
 	return sentLength;
 }
 
-void BaseClientUDP::SetWaitTimeForSafeTerminate(unsigned int milliSec)
+void BaseClientUDP::SetWaitTimeForParserTerminate(unsigned int milliSec)
 {
-	m_waitTime=milliSec;
+	m_parserWaitTime=milliSec;
 }
 
-unsigned int BaseClientUDP::GetWaitTimeForSafeTerminate()
+unsigned int BaseClientUDP::GetWaitTimeForParserTerminate()
 {
-	return m_waitTime;
+	return m_parserWaitTime;
 }
 int BaseClientUDP::receive(Packet &packet)
 {
@@ -297,9 +310,18 @@ void BaseClientUDP::disconnect()
 		closesocket(m_connectSocket);
 		if(m_clientThreadHandle)
 		{
-			if(System::WaitForSingleObject(m_clientThreadHandle, m_waitTime)==WAIT_TIMEOUT)
+			if(System::WaitForSingleObject(m_clientThreadHandle, WAITTIME_INIFINITE)==WAIT_TIMEOUT)
 				System::TerminateThread(m_clientThreadHandle,0);
 		}
+
+		m_listLock->Lock();
+		vector<HANDLE>::iterator iter;
+		for(iter=m_parserList.begin();iter!=m_parserList.end();iter++)
+		{
+			if(m_parserWaitTime!=WAITTIME_SKIP && System::WaitForSingleObject(*iter,m_parserWaitTime)==WAIT_TIMEOUT)
+				System::TerminateThread(*iter,0);
+		}
+		m_listLock->Unlock();
 	}
 	m_isConnected=false;
 	m_connectSocket = INVALID_SOCKET;
@@ -318,10 +340,22 @@ void BaseClientUDP::Disconnect()
 unsigned long BaseClientUDP::passPacket(void *param)
 {
 	Packet *recvPacket=( reinterpret_cast<PacketPassUnit*>(param))->m_packet;
-	BaseClientUDP *worker=( reinterpret_cast<PacketPassUnit*>(param))->m_this;
+	BaseClientUDP *client=( reinterpret_cast<PacketPassUnit*>(param))->m_this;
 	EP_DELETE reinterpret_cast<PacketPassUnit*>(param);
-	worker->parsePacket(*recvPacket);
+	client->parsePacket(*recvPacket);
 	recvPacket->ReleaseObj();
+
+	LockObj(client->m_listLock);
+	vector<HANDLE>::iterator iter;
+	for(iter=client->m_parserList.begin();iter!=client->m_parserList.end();iter++)
+	{
+		if(*iter == GetCurrentThread())
+		{
+			client->m_parserList.erase(iter);
+			break;
+		}
+	}
+
 	return 0;
 }
 
@@ -338,7 +372,9 @@ void BaseClientUDP::processClientThread()
 			PacketPassUnit *passUnit=EP_NEW PacketPassUnit();
 			passUnit->m_packet=EP_NEW Packet(recvPacket.GetPacket(),iResult);
 			passUnit->m_this=this;
-			::CreateThread(NULL,0,passPacket,passUnit,Thread::THREAD_OPCODE_CREATE_START,(LPDWORD)&threadID);
+			HANDLE parserThreadHandle=::CreateThread(NULL,0,passPacket,passUnit,Thread::THREAD_OPCODE_CREATE_START,(LPDWORD)&threadID);
+			LockObj lock(m_listLock);
+			m_parserList.push_back(parserThreadHandle);
 		}
 		else if (iResult == 0)
 		{
