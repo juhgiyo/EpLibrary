@@ -27,26 +27,30 @@ BaseServer::BaseServer(const TCHAR *  port, LockPolicy lockPolicyType):BaseServe
 	{
 	case LOCK_POLICY_CRITICALSECTION:
 		m_lock=EP_NEW CriticalSectionEx();
+		m_disconnectLock=EP_NEW CriticalSectionEx();
 		break;
 	case LOCK_POLICY_MUTEX:
 		m_lock=EP_NEW Mutex();
+		m_disconnectLock=EP_NEW Mutex();
 		break;
 	case LOCK_POLICY_NONE:
 		m_lock=EP_NEW NoLock();
+		m_disconnectLock=EP_NEW NoLock();
 		break;
 	default:
 		m_lock=NULL;
+		m_disconnectLock=NULL;
 		break;
 	}
 	SetPort(port);
-	m_listenSocket=NULL;
+	m_listenSocket=INVALID_SOCKET;
 	m_result=0;
 	m_isServerStarted=false;
 }
 
 BaseServer::BaseServer(const BaseServer& b):BaseServerObject(b)
 {
-	m_listenSocket=NULL;
+	m_listenSocket=INVALID_SOCKET;
 	m_result=0;
 	m_isServerStarted=false;
 	m_port=b.m_port;
@@ -55,15 +59,19 @@ BaseServer::BaseServer(const BaseServer& b):BaseServerObject(b)
 	{
 	case LOCK_POLICY_CRITICALSECTION:
 		m_lock=EP_NEW CriticalSectionEx();
+		m_disconnectLock=EP_NEW CriticalSectionEx();
 		break;
 	case LOCK_POLICY_MUTEX:
 		m_lock=EP_NEW Mutex();
+		m_disconnectLock=EP_NEW Mutex();
 		break;
 	case LOCK_POLICY_NONE:
 		m_lock=EP_NEW NoLock();
+		m_disconnectLock=EP_NEW NoLock();
 		break;
 	default:
 		m_lock=NULL;
+		m_disconnectLock=NULL;
 		break;
 	}
 }
@@ -73,6 +81,8 @@ BaseServer::~BaseServer()
 
 	if(m_lock)
 		EP_DELETE m_lock;
+	if(m_disconnectLock)
+		EP_DELETE m_disconnectLock;
 }
 
 void  BaseServer::SetPort(const TCHAR *  port)
@@ -230,13 +240,23 @@ void BaseServer::StopServer()
 
 void BaseServer::stopServer(bool fromInternal)
 {
+	if(!m_disconnectLock->TryLock())
+	{
+		return;
+	}
 	if(m_result)
+	{
 		freeaddrinfo(m_result);
+		m_result=NULL;
+	}
 	if(m_isServerStarted==true)
 	{
 		// No longer need server socket
-		if(m_listenSocket)
+		if(m_listenSocket!=INVALID_SOCKET)
+		{
 			closesocket(m_listenSocket);
+			m_listenSocket=INVALID_SOCKET;
+		}
 		if(!fromInternal)
 			TerminateAfter(WAITTIME_INIFINITE);
 		
@@ -244,7 +264,7 @@ void BaseServer::stopServer(bool fromInternal)
 
 	}
 	m_isServerStarted=false;
-	m_result=NULL;
 	WSACleanup();
+	m_disconnectLock->Unlock();
 }
 

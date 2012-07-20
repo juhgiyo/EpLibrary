@@ -231,6 +231,9 @@ namespace epl{
 		BaseLock *m_sendLock;
 		/// general lock
 		BaseLock *m_generalLock;
+		/// disconnect lock
+		BaseLock *m_disconnectLock;
+
 		/// Lock Policy
 		LockPolicy m_lockPolicy;
 

@@ -28,22 +28,26 @@ BaseServerUDP::BaseServerUDP(const TCHAR *  port, LockPolicy lockPolicyType): Ba
 	case LOCK_POLICY_CRITICALSECTION:
 		m_lock=EP_NEW CriticalSectionEx();
 		m_sendLock=EP_NEW CriticalSectionEx();
+		m_disconnectLock=EP_NEW CriticalSectionEx();
 		break;
 	case LOCK_POLICY_MUTEX:
 		m_lock=EP_NEW Mutex();
 		m_sendLock=EP_NEW Mutex();
+		m_disconnectLock=EP_NEW Mutex();
 		break;
 	case LOCK_POLICY_NONE:
 		m_lock=EP_NEW NoLock();
 		m_sendLock=EP_NEW NoLock();
+		m_disconnectLock=EP_NEW NoLock();
 		break;
 	default:
 		m_lock=NULL;
 		m_sendLock=NULL;
+		m_disconnectLock=NULL;
 		break;
 	}
 	SetPort(port);
-	m_listenSocket=NULL;
+	m_listenSocket=INVALID_SOCKET;
 	m_result=0;
 	m_isServerStarted=false;
 	m_maxPacketSize=0;
@@ -51,7 +55,7 @@ BaseServerUDP::BaseServerUDP(const TCHAR *  port, LockPolicy lockPolicyType): Ba
 
 BaseServerUDP::BaseServerUDP(const BaseServerUDP& b):BaseServerObject(b)
 {
-	m_listenSocket=NULL;
+	m_listenSocket=INVALID_SOCKET;
 	m_result=0;
 	m_isServerStarted=false;
 	m_port=b.m_port;
@@ -62,18 +66,22 @@ BaseServerUDP::BaseServerUDP(const BaseServerUDP& b):BaseServerObject(b)
 	case LOCK_POLICY_CRITICALSECTION:
 		m_lock=EP_NEW CriticalSectionEx();
 		m_sendLock=EP_NEW CriticalSectionEx();
+		m_disconnectLock=EP_NEW CriticalSectionEx();
 		break;
 	case LOCK_POLICY_MUTEX:
 		m_lock=EP_NEW Mutex();
 		m_sendLock=EP_NEW Mutex();
+		m_disconnectLock=EP_NEW Mutex();
 		break;
 	case LOCK_POLICY_NONE:
 		m_lock=EP_NEW NoLock();
 		m_sendLock=EP_NEW NoLock();
+		m_disconnectLock=EP_NEW NoLock();
 		break;
 	default:
 		m_lock=NULL;
 		m_sendLock=NULL;
+		m_disconnectLock=NULL;
 		break;
 	}
 }
@@ -84,6 +92,8 @@ BaseServerUDP::~BaseServerUDP()
 		EP_DELETE m_lock;
 	if(m_sendLock)
 		EP_DELETE m_sendLock;
+	if(m_disconnectLock)
+		EP_DELETE m_disconnectLock;
 }
 
 void  BaseServerUDP::SetPort(const TCHAR *  port)
@@ -269,12 +279,19 @@ void BaseServerUDP::StopServer()
 
 void BaseServerUDP::stopServer(bool fromInternal)
 {
+	if(!m_disconnectLock->TryLock())
+	{
+		return;
+	}
 	if(m_result)
+	{
 		freeaddrinfo(m_result);
+		m_result=NULL;
+	}
 	if(m_isServerStarted==true)
 	{
 		// No longer need server socket
-		if(m_listenSocket)
+		if(m_listenSocket!=INVALID_SOCKET)
 		{
 			int iResult;
 			iResult = shutdown(m_listenSocket, SD_SEND);
@@ -282,6 +299,7 @@ void BaseServerUDP::stopServer(bool fromInternal)
 				System::OutputDebugString(_T("%s::%s(%d)(%x) shutdown failed with error\r\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
 			}
 			closesocket(m_listenSocket);
+			m_listenSocket=INVALID_SOCKET;
 		}
 		if(!fromInternal)
 			TerminateAfter(WAITTIME_INIFINITE);
@@ -291,7 +309,7 @@ void BaseServerUDP::stopServer(bool fromInternal)
 	
 	m_isServerStarted=false;
 	m_maxPacketSize=0;
-	m_result=NULL;
 	WSACleanup();
+	m_disconnectLock->Unlock();
 }
 

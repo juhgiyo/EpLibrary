@@ -28,23 +28,27 @@ BaseClientUDP::BaseClientUDP(const TCHAR * hostName, const TCHAR * port,LockPoli
 	case LOCK_POLICY_CRITICALSECTION:
 		m_sendLock=EP_NEW CriticalSectionEx();
 		m_generalLock=EP_NEW CriticalSectionEx();
+		m_disconnectLock=EP_NEW CriticalSectionEx();
 		break;
 	case LOCK_POLICY_MUTEX:
 		m_sendLock=EP_NEW Mutex();
 		m_generalLock=EP_NEW Mutex();
+		m_disconnectLock=EP_NEW Mutex();
 		break;
 	case LOCK_POLICY_NONE:
 		m_sendLock=EP_NEW NoLock();
 		m_generalLock=EP_NEW NoLock();
+		m_disconnectLock=EP_NEW NoLock();
 		break;
 	default:
 		m_sendLock=NULL;
 		m_generalLock=NULL;
+		m_disconnectLock=NULL;
 		break;
 	}
 	SetHostName(hostName);
 	SetPort(port);
-	m_connectSocket=NULL;
+	m_connectSocket=INVALID_SOCKET;
 	m_result=0;
 	m_ptr=0;
 	m_isConnected=false;
@@ -53,7 +57,7 @@ BaseClientUDP::BaseClientUDP(const TCHAR * hostName, const TCHAR * port,LockPoli
 
 BaseClientUDP::BaseClientUDP(const BaseClientUDP& b)
 {
-	m_connectSocket=NULL;
+	m_connectSocket=INVALID_SOCKET;
 	m_result=0;
 	m_ptr=0;
 	m_isConnected=false;
@@ -66,18 +70,22 @@ BaseClientUDP::BaseClientUDP(const BaseClientUDP& b)
 	case LOCK_POLICY_CRITICALSECTION:
 		m_sendLock=EP_NEW CriticalSectionEx();
 		m_generalLock=EP_NEW CriticalSectionEx();
+		m_disconnectLock=EP_NEW CriticalSectionEx();
 		break;
 	case LOCK_POLICY_MUTEX:
 		m_sendLock=EP_NEW Mutex();
 		m_generalLock=EP_NEW Mutex();
+		m_disconnectLock=EP_NEW Mutex();
 		break;
 	case LOCK_POLICY_NONE:
 		m_sendLock=EP_NEW NoLock();
 		m_generalLock=EP_NEW NoLock();
+		m_disconnectLock=EP_NEW NoLock();
 		break;
 	default:
 		m_sendLock=NULL;
 		m_generalLock=NULL;
+		m_disconnectLock=NULL;
 		break;
 	}
 
@@ -90,6 +98,8 @@ BaseClientUDP::~BaseClientUDP()
 		EP_DELETE m_sendLock;
 	if(m_generalLock)
 		EP_DELETE m_generalLock;
+	if(m_disconnectLock)
+		EP_DELETE m_disconnectLock;
 }
 
 void BaseClientUDP::SetHostName(const TCHAR * hostName)
@@ -128,6 +138,7 @@ void BaseClientUDP::SetPort(const TCHAR *port)
 }
 EpTString BaseClientUDP::GetHostName() const
 {
+	LockObj lock(m_generalLock);
 	if(!m_hostName.length())
 		return _T("");
 
@@ -141,6 +152,7 @@ EpTString BaseClientUDP::GetHostName() const
 }
 EpTString BaseClientUDP::GetPort() const
 {
+	LockObj lock(m_generalLock);
 	if(!m_port.length())
 		return _T("");
 
@@ -276,26 +288,37 @@ bool BaseClientUDP::IsConnected() const
 
 void BaseClientUDP::disconnect(bool fromInternal)
 {
+	if(!m_disconnectLock->TryLock())
+	{
+		return;
+	}
 	if(m_result)
+	{
 		freeaddrinfo(m_result);
+		m_result=NULL;
+	}
 
 	if(m_isConnected)
 	{
-		int iResult = shutdown(m_connectSocket, SD_SEND);
-		if (iResult == SOCKET_ERROR)
-			System::OutputDebugString(_T("%s::%s(%d)(%x) shutdown failed with error: %d\r\n"),__TFILE__,__TFUNCTION__,__LINE__,this, WSAGetLastError());
-		closesocket(m_connectSocket);
-
+		if(m_connectSocket!=INVALID_SOCKET)
+		{
+			int iResult = shutdown(m_connectSocket, SD_SEND);
+			if (iResult == SOCKET_ERROR)
+				System::OutputDebugString(_T("%s::%s(%d)(%x) shutdown failed with error: %d\r\n"),__TFILE__,__TFUNCTION__,__LINE__,this, WSAGetLastError());
+			closesocket(m_connectSocket);
+			m_connectSocket = INVALID_SOCKET;
+		}
+		
 		if(!fromInternal)
 			TerminateAfter(WAITTIME_INIFINITE);
 	
 		m_parserList.Clear();
 	}
 	m_isConnected=false;
-	m_connectSocket = INVALID_SOCKET;
 	m_maxPacketSize=0;
-	m_result=NULL;
+
 	WSACleanup();
+	m_disconnectLock->Unlock();
 }
 
 void BaseClientUDP::Disconnect()

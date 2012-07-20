@@ -205,6 +205,8 @@ namespace epl{
 		BaseLock *m_lock;
 		/// send lock
 		BaseLock *m_sendLock;
+		/// disconnect lock
+		BaseLock *m_disconnectLock;
 
 		/// Lock Policy
 		LockPolicy m_lockPolicy;

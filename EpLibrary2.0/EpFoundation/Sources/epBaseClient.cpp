@@ -27,24 +27,28 @@ BaseClient::BaseClient(const TCHAR * hostName, const TCHAR * port,LockPolicy loc
 	case LOCK_POLICY_CRITICALSECTION:
 		m_sendLock=EP_NEW CriticalSectionEx();
 		m_generalLock=EP_NEW CriticalSectionEx();
+		m_disconnectLock=EP_NEW CriticalSectionEx();
 		break;
 	case LOCK_POLICY_MUTEX:
 		m_sendLock=EP_NEW Mutex();
 		m_generalLock=EP_NEW Mutex();
+		m_disconnectLock=EP_NEW Mutex();
 		break;
 	case LOCK_POLICY_NONE:
 		m_sendLock=EP_NEW NoLock();
 		m_generalLock=EP_NEW NoLock();
+		m_disconnectLock=EP_NEW NoLock();
 		break;
 	default:
 		m_sendLock=NULL;
 		m_generalLock=NULL;
+		m_disconnectLock=NULL;
 		break;
 	}
 	m_recvSizePacket=Packet(NULL,4);
 	SetHostName(hostName);
 	SetPort(port);
-	m_connectSocket=NULL;
+	m_connectSocket=INVALID_SOCKET;
 	m_result=0;
 	m_ptr=0;
 	m_isConnected=false;
@@ -52,7 +56,7 @@ BaseClient::BaseClient(const TCHAR * hostName, const TCHAR * port,LockPolicy loc
 
 BaseClient::BaseClient(const BaseClient& b) :BaseServerSendObject(b)
 {
-	m_connectSocket=NULL;
+	m_connectSocket=INVALID_SOCKET;
 	m_result=0;
 	m_ptr=0;
 	m_isConnected=false;
@@ -65,18 +69,22 @@ BaseClient::BaseClient(const BaseClient& b) :BaseServerSendObject(b)
 	case LOCK_POLICY_CRITICALSECTION:
 		m_sendLock=EP_NEW CriticalSectionEx();
 		m_generalLock=EP_NEW CriticalSectionEx();
+		m_disconnectLock=EP_NEW CriticalSectionEx();
 		break;
 	case LOCK_POLICY_MUTEX:
 		m_sendLock=EP_NEW Mutex();
 		m_generalLock=EP_NEW Mutex();
+		m_disconnectLock=EP_NEW Mutex();
 		break;
 	case LOCK_POLICY_NONE:
 		m_sendLock=EP_NEW NoLock();
 		m_generalLock=EP_NEW NoLock();
+		m_disconnectLock=EP_NEW NoLock();
 		break;
 	default:
 		m_sendLock=NULL;
 		m_generalLock=NULL;
+		m_disconnectLock=NULL;
 		break;
 	}
 }
@@ -88,6 +96,8 @@ BaseClient::~BaseClient()
 		EP_DELETE m_sendLock;
 	if(m_generalLock)
 		EP_DELETE m_generalLock;
+	if(m_disconnectLock)
+		EP_DELETE m_disconnectLock;
 }
 
 void  BaseClient::SetHostName(const TCHAR * hostName)
@@ -329,26 +339,36 @@ bool BaseClient::IsConnected() const
 
 void BaseClient::disconnect(bool fromInternal)
 {
+	if(!m_disconnectLock->TryLock())
+	{
+		return;
+	}
 	if(m_result)
+	{
 		freeaddrinfo(m_result);
+		m_result=NULL;
+	}
 
 	if(m_isConnected)
 	{
-		// shutdown the connection since no more data will be sent
-		int iResult = shutdown(m_connectSocket, SD_SEND);
-		if (iResult == SOCKET_ERROR) {
-			System::OutputDebugString(_T("%s::%s(%d)(%x) shutdown failed with error: %d\r\n"),__TFILE__,__TFUNCTION__,__LINE__,this, WSAGetLastError());
+		if(m_connectSocket!=INVALID_SOCKET)
+		{
+			// shutdown the connection since no more data will be sent
+			int iResult = shutdown(m_connectSocket, SD_SEND);
+			if (iResult == SOCKET_ERROR) {
+				System::OutputDebugString(_T("%s::%s(%d)(%x) shutdown failed with error: %d\r\n"),__TFILE__,__TFUNCTION__,__LINE__,this, WSAGetLastError());
+			}
+			closesocket(m_connectSocket);
+			m_connectSocket = INVALID_SOCKET;
+
 		}
-		closesocket(m_connectSocket);
 		if(!fromInternal)
 			TerminateAfter(WAITTIME_INIFINITE);
-
 		m_parserList.Clear();
 	}
 	m_isConnected=false;
-	m_connectSocket = INVALID_SOCKET;
-	m_result=NULL;
 	WSACleanup();
+	m_disconnectLock->Unlock();
 }
 
 void BaseClient::Disconnect()
