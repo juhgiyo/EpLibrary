@@ -67,7 +67,7 @@ namespace epl{
 	@class BaseServer epBaseServerUDP.h
 	@brief A class for Base UDP Server.
 	*/
-	class EP_FOUNDATION BaseServerUDP:private BaseServerObject{
+	class EP_FOUNDATION BaseServerUDP:public BaseServerObject{
 		friend class BaseServerWorkerUDP;
 	public:
 		

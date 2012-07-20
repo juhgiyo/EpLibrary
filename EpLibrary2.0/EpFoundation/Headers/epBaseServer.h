@@ -65,7 +65,7 @@ namespace epl{
 	@class BaseServer epBaseServer.h
 	@brief A class for Base Server.
 	*/
-	class EP_FOUNDATION BaseServer:private BaseServerObject{
+	class EP_FOUNDATION BaseServer:public BaseServerObject{
 
 	public:
 		/*!

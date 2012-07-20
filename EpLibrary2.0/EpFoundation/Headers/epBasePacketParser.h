@@ -42,7 +42,6 @@ An Interface for Base Packet Parser.
 
 namespace epl
 {
-	class BasePacketParser;
 	/*! 
 	@class BasePacketParser epBasePacketParser.h
 	@brief A class for Base Packet Parser.

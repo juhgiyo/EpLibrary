@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "epBaseClientUDP.h"
 #include "epThread.h"
-#include "epSimpleLogger.h"
+
 using namespace epl;
 
 BaseClientUDP::BaseClientUDP(const TCHAR * hostName, const TCHAR * port,LockPolicy lockPolicyType)

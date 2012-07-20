@@ -41,7 +41,8 @@ namespace epl{
 	@class BaseServerObject epBaseServerObject.h
 	@brief A class for Base Server Object.
 	*/
-	class EP_FOUNDATION BaseServerObject:public SmartObject, public Thread{
+	class EP_FOUNDATION BaseServerObject:public SmartObject, protected Thread{
+		friend class ServerObjectList;
 	public:
 		/*!
 		Default Constructor

@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "epBaseServerWorkerUDP.h"
-#include "epSimpleLogger.h"
 #include "epBaseServerUDP.h"
 using namespace epl;
 BaseServerWorkerUDP::BaseServerWorkerUDP(LockPolicy lockPolicyType): BaseServerSendObject(lockPolicyType)

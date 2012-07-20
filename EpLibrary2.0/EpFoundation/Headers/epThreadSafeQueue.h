@@ -32,7 +32,6 @@ An Interface for Thread Safe Queue.
 #define __EP_THREAD_SAFE_QUEUE_H__
 #include "epFoundationLib.h"
 #include <vector>
-#include "epSimpleLogger.h"
 #include "epCriticalSectionEx.h"
 #include "epMutex.h"
 #include "epNoLock.h"

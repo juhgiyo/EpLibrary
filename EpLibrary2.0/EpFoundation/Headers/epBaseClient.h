@@ -72,7 +72,7 @@ namespace epl{
 	@class BaseClient epBaseClient.h
 	@brief A class for Base Client.
 	*/
-	class EP_FOUNDATION BaseClient:private BaseServerSendObject{
+	class EP_FOUNDATION BaseClient:public BaseServerSendObject{
 
 	public:
 		/*!
