@@ -127,7 +127,7 @@ void BaseServer::execute()
 		}
 		m_workerList.RemoveTerminated();
 	}
-	StopServer();
+	stopServer(true);
 } 
 
 
@@ -176,7 +176,7 @@ bool BaseServer::StartServer()
 	m_listenSocket = socket(m_result->ai_family, m_result->ai_socktype, m_result->ai_protocol);
 	if (m_listenSocket == INVALID_SOCKET) {
 		System::OutputDebugString(_T("%s::%s(%d)(%x) socket failed with error\r\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
-		stopServer();
+		stopServer(true);
 		return false;
 	}
 
@@ -188,14 +188,14 @@ bool BaseServer::StartServer()
 	iResult = bind( m_listenSocket, m_result->ai_addr, static_cast<int>(m_result->ai_addrlen));
 	if (iResult == SOCKET_ERROR) {
 		System::OutputDebugString(_T("%s::%s(%d)(%x) bind failed with error\r\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
-		stopServer();
+		stopServer(true);
 		return false;
 	}
 
 	iResult = listen(m_listenSocket, SOMAXCONN);
 	if (iResult == SOCKET_ERROR) {
 		System::OutputDebugString(_T("%s::%s(%d)(%x) listen failed with error\r\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
-		stopServer();
+		stopServer(true);
 		return false;
 	}
 	m_isServerStarted=true;
@@ -225,10 +225,10 @@ bool BaseServer::IsServerStarted() const
 void BaseServer::StopServer()
 {
 	LockObj lock(m_lock);
-	stopServer();
+	stopServer(false);
 }
 
-void BaseServer::stopServer()
+void BaseServer::stopServer(bool fromInternal)
 {
 	if(m_result)
 		freeaddrinfo(m_result);
@@ -237,7 +237,8 @@ void BaseServer::stopServer()
 		// No longer need server socket
 		if(m_listenSocket)
 			closesocket(m_listenSocket);
-		TerminateAfter(WAITTIME_INIFINITE);
+		if(!fromInternal)
+			TerminateAfter(WAITTIME_INIFINITE);
 		
 		ShutdownAllClient();
 

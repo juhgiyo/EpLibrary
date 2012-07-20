@@ -206,8 +206,9 @@ namespace epl{
 
 		/*!
 		Actually Disconnect from the server
+		@param[in] fromInternal flag to check if the call is from internal or not
 		*/
-		void disconnect();
+		void disconnect(bool fromInternal);
 
 
 		/// port

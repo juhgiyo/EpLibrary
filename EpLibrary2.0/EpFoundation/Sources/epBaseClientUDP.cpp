@@ -171,7 +171,7 @@ int BaseClientUDP::Send(const Packet &packet)
 		sentLength=sendto(m_connectSocket,packetData,length,0,m_ptr->ai_addr,sizeof(sockaddr));
 		if(sentLength<=0)
 		{
-			disconnect();
+			disconnect(true);
 			return sentLength;
 		}
 	}
@@ -246,14 +246,14 @@ bool BaseClientUDP::Connect()
 			m_ptr->ai_protocol);
 		if (m_connectSocket == INVALID_SOCKET) {
 			System::OutputDebugString(_T("%s::%s(%d)(%x) Socket failed with error\r\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
-			disconnect();
+			disconnect(true);
 			return false;
 		}
 		break;
 	}
 	if (m_connectSocket == INVALID_SOCKET) {
 		System::OutputDebugString(_T("%s::%s(%d)(%x) Unable to connect to server!\r\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
-		disconnect();
+		disconnect(true);
 		return false;
 	}
 
@@ -274,7 +274,7 @@ bool BaseClientUDP::IsConnected() const
 	return m_isConnected;
 }
 
-void BaseClientUDP::disconnect()
+void BaseClientUDP::disconnect(bool fromInternal)
 {
 	if(m_result)
 		freeaddrinfo(m_result);
@@ -286,7 +286,8 @@ void BaseClientUDP::disconnect()
 			System::OutputDebugString(_T("%s::%s(%d)(%x) shutdown failed with error: %d\r\n"),__TFILE__,__TFUNCTION__,__LINE__,this, WSAGetLastError());
 		closesocket(m_connectSocket);
 
-		TerminateAfter(WAITTIME_INIFINITE);
+		if(!fromInternal)
+			TerminateAfter(WAITTIME_INIFINITE);
 	
 		m_parserList.Clear();
 	}
@@ -301,7 +302,7 @@ void BaseClientUDP::Disconnect()
 {
 	LockObj lock(m_generalLock);
 	// No longer need server socket
-	disconnect();
+	disconnect(false);
 }
 
 
@@ -336,5 +337,5 @@ void BaseClientUDP::execute()
 		m_parserList.RemoveTerminated();
 
 	} while (iResult > 0);
-	Disconnect();
+	disconnect(true);
 }
