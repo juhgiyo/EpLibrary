@@ -116,7 +116,7 @@ bool Thread::Start(void * arg,const ThreadOpCode opCode, const ThreadType thread
 	else
 	{
 		// Error Thread already exists
-		System::OutputDebugString(_T("The thread (%x): Thread already exists!"),m_threadId);
+		System::OutputDebugString(_T("The thread (%x): Thread already exists!\r\n"),m_threadId);
 	}
 	return false;
 
@@ -135,7 +135,7 @@ bool Thread::Resume()
 	else
 	{
 		// Thread Not in Suspended State
-		System::OutputDebugString(_T("The thread (%x): Thread must be in suspended state in order to resume!"),m_threadId);
+		System::OutputDebugString(_T("The thread (%x): Thread must be in suspended state in order to resume!\r\n"),m_threadId);
 
 	}
 	return false;
@@ -154,7 +154,7 @@ bool Thread::Suspend()
 	else
 	{
 		// Thread Not in Started State
-		System::OutputDebugString(_T("The thread (%x): Thread must be in running state in order to suspend!"),m_threadId);
+		System::OutputDebugString(_T("The thread (%x): Thread must be in running state in order to suspend!\r\n"),m_threadId);
 
 	}
 	return false;
@@ -189,7 +189,7 @@ bool Thread::Terminate()
 	else
 	{
 		// No Thread Exists
-		System::OutputDebugString(_T("The thread (%x): There is no thread to terminate!"),m_threadId);
+		System::OutputDebugString(_T("The thread (%x): There is no thread to terminate!\r\n"),m_threadId);
 	}
 	return true;
 }
@@ -201,7 +201,7 @@ unsigned long Thread::WaitFor(const unsigned long tMilliseconds)
 		return System::WaitForSingleObject(m_threadHandle,tMilliseconds);
 	else
 	{
-		System::OutputDebugString(_T("The thread (%x): Thread is not started!"),m_threadId);
+		System::OutputDebugString(_T("The thread (%x): Thread is not started!\r\n"),m_threadId);
 		return WAIT_FAILED;
 	}
 }
@@ -227,7 +227,7 @@ bool Thread::TerminateAfter(const unsigned long tMilliseconds)
 	}
 	else
 	{
-		System::OutputDebugString(_T("The thread (%x): Thread is not started!"),m_threadId);
+		System::OutputDebugString(_T("The thread (%x): Thread is not started!\r\n"),m_threadId);
 		return true;
 	}
 

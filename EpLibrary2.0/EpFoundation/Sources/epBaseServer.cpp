@@ -127,6 +127,7 @@ void BaseServer::execute()
 		}
 		m_workerList.RemoveTerminated();
 	}
+	StopServer();
 } 
 
 
@@ -152,7 +153,7 @@ bool BaseServer::StartServer()
 	iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
 	if (iResult != 0) {
 
-		System::OutputDebugString(_T("%s::%s(%d)(%x) WSAStartup failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
+		System::OutputDebugString(_T("%s::%s(%d)(%x) WSAStartup failed with error\r\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
 		return false;
 	}
 
@@ -166,7 +167,7 @@ bool BaseServer::StartServer()
 	// Resolve the server address and port
 	iResult = getaddrinfo(NULL, m_port.c_str(), &m_hints, &m_result);
 	if ( iResult != 0 ) {
-		System::OutputDebugString(_T("%s::%s(%d)(%x) getaddrinfo failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__,this);		
+		System::OutputDebugString(_T("%s::%s(%d)(%x) getaddrinfo failed with error\r\n"),__TFILE__,__TFUNCTION__,__LINE__,this);		
 		WSACleanup();
 		return false;
 	}
@@ -174,7 +175,7 @@ bool BaseServer::StartServer()
 	// Create a SOCKET for connecting to server
 	m_listenSocket = socket(m_result->ai_family, m_result->ai_socktype, m_result->ai_protocol);
 	if (m_listenSocket == INVALID_SOCKET) {
-		System::OutputDebugString(_T("%s::%s(%d)(%x) socket failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
+		System::OutputDebugString(_T("%s::%s(%d)(%x) socket failed with error\r\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
 		stopServer();
 		return false;
 	}
@@ -186,14 +187,14 @@ bool BaseServer::StartServer()
 	// Setup the TCP listening socket
 	iResult = bind( m_listenSocket, m_result->ai_addr, static_cast<int>(m_result->ai_addrlen));
 	if (iResult == SOCKET_ERROR) {
-		System::OutputDebugString(_T("%s::%s(%d)(%x) bind failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
+		System::OutputDebugString(_T("%s::%s(%d)(%x) bind failed with error\r\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
 		stopServer();
 		return false;
 	}
 
 	iResult = listen(m_listenSocket, SOMAXCONN);
 	if (iResult == SOCKET_ERROR) {
-		System::OutputDebugString(_T("%s::%s(%d)(%x) listen failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
+		System::OutputDebugString(_T("%s::%s(%d)(%x) listen failed with error\r\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
 		stopServer();
 		return false;
 	}

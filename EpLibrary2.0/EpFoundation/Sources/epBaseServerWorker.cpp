@@ -66,7 +66,7 @@ BaseServerWorker::~BaseServerWorker()
 	int iResult;
 	iResult = shutdown(m_clientSocket, SD_SEND);
 	if (iResult == SOCKET_ERROR) {
-		System::OutputDebugString(_T("%s::%s(%d)(%x) shutdown failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
+		System::OutputDebugString(_T("%s::%s(%d)(%x) shutdown failed with error\r\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
 	}
 	closesocket(m_clientSocket);
 	m_sendLock->Unlock();
@@ -157,12 +157,12 @@ void BaseServerWorker::execute()
 			}
 			else if (iResult == 0)
 			{
-				System::OutputDebugString(_T("%s::%s(%d)(%x) Connection closing...\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
+				System::OutputDebugString(_T("%s::%s(%d)(%x) Connection closing...\r\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
 				recvPacket->ReleaseObj();
 				break;
 			}
 			else  {
-				System::OutputDebugString(_T("%s::%s(%d)(%x) recv failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
+				System::OutputDebugString(_T("%s::%s(%d)(%x) recv failed with error\r\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
 				recvPacket->ReleaseObj();
 				break;
 			}

@@ -206,12 +206,12 @@ void BaseClient::execute()
 			}
 			else if (iResult == 0)
 			{
-				System::OutputDebugString(_T("%s::%s(%d)(%x) Connection closing...\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
+				System::OutputDebugString(_T("%s::%s(%d)(%x) Connection closing...\r\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
 				recvPacket->ReleaseObj();
 				break;
 			}
 			else  {
-				System::OutputDebugString(_T("%s::%s(%d)(%x) recv failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
+				System::OutputDebugString(_T("%s::%s(%d)(%x) recv failed with error\r\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
 				recvPacket->ReleaseObj();
 				break;
 			}
@@ -224,6 +224,7 @@ void BaseClient::execute()
 		}
 
 	} while (iResult > 0);
+	Disconnect();
 }
 
 
@@ -269,7 +270,7 @@ bool BaseClient::Connect()
 	// Initialize Winsock
 	iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
 	if (iResult != 0) {
-		System::OutputDebugString(_T("%s::%s(%d)(%x) WSAStartup failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
+		System::OutputDebugString(_T("%s::%s(%d)(%x) WSAStartup failed with error\r\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
 		return false;
 	}
 
@@ -281,7 +282,7 @@ bool BaseClient::Connect()
 	// Resolve the server address and port
 	iResult = getaddrinfo(m_hostName.c_str(), m_port.c_str(), &hints, &m_result);
 	if ( iResult != 0 ) {
-		System::OutputDebugString(_T("%s::%s(%d)(%x) getaddrinfo failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
+		System::OutputDebugString(_T("%s::%s(%d)(%x) getaddrinfo failed with error\r\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
 		WSACleanup();
 		return false;
 	}
@@ -293,7 +294,7 @@ bool BaseClient::Connect()
 		m_connectSocket = socket(m_ptr->ai_family, m_ptr->ai_socktype, 
 			m_ptr->ai_protocol);
 		if (m_connectSocket == INVALID_SOCKET) {
-			System::OutputDebugString(_T("%s::%s(%d)(%x) Socket failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
+			System::OutputDebugString(_T("%s::%s(%d)(%x) Socket failed with error\r\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
 			disconnect();
 			return false;
 		}
@@ -308,7 +309,7 @@ bool BaseClient::Connect()
 		break;
 	}
 	if (m_connectSocket == INVALID_SOCKET) {
-		System::OutputDebugString(_T("%s::%s(%d)(%x) Unable to connect to server!\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
+		System::OutputDebugString(_T("%s::%s(%d)(%x) Unable to connect to server!\r\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
 		disconnect();
 		return false;
 	}
@@ -336,7 +337,7 @@ void BaseClient::disconnect()
 		// shutdown the connection since no more data will be sent
 		int iResult = shutdown(m_connectSocket, SD_SEND);
 		if (iResult == SOCKET_ERROR) {
-			System::OutputDebugString(_T("%s::%s(%d)(%x) shutdown failed with error: %d\n"),__TFILE__,__TFUNCTION__,__LINE__,this, WSAGetLastError());
+			System::OutputDebugString(_T("%s::%s(%d)(%x) shutdown failed with error: %d\r\n"),__TFILE__,__TFUNCTION__,__LINE__,this, WSAGetLastError());
 		}
 		closesocket(m_connectSocket);
 		
