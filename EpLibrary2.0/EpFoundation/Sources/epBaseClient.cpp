@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epThread.h"
 using namespace epl;
 
-BaseClient::BaseClient(const TCHAR * hostName, const TCHAR * port, unsigned int parserWaitTimeMilliSec,LockPolicy lockPolicyType)
+BaseClient::BaseClient(const TCHAR * hostName, const TCHAR * port,LockPolicy lockPolicyType)
 {
 	m_lockPolicy=lockPolicyType;
 	switch(lockPolicyType)
@@ -48,7 +48,6 @@ BaseClient::BaseClient(const TCHAR * hostName, const TCHAR * port, unsigned int 
 	m_recvSizePacket=Packet(NULL,4);
 	SetHostName(hostName);
 	SetPort(port);
-	m_parserWaitTime=parserWaitTimeMilliSec;
 	m_connectSocket=NULL;
 	m_result=0;
 	m_ptr=0;
@@ -63,7 +62,6 @@ BaseClient::BaseClient(const BaseClient& b)
 	m_isConnected=false;
 	m_hostName=b.m_hostName;
 	m_port=b.m_port;
-	m_parserWaitTime=b.m_parserWaitTime;
 	m_recvSizePacket=Packet(NULL,4);
 	m_lockPolicy=b.m_lockPolicy;
 	switch(m_lockPolicy)
@@ -190,38 +188,6 @@ int BaseClient::Send(const Packet &packet)
 	return writeLength;
 }
 
-void BaseClient::SetWaitTimeForParserTerminate(unsigned int milliSec)
-{
-	m_parserWaitTime=milliSec;
-}
-
-unsigned int BaseClient::GetWaitTimeForParserTerminate()
-{
-	return m_parserWaitTime;
-}
-
-unsigned long BaseClient::passPacket(void *param)
-{
-	Packet *recvPacket=( reinterpret_cast<PacketPassUnit*>(param))->m_packet;
-	BaseClient *client=( reinterpret_cast<PacketPassUnit*>(param))->m_this;
-	EP_DELETE reinterpret_cast<PacketPassUnit*>(param);
-	client->parsePacket(*recvPacket);
-	recvPacket->ReleaseObj();
-
-	LockObj(client->m_listLock);
-	vector<HANDLE>::iterator iter;
-	for(iter=client->m_parserList.begin();iter!=client->m_parserList.end();iter++)
-	{
-		if(*iter == GetCurrentThread())
-		{
-			client->m_parserList.erase(iter);
-			break;
-		}
-	}
-
-	return 0;
-}
-
 
 void BaseClient::processClientThread() 
 {
@@ -236,14 +202,14 @@ void BaseClient::processClientThread()
 			iResult = receive(*recvPacket);
 
 			if (iResult == shouldReceive) {
-				Thread::ThreadID threadID;
-				PacketPassUnit *passUnit=EP_NEW PacketPassUnit();
-				passUnit->m_packet=recvPacket;
-				passUnit->m_this=this;
-				HANDLE parserThreadHandle=::CreateThread(NULL,0,passPacket,passUnit,Thread::THREAD_OPCODE_CREATE_START,(LPDWORD)&threadID);
-
+				BasePacketParser::PacketPassUnit passUnit;
+				passUnit.m_packet=recvPacket;
+				passUnit.m_this=this;
+				BasePacketParser *parser =createNewPacketParser();
+				parser->Start(reinterpret_cast<void*>(&passUnit));
 				LockObj lock(m_listLock);
-				m_parserList.push_back(parserThreadHandle);
+				m_parserList.push_back(parser);
+				recvPacket->ReleaseObj();
 			}
 			else if (iResult == 0)
 			{
@@ -256,7 +222,19 @@ void BaseClient::processClientThread()
 				recvPacket->ReleaseObj();
 				break;
 			}
-			// To here
+			LockObj lock(m_listLock);
+			vector<BasePacketParser*>::iterator iter;
+			for(iter=m_parserList.begin();iter!=m_parserList.end();)
+			{
+				if((*iter)->GetStatus()==Thread::THREAD_STATUS_TERMINATED)
+				{
+					(*iter)->ReleaseObj();
+					iter=m_parserList.erase(iter);
+				}
+				else
+					iter++;
+
+			}
 		}
 		else
 		{
@@ -394,12 +372,12 @@ void BaseClient::disconnect()
 		}
 
 		m_listLock->Lock();
-		vector<HANDLE>::iterator iter;
+		vector<BasePacketParser*>::iterator iter;
 		for(iter=m_parserList.begin();iter!=m_parserList.end();iter++)
 		{
-			if(m_parserWaitTime!=WAITTIME_SKIP && System::WaitForSingleObject(*iter,m_parserWaitTime)==WAIT_TIMEOUT)
-				System::TerminateThread(*iter,0);
+			(*iter)->ReleaseObj();
 		}
+		m_parserList.clear();
 		m_listLock->Unlock();
 	}
 	m_clientThreadHandle=0;

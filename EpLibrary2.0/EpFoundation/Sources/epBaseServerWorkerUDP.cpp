@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epSimpleLogger.h"
 #include "epBaseServerUDP.h"
 using namespace epl;
-BaseServerWorkerUDP::BaseServerWorkerUDP(unsigned int parserWaitTimeMilliSec,LockPolicy lockPolicyType): Thread(lockPolicyType), SmartObject(lockPolicyType)
+BaseServerWorkerUDP::BaseServerWorkerUDP(LockPolicy lockPolicyType): Thread(lockPolicyType), SmartObject(lockPolicyType)
 {
 	m_lockPolicy=lockPolicyType;
 	switch(lockPolicyType)
@@ -40,14 +40,14 @@ BaseServerWorkerUDP::BaseServerWorkerUDP(unsigned int parserWaitTimeMilliSec,Loc
 	m_packet=NULL;
 	m_server=NULL;
 	m_maxPacketSize=0;
-	m_parserWaitTime=parserWaitTimeMilliSec;
+	m_parser=NULL;
 }
 BaseServerWorkerUDP::BaseServerWorkerUDP(const BaseServerWorkerUDP& b) : Thread(b),SmartObject(b)
 {
 	m_packet=NULL;
 	m_server=NULL;
+	m_parser=NULL;
 	m_maxPacketSize=0;
-	m_parserWaitTime=b.m_parserWaitTime;
 	m_lockPolicy=b.m_lockPolicy;
 	switch(m_lockPolicy)
 	{
@@ -68,7 +68,9 @@ BaseServerWorkerUDP::BaseServerWorkerUDP(const BaseServerWorkerUDP& b) : Thread(
 
 BaseServerWorkerUDP::~BaseServerWorkerUDP()
 {
-	WaitFor(m_parserWaitTime);
+	if(m_parser)
+		m_parser->ReleaseObj();
+	WaitFor(WAITTIME_INIFINITE);
 	m_lock->Lock();
 	if(m_packet)
 	{
@@ -89,6 +91,8 @@ void BaseServerWorkerUDP::SetArg(void* a)
 	m_clientSocket=clientSocket->m_clientSocket;
 	m_server=clientSocket->m_server;
 	m_packet=clientSocket->m_packet;
+	if(m_packet)
+		m_packet->RetainObj();
 	m_maxPacketSize=m_server->m_maxPacketSize;
 }
 
@@ -101,16 +105,6 @@ int BaseServerWorkerUDP::Send(const Packet &packet)
 	return 0;
 }
 
-void BaseServerWorkerUDP::SetWaitTimeForParserTerminate(unsigned int milliSec)
-{
-	m_parserWaitTime=milliSec;
-}
-
-unsigned int BaseServerWorkerUDP::GetWaitTimeForParserTerminate()
-{
-	return m_parserWaitTime;
-}
-
 void BaseServerWorkerUDP::setServer(BaseServerUDP *server)
 {
 	LockObj lock(m_lock);
@@ -119,9 +113,11 @@ void BaseServerWorkerUDP::setServer(BaseServerUDP *server)
 
 void BaseServerWorkerUDP::execute()
 {
-	parsePacket(*m_packet);
-	LockObj lock(m_lock);
-	m_packet->ReleaseObj();
-	m_packet=NULL;
+	BasePacketParser::PacketPassUnit passUnit;
+	passUnit.m_packet=m_packet;
+	passUnit.m_this=this;
+	m_parser =createNewPacketParser();
+	m_parser->Start(reinterpret_cast<void*>(&passUnit));
+	m_parser->WaitFor(WAITTIME_INIFINITE);
 }
 

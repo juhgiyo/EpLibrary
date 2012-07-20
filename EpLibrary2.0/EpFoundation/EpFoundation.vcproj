@@ -763,6 +763,10 @@
 				Name="Server"
 				>
 				<File
+					RelativePath=".\Sources\epBasePacketParser.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\Sources\epPacket.cpp"
 					>
 				</File>
@@ -1136,6 +1140,14 @@
 			<Filter
 				Name="Server"
 				>
+				<File
+					RelativePath=".\Headers\epBasePacketParser.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Headers\epBaseServerSendObject.h"
+					>
+				</File>
 				<File
 					RelativePath=".\Headers\epPacket.h"
 					>

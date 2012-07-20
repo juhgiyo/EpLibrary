@@ -40,6 +40,8 @@ An Interface for Base Server Worker.
 #include "epCriticalSectionEx.h"
 #include "epMutex.h"
 #include "epNoLock.h"
+#include "epBaseServerSendObject.h"
+#include "epBasePacketParser.h"
 #include "epServerConf.h"
 
 #ifndef WIN32_LEAN_AND_MEAN
@@ -63,17 +65,16 @@ namespace epl
 	@class BaseServerWorker epBaseServerWorker.h
 	@brief A class for Base Server Worker.
 	*/
-	class EP_FOUNDATION BaseServerWorker:public Thread, public SmartObject
+	class EP_FOUNDATION BaseServerWorker:public Thread, public SmartObject,public BaseServerSendObject
 	{
 	public:
 		/*!
 		Default Constructor
 
 		Initializes the Worker
-		@param[in] parserWaitTimeMilliSec the wait time in millisecond for terminating parser thread
 		@param[in] lockPolicyType The lock policy
 		*/
-		BaseServerWorker(unsigned int parserWaitTimeMilliSec=DEFAULT_WAITTIME,LockPolicy lockPolicyType=EP_LOCK_POLICY);
+		BaseServerWorker(LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Copy Constructor
@@ -99,8 +100,6 @@ namespace epl
 		{
 			if(this!=&b)
 			{
-				LockObj lock(m_sendLock);
-				m_parserWaitTime=b.m_parserWaitTime;
 				Thread::operator =(b);
 				SmartObject::operator =(b);
 			}
@@ -112,26 +111,16 @@ namespace epl
 		@param[in] packet the packet to be sent
 		@return sent byte size
 		*/
-		int Send(const Packet &packet);
+		virtual int Send(const Packet &packet);
 
-		/*!
-		Set the wait time for the parser thread termination
-		@param[in] milliSec the time for waiting in millisecond
-		*/
-		void SetWaitTimeForParserTerminate(unsigned int milliSec);
-
-		/*!
-		Get the wait time for the parser thread termination
-		@return the current time for waiting in millisecond
-		*/
-		unsigned int GetWaitTimeForParserTerminate();
 	protected:
 		/*!
-		Parse the given packet and do relevant operation
-		@remark  Subclasses must implement this
-		@param[in] packet the packet to parse
+		Return the new packet parser
+		@remark Sub-class should implement this to create new parser.
+		@remark Client will automatically release this parser.
+		@return the new packet parser
 		*/
-		virtual void parsePacket(const Packet &packet)=0;
+		virtual BasePacketParser* createNewPacketParser()=0;
 
 
 
@@ -155,25 +144,7 @@ namespace epl
 		*/
 		virtual void SetArg(void* a);
 
-		/*!
-		Handle the packet parsing thread.
-		@param[in] param the packet Pass Unit
-		@return status of thread execution
-		*/
-		static unsigned long __stdcall passPacket(void *param);
 
-		/*! 
-		@struct PacketPassUnit epBaseServerWorkerEx.h
-		@brief A class for Packet Passing Unit for Packet Parsing Thread.
-		*/
-		struct PacketPassUnit{
-			/// BaseServerWorkerEx Object
-			BaseServerWorker *m_this;
-			/// Packet to parse
-			Packet *m_packet;
-		};
-
-	
 		/// client socket
 		SOCKET m_clientSocket;
 
@@ -186,14 +157,12 @@ namespace epl
 		/// Temp Packet;
 		Packet m_recvSizePacket;
 
-		/// wait time in millisecond for terminating thread
-		unsigned int m_parserWaitTime;
 
 		/// list lock
 		BaseLock *m_listLock;
 
 		/// parser thread list
-		vector<HANDLE> m_parserList;
+		vector<BasePacketParser*> m_parserList;
 	};
 
 }

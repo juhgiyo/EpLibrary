@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epSimpleLogger.h"
 using namespace epl;
 
-BaseClientUDP::BaseClientUDP(const TCHAR * hostName, const TCHAR * port, unsigned int parserWaitTimeMilliSec,LockPolicy lockPolicyType)
+BaseClientUDP::BaseClientUDP(const TCHAR * hostName, const TCHAR * port,LockPolicy lockPolicyType)
 {
 	m_lockPolicy=lockPolicyType;
 	switch(lockPolicyType)
@@ -48,7 +48,6 @@ BaseClientUDP::BaseClientUDP(const TCHAR * hostName, const TCHAR * port, unsigne
 	}
 	SetHostName(hostName);
 	SetPort(port);
-	m_parserWaitTime=parserWaitTimeMilliSec;
 	m_connectSocket=NULL;
 	m_result=0;
 	m_ptr=0;
@@ -64,7 +63,6 @@ BaseClientUDP::BaseClientUDP(const BaseClientUDP& b)
 	m_isConnected=false;
 	m_hostName=b.m_hostName;
 	m_port=b.m_port;
-	m_parserWaitTime=b.m_parserWaitTime;
 	m_lockPolicy=b.m_lockPolicy;
 	m_maxPacketSize=b.m_maxPacketSize;
 	switch(m_lockPolicy)
@@ -191,15 +189,6 @@ int BaseClientUDP::Send(const Packet &packet)
 	return sentLength;
 }
 
-void BaseClientUDP::SetWaitTimeForParserTerminate(unsigned int milliSec)
-{
-	m_parserWaitTime=milliSec;
-}
-
-unsigned int BaseClientUDP::GetWaitTimeForParserTerminate()
-{
-	return m_parserWaitTime;
-}
 int BaseClientUDP::receive(Packet &packet)
 {
 
@@ -315,12 +304,12 @@ void BaseClientUDP::disconnect()
 		}
 
 		m_listLock->Lock();
-		vector<HANDLE>::iterator iter;
+		vector<BasePacketParser*>::iterator iter;
 		for(iter=m_parserList.begin();iter!=m_parserList.end();iter++)
 		{
-			if(m_parserWaitTime!=WAITTIME_SKIP && System::WaitForSingleObject(*iter,m_parserWaitTime)==WAIT_TIMEOUT)
-				System::TerminateThread(*iter,0);
+			(*iter)->ReleaseObj();
 		}
+		m_parserList.clear();
 		m_listLock->Unlock();
 	}
 	m_isConnected=false;
@@ -337,27 +326,6 @@ void BaseClientUDP::Disconnect()
 	disconnect();
 }
 
-unsigned long BaseClientUDP::passPacket(void *param)
-{
-	Packet *recvPacket=( reinterpret_cast<PacketPassUnit*>(param))->m_packet;
-	BaseClientUDP *client=( reinterpret_cast<PacketPassUnit*>(param))->m_this;
-	EP_DELETE reinterpret_cast<PacketPassUnit*>(param);
-	client->parsePacket(*recvPacket);
-	recvPacket->ReleaseObj();
-
-	LockObj(client->m_listLock);
-	vector<HANDLE>::iterator iter;
-	for(iter=client->m_parserList.begin();iter!=client->m_parserList.end();iter++)
-	{
-		if(*iter == GetCurrentThread())
-		{
-			client->m_parserList.erase(iter);
-			break;
-		}
-	}
-
-	return 0;
-}
 
 void BaseClientUDP::processClientThread() 
 {
@@ -368,13 +336,15 @@ void BaseClientUDP::processClientThread()
 		iResult = receive(recvPacket);
 		
 		if (iResult > 0) {
-			Thread::ThreadID threadID;
-			PacketPassUnit *passUnit=EP_NEW PacketPassUnit();
-			passUnit->m_packet=EP_NEW Packet(recvPacket.GetPacket(),iResult);
-			passUnit->m_this=this;
-			HANDLE parserThreadHandle=::CreateThread(NULL,0,passPacket,passUnit,Thread::THREAD_OPCODE_CREATE_START,(LPDWORD)&threadID);
+			BasePacketParser::PacketPassUnit passUnit;
+			Packet *passPacket=EP_NEW Packet(recvPacket.GetPacket(),iResult);
+			passUnit.m_packet=passPacket;
+			passUnit.m_this=this;
+			BasePacketParser *parser=createNewPacketParser();
+			parser->Start(reinterpret_cast<void*>(&passUnit));
+			passPacket->ReleaseObj();
 			LockObj lock(m_listLock);
-			m_parserList.push_back(parserThreadHandle);
+			m_parserList.push_back(parser);
 		}
 		else if (iResult == 0)
 		{
@@ -384,6 +354,19 @@ void BaseClientUDP::processClientThread()
 		else  {
 			LOG_THIS_MSG(_T("recv failed with error\n"));
 			break;
+		}
+		LockObj lock(m_listLock);
+		vector<BasePacketParser*>::iterator iter;
+		for(iter=m_parserList.begin();iter!=m_parserList.end();)
+		{
+			if((*iter)->GetStatus()==Thread::THREAD_STATUS_TERMINATED)
+			{
+				(*iter)->ReleaseObj();
+				iter=m_parserList.erase(iter);
+			}
+			else
+				iter++;
+
 		}
 
 	} while (iResult > 0);

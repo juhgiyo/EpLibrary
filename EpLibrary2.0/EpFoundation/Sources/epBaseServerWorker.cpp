@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epSimpleLogger.h"
 
 using namespace epl;
-BaseServerWorker::BaseServerWorker(unsigned int parserWaitTimeMilliSec,LockPolicy lockPolicyType): Thread(lockPolicyType), SmartObject(lockPolicyType)
+BaseServerWorker::BaseServerWorker(LockPolicy lockPolicyType): Thread(lockPolicyType), SmartObject(lockPolicyType)
 {
 	m_lockPolicy=lockPolicyType;
 	switch(lockPolicyType)
@@ -41,7 +41,6 @@ BaseServerWorker::BaseServerWorker(unsigned int parserWaitTimeMilliSec,LockPolic
 		m_sendLock=NULL;
 		break;
 	}
-	m_parserWaitTime=parserWaitTimeMilliSec;
 	m_recvSizePacket=Packet(NULL,4);
 }
 BaseServerWorker::BaseServerWorker(const BaseServerWorker& b) : Thread(b),SmartObject(b)
@@ -62,7 +61,6 @@ BaseServerWorker::BaseServerWorker(const BaseServerWorker& b) : Thread(b),SmartO
 		m_sendLock=NULL;
 		break;
 	}
-	m_parserWaitTime=b.m_parserWaitTime;
 	m_recvSizePacket=Packet(NULL,4);
 }
 
@@ -78,16 +76,14 @@ BaseServerWorker::~BaseServerWorker()
 	m_sendLock->Unlock();
 	WaitFor(WAITTIME_INIFINITE);
 
-	if(m_parserWaitTime!=WAITTIME_SKIP)
+	m_listLock->Lock();
+	vector<BasePacketParser*>::iterator iter;
+	for(iter=m_parserList.begin();iter!=m_parserList.end();iter++)
 	{
-		LockObj lock(m_listLock);
-		vector<HANDLE>::iterator iter;
-		for(iter=m_parserList.begin();iter!=m_parserList.end();iter++)
-		{
-			if(System::WaitForSingleObject(*iter,m_parserWaitTime)==WAIT_TIMEOUT)
-				System::TerminateThread(*iter,0);
-		}
+		(*iter)->ReleaseObj();
 	}
+	m_listLock->Unlock();
+
 	if(m_listLock)
 		EP_DELETE m_listLock;
 
@@ -125,15 +121,7 @@ int BaseServerWorker::Send(const Packet &packet)
 	}
 	return writeLength;
 }
-void BaseServerWorker::SetWaitTimeForParserTerminate(unsigned int milliSec)
-{
-	m_parserWaitTime=milliSec;
-}
 
-unsigned int BaseServerWorker::GetWaitTimeForParserTerminate()
-{
-	return m_parserWaitTime;
-}
 
 int BaseServerWorker::receive(Packet &packet)
 {
@@ -152,26 +140,6 @@ int BaseServerWorker::receive(Packet &packet)
 	return readLength;
 }
 
-unsigned long BaseServerWorker::passPacket(void *param)
-{
-	Packet *recvPacket=( reinterpret_cast<PacketPassUnit*>(param))->m_packet;
-	BaseServerWorker *worker=( reinterpret_cast<PacketPassUnit*>(param))->m_this;
-	EP_DELETE reinterpret_cast<PacketPassUnit*>(param);
-	worker->parsePacket(*recvPacket);
-	recvPacket->ReleaseObj();
-
-	LockObj(worker->m_listLock);
-	vector<HANDLE>::iterator iter;
-	for(iter=worker->m_parserList.begin();iter!=worker->m_parserList.end();iter++)
-	{
-		if(*iter == GetCurrentThread())
-		{
-			worker->m_parserList.erase(iter);
-			break;
-		}
-	}
-	return 0;
-}
 
 void BaseServerWorker::execute()
 {
@@ -187,14 +155,14 @@ void BaseServerWorker::execute()
 			iResult = receive(*recvPacket);
 
 			if (iResult == shouldReceive) {
-				ThreadID threadID;
-				PacketPassUnit *passUnit=EP_NEW PacketPassUnit() ;
-				passUnit->m_packet=recvPacket;
-				passUnit->m_this=this;
-				HANDLE parserThreadHandle=::CreateThread(NULL,0,passPacket,passUnit,THREAD_OPCODE_CREATE_START,(LPDWORD)&threadID);
-
+				BasePacketParser::PacketPassUnit passUnit;
+				passUnit.m_packet=recvPacket;
+				passUnit.m_this=this;
+				BasePacketParser *parser =createNewPacketParser();
+				parser->Start(reinterpret_cast<void*>(&passUnit));
+				recvPacket->ReleaseObj();
 				LockObj lock(m_listLock);
-				m_parserList.push_back(parserThreadHandle);
+				m_parserList.push_back(parser);
 			}
 			else if (iResult == 0)
 			{
@@ -207,7 +175,20 @@ void BaseServerWorker::execute()
 				recvPacket->ReleaseObj();
 				break;
 			}
-			// To here
+
+			LockObj lock(m_listLock);
+			vector<BasePacketParser*>::iterator iter;
+			for(iter=m_parserList.begin();iter!=m_parserList.end();)
+			{
+				if((*iter)->GetStatus()==Thread::THREAD_STATUS_TERMINATED)
+				{
+					(*iter)->ReleaseObj();
+					iter=m_parserList.erase(iter);
+				}
+				else
+					iter++;
+
+			}
 		}
 		else
 		{

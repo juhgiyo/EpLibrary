@@ -38,6 +38,8 @@ An Interface for Base Client.
 #include "epCriticalSectionEx.h"
 #include "epMutex.h"
 #include "epNoLock.h"
+#include "epBaseServerSendObject.h"
+#include "epBasePacketParser.h"
 #include "epServerConf.h"
 
 #ifndef WIN32_LEAN_AND_MEAN
@@ -69,7 +71,7 @@ namespace epl{
 	@class BaseClient epBaseClient.h
 	@brief A class for Base Client.
 	*/
-	class EP_FOUNDATION BaseClient{
+	class EP_FOUNDATION BaseClient:public BaseServerSendObject{
 
 	public:
 		/*!
@@ -78,10 +80,9 @@ namespace epl{
 		Initializes the Client
 		@param[in] hostName the hostname string
 		@param[in] port the port string
-		@param[in] waitTimeMilliSec the wait time in millisecond for terminating thread
 		@param[in] lockPolicyType The lock policy
 		*/
-		BaseClient(const TCHAR * hostName=_T(DEFAULT_HOSTNAME), const TCHAR * port=_T(DEFAULT_PORT), unsigned int parserWaitTimeMilliSec=DEFAULT_WAITTIME,LockPolicy lockPolicyType=EP_LOCK_POLICY);
+		BaseClient(const TCHAR * hostName=_T(DEFAULT_HOSTNAME), const TCHAR * port=_T(DEFAULT_PORT),LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Copy Constructor
@@ -109,7 +110,6 @@ namespace epl{
 				LockObj lock(m_generalLock);
 				m_port=b.m_port;
 				m_hostName=b.m_hostName;
-				m_parserWaitTime=b.m_parserWaitTime;
 			}
 			return *this;
 		}
@@ -161,51 +161,19 @@ namespace epl{
 		@param[in] packet the packet to be sent
 		@return sent byte size
 		*/
-		int Send(const Packet &packet);
-
-		/*!
-		Set the wait time for the parser thread termination
-		@param[in] milliSec the time for waiting in millisecond
-		*/
-		void SetWaitTimeForParserTerminate(unsigned int milliSec);
-
-		/*!
-		Get the wait time for the parser thread termination
-		@return the current time for waiting in millisecond
-		*/
-		unsigned int GetWaitTimeForParserTerminate();
+		virtual int Send(const Packet &packet);
 
 	protected:
 		/*!
-		Parse the given packet and do relevant operation.
-		@remark  Subclasses must implement this
-		@param[in] packet the packet to parse
+		Return the new packet parser
+		@remark Sub-class should implement this to create new parser.
+		@remark Client will automatically release this parser.
+		@return the new packet parser
 		*/
-		virtual void parsePacket(const Packet &packet )=0;
+		virtual BasePacketParser* createNewPacketParser()=0;
 
 	private:
-		/*!
-		Handle the packet parsing thread.
-		@param[in] param the packet Pass Unit
-		@return status of thread execution
-		*/
-		static unsigned long __stdcall passPacket(void *param);
 
-		/*! 
-		@struct PacketPassUnit epBaseClientEx.h
-		@brief A class for Packet Passing Unit for Packet Parsing Thread.
-		*/
-		struct PacketPassUnit{
-			/// BaseClientEx Object
-			BaseClient *m_this;
-			/// Packet to parse
-			Packet *m_packet;
-		};
-
-		/*!
-		Actually processing the client thread
-		*/
-		virtual void processClientThread();
 
 		/*!
 		Receive the packet from the server
@@ -213,6 +181,12 @@ namespace epl{
 		@return received byte size
 		*/
 		int receive(Packet &packet);
+
+		/*!
+		Actually processing the client thread
+		*/
+		virtual void processClientThread();
+
 
 	
 		/*!
@@ -262,10 +236,8 @@ namespace epl{
 		BaseLock *m_listLock;
 
 		/// parser thread list
-		vector<HANDLE> m_parserList;
+		vector<BasePacketParser*> m_parserList;
 
-		/// wait time in millisecond for terminating parser thread
-		unsigned int m_parserWaitTime;
 	};
 }
 
