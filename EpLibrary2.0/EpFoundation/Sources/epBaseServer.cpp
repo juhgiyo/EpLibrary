@@ -221,6 +221,17 @@ bool BaseServer::StartServer()
 
 }
 
+void BaseServer::Broadcast(const Packet& packet)
+{
+	m_workerList.RemoveTerminated();
+	vector<BaseServerObject*>::iterator iter;
+	vector<BaseServerObject*> clientList=m_workerList.GetList();
+	for(iter=clientList.begin();iter!=clientList.end();iter++)
+	{
+		((BaseServerWorker*)(*iter))->Send(packet);
+	}
+}
+
 void BaseServer::ShutdownAllClient()
 {
 	m_workerList.Clear();

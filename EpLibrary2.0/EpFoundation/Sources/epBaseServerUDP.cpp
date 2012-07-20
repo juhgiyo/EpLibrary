@@ -260,6 +260,18 @@ bool BaseServerUDP::StartServer()
 
 }
 
+void BaseServerUDP::Broadcast(const Packet& packet)
+{
+	m_workerList.RemoveTerminated();
+	vector<BaseServerObject*>::iterator iter;
+	vector<BaseServerObject*> clientList=m_workerList.GetList();
+	for(iter=clientList.begin();iter!=clientList.end();iter++)
+	{
+		((BaseServerWorkerUDP*)(*iter))->Send(packet);
+	}
+}
+
+
 void BaseServerUDP::ShutdownAllClient()
 {
 	m_workerList.Clear();

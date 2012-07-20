@@ -146,6 +146,12 @@ namespace epl{
 		*/
 		void ShutdownAllClient();
 
+		/*!
+		Broadcast the packet
+		@param[in] packet
+		*/
+		void Broadcast(const Packet& packet);
+
 	private:
 		
 
