@@ -189,12 +189,6 @@ namespace epl
 		*/
 		void * GetArg() const;
 
-		/*!
-		Set the thread argument list.
-		@param[in] a The argument list for the thread.
-		*/
-		virtual void SetArg(void* a);
-
 	private:
 
 		
@@ -225,6 +219,7 @@ namespace epl
 		static unsigned long __stdcall entryPoint2(void* pthis);
 
 	protected:
+
 		/*!
 		Return the Thread Handle.
 		@return the current thread handle.
@@ -233,6 +228,12 @@ namespace epl
 		{
 			return m_threadHandle;
 		}
+
+		/*!
+		Set the thread argument list.
+		@param[in] a The argument list for the thread.
+		*/
+		virtual void setArg(void* a);
 
 		/*!
 		Setup the thread when it started.

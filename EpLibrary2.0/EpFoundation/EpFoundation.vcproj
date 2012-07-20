@@ -770,6 +770,10 @@
 					RelativePath=".\Sources\epPacket.cpp"
 					>
 				</File>
+				<File
+					RelativePath=".\Sources\epServerObjectList.cpp"
+					>
+				</File>
 				<Filter
 					Name="Server Side"
 					>
@@ -1145,6 +1149,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Headers\epBaseServerObject.h"
+					>
+				</File>
+				<File
 					RelativePath=".\Headers\epBaseServerSendObject.h"
 					>
 				</File>
@@ -1158,6 +1166,10 @@
 				</File>
 				<File
 					RelativePath=".\Headers\epServerConf.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Headers\epServerObjectList.h"
 					>
 				</File>
 				<Filter

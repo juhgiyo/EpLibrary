@@ -64,7 +64,7 @@ namespace epl
 	@class BaseServerWorker epBaseServerWorkerUDP.h
 	@brief A class for Base UDP Server Worker.
 	*/
-	class EP_FOUNDATION BaseServerWorkerUDP:public Thread, public SmartObject,public BaseServerSendObject
+	class EP_FOUNDATION BaseServerWorkerUDP:public BaseServerSendObject
 	{
 		friend class BaseServerUDP;
 	public:
@@ -100,8 +100,7 @@ namespace epl
 		{
 			if(this!=&b)
 			{
-				Thread::operator =(b);
-				SmartObject::operator =(b);
+				BaseServerSendObject::operator =(b);
 			}
 			return *this;
 		}
@@ -159,7 +158,7 @@ namespace epl
 		Set the argument for the base server worker thread.
 		@param[in] a The client socket from server.
 		*/
-		virtual void SetArg(void* a);
+		virtual void setArg(void* a);
 	
 		/// client socket
 		sockaddr m_clientSocket;

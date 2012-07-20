@@ -41,6 +41,7 @@ An Interface for Base Client.
 #include "epBaseServerSendObject.h"
 #include "epBasePacketParser.h"
 #include "epServerConf.h"
+#include "epServerObjectList.h"
 
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
@@ -71,7 +72,7 @@ namespace epl{
 	@class BaseClient epBaseClient.h
 	@brief A class for Base Client.
 	*/
-	class EP_FOUNDATION BaseClient:public BaseServerSendObject{
+	class EP_FOUNDATION BaseClient:private BaseServerSendObject{
 
 	public:
 		/*!
@@ -107,6 +108,7 @@ namespace epl{
 		{
 			if(this!=&b)
 			{
+				BaseServerSendObject::operator =(b);
 				LockObj lock(m_generalLock);
 				m_port=b.m_port;
 				m_hostName=b.m_hostName;
@@ -163,6 +165,12 @@ namespace epl{
 		*/
 		virtual int Send(const Packet &packet);
 
+		/*!
+		Get Packet Parser List
+		@return the list of the packet parser
+		*/
+		vector<BaseServerObject*> GetPacketParserList() const;
+
 	protected:
 		/*!
 		Return the new packet parser
@@ -185,7 +193,7 @@ namespace epl{
 		/*!
 		Actually processing the client thread
 		*/
-		virtual void processClientThread();
+		virtual void execute();
 
 
 	
@@ -217,10 +225,7 @@ namespace epl{
 
 		/// flag for the connection
 		bool m_isConnected;
-
-		/// the client thread handle
-		HANDLE m_clientThreadHandle;
-
+	
 		/// send lock
 		BaseLock *m_sendLock;
 		/// general lock
@@ -231,12 +236,8 @@ namespace epl{
 		/// Temp Packet;
 		Packet m_recvSizePacket;
 
-
-		/// list lock
-		BaseLock *m_listLock;
-
-		/// parser thread list
-		vector<BasePacketParser*> m_parserList;
+		/// Parser list
+		ServerObjectList m_parserList;
 
 	};
 }

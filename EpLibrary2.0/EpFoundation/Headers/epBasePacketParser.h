@@ -47,7 +47,7 @@ namespace epl
 	@class BasePacketParser epBasePacketParser.h
 	@brief A class for Base Packet Parser.
 	*/
-	class EP_FOUNDATION BasePacketParser:public Thread, public SmartObject
+	class EP_FOUNDATION BasePacketParser:public BaseServerObject
 	{
 	public:
 		/*!
@@ -90,8 +90,7 @@ namespace epl
 					m_packetReceived->ReleaseObj();
 				m_packetReceived=b.m_packetReceived;
 				m_packetReceived->RetainObj();
-				Thread::operator =(b);
-				SmartObject::operator =(b);
+				BaseServerObject::operator =(b);
 			}
 			return *this;
 		}
@@ -123,7 +122,7 @@ namespace epl
 		virtual void ParsePacket(const Packet &packet)=0;
 
 		/*! 
-		@struct PacketPassUnit epBaseServerWorkerEx.h
+		@struct PacketPassUnit epBasePacketParser.h
 		@brief A class for Packet Passing Unit for Packet Parsing Thread.
 		*/
 		struct PacketPassUnit{
@@ -134,13 +133,15 @@ namespace epl
 		};
 
 		
+
+
+	private:	
 		/*!
 		Set the argument for the base server worker thread.
 		@param[in] a The client socket from server.
 		*/
-		virtual void SetArg(void* a);
+		virtual void setArg(void* a);
 
-	private:	
 		/*!
 		thread loop function
 		*/

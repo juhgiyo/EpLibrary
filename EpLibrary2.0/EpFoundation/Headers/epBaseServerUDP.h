@@ -44,6 +44,8 @@ An Interface for Base UDP Server.
 #include "epNoLock.h"
 #include "epPacket.h"
 #include "epServerConf.h"
+#include "epBaseServerObject.h"
+#include "epServerObjectList.h"
 
 #include <winsock2.h>
 #include <ws2tcpip.h>
@@ -65,8 +67,7 @@ namespace epl{
 	@class BaseServer epBaseServerUDP.h
 	@brief A class for Base UDP Server.
 	*/
-	class EP_FOUNDATION BaseServerUDP{
-
+	class EP_FOUNDATION BaseServerUDP:private BaseServerObject{
 		friend class BaseServerWorkerUDP;
 	public:
 		
@@ -75,7 +76,6 @@ namespace epl{
 
 		Initializes the Server
 		@param[in] port the port string
-		@param[in] waitTimeMilliSec the wait time in millisecond for terminating thread
 		@param[in] lockPolicyType The lock policy
 		*/
 		BaseServerUDP(const TCHAR * port=_T(DEFAULT_PORT), LockPolicy lockPolicyType=EP_LOCK_POLICY);
@@ -103,6 +103,7 @@ namespace epl{
 		{
 			if(this!=&b)
 			{
+				BaseServerObject::operator =(b);
 				LockObj lock(m_lock);
 				m_port=b.m_port;
 			}
@@ -110,10 +111,10 @@ namespace epl{
 		}
 
 		/*!
-		Get Client List
-		@return the reference to the list of the client
+		Get Worker List
+		@return the list of the worker
 		*/
-		vector<BaseServerWorkerUDP*> GetClientList() const;
+		vector<BaseServerObject*> GetWorkerList() const;
 
 		/*!
 		Set the port for the server.
@@ -169,10 +170,8 @@ namespace epl{
 
 		/*!
 		Listening Loop Function
-		@param[in] lpParam self class object
-		@return the thread terminating status
 		*/
-		static unsigned long ServerThread( LPVOID lpParam ) ;
+		virtual void execute() ;
 		
 		/*!
 		Send the packet to the client
@@ -182,17 +181,6 @@ namespace epl{
 		*/
 		int send(const Packet &packet,const sockaddr &clientSockAddr);
 
-		/*!
-		Remove the given worker.
-		@param[in] worker the worker to remove from the list
-		*/
-		void removeWorker(BaseServerWorkerUDP *worker);
-
-		/*!
-		Actually terminate all clients' socket connected.
-		*/
-		void shutdownAllClient();
-		
 		/*!
 		Actually Stop the server
 		*/
@@ -209,10 +197,6 @@ namespace epl{
 		/// Maximum UDP Datagram byte size
 		unsigned int m_maxPacketSize;
 
-		/// the client socket list
-		vector<BaseServerWorkerUDP*> m_clientList;
-		/// the server thread handle
-		HANDLE m_serverThreadHandle;
 		/// the status of the server
 		bool m_isServerStarted;
 
@@ -221,11 +205,11 @@ namespace epl{
 		/// send lock
 		BaseLock *m_sendLock;
 
-		/// list lock
-		BaseLock *m_listLock;
-
 		/// Lock Policy
 		LockPolicy m_lockPolicy;
+
+		/// worker list
+		ServerObjectList m_workerList;
 
 	};
 }

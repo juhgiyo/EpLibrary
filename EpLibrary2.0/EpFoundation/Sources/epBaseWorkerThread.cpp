@@ -73,7 +73,7 @@ int BaseWorkerThread::GetJobCount() const
 {
 	return m_workPool.Size();
 }
-void BaseWorkerThread::SetArg(void* a)
+void BaseWorkerThread::setArg(void* a)
 {
 	if(m_status!=THREAD_STATUS_STARTED)
 	{

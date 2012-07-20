@@ -1,9 +1,9 @@
 /*! 
-@file epBaseServerSendObject.h
+@file epBaseServerObject.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
 		<http://github.com/juhgiyo/eplibrary>
 @date July 20, 2012
-@brief Base Server Send Object Interface
+@brief Base Server Object Interface
 @version 2.0
 
 @section LICENSE
@@ -25,30 +25,31 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 @section DESCRIPTION
 
-An Interface for Base Server Send Object.
+An Interface for Base Server Object.
 
 */
-#ifndef __EP_BASE_SERVER_SEND_OBJECT_H__
-#define __EP_BASE_SERVER_SEND_OBJECT_H__
+#ifndef __EP_BASE_SERVER_OBJECT_H__
+#define __EP_BASE_SERVER_OBJECT_H__
 
 #include "epFoundationLib.h"
 #include "epSystem.h"
-#include "epBaseServerObject.h"
+#include "epThread.h"
+#include "epSmartObject.h"
 namespace epl{
 
 	/*! 
-	@class BaseServerSendObject epBaseServerSendObject.h
-	@brief A class for Base Server Send Object.
+	@class BaseServerObject epBaseServerObject.h
+	@brief A class for Base Server Object.
 	*/
-	class EP_FOUNDATION BaseServerSendObject:public BaseServerObject{
+	class EP_FOUNDATION BaseServerObject:public SmartObject, public Thread{
 	public:
-			/*!
+		/*!
 		Default Constructor
 
 		Initializes the Object
 		@param[in] lockPolicyType The lock policy
 		*/
-		BaseServerSendObject(LockPolicy lockPolicyType=EP_LOCK_POLICY):BaseServerObject(lockPolicyType)
+		BaseServerObject(LockPolicy lockPolicyType=EP_LOCK_POLICY):SmartObject(lockPolicyType),Thread(lockPolicyType)
 		{
 		}
 
@@ -58,7 +59,7 @@ namespace epl{
 		Initializes the Object
 		@param[in] b the second object
 		*/
-		BaseServerSendObject(const BaseServerObject& b):BaseServerObject(b)
+		BaseServerObject(const BaseServerObject& b):SmartObject(b),Thread(b)
 		{
 		}
 		/*!
@@ -66,25 +67,24 @@ namespace epl{
 
 		Destroy the Object
 		*/
-		virtual ~BaseServerSendObject(){}
+		virtual ~BaseServerObject(){}
 
 		/*!
 		Assignment operator overloading
 		@param[in] b the second object
 		@return the new copied object
 		*/
-		BaseServerSendObject & operator=(const BaseServerSendObject&b)
+		BaseServerObject & operator=(const BaseServerObject&b)
 		{
 			if(this!=&b)
 			{
-				BaseServerObject::operator=(b);
+				Thread::operator=(b);
+				SmartObject::operator =(b);
 			}
 			return *this;
 		}
-
-		virtual int Send(const Packet &packet)=0;
 	};
 }
 
 
-#endif //__EP_BASE_SERVER_SEND_OBJECT_H__
+#endif //__EP_BASE_SERVER_OBJECT_H__

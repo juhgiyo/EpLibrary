@@ -114,12 +114,6 @@ namespace epl
 		}
 
 		/*!
-		Set new Job Processor.
-		@param[in] a set new Job Processor for this thread.
-		*/
-		virtual void SetArg(void* a);
-
-		/*!
 		Set call back class to call when work is done.
 		@param[in] callBackClass the call back class.
 		*/
@@ -146,6 +140,12 @@ namespace epl
 			return *this;
 		}
 	protected:
+		/*!
+		Set new Job Processor.
+		@param[in] a set new Job Processor for this thread.
+		*/
+		virtual void setArg(void* a);
+
 		/*!
 		Pure Worker Thread Code.
 		*/

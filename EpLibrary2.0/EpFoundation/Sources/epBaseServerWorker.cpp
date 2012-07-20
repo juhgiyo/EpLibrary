@@ -19,31 +19,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epSimpleLogger.h"
 
 using namespace epl;
-BaseServerWorker::BaseServerWorker(LockPolicy lockPolicyType): Thread(lockPolicyType), SmartObject(lockPolicyType)
+BaseServerWorker::BaseServerWorker(LockPolicy lockPolicyType): BaseServerSendObject(lockPolicyType)
 {
 	m_lockPolicy=lockPolicyType;
 	switch(lockPolicyType)
 	{
 	case LOCK_POLICY_CRITICALSECTION:
 		m_sendLock=EP_NEW CriticalSectionEx();
-		m_listLock=EP_NEW CriticalSectionEx();
 		break;
 	case LOCK_POLICY_MUTEX:
 		m_sendLock=EP_NEW Mutex();
-		m_listLock=EP_NEW Mutex();
 		break;
 	case LOCK_POLICY_NONE:
 		m_sendLock=EP_NEW NoLock();
-		m_listLock=EP_NEW NoLock();
 		break;
 	default:
-		m_listLock=NULL;
 		m_sendLock=NULL;
 		break;
 	}
 	m_recvSizePacket=Packet(NULL,4);
 }
-BaseServerWorker::BaseServerWorker(const BaseServerWorker& b) : Thread(b),SmartObject(b)
+BaseServerWorker::BaseServerWorker(const BaseServerWorker& b) : BaseServerSendObject(b)
 {
 	m_lockPolicy=b.m_lockPolicy;
 	switch(m_lockPolicy)
@@ -70,28 +66,19 @@ BaseServerWorker::~BaseServerWorker()
 	int iResult;
 	iResult = shutdown(m_clientSocket, SD_SEND);
 	if (iResult == SOCKET_ERROR) {
-		LOG_THIS_MSG(_T("shutdown failed with error\n"));
+		System::OutputDebugString(_T("%s::%s(%d)(%x) shutdown failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
 	}
 	closesocket(m_clientSocket);
 	m_sendLock->Unlock();
 	WaitFor(WAITTIME_INIFINITE);
 
-	m_listLock->Lock();
-	vector<BasePacketParser*>::iterator iter;
-	for(iter=m_parserList.begin();iter!=m_parserList.end();iter++)
-	{
-		(*iter)->ReleaseObj();
-	}
-	m_listLock->Unlock();
-
-	if(m_listLock)
-		EP_DELETE m_listLock;
+	m_parserList.Clear();
 
 	if(m_sendLock)
 		EP_DELETE m_sendLock;
 }
 
-void BaseServerWorker::SetArg(void* a)
+void BaseServerWorker::setArg(void* a)
 {
 	SOCKET clientSocket=reinterpret_cast<SOCKET>(a);
 	m_clientSocket=clientSocket;
@@ -120,6 +107,10 @@ int BaseServerWorker::Send(const Packet &packet)
 		packetData+=sentLength;
 	}
 	return writeLength;
+}
+vector<BaseServerObject*> BaseServerWorker::GetPacketParserList() const
+{
+	return m_parserList.GetList();
 }
 
 
@@ -160,35 +151,22 @@ void BaseServerWorker::execute()
 				passUnit.m_this=this;
 				BasePacketParser *parser =createNewPacketParser();
 				parser->Start(reinterpret_cast<void*>(&passUnit));
+				m_parserList.Push(parser);
+				parser->ReleaseObj();
 				recvPacket->ReleaseObj();
-				LockObj lock(m_listLock);
-				m_parserList.push_back(parser);
 			}
 			else if (iResult == 0)
 			{
-				LOG_THIS_MSG(_T("Connection closing...\n"));
+				System::OutputDebugString(_T("%s::%s(%d)(%x) Connection closing...\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
 				recvPacket->ReleaseObj();
 				break;
 			}
 			else  {
-				LOG_THIS_MSG(_T("recv failed with error\n"));
+				System::OutputDebugString(_T("%s::%s(%d)(%x) recv failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
 				recvPacket->ReleaseObj();
 				break;
 			}
-
-			LockObj lock(m_listLock);
-			vector<BasePacketParser*>::iterator iter;
-			for(iter=m_parserList.begin();iter!=m_parserList.end();)
-			{
-				if((*iter)->GetStatus()==Thread::THREAD_STATUS_TERMINATED)
-				{
-					(*iter)->ReleaseObj();
-					iter=m_parserList.erase(iter);
-				}
-				else
-					iter++;
-
-			}
+			m_parserList.RemoveTerminated();
 		}
 		else
 		{

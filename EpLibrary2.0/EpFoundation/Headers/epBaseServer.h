@@ -43,6 +43,9 @@ An Interface for Base Server.
 #include "epMutex.h"
 #include "epNoLock.h"
 #include "epServerConf.h"
+#include "epBaseServerObject.h"
+#include "epServerObjectList.h"
+
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <stdlib.h>
@@ -62,7 +65,7 @@ namespace epl{
 	@class BaseServer epBaseServer.h
 	@brief A class for Base Server.
 	*/
-	class EP_FOUNDATION BaseServer{
+	class EP_FOUNDATION BaseServer:private BaseServerObject{
 
 	public:
 		/*!
@@ -97,6 +100,7 @@ namespace epl{
 		{
 			if(this!=&b)
 			{
+				BaseServerObject::operator =(b);
 				LockObj lock(m_lock);
 				m_port=b.m_port;
 			}
@@ -104,10 +108,10 @@ namespace epl{
 		}
 
 		/*!
-		Get Client List
-		@return the reference to the list of the client
+		Get Worker List
+		@return the list of the worker
 		*/
-		vector<BaseServerWorker*> GetClientList() const;
+		vector<BaseServerObject*> GetWorkerList() const;
 		
 		/*!
 		Set the port for the server.
@@ -147,10 +151,8 @@ namespace epl{
 
 		/*!
 		Listening Loop Function
-		@param[in] lpParam self class object
-		@return the thread terminating status
 		*/
-		static unsigned long ServerThread( LPVOID lpParam ) ;
+		virtual void execute() ;
 	protected:
 
 		/*!
@@ -161,10 +163,6 @@ namespace epl{
 		*/
 		virtual BaseServerWorker* createNewWorker()=0;
 
-		/*!
-		Actually terminate all clients' socket connected.
-		*/
-		void shutdownAllClient();
 
 		/*!
 		Actually Stop the server
@@ -180,21 +178,17 @@ namespace epl{
 		/// internal use variable2
 		struct addrinfo m_hints;
 
-		/// the client socket list
-		vector<BaseServerWorker*> m_clientList;
-		/// the server thread handle
-		HANDLE m_serverThreadHandle;
 		/// the status of the server
 		bool m_isServerStarted;
 
 		/// general lock 
 		BaseLock *m_lock;
 
-		/// list lock
-		BaseLock *m_listLock;
-
 		/// Lock Policy
 		LockPolicy m_lockPolicy;
+
+		/// worker list
+		ServerObjectList m_workerList;
 	};
 }
 #endif //__EP_BASE_SERVER_H__

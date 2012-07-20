@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epSimpleLogger.h"
 #include "epBaseServerUDP.h"
 using namespace epl;
-BaseServerWorkerUDP::BaseServerWorkerUDP(LockPolicy lockPolicyType): Thread(lockPolicyType), SmartObject(lockPolicyType)
+BaseServerWorkerUDP::BaseServerWorkerUDP(LockPolicy lockPolicyType): BaseServerSendObject(lockPolicyType)
 {
 	m_lockPolicy=lockPolicyType;
 	switch(lockPolicyType)
@@ -42,7 +42,7 @@ BaseServerWorkerUDP::BaseServerWorkerUDP(LockPolicy lockPolicyType): Thread(lock
 	m_maxPacketSize=0;
 	m_parser=NULL;
 }
-BaseServerWorkerUDP::BaseServerWorkerUDP(const BaseServerWorkerUDP& b) : Thread(b),SmartObject(b)
+BaseServerWorkerUDP::BaseServerWorkerUDP(const BaseServerWorkerUDP& b) : BaseServerSendObject(b)
 {
 	m_packet=NULL;
 	m_server=NULL;
@@ -77,14 +77,12 @@ BaseServerWorkerUDP::~BaseServerWorkerUDP()
 		m_packet->ReleaseObj();	
 		m_packet=NULL;
 	}
-	if(m_server)
-		m_server->removeWorker(this);
 	m_lock->Unlock();
 	if(m_lock)
 		EP_DELETE m_lock;
 }
 
-void BaseServerWorkerUDP::SetArg(void* a)
+void BaseServerWorkerUDP::setArg(void* a)
 {
 	LockObj lock(m_lock);
 	PacketPassUnit *clientSocket=reinterpret_cast<PacketPassUnit*>(a);
@@ -93,7 +91,7 @@ void BaseServerWorkerUDP::SetArg(void* a)
 	m_packet=clientSocket->m_packet;
 	if(m_packet)
 		m_packet->RetainObj();
-	m_maxPacketSize=m_server->m_maxPacketSize;
+	m_maxPacketSize=m_server->GetMaxPacketByteSize();
 }
 
 int BaseServerWorkerUDP::Send(const Packet &packet)

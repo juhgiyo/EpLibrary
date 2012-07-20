@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epThread.h"
 using namespace epl;
 
-BasePacketParser::BasePacketParser(unsigned int waitTimeMilliSec,LockPolicy lockPolicyType):SmartObject(lockPolicyType),Thread(lockPolicyType)
+BasePacketParser::BasePacketParser(unsigned int waitTimeMilliSec,LockPolicy lockPolicyType):BaseServerObject(lockPolicyType)
 {
 	m_waitTime=waitTimeMilliSec;
 	m_owner=NULL;
@@ -42,7 +42,7 @@ BasePacketParser::BasePacketParser(unsigned int waitTimeMilliSec,LockPolicy lock
 	}
 }
 
-BasePacketParser::BasePacketParser(const BasePacketParser& b):SmartObject(b),Thread(b)
+BasePacketParser::BasePacketParser(const BasePacketParser& b):BaseServerObject(b)
 {
 	m_waitTime=b.m_waitTime;
 	m_owner=b.m_owner;
@@ -106,7 +106,7 @@ void BasePacketParser::execute()
 		ParsePacket(*m_packetReceived);
 }
 
-void BasePacketParser::SetArg(void* a)
+void BasePacketParser::setArg(void* a)
 {
 	LockObj lock(m_generalLock);
 	m_packetReceived=( reinterpret_cast<PacketPassUnit*>(a))->m_packet;

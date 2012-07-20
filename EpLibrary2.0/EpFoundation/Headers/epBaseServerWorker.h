@@ -43,6 +43,7 @@ An Interface for Base Server Worker.
 #include "epBaseServerSendObject.h"
 #include "epBasePacketParser.h"
 #include "epServerConf.h"
+#include "epServerObjectList.h"
 
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
@@ -65,7 +66,7 @@ namespace epl
 	@class BaseServerWorker epBaseServerWorker.h
 	@brief A class for Base Server Worker.
 	*/
-	class EP_FOUNDATION BaseServerWorker:public Thread, public SmartObject,public BaseServerSendObject
+	class EP_FOUNDATION BaseServerWorker:public BaseServerSendObject
 	{
 	public:
 		/*!
@@ -100,8 +101,7 @@ namespace epl
 		{
 			if(this!=&b)
 			{
-				Thread::operator =(b);
-				SmartObject::operator =(b);
+				BaseServerSendObject::operator =(b);
 			}
 			return *this;
 		}	
@@ -112,6 +112,12 @@ namespace epl
 		@return sent byte size
 		*/
 		virtual int Send(const Packet &packet);
+
+		/*!
+		Get Packet Parser List
+		@return the list of the packet parser
+		*/
+		vector<BaseServerObject*> GetPacketParserList() const;
 
 	protected:
 		/*!
@@ -142,7 +148,7 @@ namespace epl
 		Set the argument for the base server worker thread.
 		@param[in] a The client socket from server.
 		*/
-		virtual void SetArg(void* a);
+		virtual void setArg(void* a);
 
 
 		/// client socket
@@ -157,12 +163,8 @@ namespace epl
 		/// Temp Packet;
 		Packet m_recvSizePacket;
 
-
-		/// list lock
-		BaseLock *m_listLock;
-
 		/// parser thread list
-		vector<BasePacketParser*> m_parserList;
+		ServerObjectList m_parserList;
 	};
 
 }

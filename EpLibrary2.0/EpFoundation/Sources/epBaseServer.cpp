@@ -20,38 +20,32 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace epl;
 
-BaseServer::BaseServer(const TCHAR *  port, LockPolicy lockPolicyType)
+BaseServer::BaseServer(const TCHAR *  port, LockPolicy lockPolicyType):BaseServerObject(lockPolicyType)
 {
 	m_lockPolicy=lockPolicyType;
 	switch(lockPolicyType)
 	{
 	case LOCK_POLICY_CRITICALSECTION:
 		m_lock=EP_NEW CriticalSectionEx();
-		m_listLock=EP_NEW CriticalSectionEx();
 		break;
 	case LOCK_POLICY_MUTEX:
 		m_lock=EP_NEW Mutex();
-		m_listLock=EP_NEW Mutex();
 		break;
 	case LOCK_POLICY_NONE:
 		m_lock=EP_NEW NoLock();
-		m_listLock=EP_NEW NoLock();
 		break;
 	default:
 		m_lock=NULL;
-		m_listLock=NULL;
 		break;
 	}
 	SetPort(port);
-	m_serverThreadHandle=0;
 	m_listenSocket=NULL;
 	m_result=0;
 	m_isServerStarted=false;
 }
 
-BaseServer::BaseServer(const BaseServer& b)
+BaseServer::BaseServer(const BaseServer& b):BaseServerObject(b)
 {
-	m_serverThreadHandle=0;
 	m_listenSocket=NULL;
 	m_result=0;
 	m_isServerStarted=false;
@@ -61,19 +55,15 @@ BaseServer::BaseServer(const BaseServer& b)
 	{
 	case LOCK_POLICY_CRITICALSECTION:
 		m_lock=EP_NEW CriticalSectionEx();
-		m_listLock=EP_NEW CriticalSectionEx();
 		break;
 	case LOCK_POLICY_MUTEX:
 		m_lock=EP_NEW Mutex();
-		m_listLock=EP_NEW Mutex();
 		break;
 	case LOCK_POLICY_NONE:
 		m_lock=EP_NEW NoLock();
-		m_listLock=EP_NEW NoLock();
 		break;
 	default:
 		m_lock=NULL;
-		m_listLock=NULL;
 		break;
 	}
 }
@@ -81,8 +71,6 @@ BaseServer::~BaseServer()
 {
 	StopServer();
 
-	if(m_listLock)
-		EP_DELETE m_listLock;
 	if(m_lock)
 		EP_DELETE m_lock;
 }
@@ -116,46 +104,29 @@ EpTString BaseServer::GetPort() const
 #endif //defined(_UNICODE) || defined(UNICODE)
 }
 
-vector<BaseServerWorker*> BaseServer::GetClientList() const
+vector<BaseServerObject*> BaseServer::GetWorkerList() const
 {
-	LockObj lock(m_listLock);
-	return m_clientList;
+	return m_workerList.GetList();
 }
-unsigned long BaseServer::ServerThread( LPVOID lpParam ) 
+void BaseServer::execute()
 {
-	BaseServer *pMainClass=reinterpret_cast<BaseServer*>(lpParam);
-
 	SOCKET clientSocket;
 	while(1)
 	{
-		clientSocket=accept(pMainClass->m_listenSocket, NULL, NULL);
+		clientSocket=accept(m_listenSocket, NULL, NULL);
 		if(clientSocket == INVALID_SOCKET)
 		{
 			break;			
 		}
 		else
 		{
-			BaseServerWorker *accWorker=pMainClass->createNewWorker();
+			BaseServerWorker *accWorker=createNewWorker();
 			accWorker->Start(reinterpret_cast<void*>(clientSocket));
-			LockObj lock(pMainClass->m_listLock);
-			pMainClass->m_clientList.push_back(accWorker);
+			m_workerList.Push(accWorker);
+			accWorker->ReleaseObj();
 		}
-		LockObj lock(pMainClass->m_listLock);
-		vector<BaseServerWorker*>::iterator iter;
-		for(iter=pMainClass->m_clientList.begin();iter!=pMainClass->m_clientList.end();)
-		{
-			if((*iter)->GetStatus()==Thread::THREAD_STATUS_TERMINATED)
-			{
-				(*iter)->ReleaseObj();
-				iter=pMainClass->m_clientList.erase(iter);
-			}
-			else
-				iter++;
-
-		}
+		m_workerList.RemoveTerminated();
 	}
-	pMainClass->m_serverThreadHandle=0;
-	return 0; 
 } 
 
 
@@ -181,7 +152,7 @@ bool BaseServer::StartServer()
 	iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
 	if (iResult != 0) {
 
-		System::OutputDebugString(_T("%s::%s(%d) WSAStartup failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__);
+		System::OutputDebugString(_T("%s::%s(%d)(%x) WSAStartup failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
 		return false;
 	}
 
@@ -195,7 +166,7 @@ bool BaseServer::StartServer()
 	// Resolve the server address and port
 	iResult = getaddrinfo(NULL, m_port.c_str(), &m_hints, &m_result);
 	if ( iResult != 0 ) {
-		System::OutputDebugString(_T("%s::%s(%d) getaddrinfo failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__);		
+		System::OutputDebugString(_T("%s::%s(%d)(%x) getaddrinfo failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__,this);		
 		WSACleanup();
 		return false;
 	}
@@ -203,7 +174,7 @@ bool BaseServer::StartServer()
 	// Create a SOCKET for connecting to server
 	m_listenSocket = socket(m_result->ai_family, m_result->ai_socktype, m_result->ai_protocol);
 	if (m_listenSocket == INVALID_SOCKET) {
-		System::OutputDebugString(_T("%s::%s(%d) socket failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__);
+		System::OutputDebugString(_T("%s::%s(%d)(%x) socket failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
 		stopServer();
 		return false;
 	}
@@ -215,23 +186,25 @@ bool BaseServer::StartServer()
 	// Setup the TCP listening socket
 	iResult = bind( m_listenSocket, m_result->ai_addr, static_cast<int>(m_result->ai_addrlen));
 	if (iResult == SOCKET_ERROR) {
-		System::OutputDebugString(_T("%s::%s(%d) bind failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__);
+		System::OutputDebugString(_T("%s::%s(%d)(%x) bind failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
 		stopServer();
 		return false;
 	}
 
 	iResult = listen(m_listenSocket, SOMAXCONN);
 	if (iResult == SOCKET_ERROR) {
-		System::OutputDebugString(_T("%s::%s(%d) listen failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__);
+		System::OutputDebugString(_T("%s::%s(%d)(%x) listen failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
 		stopServer();
 		return false;
 	}
 	m_isServerStarted=true;
 
 	// Create thread 1.
-	m_serverThreadHandle = CreateThread( NULL, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(BaseServer::ServerThread), this, 0, NULL);  
-	if(m_serverThreadHandle)
+	if(Start())
+	{
+		m_isServerStarted=true;
 		return true;
+	}
 	return false;
 
 
@@ -239,23 +212,9 @@ bool BaseServer::StartServer()
 
 void BaseServer::ShutdownAllClient()
 {
-	LockObj lock(m_listLock);
-	shutdownAllClient();
+	m_workerList.Clear();
 }
 
-void BaseServer::shutdownAllClient()
-{
-	if(!m_isServerStarted)
-		return;
-	// shutdown the connection since we're done
-	vector<BaseServerWorker*>::iterator iter;
-	for(iter=m_clientList.begin();iter!=m_clientList.end();iter++)
-	{
-		if(*iter)
-			(*iter)->ReleaseObj();
-	}
-	m_clientList.clear();
-}
 
 bool BaseServer::IsServerStarted() const
 {
@@ -277,15 +236,11 @@ void BaseServer::stopServer()
 		// No longer need server socket
 		if(m_listenSocket)
 			closesocket(m_listenSocket);
-		if(m_serverThreadHandle)
-		{
-			if(System::WaitForSingleObject(m_serverThreadHandle, WAITTIME_INIFINITE)==WAIT_TIMEOUT)
-				System::TerminateThread(m_serverThreadHandle,0);
-		}
+		TerminateAfter(WAITTIME_INIFINITE);
+		
 		ShutdownAllClient();
 
 	}
-	m_serverThreadHandle=0;
 	m_isServerStarted=false;
 	m_result=NULL;
 	WSACleanup();

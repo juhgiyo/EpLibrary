@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epThread.h"
 using namespace epl;
 
-BaseClient::BaseClient(const TCHAR * hostName, const TCHAR * port,LockPolicy lockPolicyType)
+BaseClient::BaseClient(const TCHAR * hostName, const TCHAR * port,LockPolicy lockPolicyType) :BaseServerSendObject(lockPolicyType)
 {
 	m_lockPolicy=lockPolicyType;
 	switch(lockPolicyType)
@@ -27,22 +27,18 @@ BaseClient::BaseClient(const TCHAR * hostName, const TCHAR * port,LockPolicy loc
 	case LOCK_POLICY_CRITICALSECTION:
 		m_sendLock=EP_NEW CriticalSectionEx();
 		m_generalLock=EP_NEW CriticalSectionEx();
-		m_listLock=EP_NEW CriticalSectionEx();
 		break;
 	case LOCK_POLICY_MUTEX:
 		m_sendLock=EP_NEW Mutex();
 		m_generalLock=EP_NEW Mutex();
-		m_listLock=EP_NEW Mutex();
 		break;
 	case LOCK_POLICY_NONE:
 		m_sendLock=EP_NEW NoLock();
 		m_generalLock=EP_NEW NoLock();
-		m_listLock=EP_NEW NoLock();
 		break;
 	default:
 		m_sendLock=NULL;
 		m_generalLock=NULL;
-		m_listLock=NULL;
 		break;
 	}
 	m_recvSizePacket=Packet(NULL,4);
@@ -54,7 +50,7 @@ BaseClient::BaseClient(const TCHAR * hostName, const TCHAR * port,LockPolicy loc
 	m_isConnected=false;
 }
 
-BaseClient::BaseClient(const BaseClient& b)
+BaseClient::BaseClient(const BaseClient& b) :BaseServerSendObject(b)
 {
 	m_connectSocket=NULL;
 	m_result=0;
@@ -69,31 +65,24 @@ BaseClient::BaseClient(const BaseClient& b)
 	case LOCK_POLICY_CRITICALSECTION:
 		m_sendLock=EP_NEW CriticalSectionEx();
 		m_generalLock=EP_NEW CriticalSectionEx();
-		m_listLock=EP_NEW CriticalSectionEx();
 		break;
 	case LOCK_POLICY_MUTEX:
 		m_sendLock=EP_NEW Mutex();
 		m_generalLock=EP_NEW Mutex();
-		m_listLock=EP_NEW Mutex();
 		break;
 	case LOCK_POLICY_NONE:
 		m_sendLock=EP_NEW NoLock();
 		m_generalLock=EP_NEW NoLock();
-		m_listLock=EP_NEW NoLock();
 		break;
 	default:
 		m_sendLock=NULL;
 		m_generalLock=NULL;
-		m_listLock=NULL;
 		break;
 	}
 }
 BaseClient::~BaseClient()
 {
 	Disconnect();
-
-	if(m_listLock)
-		EP_DELETE m_listLock;
 
 	if(m_sendLock)
 		EP_DELETE m_sendLock;
@@ -188,8 +177,12 @@ int BaseClient::Send(const Packet &packet)
 	return writeLength;
 }
 
+vector<BaseServerObject*> BaseClient::GetPacketParserList() const
+{
+	return m_parserList.GetList();
+}
 
-void BaseClient::processClientThread() 
+void BaseClient::execute() 
 {
 	int iResult;
 	// Receive until the peer shuts down the connection
@@ -207,34 +200,23 @@ void BaseClient::processClientThread()
 				passUnit.m_this=this;
 				BasePacketParser *parser =createNewPacketParser();
 				parser->Start(reinterpret_cast<void*>(&passUnit));
-				LockObj lock(m_listLock);
-				m_parserList.push_back(parser);
+				m_parserList.Push(parser);
+				parser->ReleaseObj();
 				recvPacket->ReleaseObj();
 			}
 			else if (iResult == 0)
 			{
-				LOG_THIS_MSG(_T("Connection closing...\n"));
+				System::OutputDebugString(_T("%s::%s(%d)(%x) Connection closing...\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
 				recvPacket->ReleaseObj();
 				break;
 			}
 			else  {
-				LOG_THIS_MSG(_T("recv failed with error\n"));
+				System::OutputDebugString(_T("%s::%s(%d)(%x) recv failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
 				recvPacket->ReleaseObj();
 				break;
 			}
-			LockObj lock(m_listLock);
-			vector<BasePacketParser*>::iterator iter;
-			for(iter=m_parserList.begin();iter!=m_parserList.end();)
-			{
-				if((*iter)->GetStatus()==Thread::THREAD_STATUS_TERMINATED)
-				{
-					(*iter)->ReleaseObj();
-					iter=m_parserList.erase(iter);
-				}
-				else
-					iter++;
 
-			}
+			m_parserList.RemoveTerminated();
 		}
 		else
 		{
@@ -287,7 +269,7 @@ bool BaseClient::Connect()
 	// Initialize Winsock
 	iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
 	if (iResult != 0) {
-		System::OutputDebugString(_T("%s::%s(%d) WSAStartup failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__);
+		System::OutputDebugString(_T("%s::%s(%d)(%x) WSAStartup failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
 		return false;
 	}
 
@@ -299,7 +281,7 @@ bool BaseClient::Connect()
 	// Resolve the server address and port
 	iResult = getaddrinfo(m_hostName.c_str(), m_port.c_str(), &hints, &m_result);
 	if ( iResult != 0 ) {
-		System::OutputDebugString(_T("%s::%s(%d) getaddrinfo failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__);
+		System::OutputDebugString(_T("%s::%s(%d)(%x) getaddrinfo failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
 		WSACleanup();
 		return false;
 	}
@@ -311,7 +293,7 @@ bool BaseClient::Connect()
 		m_connectSocket = socket(m_ptr->ai_family, m_ptr->ai_socktype, 
 			m_ptr->ai_protocol);
 		if (m_connectSocket == INVALID_SOCKET) {
-			System::OutputDebugString(_T("%s::%s(%d) Socket failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__);
+			System::OutputDebugString(_T("%s::%s(%d)(%x) Socket failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
 			disconnect();
 			return false;
 		}
@@ -326,26 +308,18 @@ bool BaseClient::Connect()
 		break;
 	}
 	if (m_connectSocket == INVALID_SOCKET) {
-		System::OutputDebugString(_T("%s::%s(%d) Unable to connect to server!\n"),__TFILE__,__TFUNCTION__,__LINE__);
+		System::OutputDebugString(_T("%s::%s(%d)(%x) Unable to connect to server!\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
 		disconnect();
 		return false;
 	}
-	m_isConnected=true;
-
-	m_clientThreadHandle = CreateThread( NULL, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(BaseClient::ClientThread), this, 0, NULL);  
-	if(m_clientThreadHandle)
+	if(Start())
+	{
+		m_isConnected=true;
 		return true;
-	return true;
+	}
+	return false;
 }
 
-
-unsigned long BaseClient::ClientThread( LPVOID lpParam ) 
-{
-	BaseClient *pMainClass=reinterpret_cast<BaseClient*>(lpParam);
-	pMainClass->processClientThread();
-	pMainClass->m_clientThreadHandle=0;
-	return 0; 
-}
 
 bool BaseClient::IsConnected() const
 {
@@ -362,25 +336,14 @@ void BaseClient::disconnect()
 		// shutdown the connection since no more data will be sent
 		int iResult = shutdown(m_connectSocket, SD_SEND);
 		if (iResult == SOCKET_ERROR) {
-			LOG_THIS_MSG(_T("shutdown failed with error: %d\n"), WSAGetLastError());
+			System::OutputDebugString(_T("%s::%s(%d)(%x) shutdown failed with error: %d\n"),__TFILE__,__TFUNCTION__,__LINE__,this, WSAGetLastError());
 		}
 		closesocket(m_connectSocket);
-		if(m_clientThreadHandle)
-		{
-			if(System::WaitForSingleObject(m_clientThreadHandle, WAITTIME_INIFINITE)==WAIT_TIMEOUT)
-				System::TerminateThread(m_clientThreadHandle,0);
-		}
+		
+		TerminateAfter(WAITTIME_INIFINITE);
 
-		m_listLock->Lock();
-		vector<BasePacketParser*>::iterator iter;
-		for(iter=m_parserList.begin();iter!=m_parserList.end();iter++)
-		{
-			(*iter)->ReleaseObj();
-		}
-		m_parserList.clear();
-		m_listLock->Unlock();
+		m_parserList.Clear();
 	}
-	m_clientThreadHandle=0;
 	m_isConnected=false;
 	m_connectSocket = INVALID_SOCKET;
 	m_result=NULL;

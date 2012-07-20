@@ -28,22 +28,18 @@ BaseClientUDP::BaseClientUDP(const TCHAR * hostName, const TCHAR * port,LockPoli
 	case LOCK_POLICY_CRITICALSECTION:
 		m_sendLock=EP_NEW CriticalSectionEx();
 		m_generalLock=EP_NEW CriticalSectionEx();
-		m_listLock=EP_NEW CriticalSectionEx();
 		break;
 	case LOCK_POLICY_MUTEX:
 		m_sendLock=EP_NEW Mutex();
 		m_generalLock=EP_NEW Mutex();
-		m_listLock=EP_NEW Mutex();
 		break;
 	case LOCK_POLICY_NONE:
 		m_sendLock=EP_NEW NoLock();
 		m_generalLock=EP_NEW NoLock();
-		m_listLock=EP_NEW NoLock();
 		break;
 	default:
 		m_sendLock=NULL;
 		m_generalLock=NULL;
-		m_listLock=NULL;
 		break;
 	}
 	SetHostName(hostName);
@@ -70,22 +66,18 @@ BaseClientUDP::BaseClientUDP(const BaseClientUDP& b)
 	case LOCK_POLICY_CRITICALSECTION:
 		m_sendLock=EP_NEW CriticalSectionEx();
 		m_generalLock=EP_NEW CriticalSectionEx();
-		m_listLock=EP_NEW CriticalSectionEx();
 		break;
 	case LOCK_POLICY_MUTEX:
 		m_sendLock=EP_NEW Mutex();
 		m_generalLock=EP_NEW Mutex();
-		m_listLock=EP_NEW Mutex();
 		break;
 	case LOCK_POLICY_NONE:
 		m_sendLock=EP_NEW NoLock();
 		m_generalLock=EP_NEW NoLock();
-		m_listLock=EP_NEW NoLock();
 		break;
 	default:
 		m_sendLock=NULL;
 		m_generalLock=NULL;
-		m_listLock=NULL;
 		break;
 	}
 
@@ -93,9 +85,6 @@ BaseClientUDP::BaseClientUDP(const BaseClientUDP& b)
 BaseClientUDP::~BaseClientUDP()
 {
 	Disconnect();
-
-	if(m_listLock)
-		EP_DELETE m_listLock;
 
 	if(m_sendLock)
 		EP_DELETE m_sendLock;
@@ -200,6 +189,13 @@ int BaseClientUDP::receive(Packet &packet)
 	return recvLength;
 }
 
+
+vector<BaseServerObject*> BaseClientUDP::GetPacketParserList() const
+{
+	return m_parserList.GetList();
+}
+
+
 bool BaseClientUDP::Connect()
 {
 	LockObj lock(m_generalLock);
@@ -225,7 +221,7 @@ bool BaseClientUDP::Connect()
 	// Initialize Winsock
 	iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
 	if (iResult != 0) {
-		System::OutputDebugString(_T("%s::%s(%d) WSAStartup failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__);
+		System::OutputDebugString(_T("%s::%s(%d)(%x) WSAStartup failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
 		return false;
 	}
 
@@ -237,7 +233,7 @@ bool BaseClientUDP::Connect()
 	// Resolve the server address and port
 	iResult = getaddrinfo(m_hostName.c_str(), m_port.c_str(), &hints, &m_result);
 	if ( iResult != 0 ) {
-		System::OutputDebugString(_T("%s::%s(%d) getaddrinfo failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__);
+		System::OutputDebugString(_T("%s::%s(%d)(%x) getaddrinfo failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
 		WSACleanup();
 		return false;
 	}
@@ -249,14 +245,14 @@ bool BaseClientUDP::Connect()
 		m_connectSocket = socket(m_ptr->ai_family, m_ptr->ai_socktype, 
 			m_ptr->ai_protocol);
 		if (m_connectSocket == INVALID_SOCKET) {
-			System::OutputDebugString(_T("%s::%s(%d) Socket failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__);
+			System::OutputDebugString(_T("%s::%s(%d)(%x) Socket failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
 			disconnect();
 			return false;
 		}
 		break;
 	}
 	if (m_connectSocket == INVALID_SOCKET) {
-		System::OutputDebugString(_T("%s::%s(%d) Unable to connect to server!\n"),__TFILE__,__TFUNCTION__,__LINE__);
+		System::OutputDebugString(_T("%s::%s(%d)(%x) Unable to connect to server!\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
 		disconnect();
 		return false;
 	}
@@ -264,22 +260,14 @@ bool BaseClientUDP::Connect()
 	int nTmp = sizeof(int);
 	getsockopt(m_connectSocket, SOL_SOCKET,SO_MAX_MSG_SIZE, (char *)&m_maxPacketSize,&nTmp);
 
-	m_isConnected=true;
-
-	m_clientThreadHandle = CreateThread( NULL, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(BaseClientUDP::ClientThread), this, 0, NULL);  
-	if(m_clientThreadHandle)
+	if(Start())
+	{
+		m_isConnected=true;
 		return true;
-	return true;
+	}
+	return false;
 }
 
-
-unsigned long BaseClientUDP::ClientThread( LPVOID lpParam ) 
-{
-	BaseClientUDP *pMainClass=reinterpret_cast<BaseClientUDP*>(lpParam);
-	pMainClass->processClientThread();
-	pMainClass->m_clientThreadHandle=0;
-	return 0; 
-}
 
 bool BaseClientUDP::IsConnected() const
 {
@@ -295,22 +283,12 @@ void BaseClientUDP::disconnect()
 	{
 		int iResult = shutdown(m_connectSocket, SD_SEND);
 		if (iResult == SOCKET_ERROR)
-			LOG_THIS_MSG(_T("shutdown failed with error: %d\n"), WSAGetLastError());
+			System::OutputDebugString(_T("%s::%s(%d)(%x) shutdown failed with error: %d\n"),__TFILE__,__TFUNCTION__,__LINE__,this, WSAGetLastError());
 		closesocket(m_connectSocket);
-		if(m_clientThreadHandle)
-		{
-			if(System::WaitForSingleObject(m_clientThreadHandle, WAITTIME_INIFINITE)==WAIT_TIMEOUT)
-				System::TerminateThread(m_clientThreadHandle,0);
-		}
 
-		m_listLock->Lock();
-		vector<BasePacketParser*>::iterator iter;
-		for(iter=m_parserList.begin();iter!=m_parserList.end();iter++)
-		{
-			(*iter)->ReleaseObj();
-		}
-		m_parserList.clear();
-		m_listLock->Unlock();
+		TerminateAfter(WAITTIME_INIFINITE);
+	
+		m_parserList.Clear();
 	}
 	m_isConnected=false;
 	m_connectSocket = INVALID_SOCKET;
@@ -327,7 +305,7 @@ void BaseClientUDP::Disconnect()
 }
 
 
-void BaseClientUDP::processClientThread() 
+void BaseClientUDP::execute() 
 {
 	int iResult=0;
 	// Receive until the peer shuts down the connection
@@ -342,32 +320,20 @@ void BaseClientUDP::processClientThread()
 			passUnit.m_this=this;
 			BasePacketParser *parser=createNewPacketParser();
 			parser->Start(reinterpret_cast<void*>(&passUnit));
+			m_parserList.Push(parser);
+			parser->ReleaseObj();
 			passPacket->ReleaseObj();
-			LockObj lock(m_listLock);
-			m_parserList.push_back(parser);
 		}
 		else if (iResult == 0)
 		{
-			LOG_THIS_MSG(_T("Connection closing...\n"));
+			System::OutputDebugString(_T("%s::%s(%d)(%x) Connection closing...\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
 			break;
 		}
 		else  {
-			LOG_THIS_MSG(_T("recv failed with error\n"));
+			System::OutputDebugString(_T("%s::%s(%d)(%x) recv failed with error\n"),__TFILE__,__TFUNCTION__,__LINE__,this);
 			break;
 		}
-		LockObj lock(m_listLock);
-		vector<BasePacketParser*>::iterator iter;
-		for(iter=m_parserList.begin();iter!=m_parserList.end();)
-		{
-			if((*iter)->GetStatus()==Thread::THREAD_STATUS_TERMINATED)
-			{
-				(*iter)->ReleaseObj();
-				iter=m_parserList.erase(iter);
-			}
-			else
-				iter++;
-
-		}
+		m_parserList.RemoveTerminated();
 
 	} while (iResult > 0);
 
