@@ -1,9 +1,9 @@
 /*! 
-@file epBaseServerSendObject.h
+@file epBaseCallbackObject.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
 		<http://github.com/juhgiyo/eplibrary>
 @date July 20, 2012
-@brief Base Server Send Object Interface
+@brief Base Server Callback Object Interface
 @version 2.0
 
 @section LICENSE
@@ -25,31 +25,32 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 @section DESCRIPTION
 
-An Interface for Base Server Send Object.
+An Interface for Base Callback Object.
 
 */
-#ifndef __EP_BASE_SERVER_SEND_OBJECT_H__
-#define __EP_BASE_SERVER_SEND_OBJECT_H__
+#ifndef __EP_BASE_CALLBACK_OBJECT_H__
+#define __EP_BASE_CALLBACK_OBJECT_H__
 
 #include "epFoundationLib.h"
 #include "epSystem.h"
-#include "epBaseServerObject.h"
+#include "epThread.h"
+#include "epSmartObject.h"
 namespace epl{
 
 	/*! 
-	@class BaseServerSendObject epBaseServerSendObject.h
-	@brief A class for Base Server Send Object.
+	@class BaseCallbackObject epBaseCallbackObject.h
+	@brief A class for Base Callback Object.
 	*/
-	class EP_FOUNDATION BaseServerSendObject:public BaseServerObject{
+	class EP_FOUNDATION BaseCallbackObject:public SmartObject
+	{
 	public:
-			/*!
+		/*!
 		Default Constructor
 
 		Initializes the Object
-		@param[in] callbackObj the callback object to call when thread stops
 		@param[in] lockPolicyType The lock policy
 		*/
-		BaseServerSendObject(BaseCallbackObject *callbackObj=NULL,LockPolicy lockPolicyType=EP_LOCK_POLICY):BaseServerObject(callbackObj,lockPolicyType)
+		BaseCallbackObject(LockPolicy lockPolicyType=EP_LOCK_POLICY):SmartObject(lockPolicyType)
 		{
 		}
 
@@ -59,7 +60,7 @@ namespace epl{
 		Initializes the Object
 		@param[in] b the second object
 		*/
-		BaseServerSendObject(const BaseServerObject& b):BaseServerObject(b)
+		BaseCallbackObject(const BaseCallbackObject& b):SmartObject(b)
 		{
 		}
 		/*!
@@ -67,25 +68,32 @@ namespace epl{
 
 		Destroy the Object
 		*/
-		virtual ~BaseServerSendObject(){}
+		virtual ~BaseCallbackObject()
+		{
+
+		}
 
 		/*!
 		Assignment operator overloading
 		@param[in] b the second object
 		@return the new copied object
 		*/
-		BaseServerSendObject & operator=(const BaseServerSendObject&b)
+		BaseCallbackObject & operator=(const BaseCallbackObject&b)
 		{
 			if(this!=&b)
 			{
-				BaseServerObject::operator=(b);
+				SmartObject::operator =(b);
 			}
 			return *this;
 		}
 
-		virtual int Send(const Packet &packet)=0;
+		/*!
+		Call back function
+		@remark Sub-class should implement this to get call back.
+		*/
+		virtual void Callback()=0;
 	};
 }
 
 
-#endif //__EP_BASE_SERVER_SEND_OBJECT_H__
+#endif //__EP_BASE_CALLBACK_OBJECT_H__

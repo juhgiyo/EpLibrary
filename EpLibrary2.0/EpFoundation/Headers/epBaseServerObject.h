@@ -35,7 +35,7 @@ An Interface for Base Server Object.
 #include "epSystem.h"
 #include "epThread.h"
 #include "epSmartObject.h"
-#include "epBaseServerCallbackObject.h"
+#include "epBaseCallbackObject.h"
 
 namespace epl{
 
@@ -53,7 +53,7 @@ namespace epl{
 		@param[in] callbackObj the callback object to call when thread stops
 		@param[in] lockPolicyType The lock policy
 		*/
-		BaseServerObject(BaseServerCallbackObject *callbackObj=NULL,LockPolicy lockPolicyType=EP_LOCK_POLICY):SmartObject(lockPolicyType),Thread(lockPolicyType)
+		BaseServerObject(BaseCallbackObject *callbackObj=NULL,LockPolicy lockPolicyType=EP_LOCK_POLICY):SmartObject(lockPolicyType),Thread(callbackObj,lockPolicyType)
 		{
 		}
 

@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace epl;
 
-BaseClientUDP::BaseClientUDP(const TCHAR * hostName, const TCHAR * port,BaseServerCallbackObject *callbackObj,LockPolicy lockPolicyType): BaseServerSendObject(callbackObj,lockPolicyType)
+BaseClientUDP::BaseClientUDP(const TCHAR * hostName, const TCHAR * port,BaseCallbackObject *callbackObj,LockPolicy lockPolicyType): BaseServerSendObject(callbackObj,lockPolicyType)
 {
 	m_lockPolicy=lockPolicyType;
 	switch(lockPolicyType)

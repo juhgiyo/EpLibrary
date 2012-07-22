@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epThread.h"
 using namespace epl;
 
-BasePacketParser::BasePacketParser(unsigned int waitTimeMilliSec,BaseServerCallbackObject *callbackObj,LockPolicy lockPolicyType):BaseServerObject(callbackObj,lockPolicyType)
+BasePacketParser::BasePacketParser(unsigned int waitTimeMilliSec,BaseCallbackObject *callbackObj,LockPolicy lockPolicyType):BaseServerObject(callbackObj,lockPolicyType)
 {
 	m_waitTime=waitTimeMilliSec;
 	m_owner=NULL;

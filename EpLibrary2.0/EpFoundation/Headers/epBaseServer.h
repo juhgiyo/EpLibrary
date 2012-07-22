@@ -45,7 +45,7 @@ An Interface for Base Server.
 #include "epServerConf.h"
 #include "epBaseServerObject.h"
 #include "epServerObjectList.h"
-#include "epBaseServerCallbackObject.h"
+#include "epBaseCallbackObject.h"
 
 #include <winsock2.h>
 #include <ws2tcpip.h>
@@ -77,7 +77,7 @@ namespace epl{
 		@param[in] callbackObj the callback object to call when server stops
 		@param[in] lockPolicyType The lock policy
 		*/
-		BaseServer(const TCHAR * port=_T(DEFAULT_PORT),BaseServerCallbackObject *callbackObj=NULL, LockPolicy lockPolicyType=EP_LOCK_POLICY);
+		BaseServer(const TCHAR * port=_T(DEFAULT_PORT),BaseCallbackObject *callbackObj=NULL, LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Copy Constructor

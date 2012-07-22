@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epThread.h"
 using namespace epl;
 
-BaseClient::BaseClient(const TCHAR * hostName, const TCHAR * port,BaseServerCallbackObject *callbackObj,LockPolicy lockPolicyType) :BaseServerSendObject(callbackObj,lockPolicyType)
+BaseClient::BaseClient(const TCHAR * hostName, const TCHAR * port,BaseCallbackObject *callbackObj,LockPolicy lockPolicyType) :BaseServerSendObject(callbackObj,lockPolicyType)
 {
 	m_lockPolicy=lockPolicyType;
 	switch(lockPolicyType)

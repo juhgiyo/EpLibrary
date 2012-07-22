@@ -1089,6 +1089,10 @@
 				Name="Thread System"
 				>
 				<File
+					RelativePath=".\Headers\epBaseCallbackObject.h"
+					>
+				</File>
+				<File
 					RelativePath=".\Headers\epThread.h"
 					>
 				</File>
@@ -1146,10 +1150,6 @@
 				>
 				<File
 					RelativePath=".\Headers\epBasePacketParser.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Headers\epBaseServerCallbackObject.h"
 					>
 				</File>
 				<File

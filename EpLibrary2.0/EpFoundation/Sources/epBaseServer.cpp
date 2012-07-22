@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace epl;
 
-BaseServer::BaseServer(const TCHAR *  port,BaseServerCallbackObject *callbackObj, LockPolicy lockPolicyType):BaseServerObject(callbackObj,lockPolicyType)
+BaseServer::BaseServer(const TCHAR *  port,BaseCallbackObject *callbackObj, LockPolicy lockPolicyType):BaseServerObject(callbackObj,lockPolicyType)
 {
 	m_lockPolicy=lockPolicyType;
 	switch(lockPolicyType)

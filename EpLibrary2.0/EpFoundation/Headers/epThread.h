@@ -35,6 +35,7 @@ A Frame Interface for Thread Class.
 #include "epCriticalSectionEx.h"
 #include "epMutex.h"
 #include "epNoLock.h"
+#include "epBaseCallbackObject.h"
 
 namespace epl
 {
@@ -92,7 +93,7 @@ namespace epl
 		Initializes the thread class
 		@param[in] lockPolicyType The lock policy
 		*/
-		Thread(LockPolicy lockPolicyType=EP_LOCK_POLICY);
+		Thread(BaseCallbackObject *callBackObj=NULL,LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Copy Constructor
@@ -117,6 +118,17 @@ namespace epl
 		*/
 		Thread &operator=(const Thread & b)
 		{
+			if(this!=&b)
+			{
+				LockObj lock(m_callBackLock);
+				if(m_callBackObj)
+				{
+					m_callBackObj->ReleaseObj();
+				}
+				m_callBackObj=b.m_callBackObj;
+				if(m_callBackObj)
+					m_callBackObj->RetainObj();
+			}
 			return *this;
 		}
 
@@ -182,6 +194,17 @@ namespace epl
 			return m_status;
 		}
 
+		/*!
+		Return the Callback Object.
+		@return the current callback object.
+		*/
+		BaseCallbackObject *GetCallbackObj();
+
+		/*!
+		Set current callback object as given parameter
+		@param[in] callBackObj the callback object to set
+		*/
+		void SetCallbackObj(BaseCallbackObject * callBackObj);
 
 		/*!
 		Return the thread argument list.
@@ -259,8 +282,12 @@ namespace epl
 		ThreadType m_type;
 		/// Lock
 		BaseLock *m_threadLock;
+		/// Callback Lock
+		BaseLock *m_callBackLock;
 		/// Thread Lock Policy
 		LockPolicy m_lockPolicy;
+		/// Callback Object
+		BaseCallbackObject *m_callBackObj;
 
 
 	};

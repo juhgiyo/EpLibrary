@@ -42,7 +42,7 @@ An Interface for Base Client.
 #include "epBasePacketParser.h"
 #include "epServerConf.h"
 #include "epServerObjectList.h"
-#include "epBaseServerCallbackObject.h"
+#include "epBaseCallbackObject.h"
 
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
@@ -85,7 +85,7 @@ namespace epl{
 		@param[in] callbackObj the callback object to call when client disconnects
 		@param[in] lockPolicyType The lock policy
 		*/
-		BaseClient(const TCHAR * hostName=_T(DEFAULT_HOSTNAME), const TCHAR * port=_T(DEFAULT_PORT),BaseServerCallbackObject *callbackObj=NULL,LockPolicy lockPolicyType=EP_LOCK_POLICY);
+		BaseClient(const TCHAR * hostName=_T(DEFAULT_HOSTNAME), const TCHAR * port=_T(DEFAULT_PORT),BaseCallbackObject *callbackObj=NULL,LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Copy Constructor

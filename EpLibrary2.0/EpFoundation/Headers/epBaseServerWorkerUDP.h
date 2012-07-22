@@ -75,7 +75,7 @@ namespace epl
 		@param[in] callbackObj the callback object to call when worker thread stops
 		@param[in] lockPolicyType The lock policy
 		*/
-		BaseServerWorkerUDP(BaseServerCallbackObject *callbackObj=NULL,LockPolicy lockPolicyType=EP_LOCK_POLICY);
+		BaseServerWorkerUDP(BaseCallbackObject *callbackObj=NULL,LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Copy Constructor

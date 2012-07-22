@@ -39,7 +39,7 @@ An Interface for Base Packet Parser.
 #include "epPacket.h"
 #include "epBaseServerSendObject.h"
 #include "epServerConf.h"
-#include "epBaseServerCallbackObject.h"
+#include "epBaseCallbackObject.h"
 
 namespace epl
 {
@@ -58,7 +58,7 @@ namespace epl
 		@param[in] callbackObj the callback object to call when parser thread stops
 		@param[in] lockPolicyType The lock policy
 		*/
-		BasePacketParser(unsigned int waitTimeMilliSec=DEFAULT_WAITTIME,BaseServerCallbackObject *callbackObj=NULL,LockPolicy lockPolicyType=EP_LOCK_POLICY);
+		BasePacketParser(unsigned int waitTimeMilliSec=DEFAULT_WAITTIME,BaseCallbackObject *callbackObj=NULL,LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Copy Constructor
