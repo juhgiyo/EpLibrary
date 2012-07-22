@@ -134,6 +134,7 @@ namespace epl
 		{
 			if(this!=&b)
 			{
+				LockObj lock(m_callBackLock);
 				Thread::operator =(b);
 				m_callBackClass=b.m_callBackClass;
 				
@@ -163,6 +164,11 @@ namespace epl
 		ThreadLifePolicy m_lifePolicy;
 		/// the call back class
 		void *m_callBackClass;
+
+		/// callback Lock
+		BaseLock * m_callBackLock;
+		/// Thread Lock Policy
+		LockPolicy m_lockPolicy;
 
 	};
 }

@@ -282,7 +282,7 @@ bool BaseClientUDP::Connect()
 
 bool BaseClientUDP::IsConnected() const
 {
-	return (m_status==Thread::THREAD_STATUS_STARTED);
+	return (GetStatus()==Thread::THREAD_STATUS_STARTED);
 }
 
 void BaseClientUDP::cleanUpClient()

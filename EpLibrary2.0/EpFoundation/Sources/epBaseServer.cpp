@@ -239,7 +239,7 @@ void BaseServer::ShutdownAllClient()
 
 bool BaseServer::IsServerStarted() const
 {
-	return (m_status==Thread::THREAD_STATUS_STARTED);
+	return (GetStatus()==Thread::THREAD_STATUS_STARTED);
 }
 
 void BaseServer::StopServer()

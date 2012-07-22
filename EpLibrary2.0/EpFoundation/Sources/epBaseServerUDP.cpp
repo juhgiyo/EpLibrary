@@ -280,7 +280,7 @@ void BaseServerUDP::ShutdownAllClient()
 
 bool BaseServerUDP::IsServerStarted() const
 {
-	return (m_status==Thread::THREAD_STATUS_STARTED);
+	return (GetStatus()==Thread::THREAD_STATUS_STARTED);
 }
 
 void BaseServerUDP::StopServer()

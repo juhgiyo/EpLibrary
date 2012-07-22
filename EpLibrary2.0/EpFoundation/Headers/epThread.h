@@ -189,6 +189,33 @@ namespace epl
 		*/
 		void * GetArg() const;
 
+	protected:
+
+		/*!
+		Return the Thread Handle.
+		@return the current thread handle.
+		*/
+		ThreadHandle getHandle() const
+		{
+			return m_threadHandle;
+		}
+
+		/*!
+		Set the thread argument list.
+		@param[in] a The argument list for the thread.
+		*/
+		virtual void setArg(void* a);
+
+		/*!
+		Setup the thread when it started.
+		*/
+		virtual void setup();
+
+		/*!
+		Actual Thread Code.
+		*/
+		virtual void execute();
+
 	private:
 
 		
@@ -218,32 +245,7 @@ namespace epl
 		*/
 		static unsigned long __stdcall entryPoint2(void* pthis);
 
-	protected:
 
-		/*!
-		Return the Thread Handle.
-		@return the current thread handle.
-		*/
-		ThreadHandle getHandle() const
-		{
-			return m_threadHandle;
-		}
-
-		/*!
-		Set the thread argument list.
-		@param[in] a The argument list for the thread.
-		*/
-		virtual void setArg(void* a);
-
-		/*!
-		Setup the thread when it started.
-		*/
-		virtual void setup();
-
-		/*!
-		Actual Thread Code.
-		*/
-		virtual void execute();
 
 		/// Thread ID
 		ThreadID m_threadId;

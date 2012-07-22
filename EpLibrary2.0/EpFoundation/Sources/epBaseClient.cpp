@@ -336,7 +336,7 @@ bool BaseClient::Connect()
 
 bool BaseClient::IsConnected() const
 {
-	return (m_status==Thread::THREAD_STATUS_STARTED);
+	return (GetStatus()==Thread::THREAD_STATUS_STARTED);
 }
 
 void BaseClient::cleanUpClient()

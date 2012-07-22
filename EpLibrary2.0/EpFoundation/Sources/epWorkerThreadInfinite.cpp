@@ -35,14 +35,14 @@ void WorkerThreadInfinite::execute()
 			Yield();
 			continue;
 		}
-		EP_ASSERT_EXPR(m_arg,_T("Job Processor is NULL!"));
-		if(m_arg)
+		EP_ASSERT_EXPR(GetArg(),_T("Job Processor is NULL!"));
+		if(GetArg())
 			break;
 		BaseJob * jobPtr=m_workPool.Front();
 		jobPtr->RetainObj();
 		m_workPool.Pop();
 		jobPtr->JobReport(BaseJob::JOB_STATUS_IN_PROCESS);
-		(reinterpret_cast<BaseJobProcessor*>(m_arg))->DoJob(m_threadId,m_lifePolicy, jobPtr);
+		(reinterpret_cast<BaseJobProcessor*>(GetArg()))->DoJob(GetID(),m_lifePolicy, jobPtr);
 		jobPtr->JobReport(BaseJob::JOB_STATUS_DONE);
 		jobPtr->ReleaseObj();
 	}
