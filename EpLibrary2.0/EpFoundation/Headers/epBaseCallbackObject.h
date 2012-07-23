@@ -33,10 +33,9 @@ An Interface for Base Callback Object.
 
 #include "epFoundationLib.h"
 #include "epSystem.h"
-#include "epThread.h"
 #include "epSmartObject.h"
 namespace epl{
-
+	class Thread;
 	/*! 
 	@class BaseCallbackObject epBaseCallbackObject.h
 	@brief A class for Base Callback Object.
@@ -89,9 +88,10 @@ namespace epl{
 
 		/*!
 		Call back function
+		@param[in] terminatedThread the thread object that terminated
 		@remark Sub-class should implement this to get call back.
 		*/
-		virtual void Callback()=0;
+		virtual void Callback(Thread* terminatedThread)=0;
 	};
 }
 

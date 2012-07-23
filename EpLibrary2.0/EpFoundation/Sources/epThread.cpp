@@ -93,8 +93,6 @@ Thread::~Thread()
 	if(m_status!=THREAD_STATUS_TERMINATED)
 	{
 		System::TerminateThread(m_threadHandle,0);
-		if(m_callBackObj)
-			m_callBackObj->Callback();
 	}
 	if(m_callBackObj)
 		m_callBackObj->ReleaseObj();
@@ -199,7 +197,7 @@ bool Thread::Terminate()
 			m_threadId=0;
 			m_threadHandle=0;
 			if(m_callBackObj)
-				m_callBackObj->Callback();
+				m_callBackObj->Callback(this);
 			m_callBackLock->Unlock();
 			return true;
 		}
@@ -347,7 +345,7 @@ void Thread::successTerminate()
 	
 	m_callBackLock->Lock();
 	if(m_callBackObj)
-		m_callBackObj->Callback();
+		m_callBackObj->Callback(this);
 	m_callBackLock->Unlock();
 
 	unsigned long exitCode=0;
