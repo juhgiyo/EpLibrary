@@ -33,9 +33,6 @@ An Interface for Exception.
 #include "epFoundationLib.h"
 #include <exception>
 
-namespace epl
-{
-
 /*!
 @def EP_VERIFY_EXCEPTION_W_MSG
 @brief Macro Function for verify and throw exception with message.
@@ -258,7 +255,7 @@ namespace epl
 		Initializes the exception with given message
 		@param[in] message exception message
 		*/
-		ExceptionThreadDeadLockError(const EpString &message) throw():runtime_error(message)
+		ExceptionThreadDeadLockError(const epl::EpString &message) throw():runtime_error(message)
 		{
 		}
 
@@ -326,7 +323,7 @@ namespace epl
 		Initializes the exception with given message
 		@param[in] message exception message
 		*/
-		ExceptionThreadCreationError(const EpString &message) throw():runtime_error(message)
+		ExceptionThreadCreationError(const epl::EpString &message) throw():runtime_error(message)
 		{
 		}
 
@@ -395,7 +392,7 @@ namespace epl
 		Initializes the exception with given message
 		@param[in] message exception message
 		*/
-		ExceptionThreadTerminationError(const EpString &message) throw():runtime_error(message)
+		ExceptionThreadTerminationError(const epl::EpString &message) throw():runtime_error(message)
 		{
 		}
 
@@ -443,6 +440,6 @@ namespace epl
 	@param[in] _Expression the boolean expression to evaluate the exception
 	*/
 #define EP_VERIFY_THREAD_TERMINATION_ERROR(_Expression) EP_VERIFY_EXCEPTION(_Expression,ExceptionThreadTerminationError)
-}
+
 
 #endif //__EP_EXCEPTION_H__
