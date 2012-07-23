@@ -91,6 +91,7 @@ namespace epl
 		Default Constructor
 
 		Initializes the thread class
+		@param[in] callBackObj The callback object to call when thread ends
 		@param[in] lockPolicyType The lock policy
 		*/
 		Thread(BaseCallbackObject *callBackObj=NULL,LockPolicy lockPolicyType=EP_LOCK_POLICY);
