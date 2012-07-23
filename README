@@ -44,15 +44,6 @@ FEATURES
   3. XML File Operation
   4. Text File Operation
 
-* Server/Client Template Framework
-  * Server Side
-    1. BaseServer
-    2. BaseServerWorkerSimple
-    3. BaseServerWorkerEx
-  * Client Side
-    1. BaseClientSimple
-    2. BaseClientEx
-    
 * System Framework
   1. Console Operation
   2. DateTime Operation
