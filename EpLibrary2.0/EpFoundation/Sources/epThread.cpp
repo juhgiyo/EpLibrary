@@ -112,7 +112,7 @@ bool Thread::Start(void * arg,const ThreadOpCode opCode, const ThreadType thread
 	LockObj lock(m_threadLock);
 	if(m_status==THREAD_STATUS_TERMINATED && !m_threadHandle)
 	{
-		setArg(arg);
+		setDefaultArgument(arg);
 		m_type=threadType;
 		if(m_type==THREAD_TYPE_BEGIN_THREAD)
 			m_threadHandle=reinterpret_cast<ThreadHandle>(_beginthreadex(NULL,stackSize,Thread::entryPoint,this,opCode,&m_threadId));
@@ -287,14 +287,20 @@ void Thread::SetCallbackObj(BaseCallbackObject * callBackObj)
 
 void Thread::setArg(void* a)
 {
+}
+
+void Thread::setDefaultArgument(void *a)
+{
 	if(m_status!=THREAD_STATUS_STARTED)
+	{
 		m_arg=a;
+		setArg(a);
+	}
 	else
 	{
 		EP_NOTICEBOX(_T("Cannot Set Argument during Thread Running!"));
 	}
 }
-
 
 int Thread::run()
 {

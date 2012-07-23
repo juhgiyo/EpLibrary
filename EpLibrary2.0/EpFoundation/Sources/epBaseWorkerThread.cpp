@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epBaseWorkerThread.h"
 #include "epSmartObject.h"
 #include "epWorkerThreadDelegate.h"
-
+#include "epBaseJobProcessor.h"
 using namespace epl;
 
 BaseWorkerThread::BaseWorkerThread(const ThreadLifePolicy policy,LockPolicy lockPolicyType) :Thread(NULL,lockPolicyType)
@@ -48,6 +48,9 @@ BaseWorkerThread::BaseWorkerThread(const BaseWorkerThread & b):Thread(b)
 	m_lifePolicy=b.m_lifePolicy;
 	m_callBackClass=b.m_callBackClass;
 	m_lockPolicy=b.m_lockPolicy;
+	m_jobProcessor=b.m_jobProcessor;
+	if(m_jobProcessor)
+		m_jobProcessor->RetainObj();
 	switch(m_lockPolicy)
 	{
 	case LOCK_POLICY_CRITICALSECTION:
@@ -66,9 +69,9 @@ BaseWorkerThread::BaseWorkerThread(const BaseWorkerThread & b):Thread(b)
 }
 BaseWorkerThread::~BaseWorkerThread()
 {
-	if(GetArg())
+	if(m_jobProcessor)
 	{
-		(reinterpret_cast<SmartObject*>(GetArg()))->ReleaseObj();
+		m_jobProcessor->ReleaseObj();
 	}
 	while(!m_workPool.IsEmpty())
 	{
@@ -79,6 +82,22 @@ BaseWorkerThread::~BaseWorkerThread()
 		EP_DELETE m_callBackLock;
 }
 
+BaseWorkerThread &BaseWorkerThread::operator=(const BaseWorkerThread & b)
+{
+	if(this!=&b)
+	{
+		LockObj lock(m_callBackLock);
+		Thread::operator =(b);
+		m_callBackClass=b.m_callBackClass;
+		if(m_jobProcessor)
+			m_jobProcessor->ReleaseObj();
+		m_jobProcessor=b.m_jobProcessor;
+		if(m_jobProcessor)
+			m_jobProcessor->RetainObj();
+
+	}
+	return *this;
+}
 void BaseWorkerThread::Push(BaseJob* const  work)
 {
 	m_workPool.Push(work);
@@ -109,18 +128,12 @@ int BaseWorkerThread::GetJobCount() const
 }
 void BaseWorkerThread::setArg(void* a)
 {
-	if(GetStatus()!=THREAD_STATUS_STARTED)
-	{
-		if(GetArg())
-			(reinterpret_cast<SmartObject*>(GetArg()))->ReleaseObj();
-		Thread::setArg(a);
-		if(GetArg())
-			(reinterpret_cast<SmartObject*>(GetArg()))->RetainObj();
-	}
-	else
-	{
-		EP_ASSERT_EXPR(0,_T("Cannot Set Argument during Thread Running!"));
-	}
+	BaseJobProcessor* arg=reinterpret_cast<BaseJobProcessor*>(a);
+	if(m_jobProcessor)
+		m_jobProcessor->ReleaseObj();
+	m_jobProcessor=arg;
+	if(m_jobProcessor)
+		m_jobProcessor->RetainObj();
 }
 void BaseWorkerThread::SetCallBackClass(void *callBackClass)
 {

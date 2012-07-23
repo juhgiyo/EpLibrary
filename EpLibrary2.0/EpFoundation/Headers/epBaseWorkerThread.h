@@ -36,6 +36,7 @@ A Interface for Base Worker Thread Class.
 
 namespace epl
 {
+	class BaseJobProcessor;
 	/*! 
 	@class BaseWorkerThread epBaseWorkerThread.h
 	@brief A class that implements Base Worker Thread Class.
@@ -130,17 +131,8 @@ namespace epl
 		@param[in] b the second object
 		@return the new copied object
 		*/
-		BaseWorkerThread &operator=(const BaseWorkerThread & b)
-		{
-			if(this!=&b)
-			{
-				LockObj lock(m_callBackLock);
-				Thread::operator =(b);
-				m_callBackClass=b.m_callBackClass;
-				
-			}
-			return *this;
-		}
+		BaseWorkerThread &operator=(const BaseWorkerThread & b);
+
 	protected:
 		/*!
 		Set new Job Processor.
@@ -169,6 +161,8 @@ namespace epl
 		BaseLock * m_callBackLock;
 		/// Thread Lock Policy
 		LockPolicy m_lockPolicy;
+		/// Job Processor
+		BaseJobProcessor* m_jobProcessor;
 
 	};
 }

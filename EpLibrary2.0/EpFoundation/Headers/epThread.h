@@ -225,23 +225,30 @@ namespace epl
 		}
 
 		/*!
-		Set the thread argument list.
-		@param[in] a The argument list for the thread.
+		Set the thread argument input.
+		@param[in] a The argument input for the thread.
+		@remark Subclass should override this function to set member variables when thread starts. (Optional)
 		*/
 		virtual void setArg(void* a);
 
 		/*!
 		Setup the thread when it started.
+		@remark Subclass should override this function for setup before thread executes. (Optional)
 		*/
 		virtual void setup();
 
 		/*!
 		Actual Thread Code.
+		@remark Subclass should override this function for executing the thread function.
 		*/
 		virtual void execute();
 
 	private:
-
+		/*!
+		Set argument when thread start and call setArg function with given argument
+		@param[in] a the argument input
+		*/
+		void setDefaultArgument(void *a);
 		
 
 		/*!
