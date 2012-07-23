@@ -187,6 +187,23 @@ namespace epl
 		}
 
 		/*!
+		Return the parent's Thread Handle.
+		@return the parent's Thread Handle.
+		*/
+		ThreadHandle GetParentThreadHandle() const
+		{
+			return m_parentThreadHandle;
+		}
+
+		/*!
+		Return the parent's Thread ID
+		@return the parent's Thread ID
+		*/
+		ThreadID GetParentThreadID() const
+		{
+			return m_parentThreadId;
+		}
+		/*!
 		Return the Thread Status.
 		@return the current thread status.
 		*/
@@ -282,6 +299,12 @@ namespace epl
 		ThreadID m_threadId;
 		/// Thread Handle
 		ThreadHandle m_threadHandle;
+		
+		/// Parent Thread ID
+		ThreadID m_parentThreadId;
+		/// Parent Thread Handle
+		ThreadHandle m_parentThreadHandle;
+		
 		/// Thread Argument List
 		void * m_arg;
 		/// Thread Status

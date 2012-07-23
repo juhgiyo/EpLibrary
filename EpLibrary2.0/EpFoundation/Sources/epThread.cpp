@@ -112,6 +112,8 @@ bool Thread::Start(void * arg,const ThreadOpCode opCode, const ThreadType thread
 	{
 		setDefaultArgument(arg);
 		m_type=threadType;
+		m_parentThreadHandle=GetCurrentThread();
+		m_parentThreadId=GetCurrentThreadId();
 		if(m_type==THREAD_TYPE_BEGIN_THREAD)
 			m_threadHandle=reinterpret_cast<ThreadHandle>(_beginthreadex(NULL,stackSize,Thread::entryPoint,this,opCode,&m_threadId));
 		else

@@ -30,7 +30,7 @@ FEATURES
   1. ThreadSafeQueue
   2. Dynamic Array
   3. Delegate
-  4. Memory Enhanced Patricia Tree
+  4. Memory Enhanced Patricia Trie
   5. K-ary Heap
 
 * Simple Debugger Framework
