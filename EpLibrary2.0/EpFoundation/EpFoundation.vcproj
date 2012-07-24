@@ -1025,10 +1025,6 @@
 				Name="Thread System"
 				>
 				<File
-					RelativePath=".\Headers\epBaseCallbackObject.h"
-					>
-				</File>
-				<File
 					RelativePath=".\Headers\epThread.h"
 					>
 				</File>

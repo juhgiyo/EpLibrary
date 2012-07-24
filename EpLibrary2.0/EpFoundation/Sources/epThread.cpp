@@ -26,33 +26,29 @@ HANDLE Thread::CreateThread(LPTHREAD_START_ROUTINE routineFunc,LPVOID param)
 	return ::CreateThread(NULL, 0,routineFunc,param,0,&threadID);
 }
 
-Thread::Thread(BaseCallbackObject *callBackObj,LockPolicy lockPolicyType)
+Thread::Thread(LockPolicy lockPolicyType)
 {
 	m_threadId=0;
 	m_threadHandle=0;
+	m_parentThreadHandle=0;
+	m_parentThreadId=0;
 	m_arg=NULL;
 	m_status=THREAD_STATUS_TERMINATED;
-	m_callBackObj=callBackObj;
-	if(m_callBackObj)
-		m_callBackObj->RetainObj();
+	m_exitCode=0;
 	m_lockPolicy=lockPolicyType;
 	switch(lockPolicyType)
 	{
 	case LOCK_POLICY_CRITICALSECTION:
 		m_threadLock=EP_NEW CriticalSectionEx();
-		m_callBackLock=EP_NEW CriticalSectionEx();
 		break;
 	case LOCK_POLICY_MUTEX:
 		m_threadLock=EP_NEW Mutex();
-		m_callBackLock=EP_NEW Mutex();
 		break;
 	case LOCK_POLICY_NONE:
 		m_threadLock=EP_NEW NoLock();
-		m_callBackLock=EP_NEW NoLock();
 		break;
 	default:
 		m_threadLock=NULL;
-		m_callBackLock=NULL;
 		break;
 	}
 }
@@ -60,48 +56,41 @@ Thread::Thread(const Thread & b)
 {
 	m_threadId=0;
 	m_threadHandle=0;
+	m_parentThreadHandle=0;
+	m_parentThreadId=0;
+	m_exitCode=0;
 	m_arg=NULL;
 	m_status=THREAD_STATUS_TERMINATED;
-	m_callBackObj=b.m_callBackObj;
-	if(m_callBackObj)
-		m_callBackObj->RetainObj();
 	m_lockPolicy=b.m_lockPolicy;
 	switch(m_lockPolicy)
 	{
 	case LOCK_POLICY_CRITICALSECTION:
 		m_threadLock=EP_NEW CriticalSectionEx();
-		m_callBackLock=EP_NEW CriticalSectionEx();
 		break;
 	case LOCK_POLICY_MUTEX:
 		m_threadLock=EP_NEW Mutex();
-		m_callBackLock=EP_NEW Mutex();
 		break;
 	case LOCK_POLICY_NONE:
 		m_threadLock=EP_NEW NoLock();
-		m_callBackLock=EP_NEW NoLock();
 		break;
 	default:
 		m_threadLock=NULL;
-		m_callBackLock=NULL;
 		break;
 	}
 }
 Thread::~Thread()
 {
 
-	m_callBackLock->Lock();
 	if(m_status!=THREAD_STATUS_TERMINATED)
 	{
-		System::TerminateThread(m_threadHandle,0);
+		m_exitCode=1;
+		System::TerminateThread(m_threadHandle,m_exitCode);
+		
+		onTerminated();
 	}
-	if(m_callBackObj)
-		m_callBackObj->ReleaseObj();
-	m_callBackLock->Unlock();
 
 	if(m_threadLock)
 		EP_DELETE m_threadLock;
-	if(m_callBackLock)
-		EP_DELETE m_callBackLock;
 }
 
 
@@ -190,22 +179,20 @@ bool Thread::Terminate()
 	LockObj lock(m_threadLock);
 	if(m_status!=THREAD_STATUS_TERMINATED && m_threadHandle)
 	{
-		unsigned long exitCode=0;
 		m_status=THREAD_STATUS_TERMINATED;
-		m_callBackLock->Lock();
-		if(System::TerminateThread(m_threadHandle,exitCode))
+		m_exitCode=1;
+		if(System::TerminateThread(m_threadHandle,m_exitCode))
 		{
 			CloseHandle(m_threadHandle);
 			m_threadId=0;
 			m_threadHandle=0;
-			if(m_callBackObj)
-				m_callBackObj->Callback(this);
-			m_callBackLock->Unlock();
+			m_parentThreadId=0;
+			m_parentThreadHandle=0;
+			onTerminated();
 			return true;
 		}
 		else
 		{
-			m_callBackLock->Unlock();
 			// TerminateThread Failed
 			EpTString lastErrMsg;
 			unsigned long lastErrNum=0;
@@ -213,6 +200,8 @@ bool Thread::Terminate()
 			EP_ASSERT_EXPR(0,_T("Cannot terminate thread!\r\nThread ID: %d\r\n Error Code: %d\r\nError Message: %s"),m_threadId,lastErrNum,lastErrMsg);
 			m_threadId=0;
 			m_threadHandle=0;
+			m_parentThreadId=0;
+			m_parentThreadHandle=0;
 			return false;
 		}
 	}
@@ -228,7 +217,9 @@ bool Thread::Terminate()
 unsigned long Thread::WaitFor(const unsigned long tMilliseconds)
 {
 	if(m_status!=THREAD_STATUS_TERMINATED && m_threadHandle)
+	{
 		return System::WaitForSingleObject(m_threadHandle,tMilliseconds);
+	}
 	else
 	{
 		System::OutputDebugString(_T("The thread (%x): Thread is not started!\r\n"),m_threadId);
@@ -267,22 +258,6 @@ bool Thread::TerminateAfter(const unsigned long tMilliseconds)
 void * Thread::GetArg() const
 {
 	return m_arg;
-}
-
-BaseCallbackObject *Thread::GetCallbackObj()
-{
-	LockObj lock(m_callBackLock);
-	return m_callBackObj;
-}
-
-void Thread::SetCallbackObj(BaseCallbackObject * callBackObj)
-{
-	LockObj lock(m_callBackLock);
-	if(m_callBackObj)
-		m_callBackObj->ReleaseObj();
-	m_callBackObj=callBackObj;
-	if(m_callBackObj)
-		m_callBackObj->RetainObj();
 }
 
 void Thread::setArg(void* a)
@@ -334,27 +309,29 @@ void Thread::setup()
 }
 void Thread::execute()
 {
-	// Do any setup here
+	// Do any execution here
 }
-
+void Thread::onTerminated()
+{
+	// Do any clean up here
+}
 void Thread::successTerminate()
 {
 	m_threadLock->Lock();
 	m_status=THREAD_STATUS_TERMINATED;
 	m_threadHandle=0;
 	m_threadId=0;
+	m_parentThreadHandle=0;
+	m_parentThreadId=0;
+	m_exitCode=0;
 	m_threadLock->Unlock();
+	onTerminated();
 	
-	m_callBackLock->Lock();
-	if(m_callBackObj)
-		m_callBackObj->Callback(this);
-	m_callBackLock->Unlock();
-
-	unsigned long exitCode=0;
-	if(m_type==THREAD_TYPE_BEGIN_THREAD)
-		_endthreadex(exitCode);
-	else
-		ExitThread(exitCode);
+// 	unsigned long exitCode=0;
+// 	if(m_type==THREAD_TYPE_BEGIN_THREAD)
+// 		_endthreadex(exitCode);
+// 	else
+// 		ExitThread(exitCode);
 }
 
 
