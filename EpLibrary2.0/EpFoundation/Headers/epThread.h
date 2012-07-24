@@ -206,7 +206,7 @@ namespace epl
 		/*!
 		Return the Thread Exit Code.
 		@return the thread exit code.
-		@remark 0 means successfully terminated, 1 means unsafe termination.
+		@remark 0 means successful termination, 1 means unsafe termination.
 		*/
 		unsigned long GetExitCode() const
 		{
@@ -252,9 +252,11 @@ namespace epl
 
 		/*!
 		Calls when the thread terminated.
+		@param[in] exitCode the exit code of the thread
 		@remark Subclass should override this function for clean up such as deallocation.
+		@remark exitCode = 0 means successful termination, 1 means unsafe termination.
 		*/
-		virtual void onTerminated();
+		virtual void onTerminated(unsigned long exitCode);
 
 	private:
 		/*!

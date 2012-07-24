@@ -86,7 +86,7 @@ Thread::~Thread()
 		m_exitCode=1;
 		System::TerminateThread(m_threadHandle,m_exitCode);
 		
-		onTerminated();
+		onTerminated(m_exitCode);
 	}
 
 	if(m_threadLock)
@@ -188,7 +188,7 @@ bool Thread::Terminate()
 			m_threadHandle=0;
 			m_parentThreadId=0;
 			m_parentThreadHandle=0;
-			onTerminated();
+			onTerminated(m_exitCode);
 			return true;
 		}
 		else
@@ -311,7 +311,7 @@ void Thread::execute()
 {
 	// Do any execution here
 }
-void Thread::onTerminated()
+void Thread::onTerminated(unsigned long exitCode)
 {
 	// Do any clean up here
 }
@@ -325,7 +325,7 @@ void Thread::successTerminate()
 	m_parentThreadId=0;
 	m_exitCode=0;
 	m_threadLock->Unlock();
-	onTerminated();
+	onTerminated(m_exitCode);
 	
 // 	unsigned long exitCode=0;
 // 	if(m_type==THREAD_TYPE_BEGIN_THREAD)
