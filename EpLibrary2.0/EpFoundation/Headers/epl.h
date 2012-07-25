@@ -110,6 +110,6 @@ An Interface for EP Foundation Library
 #include "epBaseWorkerThread.h"
 #include "epWorkerThreadDelegate.h"
 #include "epWorkerThreadFactory.h"
-#include "epBaseCallbackObject.h"
+#include "epThread.h"
 
 #endif //__EP_EPL_H__
