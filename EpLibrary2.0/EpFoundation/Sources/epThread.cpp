@@ -86,7 +86,7 @@ Thread::~Thread()
 		m_exitCode=1;
 		System::TerminateThread(m_threadHandle,m_exitCode);
 		
-		onTerminated(m_exitCode);
+		onTerminated(m_exitCode,true);
 	}
 
 	if(m_threadLock)
@@ -311,7 +311,7 @@ void Thread::execute()
 {
 	// Do any execution here
 }
-void Thread::onTerminated(unsigned long exitCode)
+void Thread::onTerminated(unsigned long exitCode,bool isInDeletion)
 {
 	// Do any clean up here
 }

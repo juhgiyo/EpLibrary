@@ -253,10 +253,12 @@ namespace epl
 		/*!
 		Calls when the thread terminated.
 		@param[in] exitCode the exit code of the thread
+		@param[in] isInDeletion the flag whether the thread class is in deletion or not
 		@remark Subclass should override this function for clean up such as deallocation.
 		@remark exitCode = 0 means successful termination, 1 means unsafe termination.
+		@remark if isInDeletion is true, then onTerminated is called within destructor!
 		*/
-		virtual void onTerminated(unsigned long exitCode);
+		virtual void onTerminated(unsigned long exitCode,bool isInDeletion=false);
 
 	private:
 		/*!
