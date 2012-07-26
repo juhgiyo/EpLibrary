@@ -57,7 +57,9 @@ __int64 DateTimeHelper::AbsDiff(const SYSTEMTIME time1, const SYSTEMTIME time2)
 	SystemTimeToFileTime(&time1, &ft1.fileTime);
 	SystemTimeToFileTime(&time2, &ft2.fileTime);
 
-	return _abs64((ft1.ul.QuadPart - ft2.ul.QuadPart)/10); 
+	if(ft1.ul.QuadPart > ft2.ul.QuadPart)
+		return (ft1.ul.QuadPart - ft2.ul.QuadPart)/10; 
+	return (ft2.ul.QuadPart-ft1.ul.QuadPart)/10; 
 }
 
 
