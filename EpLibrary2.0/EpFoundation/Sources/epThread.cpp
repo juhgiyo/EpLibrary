@@ -279,7 +279,6 @@ void Thread::setDefaultArgument(void *a)
 
 int Thread::run()
 {
-	setup();
 	execute();
 	successTerminate();
 	return 0;
@@ -302,11 +301,6 @@ unsigned long Thread::entryPoint2(void * pthis)
 	return 0;
 }
 
-
-void Thread::setup()
-{
-	// Do any setup here
-}
 void Thread::execute()
 {
 	// Do any execution here

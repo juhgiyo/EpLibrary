@@ -239,12 +239,6 @@ namespace epl
 		virtual void setArg(void* a);
 
 		/*!
-		Setup the thread when it started.
-		@remark Subclass should override this function for setup before thread executes. (Optional)
-		*/
-		virtual void setup();
-
-		/*!
 		Actual Thread Code.
 		@remark Subclass should override this function for executing the thread function.
 		*/
