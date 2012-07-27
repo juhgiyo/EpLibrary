@@ -96,8 +96,10 @@ namespace epl
 
 	public:
 		/*!
-		Return the current time in milliseconds.
-		@return the current time in milliseconds.
+		Return the time in milliseconds from first call of GetTime.
+		@return the time in milliseconds from first call of GetTime.
+		@remark this is not a current time like GetLocalTime or _ftime
+		@remark Use DateTimeHelper::GetCurrentDateTime instead to get current time.
 		*/
 		static EpTime GetTime();
 
