@@ -19,10 +19,42 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace epl;
 
+EpTString ReadAndHandleOutput(HANDLE hPipeRead)
+{
+	CHAR lpBuffer[256];
+	DWORD nBytesRead;
+	EpTString csOutput,csTemp;
+	csOutput=_T("");
+	while(TRUE)
+	{
+		if (!ReadFile(hPipeRead,lpBuffer,sizeof(lpBuffer),
+			&nBytesRead,NULL) || !nBytesRead)
+		{
+			if (GetLastError() == ERROR_BROKEN_PIPE)
+				break; // pipe done - normal exit path.
+			else
+			{
+				csOutput+=_T("\n\n[Error]ConsoleHelper::ExecuteConsoleCommand:ReadFile Error\n\n"); // Something bad happened.
+				break;
+			}
+		}
+
+		// Display the character read on the screen.
+#if defined(_UNICODE) || defined(UNICODE)
+		csTemp=System::MultiByteToWideChar(lpBuffer,nBytesRead);
+		csOutput+=csTemp;
+#else // defined(_UNICODE) || defined(UNICODE)
+		csTemp=lpBuffer;
+		csOutput+=csTemp.substr(0,nBytesRead);
+#endif // defined(_UNICODE) || defined(UNICODE)
+	}
+	return csOutput;
+}
 
 EpTString ConsoleHelper::ExecuteConsoleCommand(const TCHAR * command, bool isDosCommand, bool isWaitForTerminate, ConsolePriority priority)
 {
-	EpTString csExecute;
+	EpTString csExecute,csOutput;
+	csOutput=_T("");
 	if(isDosCommand)
 	{
 		csExecute=_T("cmd /c ");
@@ -36,11 +68,32 @@ EpTString ConsoleHelper::ExecuteConsoleCommand(const TCHAR * command, bool isDos
 	secattr.nLength=sizeof(secattr);
 	secattr.bInheritHandle=TRUE;
 
-	HANDLE rPipe, wPipe;
+	HANDLE hOutputReadTmp,hOutputRead,hOutputWrite;
+	HANDLE hErrorWrite;
 
-	if(!CreatePipe(&rPipe,&wPipe,&secattr,0))
+	if(isWaitForTerminate)
 	{
-		return _T("[Error]ConsoleHelper::ExecuteConsoleCommand:Creating Pipe");
+
+		if(!CreatePipe(&hOutputReadTmp,&hOutputWrite,&secattr,0))
+		{
+			return _T("[Error]ConsoleHelper::ExecuteConsoleCommand:Creating Pipe (hOutputWrite)");
+
+		}
+
+		if (!DuplicateHandle(GetCurrentProcess(),hOutputWrite,GetCurrentProcess(),&hErrorWrite,0, TRUE,DUPLICATE_SAME_ACCESS))
+		{
+			CloseHandle(hOutputReadTmp);
+			CloseHandle(hOutputWrite);
+			return _T("[Error]ConsoleHelper::ExecuteConsoleCommand:Duplicate Handle (hErrorWrite)");
+		}
+		if (!DuplicateHandle(GetCurrentProcess(),hOutputReadTmp,GetCurrentProcess(),&hOutputRead,0,FALSE,DUPLICATE_SAME_ACCESS))
+		{
+			CloseHandle(hOutputWrite);
+			CloseHandle(hErrorWrite);
+			CloseHandle(hOutputReadTmp);
+			return _T("[Error]ConsoleHelper::ExecuteConsoleCommand:Duplicate Handle (hOutputRead)");
+		}
+		CloseHandle(hOutputReadTmp);
 	}
 
 	STARTUPINFO sInfo;
@@ -48,56 +101,46 @@ EpTString ConsoleHelper::ExecuteConsoleCommand(const TCHAR * command, bool isDos
 	PROCESS_INFORMATION pInfo;
 	ZeroMemory(&pInfo,sizeof(pInfo));
 	sInfo.cb=sizeof(sInfo);
-	sInfo.dwFlags=STARTF_USESTDHANDLES;
-	//sInfo.dwFlags=STARTF_USESTDHANDLES|STARTF_USESHOWWINDOW;
-
 	sInfo.wShowWindow=SW_HIDE;
-	sInfo.hStdInput=NULL;
-	sInfo.hStdOutput=wPipe;
-	sInfo.hStdError=wPipe;
-#if defined(_UNICODE) || defined(UNICODE)
-	if(!CreateProcess(0,reinterpret_cast<LPWSTR>(const_cast<wchar_t*>(csExecute.c_str())),0,0,TRUE,priority|CREATE_NO_WINDOW,0,0,&sInfo,&pInfo))
-	//if(!CreateProcess(0,reinterpret_cast<LPWSTR>(const_cast<wchar_t*>(csExecute.c_str())),0,0,TRUE,priority|CREATE_NEW_CONSOLE,0,0,&sInfo,&pInfo))
-#else // defined(_UNICODE) || defined(UNICODE)
-	if(!CreateProcess(0,reinterpret_cast<LPSTR>(const_cast<char*>(csExecute.c_str())),0,0,TRUE,priority|CREATE_NO_WINDOW,0,0,&sInfo,&pInfo))
-	//if(!CreateProcess(0,reinterpret_cast<LPSTR>(const_cast<char*>(csExecute.c_str())),0,0,TRUE,priority|CREATE_NEW_CONSOLE,0,0,&sInfo,&pInfo))
-#endif // defined(_UNICODE) || defined(UNICODE)
-	{
-		return _T("[Error]ConsoleHelper::ExecuteConsoleCommand:Creating Process");
-	}
 	if(isWaitForTerminate)
 	{
-		System::WaitForSingleObject(pInfo.hProcess,WAITTIME_INIFINITE);
+		sInfo.dwFlags=STARTF_USESTDHANDLES;
+		sInfo.hStdInput=NULL;
+		sInfo.hStdOutput=hOutputWrite;
+		sInfo.hStdError=hErrorWrite;
 	}
-
-	CloseHandle(wPipe);
-
-	char buf[100];
-	unsigned long reDword;
-	EpTString m_csOutput,csTemp;
-	m_csOutput=_T("");
-	long res;
-	unsigned long dwAvail;
-	if(PeekNamedPipe(rPipe, NULL, 0, NULL, &dwAvail, NULL) && dwAvail>0)
-	{
-		do
-		{
-			memset(buf,0,sizeof(char)*100);
-			res=::ReadFile(rPipe,buf,100,&reDword,0);
 #if defined(_UNICODE) || defined(UNICODE)
-			csTemp=System::MultiByteToWideChar(buf,reDword);
-			m_csOutput+=csTemp;
+	if(!CreateProcess(0,reinterpret_cast<LPWSTR>(const_cast<wchar_t*>(csExecute.c_str())),0,0,TRUE,priority|CREATE_NO_WINDOW,0,0,&sInfo,&pInfo))
+		//if(!CreateProcess(0,reinterpret_cast<LPWSTR>(const_cast<wchar_t*>(csExecute.c_str())),0,0,TRUE,priority|CREATE_NEW_CONSOLE,0,0,&sInfo,&pInfo))
 #else // defined(_UNICODE) || defined(UNICODE)
-			csTemp=buf;
-			m_csOutput+=csTemp.substr(0,reDword);
+	if(!CreateProcess(0,reinterpret_cast<LPSTR>(const_cast<char*>(csExecute.c_str())),0,0,TRUE,priority|CREATE_NO_WINDOW,0,0,&sInfo,&pInfo))
+		//if(!CreateProcess(0,reinterpret_cast<LPSTR>(const_cast<char*>(csExecute.c_str())),0,0,TRUE,priority|CREATE_NEW_CONSOLE,0,0,&sInfo,&pInfo))
 #endif // defined(_UNICODE) || defined(UNICODE)
-		}while(res);
-
+	{
+		if(isWaitForTerminate)
+		{
+			CloseHandle(hOutputWrite);
+			CloseHandle(hErrorWrite);
+			CloseHandle(hOutputRead);
+		}
+		return _T("[Error]ConsoleHelper::ExecuteConsoleCommand:Creating Process");
 	}
-	
+
+	if(isWaitForTerminate)
+	{
+		CloseHandle(hOutputWrite);
+		CloseHandle(hErrorWrite);
+
+		csOutput=ReadAndHandleOutput(hOutputRead);
+		System::WaitForSingleObject(pInfo.hProcess,WAITTIME_INIFINITE);
+		CloseHandle(hOutputRead);
+	}
+
 	CloseHandle(pInfo.hProcess);
 	CloseHandle(pInfo.hThread);
-	return m_csOutput;
+
+	return csOutput;
+
 
 }
 
