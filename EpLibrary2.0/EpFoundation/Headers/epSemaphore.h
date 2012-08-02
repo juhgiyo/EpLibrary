@@ -32,7 +32,6 @@ An Interface for Semaphore Class.
 #define __EP_SEMAPHORE_H__
 
 #include "epFoundationLib.h"
-#include <afxmt.h>
 #include "epSystem.h"
 #include "epBaseLock.h"
 
@@ -118,9 +117,7 @@ namespace epl
 
 	private:
 		/// Actual Semaphore		
-		CSemaphore *m_sem;
-		/// Single Lock
-		CSingleLock *m_singleLock;
+		HANDLE m_sem;
 		/// Creation Info
 		LPSECURITY_ATTRIBUTES m_lpsaAttributes;
 		/// Semaphore Flag
@@ -128,9 +125,7 @@ namespace epl
 #if defined(_DEBUG)
 		std::vector<int> m_threadList;
 		/// Semaphore Debug	
-		CSemaphore *m_semDebug;
-		/// Single Lock Debug
-		CSingleLock *m_singleLockDebug;
+		HANDLE m_semDebug;
 #endif //defined(_DEBUG)
 	};
 

@@ -31,7 +31,6 @@ An Interface for Mutex Class.
 #ifndef __EP_MUTEX_H__
 #define __EP_MUTEX_H__
 #include "epFoundationLib.h"
-#include <afxmt.h>
 #include "epSystem.h"
 #include "epBaseLock.h"
 
@@ -118,18 +117,14 @@ namespace epl
 	private:
 
 		/// Mutex
-		CMutex *m_mutex;
-		/// Lock Object
-		CSingleLock *m_singleLock;
+		HANDLE m_mutex;
 		/// Creation Security Info
 		LPSECURITY_ATTRIBUTES m_lpsaAttributes;
 
 #if defined(_DEBUG)
 		std::vector<int> m_threadList;
 		/// Mutex Debug
-		CMutex *m_mutexDebug;
-		/// Lock Object Debug
-		CSingleLock *m_singleLockDebug;
+		HANDLE m_mutexDebug;
 #endif //defined(_DEBUG)
 	};
 
