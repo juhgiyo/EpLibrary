@@ -56,13 +56,16 @@ FEATURES
   2. Thread Class
   3. Worker Thread System
 
-* Other Frameworks
+* Lock Framework
   1. Mutex
   2. Semaphore
   3. CiriticalSectionEx
   4. NoLock
-  5. Singleton Holder
-  6. Smart Object
+  5. InterlockedEx
+
+* Other Frameworks
+  1. Singleton Holder
+  2. Smart Object
 
 
 DOCUMENTATION

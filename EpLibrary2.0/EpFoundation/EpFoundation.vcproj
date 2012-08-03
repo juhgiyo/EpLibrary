@@ -638,6 +638,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\Sources\epInterlockedEx.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\Sources\epMutex.cpp"
 						>
 					</File>
@@ -957,6 +961,10 @@
 					</File>
 					<File
 						RelativePath=".\Headers\epCriticalSectionEx.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Headers\epInterlockedEx.h"
 						>
 					</File>
 					<File

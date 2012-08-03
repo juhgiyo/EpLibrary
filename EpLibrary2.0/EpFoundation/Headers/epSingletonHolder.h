@@ -52,25 +52,36 @@ namespace epl
 		@return the reference to the Singleton Object.
 		*/
 		static SingletonClass &Instance();
-	protected:
+	private:
 
 
 		/*!
-		Default Contructor
+		Default Constructor
 
-		The default constructor is protected to protect the singleton property.
+		@remark The default constructor is in private to protect the singleton property.
 		*/
-		SingletonHolder()
-		{
-			
-		}
+		SingletonHolder();
 
 		/*
-		Default Desturctor
+		Default Destructor
+		
+		@remark The destructor is in private to protect the singleton property.
 		*/
-		virtual ~SingletonHolder()
-		{
-		}
+		~SingletonHolder();
+
+		/*
+		Copy Constructor
+		
+		@remark The copy constructor is in private to protect the singleton property.
+		*/
+		SingletonHolder(const SingletonHolder&b);
+
+		/*
+		Copy Operator
+		
+		@remark The copy operator is in private to protect the singleton property.
+		*/
+		SingletonHolder& operator=(const SingletonHolder& b);
 	};
 
 	template<typename SingletonClass>

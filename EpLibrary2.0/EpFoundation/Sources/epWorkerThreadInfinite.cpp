@@ -32,7 +32,7 @@ void WorkerThreadInfinite::execute()
 				continue;
 			}
 			callCallBack();
-			Yield();
+			Sleep(0);
 			continue;
 		}
 		EP_ASSERT_EXPR(GetArg(),_T("Job Processor is NULL!"));
