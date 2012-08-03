@@ -107,9 +107,6 @@ namespace epl
 		virtual void Unlock();
 
 	private:
-
-		/// the actual lock member.
-		CRITICAL_SECTION m_criticalSection;
 #if _DEBUG
 		std::vector<int> m_threadList;
 #endif //_DEBUG
