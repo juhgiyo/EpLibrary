@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epEndian.h"
 
 using namespace epl;
-short Endian::ShortSwap(const short value)
+short Endian::Swap(const short value)
 {
 	unsigned char b1, b2;
 
@@ -27,7 +27,7 @@ short Endian::ShortSwap(const short value)
 
 	return (b1 << 8) + b2;
 }
-unsigned short Endian::UShortSwap(const unsigned short value)
+unsigned short Endian::Swap(const unsigned short value)
 {
 	unsigned char b1, b2;
 
@@ -36,7 +36,7 @@ unsigned short Endian::UShortSwap(const unsigned short value)
 
 	return (b1 << 8) + b2;
 }
-int Endian::IntSwap(const int value)
+int Endian::Swap(const int value)
 {
 	unsigned char b1, b2, b3, b4;
 
@@ -47,7 +47,7 @@ int Endian::IntSwap(const int value)
 
 	return (static_cast<int>(b1) << 24) + (static_cast<int>(b2) << 16) + (static_cast<int>(b3) << 8) + b4;
 }
-unsigned int Endian::UIntSwap(const unsigned int value)
+unsigned int Endian::Swap(const unsigned int value)
 {
 	unsigned char b1, b2, b3, b4;
 
@@ -58,7 +58,7 @@ unsigned int Endian::UIntSwap(const unsigned int value)
 
 	return (static_cast<unsigned int>(b1) << 24) + (static_cast<unsigned int>(b2) << 16) + (static_cast<unsigned int>(b3) << 8) + b4;
 }
-float Endian::FloatSwap(const float value)
+float Endian::Swap(const float value)
 {
 	union
 	{
@@ -73,7 +73,7 @@ float Endian::FloatSwap(const float value)
 	dat2.b[3] = dat1.b[0];
 	return dat2.f;
 }
-double Endian::DoubleSwap(const double value)
+double Endian::Swap(const double value)
 {
 	union
 	{

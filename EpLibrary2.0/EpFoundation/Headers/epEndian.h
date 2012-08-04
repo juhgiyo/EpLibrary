@@ -47,42 +47,42 @@ namespace epl
 		@param[in] value the value to swap.
 		@return the swapped value
 		*/
-		static short ShortSwap(const short value);
+		static short Swap(const short value);
 
 		/*!
 		Swap Unsigned Short Endianness and return the swapped value.
 		@param[in] value the value to swap.
 		@return the swapped value
 		*/
-		static unsigned short UShortSwap(const unsigned short value);
+		static unsigned short Swap(const unsigned short value);
 
 		/*!
 		Swap Int Endianness and return the swapped value.
 		@param[in] value the value to swap.
 		@return the swapped value
 		*/
-		static int IntSwap(const int value);
+		static int Swap(const int value);
 
 		/*!
 		Swap Unsigned Int Endianness and return the swapped value.
 		@param[in] value the value to swap.
 		@return the swapped value
 		*/
-		static unsigned int UIntSwap(const unsigned int value);
+		static unsigned int Swap(const unsigned int value);
 
 		/*!
 		Swap Float Endianness and return the swapped value.
 		@param[in] value the value to swap.
 		@return the swapped value
 		*/
-		static float FloatSwap(const float value);
+		static float Swap(const float value);
 
 		/*!
 		Swap Double Endianness and return the swapped value.
 		@param[in] value the value to swap.
 		@return the swapped value
 		*/
-		static double DoubleSwap(const double value);
+		static double Swap(const double value);
 
 	};
 }
