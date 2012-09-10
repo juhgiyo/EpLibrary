@@ -51,7 +51,7 @@ EpTString ReadAndHandleOutput(HANDLE hPipeRead)
 	return csOutput;
 }
 
-EpTString ConsoleHelper::ExecuteConsoleCommand(const TCHAR * command, bool isDosCommand, bool isWaitForTerminate, ConsolePriority priority)
+EpTString ConsoleHelper::ExecuteConsoleCommand(const TCHAR * command, bool isDosCommand, bool isWaitForTerminate, ConsolePriority priority, HANDLE *retProcessHandle)
 {
 	EpTString csExecute,csOutput;
 	csOutput=_T("");
@@ -125,6 +125,10 @@ EpTString ConsoleHelper::ExecuteConsoleCommand(const TCHAR * command, bool isDos
 		}
 		return _T("[Error]ConsoleHelper::ExecuteConsoleCommand:Creating Process");
 	}
+	if(retProcessHandle)
+	{
+		*retProcessHandle=pInfo.hProcess;
+	}
 
 	if(isWaitForTerminate)
 	{
@@ -135,7 +139,10 @@ EpTString ConsoleHelper::ExecuteConsoleCommand(const TCHAR * command, bool isDos
 		System::WaitForSingleObject(pInfo.hProcess,WAITTIME_INIFINITE);
 		CloseHandle(hOutputRead);
 	}
-
+	if(retProcessHandle)
+	{
+		*retProcessHandle=0;
+	}
 	CloseHandle(pInfo.hProcess);
 	CloseHandle(pInfo.hThread);
 
