@@ -115,6 +115,15 @@ namespace epl
 		*/
 		virtual void Unlock();
 
+		/*!
+		Release the semaphore with given count
+		@param[in] releaseCount the count of the semaphore to release
+		@param[out] retPreviousCount the count of the semaphore before the release
+		@return nonzero if successful otherwise 0
+		@remark Use with care since by calling this function, the debugger might indicate as deadlock even though it is not.
+		*/
+		long Release(long releaseCount, long * retPreviousCount=NULL);
+
 	private:
 		/// Actual Semaphore		
 		HANDLE m_sem;

@@ -136,3 +136,8 @@ void Semaphore::Unlock()
 	ReleaseSemaphore(m_sem,1,NULL);
 }
 
+long Semaphore::Release(long count, long * retPreviousCount)
+{
+	return ReleaseSemaphore(m_sem,count,retPreviousCount);
+}
+
