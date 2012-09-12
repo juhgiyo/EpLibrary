@@ -114,22 +114,22 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)Debug\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\VS100\$(Configuration)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)Release\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release\VS100\$(Configuration)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug DLL|Win32'">$(SolutionDir)Debug\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug DLL|Win32'">Debug\VS100\$(Configuration)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release DLL|Win32'">$(SolutionDir)Release\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release DLL|Win32'">Release\VS100\$(Configuration)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Unicode|Win32'">$(SolutionDir)Debug\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug Unicode|Win32'">Debug\VS100\$(Configuration)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug DLL Unicode|Win32'">$(SolutionDir)Debug\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug DLL Unicode|Win32'">Debug\VS100\$(Configuration)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release Unicode|Win32'">$(SolutionDir)Release\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release Unicode|Win32'">Release\VS100\$(Configuration)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release DLL Unicode|Win32'">$(SolutionDir)Release\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release DLL Unicode|Win32'">Release\VS100\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)Bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Intermediate\VS100\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)Bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Intermediate\VS100\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug DLL|Win32'">$(SolutionDir)Bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug DLL|Win32'">Intermediate\VS100\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release DLL|Win32'">$(SolutionDir)Bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release DLL|Win32'">Intermediate\VS100\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Unicode|Win32'">$(SolutionDir)Bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug Unicode|Win32'">Intermediate\VS100\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug DLL Unicode|Win32'">$(SolutionDir)Bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug DLL Unicode|Win32'">Intermediate\VS100\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release Unicode|Win32'">$(SolutionDir)Bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release Unicode|Win32'">Intermediate\VS100\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release DLL Unicode|Win32'">$(SolutionDir)Bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release DLL Unicode|Win32'">Intermediate\VS100\$(Configuration)\</IntDir>
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug DLL Unicode|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug DLL Unicode|Win32'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug DLL Unicode|Win32'" />

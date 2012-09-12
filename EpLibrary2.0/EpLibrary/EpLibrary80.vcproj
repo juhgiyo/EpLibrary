@@ -16,8 +16,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)Debug"
-			IntermediateDirectory="Debug\VS80\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)Bin"
+			IntermediateDirectory="Intermediate\VS80\$(ConfigurationName)"
 			ConfigurationType="4"
 			UseOfMFC="0"
 			CharacterSet="0"
@@ -79,8 +79,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)Release"
-			IntermediateDirectory="Release\VS80\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)Bin"
+			IntermediateDirectory="Intermediate\VS80\$(ConfigurationName)"
 			ConfigurationType="4"
 			UseOfMFC="0"
 			CharacterSet="0"
@@ -143,8 +143,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug DLL|Win32"
-			OutputDirectory="$(SolutionDir)Debug"
-			IntermediateDirectory="Debug\VS80\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)Bin"
+			IntermediateDirectory="Intermediate\VS80\$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			CharacterSet="0"
@@ -221,8 +221,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release DLL|Win32"
-			OutputDirectory="$(SolutionDir)Release"
-			IntermediateDirectory="Release\VS80\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)Bin"
+			IntermediateDirectory="Intermediate\VS80\$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			CharacterSet="0"
@@ -300,8 +300,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug Unicode|Win32"
-			OutputDirectory="$(SolutionDir)Debug"
-			IntermediateDirectory="Debug\VS80\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)Bin"
+			IntermediateDirectory="Intermediate\VS80\$(ConfigurationName)"
 			ConfigurationType="4"
 			UseOfMFC="0"
 			CharacterSet="1"
@@ -363,8 +363,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug DLL Unicode|Win32"
-			OutputDirectory="$(SolutionDir)Debug"
-			IntermediateDirectory="Debug\VS80\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)Bin"
+			IntermediateDirectory="Intermediate\VS80\$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			CharacterSet="1"
@@ -441,8 +441,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release Unicode|Win32"
-			OutputDirectory="$(SolutionDir)Release"
-			IntermediateDirectory="Release\VS80\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)Bin"
+			IntermediateDirectory="Intermediate\VS80\$(ConfigurationName)"
 			ConfigurationType="4"
 			UseOfMFC="0"
 			CharacterSet="1"
@@ -505,8 +505,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release DLL Unicode|Win32"
-			OutputDirectory="$(SolutionDir)Release"
-			IntermediateDirectory="Release\VS80\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)Bin"
+			IntermediateDirectory="Intermediate\VS80\$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			CharacterSet="1"
