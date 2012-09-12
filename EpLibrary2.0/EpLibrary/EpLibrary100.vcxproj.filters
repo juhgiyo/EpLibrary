@@ -1,0 +1,430 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Containers">
+      <UniqueIdentifier>{7f4cb39c-0267-493a-9cc8-85f4f93214a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Containers\Streams">
+      <UniqueIdentifier>{c7b6e1fd-f63e-4a15-8618-b903d58c1e7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Debugger">
+      <UniqueIdentifier>{3b677b10-b74e-4494-99f6-bcb6adbdac2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Frameworks">
+      <UniqueIdentifier>{2018338d-b7b5-4148-9d8f-22dfc70e3396}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Frameworks\Lock">
+      <UniqueIdentifier>{88414cdf-c471-49d1-b11b-48929b4952d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\System">
+      <UniqueIdentifier>{9fc4b423-cb96-4079-a195-81356b264265}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Algo">
+      <UniqueIdentifier>{1db35c9c-d19a-410e-994a-9e76d5d6a680}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Algo\Math">
+      <UniqueIdentifier>{64ee0f90-af3f-4a2a-a839-799a5c90a250}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Thread System">
+      <UniqueIdentifier>{59cca012-1fe3-4989-9f86-3b6e9618462d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Thread System\Job System">
+      <UniqueIdentifier>{5e1b7ea6-e7bb-4519-9c08-70d852255ab4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Thread System\Schedule System">
+      <UniqueIdentifier>{676a4c4e-c3c1-4467-984c-976d011d32f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Thread System\WorkerThread System">
+      <UniqueIdentifier>{e092100a-14ca-4f2e-a8c5-930e328f31da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Thread System\WorkerThread System\Add On">
+      <UniqueIdentifier>{7c9a551b-ad71-495a-86bf-5ff7b58e7399}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\File System">
+      <UniqueIdentifier>{132bc019-8f7b-4c0b-9d4f-188f98a384d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI">
+      <UniqueIdentifier>{790a4f63-df7a-44f6-bc7b-a9e2747cb3af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Algo">
+      <UniqueIdentifier>{abd6cf2e-0174-45dc-bb20-4759fcbb12ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Algo\Search">
+      <UniqueIdentifier>{dcc529c3-331e-4ebf-978a-7d124fe8cdce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Algo\Sort">
+      <UniqueIdentifier>{8289796c-52ab-469f-99cd-831a40580a83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Algo\Math">
+      <UniqueIdentifier>{1902005f-3089-4a7e-b9e9-c1ca246229c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Debugger">
+      <UniqueIdentifier>{f95fef67-cffc-48bb-acdf-10220f1f06a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Containers">
+      <UniqueIdentifier>{a5e863d9-1455-42f4-a66e-5c8cb2fbfd93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Containers\Stream">
+      <UniqueIdentifier>{04cf8244-311f-490b-9724-d8a118a0f9be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Containers\ThreadSafeQueues">
+      <UniqueIdentifier>{5ca91495-ae27-418f-9da3-05a26c720798}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Frameworks">
+      <UniqueIdentifier>{6e259c92-28da-4092-9788-1794088bff2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Frameworks\Lock">
+      <UniqueIdentifier>{a9a7050a-282b-4eb3-992f-03adbc76c6e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\System">
+      <UniqueIdentifier>{1e6ae889-6886-43b4-a8ba-50fea53f7355}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Thread System">
+      <UniqueIdentifier>{3b343577-8077-4ec4-9b6a-47f71f325846}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Thread System\Job System">
+      <UniqueIdentifier>{a45da000-59de-47c3-8d2e-eeda728dd2dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Thread System\Schedule System">
+      <UniqueIdentifier>{31d97798-4c4e-4dc4-ad47-702dfced0f93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Thread System\WorkerThread System">
+      <UniqueIdentifier>{7a9374ed-94da-4e10-8e22-7edf8cbc07cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Thread System\WorkerThread System\Add On">
+      <UniqueIdentifier>{fcb3a664-8dd9-4b77-9798-e280c3305e31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\File System">
+      <UniqueIdentifier>{bcfcf23d-9167-4e32-8162-e306eae53a67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI">
+      <UniqueIdentifier>{926202d6-0581-485e-a1d3-ab0202985e53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{edcd2c9f-b86e-4da1-a2fb-5a42c6f08acd}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Sources\epCStringEx.cpp">
+      <Filter>Source Files\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epFileStream.cpp">
+      <Filter>Source Files\Containers\Streams</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epNetworkStream.cpp">
+      <Filter>Source Files\Containers\Streams</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epStream.cpp">
+      <Filter>Source Files\Containers\Streams</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epBaseOutputter.cpp">
+      <Filter>Source Files\Debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epProfiler.cpp">
+      <Filter>Source Files\Debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epSimpleLogger.cpp">
+      <Filter>Source Files\Debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epSmartObject.cpp">
+      <Filter>Source Files\Frameworks</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epBaseLock.cpp">
+      <Filter>Source Files\Frameworks\Lock</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epCriticalSectionEx.cpp">
+      <Filter>Source Files\Frameworks\Lock</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epInterlockedEx.cpp">
+      <Filter>Source Files\Frameworks\Lock</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epMutex.cpp">
+      <Filter>Source Files\Frameworks\Lock</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epNoLock.cpp">
+      <Filter>Source Files\Frameworks\Lock</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epSemaphore.cpp">
+      <Filter>Source Files\Frameworks\Lock</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epConsoleHelper.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epDateTimeHelper.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epEndian.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epLocale.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epRegistryHelper.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epSystem.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epTinyObject.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epFastLog.cpp">
+      <Filter>Source Files\Algo\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epFastSqrt.cpp">
+      <Filter>Source Files\Algo\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epPrimeNum.cpp">
+      <Filter>Source Files\Algo\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epRandom.cpp">
+      <Filter>Source Files\Algo\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epThread.cpp">
+      <Filter>Source Files\Thread System</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epBaseJob.cpp">
+      <Filter>Source Files\Thread System\Job System</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epBaseJobProcessor.cpp">
+      <Filter>Source Files\Thread System\Job System</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epJobScheduleQueue.cpp">
+      <Filter>Source Files\Thread System\Schedule System</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epBaseWorkerThread.cpp">
+      <Filter>Source Files\Thread System\WorkerThread System</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epWorkerThreadFactory.cpp">
+      <Filter>Source Files\Thread System\WorkerThread System</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epWorkerThreadInfinite.cpp">
+      <Filter>Source Files\Thread System\WorkerThread System\Add On</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epWorkerThreadSingle.cpp">
+      <Filter>Source Files\Thread System\WorkerThread System\Add On</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epBaseFile.cpp">
+      <Filter>Source Files\File System</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epFolderHelper.cpp">
+      <Filter>Source Files\File System</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epPropertiesFile.cpp">
+      <Filter>Source Files\File System</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epTextFile.cpp">
+      <Filter>Source Files\File System</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epXMLFile.cpp">
+      <Filter>Source Files\File System</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epXMLite.cpp">
+      <Filter>Source Files\File System</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epTaskbarNotifier.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epWinProcessHelper.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Headers\epl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epLib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epAlgorithm.h">
+      <Filter>Header Files\Algo</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epBinarySearch.h">
+      <Filter>Header Files\Algo\Search</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epInsertionSort.h">
+      <Filter>Header Files\Algo\Sort</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epMergeSort.h">
+      <Filter>Header Files\Algo\Sort</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epQuickSort.h">
+      <Filter>Header Files\Algo\Sort</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epFastLog.h">
+      <Filter>Header Files\Algo\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epFastSqrt.h">
+      <Filter>Header Files\Algo\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epPrimeNum.h">
+      <Filter>Header Files\Algo\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epRandom.h">
+      <Filter>Header Files\Algo\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epBaseOutputter.h">
+      <Filter>Header Files\Debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epProfiler.h">
+      <Filter>Header Files\Debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epSimpleLogger.h">
+      <Filter>Header Files\Debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epCStringEx.h">
+      <Filter>Header Files\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epDelegate.h">
+      <Filter>Header Files\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epDynamicArray.h">
+      <Filter>Header Files\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epKAryHeap.h">
+      <Filter>Header Files\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epPatriciaTrie.h">
+      <Filter>Header Files\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epFileStream.h">
+      <Filter>Header Files\Containers\Stream</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epNetworkStream.h">
+      <Filter>Header Files\Containers\Stream</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epStream.h">
+      <Filter>Header Files\Containers\Stream</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epThreadSafePQueue.h">
+      <Filter>Header Files\Containers\ThreadSafeQueues</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epThreadSafeQueue.h">
+      <Filter>Header Files\Containers\ThreadSafeQueues</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epSingletonHolder.h">
+      <Filter>Header Files\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epSmartObject.h">
+      <Filter>Header Files\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epThreadSafeClass.h">
+      <Filter>Header Files\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epBaseLock.h">
+      <Filter>Header Files\Frameworks\Lock</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epCriticalSectionEx.h">
+      <Filter>Header Files\Frameworks\Lock</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epInterlockedEx.h">
+      <Filter>Header Files\Frameworks\Lock</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epMutex.h">
+      <Filter>Header Files\Frameworks\Lock</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epNoLock.h">
+      <Filter>Header Files\Frameworks\Lock</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epSemaphore.h">
+      <Filter>Header Files\Frameworks\Lock</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epAssert.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epConsoleHelper.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epDateTimeHelper.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epEndian.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epException.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epLocale.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epMemory.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epPlatform.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epRegistryHelper.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epSystem.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epTinyObject.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epThread.h">
+      <Filter>Header Files\Thread System</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epBaseJob.h">
+      <Filter>Header Files\Thread System\Job System</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epBaseJobProcessor.h">
+      <Filter>Header Files\Thread System\Job System</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epJobScheduleQueue.h">
+      <Filter>Header Files\Thread System\Schedule System</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epBaseWorkerThread.h">
+      <Filter>Header Files\Thread System\WorkerThread System</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epWorkerThreadDelegate.h">
+      <Filter>Header Files\Thread System\WorkerThread System</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epWorkerThreadFactory.h">
+      <Filter>Header Files\Thread System\WorkerThread System</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epWorkerThreadInfinite.h">
+      <Filter>Header Files\Thread System\WorkerThread System\Add On</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epWorkerThreadSingle.h">
+      <Filter>Header Files\Thread System\WorkerThread System\Add On</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epBaseFile.h">
+      <Filter>Header Files\File System</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epFolderHelper.h">
+      <Filter>Header Files\File System</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epPropertiesFile.h">
+      <Filter>Header Files\File System</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epTextFile.h">
+      <Filter>Header Files\File System</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epXMLFile.h">
+      <Filter>Header Files\File System</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epXMLite.h">
+      <Filter>Header Files\File System</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epTaskbarNotifier.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epWinProcessHelper.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+</Project>

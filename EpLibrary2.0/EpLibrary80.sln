@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EpLibrary", "EpLibrary\EpLibrary80.vcproj", "{A20E5632-13AE-4204-8915-F5F7874FBCB2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug DLL Unicode|Win32 = Debug DLL Unicode|Win32
+		Debug DLL|Win32 = Debug DLL|Win32
+		Debug Unicode|Win32 = Debug Unicode|Win32
+		Debug|Win32 = Debug|Win32
+		Release DLL Unicode|Win32 = Release DLL Unicode|Win32
+		Release DLL|Win32 = Release DLL|Win32
+		Release Unicode|Win32 = Release Unicode|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A20E5632-13AE-4204-8915-F5F7874FBCB2}.Debug DLL Unicode|Win32.ActiveCfg = Debug DLL Unicode|Win32
+		{A20E5632-13AE-4204-8915-F5F7874FBCB2}.Debug DLL Unicode|Win32.Build.0 = Debug DLL Unicode|Win32
+		{A20E5632-13AE-4204-8915-F5F7874FBCB2}.Debug DLL|Win32.ActiveCfg = Debug DLL|Win32
+		{A20E5632-13AE-4204-8915-F5F7874FBCB2}.Debug DLL|Win32.Build.0 = Debug DLL|Win32
+		{A20E5632-13AE-4204-8915-F5F7874FBCB2}.Debug Unicode|Win32.ActiveCfg = Debug Unicode|Win32
+		{A20E5632-13AE-4204-8915-F5F7874FBCB2}.Debug Unicode|Win32.Build.0 = Debug Unicode|Win32
+		{A20E5632-13AE-4204-8915-F5F7874FBCB2}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A20E5632-13AE-4204-8915-F5F7874FBCB2}.Debug|Win32.Build.0 = Debug|Win32
+		{A20E5632-13AE-4204-8915-F5F7874FBCB2}.Release DLL Unicode|Win32.ActiveCfg = Release DLL Unicode|Win32
+		{A20E5632-13AE-4204-8915-F5F7874FBCB2}.Release DLL Unicode|Win32.Build.0 = Release DLL Unicode|Win32
+		{A20E5632-13AE-4204-8915-F5F7874FBCB2}.Release DLL|Win32.ActiveCfg = Release DLL|Win32
+		{A20E5632-13AE-4204-8915-F5F7874FBCB2}.Release DLL|Win32.Build.0 = Release DLL|Win32
+		{A20E5632-13AE-4204-8915-F5F7874FBCB2}.Release Unicode|Win32.ActiveCfg = Release Unicode|Win32
+		{A20E5632-13AE-4204-8915-F5F7874FBCB2}.Release Unicode|Win32.Build.0 = Release Unicode|Win32
+		{A20E5632-13AE-4204-8915-F5F7874FBCB2}.Release|Win32.ActiveCfg = Release|Win32
+		{A20E5632-13AE-4204-8915-F5F7874FBCB2}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
