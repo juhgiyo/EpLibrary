@@ -119,7 +119,7 @@ long Semaphore::TryLockFor(const unsigned int dwMilliSecond)
 }
 void Semaphore::Unlock()
 {
-#if _DEBUG
+#if defined(_DEBUG)
 	System::WaitForSingleObject(m_semDebug,WAITTIME_INIFINITE);
 	std::vector<int>::iterator iter;
 	int threadID=GetCurrentThreadId();
@@ -138,6 +138,24 @@ void Semaphore::Unlock()
 
 long Semaphore::Release(long count, long * retPreviousCount)
 {
+#if defined(_DEBUG)
+	long debugCount=count;
+	System::WaitForSingleObject(m_semDebug,WAITTIME_INIFINITE);
+	std::vector<int>::iterator iter;
+	int threadID=GetCurrentThreadId();
+	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
+	{
+		if(*iter==threadID)
+		{
+			m_threadList.erase(iter);
+			debugCount--;
+			break;
+		}
+	}
+	if(debugCount>=m_threadList.size())
+		m_threadList.clear();
+	ReleaseSemaphore(m_semDebug,1,NULL);
+#endif //_DEBUG
 	return ReleaseSemaphore(m_sem,count,retPreviousCount);
 }
 
