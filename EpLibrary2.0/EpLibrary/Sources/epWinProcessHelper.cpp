@@ -175,8 +175,27 @@ void WinProcessHelper::GetProcessID(const TCHAR *pProcessName, std::vector<unsig
 	EP_Free(pPerfData);
 	RegCloseKey(HKEY_PERFORMANCE_DATA);
 }
+
+unsigned long WinProcessHelper::GetProcessID(HANDLE processHandle)
+{
+	return ::GetProcessId(processHandle);
+}
+
 bool WinProcessHelper::TerminateProcess(unsigned long processID)
 {
+	HANDLE pProcess = OpenProcess(PROCESS_ALL_ACCESS,FALSE,processID);
+	if(pProcess)
+	{
+		::TerminateProcess(pProcess,0);
+		::CloseHandle(pProcess);
+		return true;
+	}
+	return false;
+}
+
+bool WinProcessHelper::TerminateProcess(HANDLE processHandle)
+{
+	unsigned long processID=GetProcessID(processHandle);
 	HANDLE pProcess = OpenProcess(PROCESS_ALL_ACCESS,FALSE,processID);
 	if(pProcess)
 	{
@@ -213,6 +232,25 @@ bool WinProcessHelper::SwitchToProcess(unsigned long processID)
 {
 	HWND hwnd= ::GetTopWindow(0);
 
+	while(hwnd)
+	{
+		unsigned long pid;
+		unsigned long dwThreadID= ::GetWindowThreadProcessId(hwnd,&pid);
+		if(pid==processID)
+		{
+			::SwitchToThisWindow(hwnd,TRUE);
+			return true;
+		}
+		hwnd=::GetNextWindow(hwnd,GW_HWNDNEXT);
+	}
+	return false;
+}
+
+bool WinProcessHelper::SwitchToProcess(HANDLE processHandle)
+{
+	HWND hwnd= ::GetTopWindow(0);
+
+	unsigned long processID=GetProcessID(processHandle);
 	while(hwnd)
 	{
 		unsigned long pid;

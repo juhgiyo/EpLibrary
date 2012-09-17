@@ -55,6 +55,13 @@ namespace epl
 		static void GetProcessID(const TCHAR * pProcessName, std::vector<unsigned long>& retSetOfPID);
 
 		/*!
+		Return the set of process id with given handle
+		@param[in] processHandle the process handle to find id
+		@return process ID of the given handle
+		*/
+		static unsigned long GetProcessID(HANDLE processHandle);
+
+		/*!
 		Terminate the all process with the given name
 		@param[in] pProcessName the name of the window process to terminate
 		@return true if terminated, otherwise false
@@ -69,6 +76,13 @@ namespace epl
 		static bool TerminateProcess(unsigned long processID);
 
 		/*!
+		Terminate the process with the given process Handle
+		@param[in] processHandle the handle of the window process to terminate
+		@return true if terminated, otherwise false
+		*/
+		static bool TerminateProcess(HANDLE processHandle);
+
+		/*!
 		Switch the focus to the process with the given process ID
 		@param[in] pProcessName the name of the window process to switch
 		@return true if switched, otherwise false
@@ -81,6 +95,13 @@ namespace epl
 		@return true if switched, otherwise false
 		*/
 		static bool SwitchToProcess(unsigned long processID);
+
+		/*!
+		Switch the focus to the process with the given process Handle
+		@param[in] processHandle the handle of the window process to switch
+		@return true if switched, otherwise false
+		*/
+		static bool SwitchToProcess(HANDLE processHandle);
 		
 		/*!
 		Get the number of process with the given name
