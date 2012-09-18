@@ -57,6 +57,16 @@ namespace epl
 		*/
 		SmartObject & operator=(const SmartObject&b);
 
+		/*!
+		Returns the current reference count.
+		@return the current reference count.
+		*/
+		int GetReferenceCount()
+		{
+			LockObj lock(m_refCounterLock);
+			return m_refCount;
+		}
+
 
 	#if !defined(_DEBUG)
 		/*!
