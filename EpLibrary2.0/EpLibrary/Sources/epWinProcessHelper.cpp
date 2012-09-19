@@ -195,12 +195,9 @@ bool WinProcessHelper::TerminateProcess(unsigned long processID)
 
 bool WinProcessHelper::TerminateProcess(HANDLE processHandle)
 {
-	unsigned long processID=GetProcessID(processHandle);
-	HANDLE pProcess = OpenProcess(PROCESS_ALL_ACCESS,FALSE,processID);
-	if(pProcess)
+	if(processHandle)
 	{
-		::TerminateProcess(pProcess,0);
-		::CloseHandle(pProcess);
+		::TerminateProcess(processHandle,0);
 		return true;
 	}
 	return false;
