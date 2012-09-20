@@ -183,6 +183,9 @@ namespace epl{
 
 		/// The list of the properties
 		vector<Pair<EpTString,EpTString> > m_propertyList;
+
+		/// Null String
+		EpTString m_nullString;
 	};
 }
 

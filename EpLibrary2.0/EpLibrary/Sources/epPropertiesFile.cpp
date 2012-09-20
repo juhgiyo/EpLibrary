@@ -21,11 +21,13 @@ using namespace epl;
 
 PropertiesFile::PropertiesFile(FileEncodingType encodingType, LockPolicy lockPolicyType):BaseFile(encodingType,lockPolicyType)
 {
+	m_nullString=_T("");
 }
 
 PropertiesFile::PropertiesFile(const PropertiesFile& b):BaseFile(b)
 {
 	m_propertyList=b.m_propertyList;
+	m_nullString=_T("");
 }
 
 PropertiesFile::~PropertiesFile()
@@ -80,6 +82,7 @@ EpTString &PropertiesFile::GetProperty(const TCHAR * key)
 		}
 	}
 	EP_VERIFY_OUT_OF_RANGE_W_MSG(0,"Given key does not exists in the list.");
+	return m_nullString;
 }
 
 const EpTString &PropertiesFile::GetProperty(const TCHAR * key) const
@@ -96,6 +99,7 @@ const EpTString &PropertiesFile::GetProperty(const TCHAR * key) const
 		}
 	}
 	EP_VERIFY_OUT_OF_RANGE_W_MSG(0,"Given key does not exists in the list.");
+	return m_nullString;
 }
 
 bool PropertiesFile::AddProperty(const TCHAR * key, const TCHAR * val)
@@ -187,6 +191,7 @@ const EpTString& PropertiesFile::operator [](const TCHAR * key) const
 		}
 	}
 	EP_VERIFY_OUT_OF_RANGE(0);
+	return m_nullString;
 }
 void PropertiesFile::loadFromFile(EpTString lines)
 {
