@@ -151,7 +151,7 @@ EpTString ConsoleHelper::ExecuteConsoleCommand(const TCHAR * command, bool isDos
 
 }
 
-void ConsoleHelper::ExecuteProgram(const TCHAR * execFilePath)
+void ConsoleHelper::ExecuteProgram(const TCHAR * execFilePath, const TCHAR *parameters)
 {
-	ShellExecute(0,0,execFilePath,0,0,SW_SHOWNORMAL);
+	ShellExecute(0,0,execFilePath,parameters,0,SW_SHOWNORMAL);
 }

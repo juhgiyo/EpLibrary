@@ -63,8 +63,9 @@ namespace epl
 		/*!
 		Execute the given executable file
 		@param[in] execFilePath the program file path to execute
+		@param[in] parameters the parameter variables for executing file
 		*/
-		static void ExecuteProgram(const TCHAR *execFilePath);
+		static void ExecuteProgram(const TCHAR *execFilePath, const TCHAR *parameters=NULL);
 	};
 }
 
