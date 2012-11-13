@@ -54,7 +54,7 @@ namespace epl
 		@param[in] priority the priority of the process executing
 		@param[out] retProcessHandle the handle to the process created
 		@return the result of the console command
-		@remark retProcessHandle will be NULL when the function exist.
+		@remark retProcessHandle will be NULL when the function exits.
 		        This can be used when isWaitForTerminate is true, and you need to terminate the process while waiting.
 				Terminate the process from the other thread using the given handle pointer.
 		*/
