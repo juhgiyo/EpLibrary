@@ -58,8 +58,9 @@ namespace epl
 
 		/*!
 		Locks the Critical Section
+		@return true if locked, false otherwise
 		*/
-		virtual void Lock() =0;
+		virtual bool Lock() =0;
 
 		/*!
 		Try to Lock the Critical Section

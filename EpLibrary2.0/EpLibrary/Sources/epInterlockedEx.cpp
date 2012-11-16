@@ -39,7 +39,7 @@ InterlockedEx::~InterlockedEx()
 {
 }
 
-void InterlockedEx::Lock()
+bool InterlockedEx::Lock()
 {
 #if _DEBUG
 	while(InterlockedExchange(&m_interLockDebug, 1)	!= 0)
@@ -66,6 +66,7 @@ void InterlockedEx::Lock()
 	m_threadList.push_back(threadID);
 	InterlockedExchange(&m_interLockDebug, 0);
 #endif //defined(_DEBUG)
+	return true;
 }
 
 long InterlockedEx::TryLock()

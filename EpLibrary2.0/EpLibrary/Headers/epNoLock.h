@@ -81,8 +81,9 @@ namespace epl
 
 		/*!
 		Locks the NoLock
+		@return true if locked, false otherwise
 		*/
-		virtual void Lock();
+		virtual bool Lock();
 
 		/*!
 		Try to Lock the NoLock
@@ -107,9 +108,9 @@ namespace epl
 		virtual void Unlock();
 
 	private:
-#if _DEBUG
-		std::vector<int> m_threadList;
-#endif //_DEBUG
+// #if _DEBUG
+// 		std::vector<int> m_threadList;
+// #endif //_DEBUG
 	};
 
 }

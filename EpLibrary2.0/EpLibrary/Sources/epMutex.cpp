@@ -23,6 +23,7 @@ using namespace epl;
 
 Mutex::Mutex(const TCHAR *mutexName, LPSECURITY_ATTRIBUTES lpsaAttributes) :BaseLock()
 {
+	m_isMutexAbandoned=false;
 	m_lpsaAttributes=lpsaAttributes;
 	m_mutex=CreateMutex(lpsaAttributes,FALSE,mutexName);
 #if defined(_DEBUG)
@@ -32,6 +33,7 @@ Mutex::Mutex(const TCHAR *mutexName, LPSECURITY_ATTRIBUTES lpsaAttributes) :Base
 
 Mutex::Mutex(const Mutex& b)
 {
+	m_isMutexAbandoned=false;
 	m_lpsaAttributes=b.m_lpsaAttributes;
 	m_mutex=CreateMutex(m_lpsaAttributes,FALSE,NULL);
 #if defined(_DEBUG)
@@ -48,11 +50,13 @@ Mutex::~Mutex()
 #endif //defined(_DEBUG)
 }
 
-void Mutex::Lock()
+bool Mutex::Lock()
 {
 
 #if _DEBUG
-	System::WaitForSingleObject(m_mutexDebug,WAITTIME_INIFINITE);
+	unsigned long resDebug=System::WaitForSingleObject(m_mutexDebug,WAITTIME_INIFINITE);
+	EP_ASSERT_EXPR(resDebug!=WAIT_ABANDONED,_T("Obtained abandoned Debug Mutex."));
+	
 	std::vector<int>::iterator iter;
 	int threadID=GetCurrentThreadId();
 	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
@@ -61,18 +65,26 @@ void Mutex::Lock()
 	}
 #endif //_DEBUG
 
-	System::WaitForSingleObject(m_mutex,WAITTIME_INIFINITE);
+	bool returnVal=true;
+	unsigned long res=System::WaitForSingleObject(m_mutex,WAITTIME_INIFINITE);
+	if(res==WAIT_ABANDONED)
+	{
+		m_isMutexAbandoned=true;
+		returnVal=false;
+	}
 
 #if defined(_DEBUG)
 	m_threadList.push_back(threadID);
 	ReleaseMutex(m_mutexDebug);
 #endif //defined(_DEBUG)
+	return returnVal;
 }
 
 long Mutex::TryLock()
 {
 #if defined(_DEBUG)
-	System::WaitForSingleObject(m_mutexDebug,WAITTIME_INIFINITE);
+	unsigned long resDebug=System::WaitForSingleObject(m_mutexDebug,WAITTIME_INIFINITE);
+	EP_ASSERT_EXPR(resDebug!=WAIT_ABANDONED,_T("Obtained abandoned Debug Mutex."));
 	std::vector<int>::iterator iter;
 	int threadID=GetCurrentThreadId();
 	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
@@ -82,12 +94,16 @@ long Mutex::TryLock()
 	ReleaseMutex(m_mutexDebug);
 #endif //defined(_DEBUG)
 	long ret=0;
-	if(System::WaitForSingleObject(m_mutex,WAITTIME_IGNORE) == WAIT_OBJECT_0)
+	unsigned long mutexStatus=System::WaitForSingleObject(m_mutex,WAITTIME_IGNORE);
+	if(mutexStatus== WAIT_OBJECT_0)
 		ret=1;
+	else if(mutexStatus==WAIT_ABANDONED)
+		m_isMutexAbandoned=true;
 #if defined(_DEBUG)
 	if(ret)
 	{
-		System::WaitForSingleObject(m_mutexDebug,WAITTIME_INIFINITE);
+		unsigned long resDebug=System::WaitForSingleObject(m_mutexDebug,WAITTIME_INIFINITE);
+		EP_ASSERT_EXPR(resDebug!=WAIT_ABANDONED,_T("Obtained abandoned Debug Mutex."));
 		m_threadList.push_back(threadID);
 		ReleaseMutex(m_mutexDebug);
 	}
@@ -99,7 +115,8 @@ long Mutex::TryLock()
 long Mutex::TryLockFor(const unsigned int dwMilliSecond)
 {
 #if defined(_DEBUG)
-	System::WaitForSingleObject(m_mutexDebug,WAITTIME_INIFINITE);
+	unsigned long resDebug=System::WaitForSingleObject(m_mutexDebug,WAITTIME_INIFINITE);
+	EP_ASSERT_EXPR(resDebug!=WAIT_ABANDONED,_T("Obtained abandoned Debug Mutex."));
 	std::vector<int>::iterator iter;
 	int threadID=GetCurrentThreadId();
 	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
@@ -109,12 +126,16 @@ long Mutex::TryLockFor(const unsigned int dwMilliSecond)
 	ReleaseMutex(m_mutexDebug);
 #endif //defined(_DEBUG)
 	long ret=0;
-	if(System::WaitForSingleObject(m_mutex,dwMilliSecond)==WAIT_OBJECT_0)
+	unsigned long mutexStatus=System::WaitForSingleObject(m_mutex,dwMilliSecond);
+	if(mutexStatus==WAIT_OBJECT_0)
 		ret=1;
+	else if(mutexStatus==WAIT_ABANDONED)
+		m_isMutexAbandoned=true;
 #if _DEBUG
 	if(ret)
 	{
-		System::WaitForSingleObject(m_mutexDebug,WAITTIME_INIFINITE);
+		unsigned long resDebug=System::WaitForSingleObject(m_mutexDebug,WAITTIME_INIFINITE);
+		EP_ASSERT_EXPR(resDebug!=WAIT_ABANDONED,_T("Obtained abandoned Debug Mutex."));
 		m_threadList.push_back(threadID);
 		ReleaseMutex(m_mutexDebug);
 	}
@@ -125,7 +146,8 @@ long Mutex::TryLockFor(const unsigned int dwMilliSecond)
 void Mutex::Unlock()
 {
 #if _DEBUG
-	System::WaitForSingleObject(m_mutexDebug,WAITTIME_INIFINITE);
+	unsigned long resDebug=System::WaitForSingleObject(m_mutexDebug,WAITTIME_INIFINITE);
+	EP_ASSERT_EXPR(resDebug!=WAIT_ABANDONED,_T("Obtained abandoned Debug Mutex."));
 	std::vector<int>::iterator iter;
 	int threadID=GetCurrentThreadId();
 	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
@@ -139,4 +161,9 @@ void Mutex::Unlock()
 	ReleaseMutex(m_mutexDebug);
 #endif //_DEBUG
 	ReleaseMutex(m_mutex);
+}
+
+bool Mutex::IsMutexAbandoned()
+{
+	return m_isMutexAbandoned;
 }

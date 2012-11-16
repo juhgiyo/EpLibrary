@@ -47,7 +47,7 @@ Semaphore::~Semaphore()
 #endif //defined(_DEBUG)
 }
 
-void Semaphore::Lock()
+bool Semaphore::Lock()
 {
 #if _DEBUG
 	System::WaitForSingleObject(m_semDebug,WAITTIME_INIFINITE);
@@ -65,6 +65,7 @@ void Semaphore::Lock()
 	m_threadList.push_back(threadID);
 	ReleaseSemaphore(m_semDebug,1,NULL);
 #endif //defined(_DEBUG)
+	return true;
 }
 
 long Semaphore::TryLock()

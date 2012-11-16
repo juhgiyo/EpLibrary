@@ -86,8 +86,9 @@ namespace epl
 
 		/*!
 		Locks the Critical Section
+		@return true if locked, false otherwise
 		*/
-		virtual void Lock();
+		virtual bool Lock();
 
 		/*!
 		Try to Lock the Critical Section
@@ -114,12 +115,20 @@ namespace epl
 		*/
 		virtual void Unlock();
 
+		/*!
+		Returns the flag whether this mutex is abandoned or now.
+		@return true if the mutex is abandoned, otherwise false.
+		*/
+		bool IsMutexAbandoned();
+
 	private:
 
 		/// Mutex
 		HANDLE m_mutex;
 		/// Creation Security Info
 		LPSECURITY_ATTRIBUTES m_lpsaAttributes;
+		/// Flag for whether the mutex is abandoned or not.
+		bool m_isMutexAbandoned;
 
 #if defined(_DEBUG)
 		std::vector<int> m_threadList;

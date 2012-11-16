@@ -81,8 +81,9 @@ namespace epl
 
 		/*!
 		Locks the Critical Section
+		@return true if locked, false otherwise
 		*/
-		virtual void Lock();
+		virtual bool Lock();
 
 		/*!
 		Try to Lock the Critical Section
@@ -112,11 +113,14 @@ namespace epl
 	private:
 		/// the actual lock member.
 		CRITICAL_SECTION m_criticalSection;
-#if defined(_DEBUG)
-		std::vector<int> m_threadList;
-		/// thelock member Debug
-		CRITICAL_SECTION m_criticalSectionDebug;
-#endif //defined(_DEBUG)
+		/// lock counter
+		int m_lockCounter;
+
+// #if defined(_DEBUG)
+// 		std::vector<int> m_threadList;
+// 		/// thelock member Debug
+// 		CRITICAL_SECTION m_criticalSectionDebug;
+// #endif //defined(_DEBUG)
 	};
 
 }
