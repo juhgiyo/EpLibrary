@@ -51,6 +51,9 @@ namespace epl
 		@param[in] command the command to execute
 		@param[in] isDosCommand flag whether the command is standard DOS command or not
 		@param[in] isWaitForTerminate flag for waiting for process to terminate or not
+		@param[in] isShowWindow flag for whether to show console window
+		@param[in] useStdOutput flag for whether console to print to console window or to pipe.<br/>
+		                        true to print to pipe; false to print to console.
 		@param[in] priority the priority of the process executing
 		@param[out] retProcessHandle the handle to the process created
 		@return the result of the console command
@@ -58,7 +61,7 @@ namespace epl
 		        This can be used when isWaitForTerminate is true, and you need to terminate the process while waiting.
 				Terminate the process from the other thread using the given handle pointer.
 		*/
-		static EpTString ExecuteConsoleCommand(const TCHAR * command, bool isDosCommand=false, bool isWaitForTerminate=true, ConsolePriority priority=CONSOLE_PRIORITY_NORMAL, HANDLE *retProcessHandle=NULL);
+		static EpTString ExecuteConsoleCommand(const TCHAR * command, bool isDosCommand=false, bool isWaitForTerminate=true, bool isShowWindow=false,bool useStdOutput=true,  ConsolePriority priority=CONSOLE_PRIORITY_NORMAL, HANDLE *retProcessHandle=NULL);
 
 		/*!
 		Execute the given executable file

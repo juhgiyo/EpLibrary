@@ -51,7 +51,7 @@ EpTString ReadAndHandleOutput(HANDLE hPipeRead)
 	return csOutput;
 }
 
-EpTString ConsoleHelper::ExecuteConsoleCommand(const TCHAR * command, bool isDosCommand, bool isWaitForTerminate, ConsolePriority priority, HANDLE *retProcessHandle)
+EpTString ConsoleHelper::ExecuteConsoleCommand(const TCHAR * command, bool isDosCommand, bool isWaitForTerminate,bool isShowWindow, bool useStdOutput, ConsolePriority priority, HANDLE *retProcessHandle)
 {
 	EpTString csExecute,csOutput;
 	csOutput=_T("");
@@ -71,7 +71,7 @@ EpTString ConsoleHelper::ExecuteConsoleCommand(const TCHAR * command, bool isDos
 	HANDLE hOutputReadTmp,hOutputRead,hOutputWrite;
 	HANDLE hErrorWrite;
 
-	if(isWaitForTerminate)
+	if(isWaitForTerminate && useStdOutput)
 	{
 
 		if(!CreatePipe(&hOutputReadTmp,&hOutputWrite,&secattr,0))
@@ -101,23 +101,38 @@ EpTString ConsoleHelper::ExecuteConsoleCommand(const TCHAR * command, bool isDos
 	PROCESS_INFORMATION pInfo;
 	ZeroMemory(&pInfo,sizeof(pInfo));
 	sInfo.cb=sizeof(sInfo);
-	sInfo.wShowWindow=SW_HIDE;
-	if(isWaitForTerminate)
+		
+	if(isWaitForTerminate && useStdOutput)
 	{
 		sInfo.dwFlags=STARTF_USESTDHANDLES;
 		sInfo.hStdInput=NULL;
 		sInfo.hStdOutput=hOutputWrite;
 		sInfo.hStdError=hErrorWrite;
 	}
+
+	DWORD creationFlag=priority;
+	if(isShowWindow)
+	{
+		sInfo.wShowWindow=SW_SHOWNORMAL;
+		sInfo.dwFlags|=STARTF_USESHOWWINDOW;
+		creationFlag|=CREATE_NEW_CONSOLE;
+	}
+	else
+	{
+		sInfo.wShowWindow=SW_HIDE;
+		creationFlag|=CREATE_NO_WINDOW;
+	}
+	
+
 #if defined(_UNICODE) || defined(UNICODE)
-	if(!CreateProcess(0,reinterpret_cast<LPWSTR>(const_cast<wchar_t*>(csExecute.c_str())),0,0,TRUE,priority|CREATE_NO_WINDOW,0,0,&sInfo,&pInfo))
+	if(!CreateProcess(0,reinterpret_cast<LPWSTR>(const_cast<wchar_t*>(csExecute.c_str())),0,0,TRUE,creationFlag,0,0,&sInfo,&pInfo))
 		//if(!CreateProcess(0,reinterpret_cast<LPWSTR>(const_cast<wchar_t*>(csExecute.c_str())),0,0,TRUE,priority|CREATE_NEW_CONSOLE,0,0,&sInfo,&pInfo))
 #else // defined(_UNICODE) || defined(UNICODE)
-	if(!CreateProcess(0,reinterpret_cast<LPSTR>(const_cast<char*>(csExecute.c_str())),0,0,TRUE,priority|CREATE_NO_WINDOW,0,0,&sInfo,&pInfo))
+	if(!CreateProcess(0,reinterpret_cast<LPSTR>(const_cast<char*>(csExecute.c_str())),0,0,TRUE,creationFlag,0,0,&sInfo,&pInfo))
 		//if(!CreateProcess(0,reinterpret_cast<LPSTR>(const_cast<char*>(csExecute.c_str())),0,0,TRUE,priority|CREATE_NEW_CONSOLE,0,0,&sInfo,&pInfo))
 #endif // defined(_UNICODE) || defined(UNICODE)
 	{
-		if(isWaitForTerminate)
+		if(isWaitForTerminate && useStdOutput)
 		{
 			CloseHandle(hOutputWrite);
 			CloseHandle(hErrorWrite);
@@ -132,12 +147,15 @@ EpTString ConsoleHelper::ExecuteConsoleCommand(const TCHAR * command, bool isDos
 
 	if(isWaitForTerminate)
 	{
-		CloseHandle(hOutputWrite);
-		CloseHandle(hErrorWrite);
-
-		csOutput=ReadAndHandleOutput(hOutputRead);
+		if(useStdOutput)
+		{
+			CloseHandle(hOutputWrite);
+			CloseHandle(hErrorWrite);
+			csOutput=ReadAndHandleOutput(hOutputRead);
+		}
 		System::WaitForSingleObject(pInfo.hProcess,WAITTIME_INIFINITE);
-		CloseHandle(hOutputRead);
+		if(useStdOutput)
+			CloseHandle(hOutputRead);
 	}
 	if(retProcessHandle)
 	{
