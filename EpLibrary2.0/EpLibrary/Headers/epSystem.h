@@ -187,6 +187,94 @@ namespace epl
 		static EpErrno TcsTime(TCHAR * buffer, unsigned int numberOfElements);
 
 
+		/*!
+		Perform a lowercase comparison of string1 and string2
+		@param[in] str1 string1
+		@param[in] str2 string2
+		@return return <br/>
+		        <0 if string1 less than string2 <br/>
+		        0  if string1 identical to string2 <br/>
+				>0 if string1 greater than string2		 
+		*/
+		static int StrICmp(const char * str1, const char *str2);
+
+		/*!
+		Compare string1 and string2
+		@param[in] str1 string1
+		@param[in] str2 string2
+		@return return <br/>
+		        <0 if string1 less than string2 <br/>
+		        0  if string1 identical to string2 <br/>
+				>0 if string1 greater than string2		 
+		*/
+		static int StrCmp(const char * str1, const char *str2);
+
+		/*!
+		Perform a lowercase comparison of string1 and string2
+		@param[in] str1 string1
+		@param[in] str2 string2
+		@return return <br/>
+		        <0 if string1 less than string2 <br/>
+		        0  if string1 identical to string2 <br/>
+				>0 if string1 greater than string2		 
+		*/
+		static int MbsICmp(const unsigned char * str1, const unsigned char *str2);
+
+		/*!
+		Compare string1 and string2
+		@param[in] str1 string1
+		@param[in] str2 string2
+		@return return <br/>
+		        <0 if string1 less than string2 <br/>
+		        0  if string1 identical to string2 <br/>
+				>0 if string1 greater than string2		 
+		*/
+		static int MbsCmp(const unsigned char * str1, const unsigned char *str2);
+
+		/*!
+		Perform a lowercase comparison of string1 and string2
+		@param[in] str1 string1
+		@param[in] str2 string2
+		@return return <br/>
+		        <0 if string1 less than string2 <br/>
+		        0  if string1 identical to string2 <br/>
+				>0 if string1 greater than string2		 
+		*/
+		static int WStrICmp(const wchar_t * str1, const wchar_t *str2);
+
+		/*!
+		Compare string1 and string2
+		@param[in] str1 string1
+		@param[in] str2 string2
+		@return return <br/>
+		        <0 if string1 less than string2 <br/>
+		        0  if string1 identical to string2 <br/>
+				>0 if string1 greater than string2		 
+		*/
+		static int WStrCmp(const wchar_t * str1, const wchar_t *str2);
+		
+		/*!
+		Perform a lowercase comparison of string1 and string2
+		@param[in] str1 string1
+		@param[in] str2 string2
+		@return return <br/>
+		        <0 if string1 less than string2 <br/>
+		        0  if string1 identical to string2 <br/>
+				>0 if string1 greater than string2		 
+		*/
+		static int TcsICmp(const TCHAR * str1, const TCHAR *str2);
+
+		/*!
+		Compare string1 and string2
+		@param[in] str1 string1
+		@param[in] str2 string2
+		@return return <br/>
+		        <0 if string1 less than string2 <br/>
+		        0  if string1 identical to string2 <br/>
+				>0 if string1 greater than string2		 
+		*/
+		static int TcsCmp(const TCHAR * str1, const TCHAR *str2);
+
 
 		/*!
 		Print the given buffer to the console.

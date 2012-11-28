@@ -129,6 +129,44 @@ EpErrno System::TcsTime(TCHAR * buffer, unsigned int numberOfElements)
 	return _tstrtime_s(buffer,numberOfElements);
 }
 
+
+int System::StrICmp(const char * str1, const char *str2)
+{
+	return stricmp(str1,str2);
+}
+int System::StrCmp(const char * str1, const char *str2)
+{
+	return strcmp(str1,str2);
+}
+
+int System::MbsICmp(const unsigned char * str1, const unsigned char *str2)
+{
+	return _mbsicmp(str1,str2);
+}
+int System::MbsCmp(const unsigned char * str1, const unsigned char *str2)
+{
+	return _mbscmp(str1,str2);
+}
+
+int System::TcsICmp(const TCHAR * str1,const  TCHAR *str2)
+{
+	return _tcsicmp(str1,str2);
+}
+int System::TcsCmp(const TCHAR * str1, const TCHAR *str2)
+{
+	return _tcscmp(str1,str2);
+}
+
+int System::WStrICmp(const wchar_t * str1, const wchar_t *str2)
+{
+	return _wcsicmp(str1,str2);
+}
+int System::WStrCmp(const wchar_t * str1, const wchar_t *str2)
+{
+	return wcscmp(str1,str2);
+}
+
+
 int System::Printf(const char * format, ... )
 {
 	va_list args=NULL;

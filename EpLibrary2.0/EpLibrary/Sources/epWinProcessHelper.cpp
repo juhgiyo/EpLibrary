@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <WinPerf.h>
 #include <comdef.h>
 #include <tchar.h>
+#include <tlhelp32.h>
 #include "epMemory.h"
 using namespace epl;
 
@@ -287,4 +288,30 @@ unsigned int WinProcessHelper::GetNumberOfProcess(const TCHAR * pProcessName)
 	std::vector<unsigned long> setOfPid;
 	epl::WinProcessHelper::GetProcessID(pProcessName,setOfPid);
 	return setOfPid.size();
+}
+
+
+void WinProcessHelper::CommandOnProcess(const TCHAR *pProcessName, void (__cdecl *Func)(HANDLE) )
+{
+	PROCESSENTRY32 entry;
+	entry.dwSize = sizeof(PROCESSENTRY32);
+
+	HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, NULL);
+
+	if (Process32First(snapshot, &entry) == TRUE)
+	{
+		while (Process32Next(snapshot, &entry) == TRUE)
+		{
+			if (_tcsicmp(entry.szExeFile, pProcessName) == 0)
+			{  
+				HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, entry.th32ProcessID);
+
+				Func(hProcess);
+
+				CloseHandle(hProcess);
+			}
+		}
+	}
+
+	CloseHandle(snapshot);
 }

@@ -109,6 +109,13 @@ namespace epl
 		@return the number of process with the given name
 		*/
 		static unsigned int GetNumberOfProcess(const TCHAR * pProcessName);
+
+		/*!
+		Get the process handle by process name and input as parameter for function Func
+		@param[in] pProcessName the name of the window process
+		@param[in] Func the function pointer to get the found handle as its parameter
+		*/
+		static void CommandOnProcess(const TCHAR *pProcessName, void (__cdecl *Func)(HANDLE) );
 	};
 }
 #endif //__EP_WIN_PROCESS_HELPER_H__
