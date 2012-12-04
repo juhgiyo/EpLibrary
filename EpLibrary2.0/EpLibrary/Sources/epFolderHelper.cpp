@@ -27,7 +27,7 @@ bool FolderHelper::ChooseFolder(HWND hParent, const TCHAR * title, EpTString &re
 	bool success = false;
 	BROWSEINFO bi;
 	::ZeroMemory(&bi, sizeof(bi));
-	retFolderPath.reserve(MAX_PATH);
+	retFolderPath.insert(retFolderPath.begin(),MAX_PATH,_T('\0'));
 	LPTSTR pBuffer = const_cast<TCHAR*>(retFolderPath.data());
 
 	bi.hwndOwner = hParent;
@@ -49,9 +49,10 @@ bool FolderHelper::ChooseFolder(HWND hParent, const TCHAR * title, EpTString &re
 	}
 
 	//folderPath.ReleaseBuffer();
-	if(retFolderPath.at(retFolderPath.length()-1)!=_T('\\'))
+	int length = System::TcsLen(retFolderPath.c_str());
+	if(length>0 && retFolderPath.at(length-1)!=_T('\\'))
 	{
-		retFolderPath.append(_T("\\"));
+		retFolderPath.insert(retFolderPath.begin()+length,1,_T('\\'));
 	}
 	return success;
 }
