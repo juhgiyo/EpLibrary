@@ -52,7 +52,7 @@ bool FolderHelper::ChooseFolder(HWND hParent, const TCHAR * title, EpTString &re
 	int length = System::TcsLen(retFolderPath.c_str());
 	if(length>0 && retFolderPath.at(length-1)!=_T('\\'))
 	{
-		retFolderPath.insert(retFolderPath.begin()+length,1,_T('\\'));
+		retFolderPath.at(length)=_T('\\');
 	}
 	return success;
 }
