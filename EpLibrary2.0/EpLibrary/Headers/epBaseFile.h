@@ -102,7 +102,14 @@ namespace epl{
 		*/
 		bool LoadFromFile(const TCHAR *filename);
 
-
+		/*!
+		Get a single line from the given buffer
+		@param[in] buf the buffer that holds all lines
+		@param[out] retLine the first line that found in the given buffer
+		@param[out] retRest the rest of the buffer without the found line
+		@return true if successfully parsed the line, otherwise false
+		*/
+		static bool GetLine(EpTString buf, EpTString &retLine, EpTString &retRest);
 
 	protected:
 
@@ -111,15 +118,6 @@ namespace epl{
 		@param[in] toFileString the string to write to the file
 		*/
 		void writeToFile(const TCHAR *toFileString);
-
-		/*!
-		Get a single line from the given buffer
-		@param[in] buf the buffer that holds all lines
-		@param[out] retLine the first line that found in the given buffer
-		@param[out] retRest the rest of the buffer without the found line
-		@return true if successfully parsed the line, otherwise false
-		*/
-		bool getLine(EpTString buf, EpTString &retLine, EpTString &retRest);
 
 		/*!
 		Loop Function that writes to the file.

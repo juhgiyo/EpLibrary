@@ -197,7 +197,7 @@ void PropertiesFile::loadFromFile(EpTString lines)
 {
 	m_propertyList.clear();
 	EpTString line=_T("");
-	while(getLine(lines,line,lines))
+	while(BaseFile::GetLine(lines,line,lines))
 	{
 		EpTString key;
 		EpTString val;

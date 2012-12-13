@@ -300,7 +300,7 @@ bool BaseFile::LoadFromFile(const TCHAR *filename)
 }
 
 
-bool BaseFile::getLine(EpTString buf, EpTString &retLine, EpTString &retRest)
+bool BaseFile::GetLine(EpTString buf, EpTString &retLine, EpTString &retRest)
 {
 	if(buf.length()<=0)
 		return false;
@@ -324,4 +324,3 @@ bool BaseFile::getLine(EpTString buf, EpTString &retLine, EpTString &retRest)
 	retLine=lineSTring;
 	return true;
 }
-
