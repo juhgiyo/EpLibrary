@@ -169,6 +169,23 @@ EpTString FolderHelper::GetPathOnly(const TCHAR * filePath)
 	return retString;
 }
 
+EpTString FolderHelper::GetFileExtension(const TCHAR *filePath)
+{
+	unsigned int strLength=System::TcsLen(filePath);
+	EpTString tmpString=filePath;
+	EpTString retString=_T("");
+	for(int stringTrav=strLength-1;stringTrav>=0;stringTrav--)
+	{
+		if(tmpString.at(stringTrav)==_T('.'))
+		{
+			tmpString.erase(tmpString.begin(),tmpString.begin()+stringTrav);
+			retString=tmpString;
+			return retString;
+		}
+	}
+	return retString;
+}
+
 EpTString FolderHelper::GetModuleFileName()
 {
 	TCHAR pathName[MAX_PATH];

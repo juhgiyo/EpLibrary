@@ -122,6 +122,13 @@ namespace epl
 		*/
 		static EpTString GetPathOnly(const TCHAR * filePath);
 
+		/*!
+		Return only the extension of given file path
+		@param[in] filePath the full path of the file with file name
+		@return the extension of given file path
+		*/
+		static EpTString GetFileExtension(const TCHAR *filePath);
+
 	private:
 		/*!
 		Recursively delete given folder path from file system
