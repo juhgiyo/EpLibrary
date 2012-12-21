@@ -178,7 +178,7 @@ EpTString FolderHelper::GetFileExtension(const TCHAR *filePath)
 	{
 		if(tmpString.at(stringTrav)==_T('.'))
 		{
-			tmpString.erase(tmpString.begin(),tmpString.begin()+stringTrav);
+			tmpString.erase(tmpString.begin(),tmpString.begin()+(stringTrav+1));
 			retString=tmpString;
 			return retString;
 		}
