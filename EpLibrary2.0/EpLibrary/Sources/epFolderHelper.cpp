@@ -159,7 +159,7 @@ EpTString FolderHelper::GetPathOnly(const TCHAR * filePath)
 {
 	EpTString retString=filePath;
 	//unsigned int strLength=System::TcsLen(filePath);
-	unsigned int strLength=retString.size();
+	unsigned int strLength=retString.length();
 
 	for(int stringTrav=strLength-1;stringTrav>=0;stringTrav--)
 	{
@@ -175,7 +175,7 @@ EpTString FolderHelper::GetFileExtension(const TCHAR *filePath)
 {
 	EpTString tmpString=filePath;
 	//unsigned int strLength=System::TcsLen(filePath);
-	unsigned int strLength=tmpString.size();
+	unsigned int strLength=tmpString.length();
 	EpTString retString=_T("");
 	for(int stringTrav=strLength-1;stringTrav>=0;stringTrav--)
 	{
