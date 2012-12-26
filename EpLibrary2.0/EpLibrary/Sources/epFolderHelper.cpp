@@ -159,6 +159,9 @@ EpTString FolderHelper::GetPathOnly(const TCHAR * filePath)
 {
 	unsigned int strLength=System::TcsLen(filePath);
 	EpTString retString=filePath;
+	//unsigned int strLength=System::TcsLen(filePath);
+	unsigned int strLength=retString.size();
+
 	for(int stringTrav=strLength-1;stringTrav>=0;stringTrav--)
 	{
 		if(retString.at(stringTrav)!=_T('\\'))
@@ -171,8 +174,9 @@ EpTString FolderHelper::GetPathOnly(const TCHAR * filePath)
 
 EpTString FolderHelper::GetFileExtension(const TCHAR *filePath)
 {
-	unsigned int strLength=System::TcsLen(filePath);
 	EpTString tmpString=filePath;
+	//unsigned int strLength=System::TcsLen(filePath);
+	unsigned int strLength=tmpString.size();
 	EpTString retString=_T("");
 	for(int stringTrav=strLength-1;stringTrav>=0;stringTrav--)
 	{
