@@ -105,11 +105,13 @@ namespace epl{
 		/*!
 		Get a single line from the given buffer
 		@param[in] buf the buffer that holds all lines
+		@param[in] startIdx the start index of the buf to find a line
 		@param[out] retLine the first line that found in the given buffer
+		@param[out] endIdx the end index of the buf after reading a line
 		@param[out] retRest the rest of the buffer without the found line
 		@return true if successfully parsed the line, otherwise false
 		*/
-		static bool GetLine(const EpTString &buf, EpTString &retLine, EpTString &retRest);
+		static bool GetLine(const EpTString &buf,int startIdx, EpTString &retLine, int *retEndIdx=NULL, EpTString *retRest=NULL);
 
 	protected:
 

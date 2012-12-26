@@ -157,7 +157,6 @@ unsigned int FolderHelper::GetActualFileLength(CFile &file)
 
 EpTString FolderHelper::GetPathOnly(const TCHAR * filePath)
 {
-	unsigned int strLength=System::TcsLen(filePath);
 	EpTString retString=filePath;
 	//unsigned int strLength=System::TcsLen(filePath);
 	unsigned int strLength=retString.size();
