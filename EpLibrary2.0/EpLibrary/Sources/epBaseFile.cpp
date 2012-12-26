@@ -302,7 +302,7 @@ bool BaseFile::LoadFromFile(const TCHAR *filename)
 
 bool BaseFile::GetLine(const EpTString &buf,int startIdx, EpTString &retLine, int *retEndIdx, EpTString *retRest)
 {
-	if(buf.length()-startIdx<=0)
+	if(((int)buf.length())-startIdx<=0)
 		return false;
 	TCHAR splitChar=0;
 	EpTString lineSTring=_T("");
@@ -315,12 +315,12 @@ bool BaseFile::GetLine(const EpTString &buf,int startIdx, EpTString &retLine, in
 			lineSTring.append(&splitChar,1);
 		}
 		bufTrav++;
-	}while(splitChar!=_T('\n') && splitChar!=_T('\0') && bufTrav<buf.length());
+	}while(splitChar!=_T('\n') && splitChar!=_T('\0') && bufTrav<(int)buf.length());
 
 
 	if(retEndIdx)
 	{
-		if(bufTrav<buf.length()-startIdx)
+		if(bufTrav<((int)buf.length())-startIdx)
 			*retEndIdx=bufTrav;
 		else
 			*retEndIdx=buf.length();
@@ -329,7 +329,7 @@ bool BaseFile::GetLine(const EpTString &buf,int startIdx, EpTString &retLine, in
 	if(retRest)
 	{
 		*retRest=buf;
-		if(bufTrav<retRest->length())
+		if(bufTrav<(int)retRest->length())
 			retRest->erase(0,bufTrav);
 		else
 			retRest->erase(0,retRest->length());
