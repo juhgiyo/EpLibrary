@@ -109,7 +109,7 @@ namespace epl{
 		@param[out] retRest the rest of the buffer without the found line
 		@return true if successfully parsed the line, otherwise false
 		*/
-		static bool GetLine(EpTString buf, EpTString &retLine, EpTString &retRest);
+		static bool GetLine(const EpTString &buf, EpTString &retLine, EpTString &retRest);
 
 	protected:
 
