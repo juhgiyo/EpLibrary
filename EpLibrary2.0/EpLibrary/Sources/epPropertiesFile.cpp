@@ -220,7 +220,7 @@ void PropertiesFile::loadFromFile(EpTString lines)
 }
 
 
-bool PropertiesFile::getValueKeyFromLine(EpTString buf, EpTString &retKey, EpTString &retVal)
+bool PropertiesFile::getValueKeyFromLine(const EpTString &buf, EpTString &retKey, EpTString &retVal)
 {
 	TCHAR splitChar=0;
 	int bufTrav=0;
@@ -242,7 +242,8 @@ bool PropertiesFile::getValueKeyFromLine(EpTString buf, EpTString &retKey, EpTSt
 		retKey.append(&splitChar,1);
 		bufTrav++;
 	}
-	buf.erase(0,bufTrav);
 	retVal=buf;
+	retVal.erase(0,bufTrav);
+	
 	return true;
 }

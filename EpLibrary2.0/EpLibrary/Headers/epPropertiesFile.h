@@ -179,7 +179,7 @@ namespace epl{
 		@param[out] retVal the value part of the given line
 		@return true if successfully parsed the key and value, otherwise false
 		*/
-		bool getValueKeyFromLine(EpTString buf, EpTString &retKey, EpTString &retVal);
+		bool getValueKeyFromLine(const EpTString &buf, EpTString &retKey, EpTString &retVal);
 
 		/// The list of the properties
 		vector<Pair<EpTString,EpTString> > m_propertyList;
