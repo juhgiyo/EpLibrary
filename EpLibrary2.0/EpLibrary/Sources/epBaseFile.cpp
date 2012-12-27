@@ -161,7 +161,7 @@ bool BaseFile::LoadFromFile(const TCHAR *filename)
 	if(m_encodingType==FILE_ENCODING_TYPE_ANSI)
 	{
 		char *cFileBuf=EP_NEW char[length+1];
-		System::Memset(cFileBuf,0,length+1);
+		//System::Memset(cFileBuf,0,length+1);
 		int read=System::FRead(cFileBuf,sizeof(char),length,m_file);
 		System::Memset(cFileBuf+read,0,(length+1-read)*sizeof(char));
 		System::FClose(m_file);
@@ -171,7 +171,7 @@ bool BaseFile::LoadFromFile(const TCHAR *filename)
 	else if(m_encodingType==FILE_ENCODING_TYPE_UTF8)
 	{
 		wchar_t *tFileBuf=EP_NEW wchar_t[length+1];
-		System::Memset(tFileBuf,0,(length+1)*sizeof(wchar_t));
+		//System::Memset(tFileBuf,0,(length+1)*sizeof(wchar_t));
 		int read=System::FRead(tFileBuf,sizeof(wchar_t),length,m_file);
 		System::Memset(tFileBuf+read,0,(length+1-read)*sizeof(wchar_t));
 		System::FClose(m_file);
@@ -182,7 +182,7 @@ bool BaseFile::LoadFromFile(const TCHAR *filename)
 	else
 	{
 		char *cFileBuf=EP_NEW char[length+2];
-		System::Memset(cFileBuf,0,length+2);
+		//System::Memset(cFileBuf,0,length+2);
 		int read=System::FRead(cFileBuf,sizeof(char),length,m_file);
 		System::Memset(cFileBuf+read,0,(length+2-read)*sizeof(char));
 		System::FClose(m_file);
@@ -200,7 +200,7 @@ bool BaseFile::LoadFromFile(const TCHAR *filename)
 	{
 
 		char *cFileBuf=EP_NEW char[length+1];
-		System::Memset(cFileBuf,0,length+1);
+		//System::Memset(cFileBuf,0,length+1);
 		int read=System::FRead(cFileBuf,sizeof(char),length,m_file);
 		System::Memset(cFileBuf+read,0,(length+1-read)*sizeof(char));
 		System::FClose(m_file);
@@ -210,7 +210,7 @@ bool BaseFile::LoadFromFile(const TCHAR *filename)
 	else if(m_encodingType==FILE_ENCODING_TYPE_UTF8)
 	{
 		wchar_t *tFileBuf=EP_NEW wchar_t[length+1];
-		System::Memset(tFileBuf,0,(length+1)*sizeof(wchar_t));
+		//System::Memset(tFileBuf,0,(length+1)*sizeof(wchar_t));
 		int read=System::FRead(tFileBuf,sizeof(wchar_t),length,m_file);
 		System::Memset(tFileBuf+read,0,(length+1-read)*sizeof(wchar_t));
 		System::FClose(m_file);
@@ -220,7 +220,7 @@ bool BaseFile::LoadFromFile(const TCHAR *filename)
 	else
 	{
 		char *cFileBuf=EP_NEW char[length+2];
-		System::Memset(cFileBuf,0,length+2);
+		//System::Memset(cFileBuf,0,length+2);
 		int read=System::FRead(cFileBuf,sizeof(char),length,m_file);
 		System::Memset(cFileBuf+read,0,(length+2-read)*sizeof(char));
 		System::FClose(m_file);
