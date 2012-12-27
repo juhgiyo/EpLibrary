@@ -154,9 +154,12 @@ bool BaseFile::LoadFromFile(const TCHAR *filename)
 		return false; // failed..
 	EpTString rest;
 
-#if defined(_UNICODE) || defined(UNICODE)
 	//Find the actual length of file
 	unsigned int length= static_cast<unsigned int>(System::FSize(m_file));
+	if(length<=0)
+		return false;
+
+#if defined(_UNICODE) || defined(UNICODE)
 
 	if(m_encodingType==FILE_ENCODING_TYPE_ANSI)
 	{
@@ -186,17 +189,16 @@ bool BaseFile::LoadFromFile(const TCHAR *filename)
 		int read=System::FRead(wFileBuf,sizeof(wchar_t),length/sizeof(wchar_t),m_file);
 		System::Memset(wFileBuf+read,0,((length/sizeof(wchar_t)+1)-read)*sizeof(wchar_t));
 		System::FClose(m_file);
-
-		rest=wFileBuf;
+		if(wFileBuf[0]==0xFEFF) // BOM
+			rest=wFileBuf+1;
+		else
+			rest=wFileBuf;
 		EP_DELETE[] wFileBuf;
-		if(rest.at(0)==0xFEFF) // BOM
-			rest.erase(rest.begin());
 	}
 	
 	
 #else //defined(_UNICODE) || defined(UNICODE)
-	//Find the actual length of file
-	unsigned int length= static_cast<unsigned int>(System::FSize(m_file));
+
 
 	if(m_encodingType==FILE_ENCODING_TYPE_ANSI)
 	{
