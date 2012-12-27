@@ -320,7 +320,7 @@ bool BaseFile::GetLine(const EpTString &buf,int startIdx, EpTString &retLine, in
 
 	if(retEndIdx)
 	{
-		if(bufTrav<((int)buf.length())-startIdx)
+		if(bufTrav<((int)buf.length()))
 			*retEndIdx=bufTrav;
 		else
 			*retEndIdx=buf.length();
