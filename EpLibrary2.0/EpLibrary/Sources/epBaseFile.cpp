@@ -162,7 +162,8 @@ bool BaseFile::LoadFromFile(const TCHAR *filename)
 	{
 		char *cFileBuf=EP_NEW char[length+1];
 		System::Memset(cFileBuf,0,length+1);
-		System::FRead(cFileBuf,sizeof(char),length,m_file);
+		int read=System::FRead(cFileBuf,sizeof(char),length,m_file);
+		System::Memset(cFileBuf+read,0,(length+1-read)*sizeof(char));
 		System::FClose(m_file);
 		rest=System::MultiByteToWideChar(cFileBuf);
 		EP_DELETE[] cFileBuf;
@@ -171,7 +172,8 @@ bool BaseFile::LoadFromFile(const TCHAR *filename)
 	{
 		wchar_t *tFileBuf=EP_NEW wchar_t[length+1];
 		System::Memset(tFileBuf,0,(length+1)*sizeof(wchar_t));
-		System::FRead(tFileBuf,sizeof(wchar_t),length,m_file);
+		int read=System::FRead(tFileBuf,sizeof(wchar_t),length,m_file);
+		System::Memset(tFileBuf+read,0,(length+1-read)*sizeof(wchar_t));
 		System::FClose(m_file);
 		rest=tFileBuf;
 		EP_DELETE[] tFileBuf;
@@ -181,7 +183,8 @@ bool BaseFile::LoadFromFile(const TCHAR *filename)
 	{
 		char *cFileBuf=EP_NEW char[length+2];
 		System::Memset(cFileBuf,0,length+2);
-		System::FRead(cFileBuf,sizeof(char),length,m_file);
+		int read=System::FRead(cFileBuf,sizeof(char),length,m_file);
+		System::Memset(cFileBuf+read,0,(length+2-read)*sizeof(char));
 		System::FClose(m_file);
 
 		rest=reinterpret_cast<wchar_t*>(cFileBuf);
@@ -198,7 +201,8 @@ bool BaseFile::LoadFromFile(const TCHAR *filename)
 
 		char *cFileBuf=EP_NEW char[length+1];
 		System::Memset(cFileBuf,0,length+1);
-		System::FRead(cFileBuf,sizeof(char),length,m_file);
+		int read=System::FRead(cFileBuf,sizeof(char),length,m_file);
+		System::Memset(cFileBuf+read,0,(length+1-read)*sizeof(char));
 		System::FClose(m_file);
 		rest=cFileBuf;
 		EP_DELETE[] cFileBuf;
@@ -207,7 +211,8 @@ bool BaseFile::LoadFromFile(const TCHAR *filename)
 	{
 		wchar_t *tFileBuf=EP_NEW wchar_t[length+1];
 		System::Memset(tFileBuf,0,(length+1)*sizeof(wchar_t));
-		System::FRead(tFileBuf,sizeof(wchar_t),length,m_file);
+		int read=System::FRead(tFileBuf,sizeof(wchar_t),length,m_file);
+		System::Memset(tFileBuf+read,0,(length+1-read)*sizeof(wchar_t));
 		System::FClose(m_file);
 		rest=System::WideCharToMultiByte(tFileBuf);;
 		EP_DELETE[] tFileBuf;
@@ -216,7 +221,8 @@ bool BaseFile::LoadFromFile(const TCHAR *filename)
 	{
 		char *cFileBuf=EP_NEW char[length+2];
 		System::Memset(cFileBuf,0,length+2);
-		System::FRead(cFileBuf,sizeof(char),length,m_file);
+		int read=System::FRead(cFileBuf,sizeof(char),length,m_file);
+		System::Memset(cFileBuf+read,0,(length+2-read)*sizeof(char));
 		System::FClose(m_file);
 		rest=System::WideCharToMultiByte(reinterpret_cast<wchar_t*>(cFileBuf));
 		EP_DELETE[] cFileBuf;
