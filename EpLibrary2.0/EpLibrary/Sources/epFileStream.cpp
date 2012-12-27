@@ -67,10 +67,11 @@ bool FileStream::LoadStreamFromFile()
 	}
 	EpFile *file;
 	int fileSize;
-	System::FTOpen(file,m_fileName.c_str(),_T("rt"));
+	System::FTOpen(file,m_fileName.c_str(),_T("rb"));
 	fileSize=System::FSize(file);
 	m_stream.resize(fileSize);
-	System::FRead(&m_stream.at(0),sizeof(unsigned char), fileSize,file);
+	int read=System::FRead(&m_stream.at(0),sizeof(unsigned char), fileSize,file);
+	m_stream.erase(m_stream.begin()+read,m_stream.end());
 	System::FClose(file);
 	m_offset=m_stream.size();
 	return true;
@@ -89,7 +90,7 @@ bool FileStream::WriteStreamToFile()
 		return false;
 	}
 	EpFile *file;
-	System::FTOpen(file,m_fileName.c_str(),_T("wt"));
+	System::FTOpen(file,m_fileName.c_str(),_T("wb"));
 	System::FWrite(&m_stream.at(0),sizeof(unsigned char),m_stream.size(),file);
 	System::FClose(file);
 	return true;

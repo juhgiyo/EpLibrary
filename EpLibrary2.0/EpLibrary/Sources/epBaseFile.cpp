@@ -170,25 +170,27 @@ bool BaseFile::LoadFromFile(const TCHAR *filename)
 	}
 	else if(m_encodingType==FILE_ENCODING_TYPE_UTF8)
 	{
-		wchar_t *tFileBuf=EP_NEW wchar_t[length+1];
+		wchar_t *wFileBuf=EP_NEW wchar_t[length+1];
 		//System::Memset(tFileBuf,0,(length+1)*sizeof(wchar_t));
-		int read=System::FRead(tFileBuf,sizeof(wchar_t),length,m_file);
-		System::Memset(tFileBuf+read,0,(length+1-read)*sizeof(wchar_t));
+		int read=System::FRead(wFileBuf,sizeof(wchar_t),length,m_file);
+		System::Memset(wFileBuf+read,0,(length+1-read)*sizeof(wchar_t));
 		System::FClose(m_file);
-		rest=tFileBuf;
-		EP_DELETE[] tFileBuf;
+		rest=wFileBuf;
+		EP_DELETE[] wFileBuf;
 
 	}
 	else
 	{
-		char *cFileBuf=EP_NEW char[length+2];
-		//System::Memset(cFileBuf,0,length+2);
-		int read=System::FRead(cFileBuf,sizeof(char),length,m_file);
-		System::Memset(cFileBuf+read,0,(length+2-read)*sizeof(char));
+		wchar_t *wFileBuf=EP_NEW wchar_t[length/sizeof(wchar_t)+1];
+		//System::Memset(wFileBuf,0,length/sizeof(wchar_t)+1);
+		int read=System::FRead(wFileBuf,sizeof(wchar_t),length/sizeof(wchar_t),m_file);
+		System::Memset(wFileBuf+read,0,((length/sizeof(wchar_t)+1)-read)*sizeof(wchar_t));
 		System::FClose(m_file);
 
-		rest=reinterpret_cast<wchar_t*>(cFileBuf);
-		EP_DELETE[] cFileBuf;
+		rest=wFileBuf;
+		EP_DELETE[] wFileBuf;
+		if(rest.at(0)==0xFEFF) // BOM
+			rest.erase(rest.begin());
 	}
 	
 	
@@ -209,23 +211,26 @@ bool BaseFile::LoadFromFile(const TCHAR *filename)
 	}
 	else if(m_encodingType==FILE_ENCODING_TYPE_UTF8)
 	{
-		wchar_t *tFileBuf=EP_NEW wchar_t[length+1];
-		//System::Memset(tFileBuf,0,(length+1)*sizeof(wchar_t));
-		int read=System::FRead(tFileBuf,sizeof(wchar_t),length,m_file);
-		System::Memset(tFileBuf+read,0,(length+1-read)*sizeof(wchar_t));
+		wchar_t *wFileBuf=EP_NEW wchar_t[length+1];
+		//System::Memset(wFileBuf,0,(length+1)*sizeof(wchar_t));
+		int read=System::FRead(wFileBuf,sizeof(wchar_t),length,m_file);
+		System::Memset(wFileBuf+read,0,(length+1-read)*sizeof(wchar_t));
 		System::FClose(m_file);
-		rest=System::WideCharToMultiByte(tFileBuf);;
-		EP_DELETE[] tFileBuf;
+		rest=System::WideCharToMultiByte(wFileBuf);;
+		EP_DELETE[] wFileBuf;
 	}
 	else
 	{
-		char *cFileBuf=EP_NEW char[length+2];
-		//System::Memset(cFileBuf,0,length+2);
-		int read=System::FRead(cFileBuf,sizeof(char),length,m_file);
-		System::Memset(cFileBuf+read,0,(length+2-read)*sizeof(char));
+		wchar_t *wFileBuf=EP_NEW wchar_t[length/sizeof(wchar_t)+1];
+		//System::Memset(wFileBuf,0,length/sizeof(wchar_t)+1);
+		int read=System::FRead(wFileBuf,sizeof(wchar_t),length/sizeof(wchar_t),m_file);
+		System::Memset(wFileBuf+read,0,((length/sizeof(wchar_t)+1)-read)*sizeof(wchar_t));
 		System::FClose(m_file);
-		rest=System::WideCharToMultiByte(reinterpret_cast<wchar_t*>(cFileBuf));
-		EP_DELETE[] cFileBuf;
+		EpWString tempRest=wFileBuf;
+		if(tempRest.at(0)==0xFEFF) // BOM
+			tempRest.erase(tempRest.begin());
+		rest=System::WideCharToMultiByte(tempRest.c_str());
+		EP_DELETE[] wFileBuf;
 		
 	}
 	
