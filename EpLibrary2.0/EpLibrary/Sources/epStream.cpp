@@ -91,6 +91,13 @@ int Stream::GetStreamSize() const
 	return m_stream.size();
 }
 
+const unsigned char *Stream::GetBuffer()
+{
+	if(m_stream.size())
+		return &m_stream.at(0);
+	return NULL;
+}
+
 void Stream::SetSeek(const StreamSeekType seekType,const unsigned int offset)
 {
 	LockObj lock(m_streamLock);

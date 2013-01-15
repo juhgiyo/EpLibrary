@@ -90,10 +90,16 @@ namespace epl
 		*/
 		void Clear();
 		/*!
-		Return the size of the stream
-		@return the size of the stream.
+		Return the byte size of the stream
+		@return the byte size of the stream.
 		*/
 		int GetStreamSize() const;
+
+		/*!
+		Return the buffer pointer of the stream
+		@return the buffer pointer of the stream.
+		*/
+		const unsigned char *GetBuffer();
 
 		/*!
 		Set the seek offset. 
