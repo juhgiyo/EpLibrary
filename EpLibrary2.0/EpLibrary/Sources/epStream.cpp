@@ -66,6 +66,7 @@ Stream & Stream::operator=(const Stream&b)
 {
 	if(this!=&b)
 	{
+		LockObj lock(m_streamLock);
 		m_stream=b.m_stream;
 		m_offset=b.m_offset;
 	}

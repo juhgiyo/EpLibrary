@@ -74,6 +74,7 @@ namespace epl{
 		{
 			if(this!=&b)
 			{
+				LockObj lock(m_lock);
 				m_encodingType=b.m_encodingType;
 				m_file=b.m_file;
 			}

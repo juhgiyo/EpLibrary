@@ -296,6 +296,7 @@ namespace epl
 	{
 		if(this != &b)
 		{
+			LockObj lock(m_queueLock);
 			m_queue=b.m_queue;
 		}
 		return *this;
