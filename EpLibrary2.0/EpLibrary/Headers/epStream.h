@@ -99,7 +99,7 @@ namespace epl
 		Return the buffer pointer of the stream
 		@return the buffer pointer of the stream.
 		*/
-		const unsigned char *GetBuffer();
+		const unsigned char *GetBuffer() const;
 
 		/*!
 		Set the seek offset. 

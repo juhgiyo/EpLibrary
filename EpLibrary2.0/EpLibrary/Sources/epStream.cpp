@@ -91,7 +91,7 @@ int Stream::GetStreamSize() const
 	return m_stream.size();
 }
 
-const unsigned char *Stream::GetBuffer()
+const unsigned char *Stream::GetBuffer() const
 {
 	if(m_stream.size())
 		return &m_stream.at(0);
