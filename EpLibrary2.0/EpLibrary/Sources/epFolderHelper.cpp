@@ -80,10 +80,14 @@ void FolderHelper::removeDir( const TCHAR * strPath)
 			continue;  
 
 		if(searchFile.IsDirectory())  
+		{
 			removeDir(searchFile.GetFilePath().GetString());  
+
+		}
 		else  
 			DeleteFile(searchFile.GetFilePath());  
 	}  
+	RemoveDirectory(searchFile.GetFilePath());
 }
 bool FolderHelper::CreateFolder(const TCHAR * strPath)
 {
@@ -121,7 +125,7 @@ void FolderHelper::DeleteFolder(const TCHAR * strPath)
 		}
 	}
 	removeDir(path.c_str());
-	RemoveDirectory(path2.c_str());
+
 }
 
 bool FolderHelper::IsPathExist(const TCHAR * path)
