@@ -95,6 +95,13 @@ namespace epl{
 		@return true if successfully saved, otherwise false
 		*/
 		bool SaveToFile(const TCHAR *filename);
+
+		/*!
+		Append the list of the properties from the given file
+		@param[in] filename the name of the file to append the list of properties
+		@return true if successfully saved, otherwise false
+		*/
+		bool AppendToFile(const TCHAR *filename);
 		
 		/*!
 		Load the list of the properties from the given file

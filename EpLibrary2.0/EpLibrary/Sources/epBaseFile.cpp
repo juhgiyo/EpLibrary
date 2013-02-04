@@ -113,6 +113,9 @@ bool BaseFile::SaveToFile(const TCHAR *filename)
 
 	int e;
 
+	Mutex fileLock=Mutex(filename);
+	fileLock.Lock();
+
 	if(m_encodingType==FILE_ENCODING_TYPE_UTF8)
 		e= System::FTOpen(m_file,filename,_T("wt,ccs=UTF-8"));
 	else if(m_encodingType==FILE_ENCODING_TYPE_UTF16LE)
@@ -120,13 +123,57 @@ bool BaseFile::SaveToFile(const TCHAR *filename)
 	else if(m_encodingType==FILE_ENCODING_TYPE_ANSI)
 		e= System::FTOpen(m_file,filename,_T("wt"));
 	else
+	{
+		fileLock.Unlock();
 		return false;
+	}
 
 	if (e != 0) 
+	{
+		fileLock.Unlock();
 		return false; // failed..
+	}
 
 	writeLoop();
 	System::FClose(m_file);
+	fileLock.Unlock();
+	m_file=NULL;
+	return true;
+}
+
+bool BaseFile::AppendToFile(const TCHAR *filename)
+{
+	LockObj lock(m_lock);
+	unsigned int strLength=System::TcsLen(filename);
+	if(strLength<=0)
+		return false;
+
+	int e;
+
+	Mutex fileLock=Mutex(filename);
+	fileLock.Lock();
+
+	if(m_encodingType==FILE_ENCODING_TYPE_UTF8)
+		e= System::FTOpen(m_file,filename,_T("at,ccs=UTF-8"));
+	else if(m_encodingType==FILE_ENCODING_TYPE_UTF16LE)
+		e= System::FTOpen(m_file,filename,_T("at,ccs=UTF-16LE"));
+	else if(m_encodingType==FILE_ENCODING_TYPE_ANSI)
+		e= System::FTOpen(m_file,filename,_T("at"));
+	else
+	{
+		fileLock.Unlock();
+		return false;
+	}
+
+	if (e != 0) 
+	{
+		fileLock.Unlock();
+		return false; // failed..
+	}
+
+	writeLoop();
+	System::FClose(m_file);
+	fileLock.Unlock();
 	m_file=NULL;
 	return true;
 }
@@ -140,6 +187,8 @@ bool BaseFile::LoadFromFile(const TCHAR *filename)
 		return false;
 
 	int e;
+	Mutex fileLock=Mutex(filename);
+	fileLock.Lock();
 
 	if(m_encodingType==FILE_ENCODING_TYPE_UTF8)
 		e= System::FTOpen(m_file,filename,_T("rt,ccs=UTF-8"));
@@ -148,16 +197,24 @@ bool BaseFile::LoadFromFile(const TCHAR *filename)
 	else if(m_encodingType==FILE_ENCODING_TYPE_ANSI)
 		e= System::FTOpen(m_file,filename,_T("rt"));
 	else
+	{
+		fileLock.Unlock();
 		return false;
-
+	}
 	if (e != 0) 
+	{
+		fileLock.Unlock();
 		return false; // failed..
+	}
 	EpTString rest;
 
 	//Find the actual length of file
 	unsigned int length= static_cast<unsigned int>(System::FSize(m_file));
 	if(length<=0)
+	{
+		fileLock.Unlock();
 		return false;
+	}
 
 #if defined(_UNICODE) || defined(UNICODE)
 
@@ -238,7 +295,8 @@ bool BaseFile::LoadFromFile(const TCHAR *filename)
 	
 	
 #endif //defined(_UNICODE) || defined(UNICODE)
-
+	
+	fileLock.Unlock();
 	loadFromFile(rest);
 
 	m_file=NULL;
