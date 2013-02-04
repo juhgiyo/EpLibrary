@@ -69,7 +69,7 @@ void FolderHelper::removeDir( const TCHAR * strPath)
 		return;  
 
 	strFile.append(inputPath);
-	strFile.append(_T("\\*.*"));  
+	strFile.append(_T("*.*"));  
 
 	bRet = searchFile.FindFile(strFile.c_str());  
 
@@ -81,7 +81,9 @@ void FolderHelper::removeDir( const TCHAR * strPath)
 
 		if(searchFile.IsDirectory())  
 		{
-			removeDir(searchFile.GetFilePath().GetString());  
+			EpTString deleteFolder=searchFile.GetFilePath().GetString();
+			deleteFolder.append(_T("\\"));
+			removeDir(deleteFolder.c_str());  
 
 		}
 		else  
@@ -105,24 +107,11 @@ void FolderHelper::DeleteFolder(const TCHAR * strPath)
 	if(!System::TcsLen(strPath))
 		return;
 	EpTString path=strPath;
-	EpTString path2=strPath;
+	path=Locale::Trim(path);
 	int length=path.length();
-	int count=0;
-	for(int trav=length-1;trav>=0;trav--)
+	if(path.at(length-1)!=_T('\\'))
 	{
-		count++;
-		if(path.at(trav)==_T(' ')||path.at(trav)==_T('\0'))
-			continue;
-		if(path.at(trav)==_T('\\'))
-		{
-			path.erase(trav,count);
-			break;	
-		}
-		else
-		{
-			path2.append(_T("\\"));
-			break;
-		}
+		path.append(_T("\\"));
 	}
 	removeDir(path.c_str());
 
