@@ -1,6 +1,6 @@
 DESCRIPTION
 
-EpLibrary makes it easier for Visual C++ developers to develop an application. 
+EpLibrary is a Visual C++ utility library that supports to develop an application easier under a GPL3.0 license. 
 You will no longer have to create the basic functionalities over and over again. 
 EpLibrary supports Visual C++ 2005/2008/2010/2012.
 Source can be downloaded at <http://github.com/juhgiyo/eplibrary>
