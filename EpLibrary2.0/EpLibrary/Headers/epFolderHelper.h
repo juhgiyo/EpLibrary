@@ -110,8 +110,8 @@ namespace epl
 		static EpTString GetModuleFileName();
 
 		/*!
-		Return only the directory which contains the current executable file
-		@return the directory, which contains the current module
+		Return only the directory ending with "\" which contains the current executable file
+		@return the directory ending with "\", which contains the current module
 		*/
 		static EpTString GetModuleFileDirectory();
 

@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "epSimpleLogger.h"
 #include "epException.h"
+#include "epFolderHelper.h"
 
 using namespace epl;
 
@@ -79,7 +80,8 @@ void SimpleLogManager::SimpleLogNode::Write(EpFile* const file)
 
 SimpleLogManager::SimpleLogManager(LockPolicy lockPolicyType):BaseOutputter(lockPolicyType)
 {
-	m_fileName=_T("simplelog.dat");
+	m_fileName=FolderHelper::GetModuleFileDirectory();
+	m_fileName.append(_T("simplelog.dat"));
 }
 SimpleLogManager::SimpleLogManager(const SimpleLogManager& b):BaseOutputter(b)
 {}

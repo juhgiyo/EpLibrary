@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epProfiler.h"
 #include "epBinarySearch.h"
 #include "epException.h"
+#include "epFolderHelper.h"
 
 using namespace epl;
 
@@ -160,7 +161,8 @@ void ProfileManager::FlushToFile()
 
 ProfileManager::ProfileManager(LockPolicy lockPolicyType):BaseOutputter(lockPolicyType)
 {
-	m_fileName=_T("profile.dat");
+	m_fileName=FolderHelper::GetModuleFileDirectory();
+	m_fileName.append(_T("profile.dat"));
 }
 ProfileManager::ProfileManager(const ProfileManager& b):BaseOutputter(b)
 {
