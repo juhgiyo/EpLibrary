@@ -40,7 +40,7 @@ __int64 DateTimeHelper::Diff(const SYSTEMTIME time1, const SYSTEMTIME time2)
 	SystemTimeToFileTime(&time1, &ft1.fileTime);
 	SystemTimeToFileTime(&time2, &ft2.fileTime);
 
-	return __int64(ft1.ul.QuadPart/10) - __int64(ft2.ul.QuadPart/10); 
+	return __int64(ft1.ul.QuadPart) - __int64(ft2.ul.QuadPart); 
 }
 
 __int64 DateTimeHelper::AbsDiff(const SYSTEMTIME time1, const SYSTEMTIME time2)
@@ -58,8 +58,8 @@ __int64 DateTimeHelper::AbsDiff(const SYSTEMTIME time1, const SYSTEMTIME time2)
 	SystemTimeToFileTime(&time2, &ft2.fileTime);
 
 	if(ft1.ul.QuadPart > ft2.ul.QuadPart)
-		return (ft1.ul.QuadPart - ft2.ul.QuadPart)/10; 
-	return (ft2.ul.QuadPart-ft1.ul.QuadPart)/10; 
+		return (ft1.ul.QuadPart - ft2.ul.QuadPart); 
+	return (ft2.ul.QuadPart-ft1.ul.QuadPart); 
 }
 
 

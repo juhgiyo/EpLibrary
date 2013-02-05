@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epInterlockedEx.h"
 #include "epSystem.h"
 #include "epException.h"
+#include "epDateTimeHelper.h"
 using namespace epl;
 
 
@@ -119,17 +120,20 @@ long InterlockedEx::TryLockFor(const unsigned int dwMilliSecond)
 	InterlockedExchange(&m_interLockDebug, 0);
 #endif //defined(_DEBUG)
 	long ret=0;
-	unsigned int startTime,timeUsed;
-	unsigned int waitTime=dwMilliSecond;
-	startTime=System::GetTickCount();
+	
+	SYSTEMTIME startTime;
+	__int64 timeUsed;
+	__int64 waitTime=(__int64)dwMilliSecond;
+	startTime=DateTimeHelper::GetCurrentDateTime();
+	
 	do
 	{
 		if(InterlockedExchange(&m_interLock, 1) != 0)
 		{
-			Sleep(1);
-			timeUsed=System::GetTickCount()-startTime;
+			Sleep(0);
+			timeUsed=DateTimeHelper::AbsDiff(DateTimeHelper::GetCurrentDateTime(),startTime);
 			waitTime=waitTime-timeUsed;
-			startTime=System::GetTickCount();
+			startTime=DateTimeHelper::GetCurrentDateTime();
 		}
 		else
 		{

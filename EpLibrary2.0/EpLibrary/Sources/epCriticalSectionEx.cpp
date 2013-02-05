@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epCriticalSectionEx.h"
 #include "epSystem.h"
 #include "epException.h"
+#include "epDateTimeHelper.h"
 using namespace epl;
 
 
@@ -121,9 +122,11 @@ long CriticalSectionEx::TryLockFor(const unsigned int dwMilliSecond)
 	}
 	else
 	{
-		unsigned int startTime,timeUsed;
-		unsigned int waitTime=dwMilliSecond;
-		startTime=System::GetTickCount();
+		SYSTEMTIME startTime;
+		__int64 timeUsed;
+		__int64 waitTime=(__int64)dwMilliSecond;
+		startTime=DateTimeHelper::GetCurrentDateTime();
+		
 		while(System::WaitForSingleObject(m_criticalSection.LockSemaphore,waitTime)==WAIT_OBJECT_0)
 		{
 			if(ret=TryEnterCriticalSection(&m_criticalSection))
@@ -136,9 +139,9 @@ long CriticalSectionEx::TryLockFor(const unsigned int dwMilliSecond)
 				m_lockCounter++;
 				return ret;	
 			}		
-			timeUsed=System::GetTickCount()-startTime;
+			timeUsed=DateTimeHelper::AbsDiff(DateTimeHelper::GetCurrentDateTime(),startTime);
 			waitTime=waitTime-timeUsed;
-			startTime=System::GetTickCount();
+			startTime=DateTimeHelper::GetCurrentDateTime();
 		}
 		return 0;
 	}
