@@ -63,7 +63,7 @@ An Interface for EpLibrary Pre-compiled header
 #include "epSimpleLogger.h"
 
 //File System
-#include "epBaseFile.h"
+#include "epBaseTextFile.h"
 #include "epFolderHelper.h"
 #include "epPropertiesFile.h"
 #include "epXMLFile.h"
