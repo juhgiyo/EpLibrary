@@ -33,7 +33,7 @@ An Interface for the XML File Class.
 #include "epLib.h"
 #include "epSystem.h"
 #include "epXMLite.h"
-#include "epBaseFile.h"
+#include "epBaseTextFile.h"
 #include <vector>
 
 using namespace std;
@@ -73,7 +73,7 @@ namespace epl
 	@class XMLFile epXMLFile.h
 	@brief A class for XML File.
 	*/
-	class EP_LIBRARY XMLFile:public XNode, public BaseFile{
+	class EP_LIBRARY XMLFile:public XNode, public BaseTextFile{
 	public:
 		/*!
 		Default Constructor
@@ -102,7 +102,7 @@ namespace epl
 		{
 			if(this!=&b)
 			{
-				BaseFile::operator =(b);
+				BaseTextFile::operator =(b);
 				LockObj lock(m_lock);
 				XNode::operator =(const_cast<XMLFile&>(b));
 				m_xmlInfo=b.m_xmlInfo;
@@ -164,7 +164,7 @@ namespace epl
 		@remark Sub classes should implement this function
 		@param[in] lines the all data from the file
 		*/
-		virtual void loadFromFile(EpTString lines);
+		virtual void loadFromFile(const EpTString &lines);
 
 		/*!
 		Recursively find all nodes with the given node name

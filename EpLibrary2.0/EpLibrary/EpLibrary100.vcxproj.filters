@@ -212,9 +212,6 @@
     <ClCompile Include="Sources\epWorkerThreadSingle.cpp">
       <Filter>Source Files\Thread System\WorkerThread System\Add On</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\epBaseFile.cpp">
-      <Filter>Source Files\File System</Filter>
-    </ClCompile>
     <ClCompile Include="Sources\epFolderHelper.cpp">
       <Filter>Source Files\File System</Filter>
     </ClCompile>
@@ -235,6 +232,9 @@
     </ClCompile>
     <ClCompile Include="Sources\epWinProcessHelper.cpp">
       <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epBaseTextFile.cpp">
+      <Filter>Source Files\File System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -397,9 +397,6 @@
     <ClInclude Include="Headers\epWorkerThreadSingle.h">
       <Filter>Header Files\Thread System\WorkerThread System\Add On</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\epBaseFile.h">
-      <Filter>Header Files\File System</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\epFolderHelper.h">
       <Filter>Header Files\File System</Filter>
     </ClInclude>
@@ -420,6 +417,9 @@
     </ClInclude>
     <ClInclude Include="Headers\epWinProcessHelper.h">
       <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epBaseTextFile.h">
+      <Filter>Header Files\File System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

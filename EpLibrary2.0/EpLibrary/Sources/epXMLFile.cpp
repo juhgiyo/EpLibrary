@@ -22,12 +22,12 @@ using namespace epl;
 
 XMLInfo _xmlInfo::xmlDefault=XMLInfo();
 
-XMLFile::XMLFile(XMLInfo &xmlInfo,FileEncodingType encodingType, LockPolicy lockPolicyType) :XNode(), BaseFile(encodingType,lockPolicyType)
+XMLFile::XMLFile(XMLInfo &xmlInfo,FileEncodingType encodingType, LockPolicy lockPolicyType) :XNode(), BaseTextFile(encodingType,lockPolicyType)
 {
 	m_xmlInfo=xmlInfo;
 }
 
-XMLFile::XMLFile(const XMLFile& b):XNode(b),BaseFile(b)
+XMLFile::XMLFile(const XMLFile& b):XNode(b),BaseTextFile(b)
 {
 	m_xmlInfo=b.m_xmlInfo;
 }
@@ -104,7 +104,7 @@ void XMLFile::writeLoop()
 	toFileString.append(_T("\r\n"));
 	writeToFile(toFileString.c_str());
 }
-void XMLFile::loadFromFile(EpTString lines)
+void XMLFile::loadFromFile(const EpTString &lines)
 {
 	Close();
 	VALUEPARSEINFO vpi;

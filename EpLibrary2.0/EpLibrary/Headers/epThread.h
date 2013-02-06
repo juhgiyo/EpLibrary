@@ -95,6 +95,15 @@ namespace epl
 		Thread(LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
+		Default Constructor
+
+		Initializes the thread class and start the thread with given function.
+		@param[in] threadFunc the function for the thread
+		@param[in] lockPolicyType The lock policy
+		*/
+		Thread(void (__cdecl *threadFunc)(),LockPolicy lockPolicyType=EP_LOCK_POLICY);
+
+		/*!
 		Default Copy Constructor
 
 		Initializes the Thread class
@@ -125,13 +134,12 @@ namespace epl
 
 		/*!
 		Start the Thread according to parameters given.
-		@param[in] arg The argument list for thread parameter.
 		@param[in] opCode The operation code for creating thread.
 		@param[in] threadType The type of thread creation to use.
 		@param[in] stackSize The stack size for the thread.
 		@return true, if succeeded, otherwise false.
 		*/
-		bool Start(void * arg=NULL,const ThreadOpCode opCode=THREAD_OPCODE_CREATE_START, const ThreadType threadType=THREAD_TYPE_BEGIN_THREAD, const int stackSize=0);
+		bool Start(const ThreadOpCode opCode=THREAD_OPCODE_CREATE_START, const ThreadType threadType=THREAD_TYPE_BEGIN_THREAD, const int stackSize=0);
 
 		/*!
 		Resume the suspended thread.
@@ -159,6 +167,22 @@ namespace epl
 		@return the event that caused the function to return.(WaitForSingleObject)
 		*/
 		unsigned long WaitFor(const unsigned long tMilliseconds);
+
+		/*!
+		Join the thread
+		*/
+		void Join();
+
+		 /*!
+		Check if the thread class is joinable
+		@return true if joinable otherwise false
+		*/
+		bool Joinable();
+
+		/*!
+		Detach the thread
+		*/
+		void Detach();
 
 		/*!
 		Wait for thread to terminate, and if not terminated, then Terminate.
@@ -214,11 +238,6 @@ namespace epl
 		}
 
 
-		/*!
-		Return the thread argument list.
-		@return the thread argument list.
-		*/
-		void * GetArg() const;
 
 	protected:
 
@@ -231,13 +250,7 @@ namespace epl
 			return m_threadHandle;
 		}
 
-		/*!
-		Set the thread argument input.
-		@param[in] a The argument input for the thread.
-		@remark Subclass should override this function to set member variables when thread starts. (Optional)
-		*/
-		virtual void setArg(void* a);
-
+	
 		/*!
 		Actual Thread Code.
 		@remark Subclass should override this function for executing the thread function.
@@ -255,13 +268,7 @@ namespace epl
 		virtual void onTerminated(unsigned long exitCode,bool isInDeletion=false);
 
 	private:
-		/*!
-		Set argument when thread start and call setArg function with given argument
-		@param[in] a the argument input
-		*/
-		void setDefaultArgument(void *a);
-		
-
+	
 		/*!
 		Terminate the thread successfully.
 		*/
@@ -299,8 +306,6 @@ namespace epl
 		/// Parent Thread Handle
 		ThreadHandle m_parentThreadHandle;
 		
-		/// Thread Argument List
-		void * m_arg;
 		/// Thread Status
 		ThreadStatus m_status;
 		/// Thread Type
@@ -311,6 +316,8 @@ namespace epl
 		LockPolicy m_lockPolicy;
 		/// exit code
 		unsigned long m_exitCode;
+		/// thread Func
+		void (*m_threadFunc)();
 
 
 	};

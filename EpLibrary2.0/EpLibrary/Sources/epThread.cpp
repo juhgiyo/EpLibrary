@@ -26,16 +26,21 @@ HANDLE Thread::CreateThread(LPTHREAD_START_ROUTINE routineFunc,LPVOID param)
 	return ::CreateThread(NULL, 0,routineFunc,param,0,&threadID);
 }
 
+void dummyThreadFunc()
+{
+
+}
+
 Thread::Thread(LockPolicy lockPolicyType)
 {
 	m_threadId=0;
 	m_threadHandle=0;
 	m_parentThreadHandle=0;
 	m_parentThreadId=0;
-	m_arg=NULL;
 	m_status=THREAD_STATUS_TERMINATED;
 	m_exitCode=0;
 	m_lockPolicy=lockPolicyType;
+	m_threadFunc=dummyThreadFunc;
 	switch(lockPolicyType)
 	{
 	case LOCK_POLICY_CRITICALSECTION:
@@ -52,6 +57,49 @@ Thread::Thread(LockPolicy lockPolicyType)
 		break;
 	}
 }
+
+Thread::Thread(void (__cdecl *threadFunc)(),LockPolicy lockPolicyType)
+{
+	EP_ASSERT(threadFunc);
+	m_threadId=0;
+	m_threadHandle=0;
+	m_parentThreadHandle=0;
+	m_parentThreadId=0;
+	m_status=THREAD_STATUS_TERMINATED;
+	m_exitCode=0;
+	m_lockPolicy=lockPolicyType;
+	m_threadFunc=threadFunc;
+	switch(lockPolicyType)
+	{
+	case LOCK_POLICY_CRITICALSECTION:
+		m_threadLock=EP_NEW CriticalSectionEx();
+		break;
+	case LOCK_POLICY_MUTEX:
+		m_threadLock=EP_NEW Mutex();
+		break;
+	case LOCK_POLICY_NONE:
+		m_threadLock=EP_NEW NoLock();
+		break;
+	default:
+		m_threadLock=NULL;
+		break;
+	}
+
+	m_type=THREAD_TYPE_BEGIN_THREAD;
+	m_parentThreadHandle=GetCurrentThread();
+	m_parentThreadId=GetCurrentThreadId();
+	m_threadHandle=reinterpret_cast<ThreadHandle>(_beginthreadex(NULL,0,Thread::entryPoint,this,THREAD_OPCODE_CREATE_START,&m_threadId));
+	if(!m_threadHandle)
+	{
+		EpTString lastErrMsg;
+		unsigned long lastErrNum=0;
+		System::FormatLastErrorMessage(lastErrMsg,&lastErrNum);
+		EP_ASSERT_EXPR(0,_T("Cannot create the thread!\r\nError Code: %d\r\nError Message: %s"),lastErrNum,lastErrMsg);
+		return;
+
+	}
+	m_status=THREAD_STATUS_STARTED;
+}
 Thread::Thread(const Thread & b)
 {
 	m_threadId=0;
@@ -59,7 +107,6 @@ Thread::Thread(const Thread & b)
 	m_parentThreadHandle=0;
 	m_parentThreadId=0;
 	m_exitCode=0;
-	m_arg=NULL;
 	m_status=THREAD_STATUS_TERMINATED;
 	m_lockPolicy=b.m_lockPolicy;
 	switch(m_lockPolicy)
@@ -94,12 +141,11 @@ Thread::~Thread()
 }
 
 
-bool Thread::Start(void * arg,const ThreadOpCode opCode, const ThreadType threadType, const int stackSize)
+bool Thread::Start(const ThreadOpCode opCode, const ThreadType threadType, const int stackSize)
 {
 	LockObj lock(m_threadLock);
 	if(m_status==THREAD_STATUS_TERMINATED && !m_threadHandle)
 	{
-		setDefaultArgument(arg);
 		m_type=threadType;
 		m_parentThreadHandle=GetCurrentThread();
 		m_parentThreadId=GetCurrentThreadId();
@@ -183,7 +229,8 @@ bool Thread::Terminate()
 		m_exitCode=1;
 		if(System::TerminateThread(m_threadHandle,m_exitCode))
 		{
-			CloseHandle(m_threadHandle);
+			if(m_type==THREAD_TYPE_CREATE_THREAD)
+				CloseHandle(m_threadHandle);
 			m_threadId=0;
 			m_threadHandle=0;
 			m_parentThreadId=0;
@@ -226,8 +273,32 @@ unsigned long Thread::WaitFor(const unsigned long tMilliseconds)
 		return WAIT_FAILED;
 	}
 }
+bool Thread::Joinable()
+{
+	return (m_status!=THREAD_STATUS_TERMINATED && m_threadHandle);
+}
 
+void Thread::Join()
+{
+	EP_ASSERT(Joinable()==true);
+	System::WaitForSingleObject(m_threadHandle,WAITTIME_INIFINITE);
+}
 
+void Thread::Detach()
+{
+	EP_ASSERT(Joinable()==true);
+	m_threadLock->Lock();
+	m_status=THREAD_STATUS_TERMINATED;
+	if(m_type==THREAD_TYPE_CREATE_THREAD)
+		CloseHandle(m_threadHandle);
+	m_threadHandle=0;
+	m_threadId=0;
+	m_parentThreadHandle=0;
+	m_parentThreadId=0;
+	m_exitCode=0;
+	m_threadLock->Unlock();
+
+}
 bool Thread::TerminateAfter(const unsigned long tMilliseconds)
 {
 	if(m_status!=THREAD_STATUS_TERMINATED && m_threadHandle)
@@ -254,28 +325,6 @@ bool Thread::TerminateAfter(const unsigned long tMilliseconds)
 
 }
 
-
-void * Thread::GetArg() const
-{
-	return m_arg;
-}
-
-void Thread::setArg(void* a)
-{
-}
-
-void Thread::setDefaultArgument(void *a)
-{
-	if(m_status!=THREAD_STATUS_STARTED)
-	{
-		m_arg=a;
-		setArg(a);
-	}
-	else
-	{
-		EP_NOTICEBOX(_T("Cannot Set Argument during Thread Running!"));
-	}
-}
 
 int Thread::run()
 {
@@ -304,6 +353,7 @@ unsigned long Thread::entryPoint2(void * pthis)
 void Thread::execute()
 {
 	// Do any execution here
+	m_threadFunc();
 }
 void Thread::onTerminated(unsigned long exitCode,bool isInDeletion)
 {
@@ -313,6 +363,8 @@ void Thread::successTerminate()
 {
 	m_threadLock->Lock();
 	m_status=THREAD_STATUS_TERMINATED;
+	if(m_type==THREAD_TYPE_CREATE_THREAD)
+		CloseHandle(m_threadHandle);
 	m_threadHandle=0;
 	m_threadId=0;
 	m_parentThreadHandle=0;

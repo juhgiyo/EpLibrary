@@ -412,6 +412,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Sources\epBaseTextFile.cpp" />
     <ClCompile Include="Sources\epCStringEx.cpp" />
     <ClCompile Include="Sources\epFileStream.cpp" />
     <ClCompile Include="Sources\epNetworkStream.cpp" />
@@ -445,7 +446,6 @@
     <ClCompile Include="Sources\epWorkerThreadFactory.cpp" />
     <ClCompile Include="Sources\epWorkerThreadInfinite.cpp" />
     <ClCompile Include="Sources\epWorkerThreadSingle.cpp" />
-    <ClCompile Include="Sources\epBaseFile.cpp" />
     <ClCompile Include="Sources\epFolderHelper.cpp" />
     <ClCompile Include="Sources\epPropertiesFile.cpp" />
     <ClCompile Include="Sources\epTextFile.cpp" />
@@ -455,6 +455,7 @@
     <ClCompile Include="Sources\epWinProcessHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Headers\epBaseTextFile.h" />
     <ClInclude Include="Headers\epl.h" />
     <ClInclude Include="Headers\epLib.h" />
     <ClInclude Include="Headers\epAlgorithm.h" />
@@ -508,7 +509,6 @@
     <ClInclude Include="Headers\epWorkerThreadFactory.h" />
     <ClInclude Include="Headers\epWorkerThreadInfinite.h" />
     <ClInclude Include="Headers\epWorkerThreadSingle.h" />
-    <ClInclude Include="Headers\epBaseFile.h" />
     <ClInclude Include="Headers\epFolderHelper.h" />
     <ClInclude Include="Headers\epPropertiesFile.h" />
     <ClInclude Include="Headers\epTextFile.h" />

@@ -35,8 +35,8 @@ void WorkerThreadInfinite::execute()
 			Sleep(0);
 			continue;
 		}
-		EP_ASSERT_EXPR(GetArg(),_T("Job Processor is NULL!"));
-		if(GetArg())
+		EP_ASSERT_EXPR(m_jobProcessor,_T("Job Processor is NULL!"));
+		if(!m_jobProcessor)
 			break;
 		BaseJob * jobPtr=m_workPool.Front();
 		jobPtr->RetainObj();

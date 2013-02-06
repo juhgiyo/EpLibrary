@@ -33,7 +33,7 @@ An Interface for the Text File Class.
 #include "epLib.h"
 #include "epSystem.h"
 #include "epMemory.h"
-#include "epBaseFile.h"
+#include "epBaseTextFile.h"
 
 namespace epl{
 
@@ -41,7 +41,7 @@ namespace epl{
 	@class TextFile epTextFile.h
 	@brief A class for Text File.
 	*/
-	class EP_LIBRARY TextFile:public BaseFile{
+	class EP_LIBRARY TextFile:public BaseTextFile{
 	public:
 
 		/*!
@@ -70,7 +70,7 @@ namespace epl{
 		{
 			if(this!=&b)
 			{
-				BaseFile::operator =(b);
+				BaseTextFile::operator =(b);
 				LockObj lock(m_lock);
 				m_text=b.m_text;
 				
@@ -116,7 +116,7 @@ namespace epl{
 		@remark Sub classes should implement this function
 		@param[in] lines the all data from the file
 		*/
-		virtual void loadFromFile(EpTString lines);
+		virtual void loadFromFile(const EpTString &lines);
 
 		/// The text
 		EpTString m_text;

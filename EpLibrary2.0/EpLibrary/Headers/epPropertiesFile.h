@@ -33,7 +33,7 @@ An Interface for the Properties File Class.
 #include "epLib.h"
 #include "epSystem.h"
 #include "epMemory.h"
-#include "epBaseFile.h"
+#include "epBaseTextFile.h"
 #include <list>
 
 using namespace std;
@@ -44,7 +44,7 @@ namespace epl{
 	@class PropertiesFile epPropertiesFile.h
 	@brief A class for Peroperties File.
 	*/
-	class EP_LIBRARY PropertiesFile:public BaseFile{
+	class EP_LIBRARY PropertiesFile:public BaseTextFile{
 	public:
 
 		/*!
@@ -73,7 +73,7 @@ namespace epl{
 		{
 			if(this!=&b)
 			{
-				BaseFile::operator =(b);
+				BaseTextFile::operator =(b);
 				LockObj lock(m_lock);
 				m_propertyList=b.m_propertyList;
 				
@@ -170,7 +170,7 @@ namespace epl{
 		@remark Sub classes should implement this function
 		@param[in] lines the all data from the file
 		*/
-		virtual void loadFromFile(EpTString lines);
+		virtual void loadFromFile(const EpTString &lines);
 
 		/*!
 		Parse the key and value from the line buffer

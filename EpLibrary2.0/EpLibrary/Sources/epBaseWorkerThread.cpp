@@ -126,14 +126,18 @@ int BaseWorkerThread::GetJobCount() const
 {
 	return m_workPool.Size();
 }
-void BaseWorkerThread::setArg(void* a)
+void BaseWorkerThread::setJobProcessor(BaseJobProcessor* jobProcessor)
 {
-	BaseJobProcessor* arg=reinterpret_cast<BaseJobProcessor*>(a);
 	if(m_jobProcessor)
 		m_jobProcessor->ReleaseObj();
-	m_jobProcessor=arg;
+	m_jobProcessor=jobProcessor;
 	if(m_jobProcessor)
 		m_jobProcessor->RetainObj();
+}
+
+BaseJobProcessor* BaseWorkerThread::getJobProcessor()
+{
+	return m_jobProcessor;
 }
 void BaseWorkerThread::SetCallBackClass(void *callBackClass)
 {

@@ -19,12 +19,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epException.h"
 using namespace epl;
 
-PropertiesFile::PropertiesFile(FileEncodingType encodingType, LockPolicy lockPolicyType):BaseFile(encodingType,lockPolicyType)
+PropertiesFile::PropertiesFile(FileEncodingType encodingType, LockPolicy lockPolicyType):BaseTextFile(encodingType,lockPolicyType)
 {
 	m_nullString=_T("");
 }
 
-PropertiesFile::PropertiesFile(const PropertiesFile& b):BaseFile(b)
+PropertiesFile::PropertiesFile(const PropertiesFile& b):BaseTextFile(b)
 {
 	m_propertyList=b.m_propertyList;
 	m_nullString=_T("");
@@ -193,12 +193,12 @@ const EpTString& PropertiesFile::operator [](const TCHAR * key) const
 	EP_VERIFY_OUT_OF_RANGE(0);
 	return m_nullString;
 }
-void PropertiesFile::loadFromFile(EpTString lines)
+void PropertiesFile::loadFromFile(const EpTString &lines)
 {
 	m_propertyList.clear();
 	EpTString line=_T("");
 	int skipIdx=0;
-	while(BaseFile::GetLine(lines,skipIdx,line,&skipIdx))
+	while(BaseTextFile::GetLine(lines,skipIdx,line,&skipIdx))
 	{
 		EpTString key;
 		EpTString val;

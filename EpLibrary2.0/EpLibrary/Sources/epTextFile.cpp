@@ -19,11 +19,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epException.h"
 using namespace epl;
 
-TextFile::TextFile(FileEncodingType encodingType, LockPolicy lockPolicyType):BaseFile(encodingType,lockPolicyType)
+TextFile::TextFile(FileEncodingType encodingType, LockPolicy lockPolicyType):BaseTextFile(encodingType,lockPolicyType)
 {
 }
 
-TextFile::TextFile(const TextFile& b):BaseFile(b)
+TextFile::TextFile(const TextFile& b):BaseTextFile(b)
 {
 	m_text=b.m_text;
 }
@@ -54,7 +54,7 @@ void TextFile::writeLoop()
 	writeToFile(m_text.c_str());
 }
 
-void TextFile::loadFromFile(EpTString lines)
+void TextFile::loadFromFile(const EpTString &lines)
 {
 	m_text=lines;
 }

@@ -779,7 +779,7 @@
 				Name="File System"
 				>
 				<File
-					RelativePath=".\Sources\epBaseFile.cpp"
+					RelativePath=".\Sources\epBaseTextFile.cpp"
 					>
 				</File>
 				<File
@@ -1101,7 +1101,7 @@
 				Name="File System"
 				>
 				<File
-					RelativePath=".\Headers\epBaseFile.h"
+					RelativePath=".\Headers\epBaseTextFile.h"
 					>
 				</File>
 				<File

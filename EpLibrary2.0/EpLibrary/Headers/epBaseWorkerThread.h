@@ -137,9 +137,15 @@ namespace epl
 	protected:
 		/*!
 		Set new Job Processor.
-		@param[in] a set new Job Processor for this thread.
+		@param[in] jobProcessor set new Job Processor for this thread.
 		*/
-		virtual void setArg(void* a);
+		void setJobProcessor(BaseJobProcessor* jobProcessor);
+
+		/*!
+		Get Job Processor.
+		@return the Job Processor for this thread.
+		*/
+		BaseJobProcessor* getJobProcessor();
 
 		/*!
 		Pure Worker Thread Code.
