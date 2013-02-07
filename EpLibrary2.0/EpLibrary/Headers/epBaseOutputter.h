@@ -76,6 +76,7 @@ namespace epl
 		{
 			if(this!=&b)
 			{
+				Clear();
 				LockObj lock(m_nodeListLock);
 				m_list=b.m_list;
 				m_fileName=b.m_fileName;
