@@ -42,7 +42,7 @@ using namespace std;
 
 namespace epl{
 	/*!
-	@class BaseTextFile epBaseFile.h
+	@class BaseTextFile epBaseTextFile.h
 	@brief A class for Base File.
 	*/
 	class EP_LIBRARY BaseTextFile{
