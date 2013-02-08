@@ -118,7 +118,7 @@ namespace epl
 		/*!
 		Return only the directory of given file path with file name
 		@param[in] filePath the full path of the file with file name
-		@return the directory, which contains the given file
+		@return the directory ending with "\", which contains the given file
 		*/
 		static EpTString GetPathOnly(const TCHAR * filePath);
 
