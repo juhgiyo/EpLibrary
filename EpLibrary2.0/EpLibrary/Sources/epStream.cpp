@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epSimpleLogger.h"
 using namespace epl;
 
+
 Stream::Stream(LockPolicy lockPolicyType)
 {
 	m_offset=0;
@@ -226,6 +227,20 @@ bool Stream::WriteBytes(const unsigned char* byteList,const unsigned int listSiz
 	return write(byteList,sizeof(unsigned char)*listSize);
 }
 
+bool Stream::WriteString(const EpString &str)
+{
+	return WriteBytes(reinterpret_cast<const unsigned char*>(str.c_str()),str.size()+1);
+}
+
+bool Stream::WriteWString(const EpWString &str)
+{
+	return WriteBytes(reinterpret_cast<const unsigned char*>(str.c_str()),(str.size()+1)*sizeof(wchar_t));
+}
+bool Stream::WriteTString(const EpTString &str)
+{
+	return WriteBytes(reinterpret_cast<const unsigned char*>(str.c_str()),(str.size()+1)*sizeof(TCHAR));
+}
+
 
 bool Stream::ReadShort(short &retVal)
 {
@@ -297,6 +312,43 @@ bool Stream::ReadBytes(unsigned char* retByteList, const unsigned int listSize)
 {
 	LockObj lock(m_streamLock);
 	return read(retByteList,sizeof(unsigned char)*listSize);
+}
+
+bool Stream::ReadString(EpString &retString)
+{
+	LockObj lock(m_streamLock);
+	char retChar;
+	retString="";
+	bool status=false;
+	while((status=read(&retChar,sizeof(char))) && (char)retChar!='\0')
+	{
+		retString=retString.append(1,retChar);
+	}
+	return status;
+}
+bool Stream::ReadWString(EpWString &retString)
+{
+	LockObj lock(m_streamLock);
+	wchar_t retChar;
+	retString=WIDEN("");
+	bool status=false;
+	while((status=read(&retChar,sizeof(wchar_t))) && (wchar_t)retChar!=WIDEN('\0'))
+	{
+		retString=retString.append(1,retChar);
+	}
+	return status;
+}
+bool Stream::ReadTString(EpTString &retString)
+{
+	LockObj lock(m_streamLock);
+	TCHAR retChar;
+	retString=_T("");
+	bool status=false;
+	while((status=read(&retChar,sizeof(TCHAR))) && (TCHAR)retChar!=_T('\0'))
+	{
+		retString=retString.append(1,static_cast<TCHAR>(retChar));
+	}
+	return status;
 }
 
 

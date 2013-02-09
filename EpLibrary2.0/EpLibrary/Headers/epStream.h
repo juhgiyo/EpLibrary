@@ -45,6 +45,8 @@ namespace epl
 	class EP_LIBRARY Stream
 	{
 	public:
+			
+
 		/// Enumeration for Stream Seek Type
 		enum StreamSeekType{
 			/// Seek to the start of the stream
@@ -219,6 +221,28 @@ namespace epl
 		*/
 		virtual bool WriteBytes(const unsigned char* byteList,const unsigned int listSize);
 
+		/*!
+		Write given string to the stream
+		@param[in] str the string to write.
+		@return true if successfully written otherwise false
+		*/
+		virtual bool WriteString(const EpString &str);
+
+		/*!
+		Write given wide string to the stream
+		@param[in] str the string to write.
+		@return true if successfully written otherwise false
+		*/
+		virtual bool WriteWString(const EpWString &str);
+		
+		/*!
+		Write given TString to the stream
+		@param[in] str the string to write.
+		@return true if successfully written otherwise false
+		*/
+		virtual bool WriteTString(const EpTString &str);
+
+
 
 		/*!
 		Read the short value from the stream.
@@ -324,6 +348,27 @@ namespace epl
 		@return true if successful, otherwise false.
 		*/
 		virtual bool ReadBytes(unsigned char* retByteList, const unsigned int listSize);
+
+		/*!
+		Get String from the stream
+		@param[out] retString the string extracted.
+		@return true if successfully extracted otherwise false
+		*/
+		virtual bool ReadString(EpString &retString);
+
+		/*!
+		Get Wide String from the stream
+		@param[out] retString the string extracted.
+		@return true if successfully extracted otherwise false
+		*/
+		virtual bool ReadWString(EpWString &retString);
+
+		/*!
+		Get TString from the stream
+		@param[out] retString the string extracted.
+		@return true if successfully extracted otherwise false
+		*/
+		virtual bool ReadTString(EpTString &retString);
 		
 		/*!
 		Write the current stream to the given file
