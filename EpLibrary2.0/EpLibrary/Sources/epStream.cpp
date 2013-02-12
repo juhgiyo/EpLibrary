@@ -227,18 +227,27 @@ bool Stream::WriteBytes(const unsigned char* byteList,const unsigned int listSiz
 	return write(byteList,sizeof(unsigned char)*listSize);
 }
 
-bool Stream::WriteString(const EpString &str)
+bool Stream::WriteString(const char *str)
 {
-	return WriteBytes(reinterpret_cast<const unsigned char*>(str.c_str()),str.size()+1);
+	if(!str)
+		return false;
+	EpString convString=str;
+	return WriteBytes(reinterpret_cast<const unsigned char*>(convString.c_str()),convString.size()+1);
 }
 
-bool Stream::WriteWString(const EpWString &str)
+bool Stream::WriteWString(const wchar_t *str)
 {
-	return WriteBytes(reinterpret_cast<const unsigned char*>(str.c_str()),(str.size()+1)*sizeof(wchar_t));
+	if(!str)
+		return false;
+	EpWString convString=str;
+	return WriteBytes(reinterpret_cast<const unsigned char*>(convString.c_str()),(convString.size()+1)*sizeof(wchar_t));
 }
-bool Stream::WriteTString(const EpTString &str)
+bool Stream::WriteTString(const TCHAR *str)
 {
-	return WriteBytes(reinterpret_cast<const unsigned char*>(str.c_str()),(str.size()+1)*sizeof(TCHAR));
+	if(!str)
+		return false;
+	EpTString convString=str;
+	return WriteBytes(reinterpret_cast<const unsigned char*>(convString.c_str()),(convString.size()+1)*sizeof(TCHAR));
 }
 
 

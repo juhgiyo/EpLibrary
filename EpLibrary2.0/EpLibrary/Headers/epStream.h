@@ -226,21 +226,21 @@ namespace epl
 		@param[in] str the string to write.
 		@return true if successfully written otherwise false
 		*/
-		virtual bool WriteString(const EpString &str);
+		virtual bool WriteString(const char *str);
 
 		/*!
 		Write given wide string to the stream
 		@param[in] str the string to write.
 		@return true if successfully written otherwise false
 		*/
-		virtual bool WriteWString(const EpWString &str);
+		virtual bool WriteWString(const wchar_t *str);
 		
 		/*!
 		Write given TString to the stream
 		@param[in] str the string to write.
 		@return true if successfully written otherwise false
 		*/
-		virtual bool WriteTString(const EpTString &str);
+		virtual bool WriteTString(const TCHAR *str);
 
 
 
