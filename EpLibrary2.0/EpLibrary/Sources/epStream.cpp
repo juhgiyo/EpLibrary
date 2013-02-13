@@ -251,6 +251,21 @@ bool Stream::WriteTString(const TCHAR *str)
 }
 
 
+bool Stream::WriteString(const EpString &str)
+{
+	return WriteBytes(reinterpret_cast<const unsigned char*>(str.c_str()),str.size()+1);
+}
+
+bool Stream::WriteWString(const EpWString &str)
+{
+	return WriteBytes(reinterpret_cast<const unsigned char*>(str.c_str()),(str.size()+1)*sizeof(wchar_t));
+}
+bool Stream::WriteTString(const EpTString &str)
+{
+	return WriteBytes(reinterpret_cast<const unsigned char*>(str.c_str()),(str.size()+1)*sizeof(TCHAR));
+}
+
+
 bool Stream::ReadShort(short &retVal)
 {
 	LockObj lock(m_streamLock);
