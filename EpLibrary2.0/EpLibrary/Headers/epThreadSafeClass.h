@@ -69,21 +69,21 @@ namespace epl
 		*/
 		ThreadSafeClass(LockPolicy lockPolicyType=EP_LOCK_POLICY)
 		{
-			m_lock=NULL;
+			m_threadSafeLock=NULL;
 			m_lockPolicy=lockPolicyType;
 			switch(lockPolicyType)
 			{
 			case LOCK_POLICY_CRITICALSECTION:
-				m_lock=EP_NEW CriticalSectionEx();
+				m_threadSafeLock=EP_NEW CriticalSectionEx();
 				break;
 			case LOCK_POLICY_MUTEX:
-				m_lock=EP_NEW Mutex();
+				m_threadSafeLock=EP_NEW Mutex();
 				break;
 			case LOCK_POLICY_NONE:
-				m_lock=EP_NEW NoLock();
+				m_threadSafeLock=EP_NEW NoLock();
 				break;
 			default:
-				m_lock=NULL;
+				m_threadSafeLock=NULL;
 				break;
 			}
 		}
@@ -96,21 +96,21 @@ namespace epl
 		*/
 		ThreadSafeClass(const ThreadSafeClass& b)
 		{
-			m_lock=NULL;
+			m_threadSafeLock=NULL;
 			m_lockPolicy=b.m_lockPolicy;
 			switch(m_lockPolicy)
 			{
 			case LOCK_POLICY_CRITICALSECTION:
-				m_lock=EP_NEW CriticalSectionEx();
+				m_threadSafeLock=EP_NEW CriticalSectionEx();
 				break;
 			case LOCK_POLICY_MUTEX:
-				m_lock=EP_NEW Mutex();
+				m_threadSafeLock=EP_NEW Mutex();
 				break;
 			case LOCK_POLICY_NONE:
-				m_lock=EP_NEW NoLock();
+				m_threadSafeLock=EP_NEW NoLock();
 				break;
 			default:
-				m_lock=NULL;
+				m_threadSafeLock=NULL;
 				break;
 			}
 		}
@@ -122,8 +122,8 @@ namespace epl
 		*/
 		virtual ~ThreadSafeClass()
 		{	
-			if(m_lock)
-				EP_DELETE m_lock;
+			if(m_threadSafeLock)
+				EP_DELETE m_threadSafeLock;
 		}
 		
 		/*!
@@ -147,7 +147,7 @@ namespace epl
 
 	protected:
 		/// the actual lock member
-		BaseLock * m_lock;
+		BaseLock * m_threadSafeLock;
 		/// Lock Policy
 		LockPolicy m_lockPolicy;
 
@@ -222,7 +222,7 @@ namespace epl
 		*/
 		BaseLock *getLock() const
 		{
-			return m_lock;
+			return m_threadSafeLock;
 		}
 
 	public:

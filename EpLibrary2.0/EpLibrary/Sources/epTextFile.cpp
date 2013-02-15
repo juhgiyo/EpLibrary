@@ -34,19 +34,19 @@ TextFile::~TextFile()
 
 void TextFile::SetText(const TCHAR * val)
 {
-	LockObj lock(m_lock);
+	LockObj lock(m_baseTextLock);
 	m_text=val;
 }
 
 EpTString TextFile::GetText() const
 {
-	LockObj lock(m_lock);
+	LockObj lock(m_baseTextLock);
 	return m_text;
 }
 
 void TextFile::Clear()
 {
-	LockObj lock(m_lock);
+	LockObj lock(m_baseTextLock);
 	m_text=_T("");
 }
 void TextFile::writeLoop()

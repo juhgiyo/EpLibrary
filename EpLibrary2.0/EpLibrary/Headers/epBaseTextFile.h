@@ -74,7 +74,7 @@ namespace epl{
 		{
 			if(this!=&b)
 			{
-				LockObj lock(m_lock);
+				LockObj lock(m_baseTextLock);
 				m_encodingType=b.m_encodingType;
 				m_file=b.m_file;
 			}
@@ -147,7 +147,7 @@ namespace epl{
 		/// File Pointer
 		EpFile *m_file;
 		/// the lock
-		BaseLock * m_lock;
+		BaseLock * m_baseTextLock;
 		/// Lock Policy
 		LockPolicy m_lockPolicy;
 	};

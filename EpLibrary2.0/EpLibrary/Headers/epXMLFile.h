@@ -103,7 +103,7 @@ namespace epl
 			if(this!=&b)
 			{
 				BaseTextFile::operator =(b);
-				LockObj lock(m_lock);
+				LockObj lock(m_baseTextLock);
 				XNode::operator =(const_cast<XMLFile&>(b));
 				m_xmlInfo=b.m_xmlInfo;
 			}

@@ -508,7 +508,7 @@ namespace epl
 		/// String Terminator holder
 		CharacterType m_terminator;
 		/// lock
-		BaseLock *m_lock;
+		BaseLock *m_trieLock;
 		/// Lock Policy
 		LockPolicy m_lockPolicy;
 		/// Patricia Trie Mode
@@ -530,16 +530,16 @@ namespace epl
 		switch(lockPolicyType)
 		{
 		case LOCK_POLICY_CRITICALSECTION:
-			m_lock=EP_NEW CriticalSectionEx();
+			m_trieLock=EP_NEW CriticalSectionEx();
 			break;
 		case LOCK_POLICY_MUTEX:
-			m_lock=EP_NEW Mutex();
+			m_trieLock=EP_NEW Mutex();
 			break;
 		case LOCK_POLICY_NONE:
-			m_lock=EP_NEW NoLock();
+			m_trieLock=EP_NEW NoLock();
 			break;
 		default:
-			m_lock=NULL;
+			m_trieLock=NULL;
 		}
 	}
 
@@ -555,16 +555,16 @@ namespace epl
 		switch(m_lockPolicy)
 		{
 		case LOCK_POLICY_CRITICALSECTION:
-			m_lock=EP_NEW CriticalSectionEx();
+			m_trieLock=EP_NEW CriticalSectionEx();
 			break;
 		case LOCK_POLICY_MUTEX:
-			m_lock=EP_NEW Mutex();
+			m_trieLock=EP_NEW Mutex();
 			break;
 		case LOCK_POLICY_NONE:
-			m_lock=EP_NEW NoLock();
+			m_trieLock=EP_NEW NoLock();
 			break;
 		default:
-			m_lock=NULL;
+			m_trieLock=NULL;
 			break;
 		}
 
@@ -573,12 +573,12 @@ namespace epl
 	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
 	PatriciaTrie<CharacterType,DataType,Terminator,CharCompareFunc>::~PatriciaTrie()
 	{
-		m_lock->Lock();
+		m_trieLock->Lock();
 		if(m_root)
 			EP_DELETE m_root;
-		m_lock->Unlock();
-		if(m_lock)
-			EP_DELETE m_lock;
+		m_trieLock->Unlock();
+		if(m_trieLock)
+			EP_DELETE m_trieLock;
 	}
 
 	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
@@ -586,7 +586,7 @@ namespace epl
 	{
 		if(this!=&b)
 		{
-			LockObj lock(m_lock);
+			LockObj lock(m_trieLock);
 			m_totalCount=b.m_totalCount;
 			m_mode=b.m_mode;
 			if(m_root)
@@ -604,7 +604,7 @@ namespace epl
 
 		EP_VERIFY_INVALID_ARGUMENT_W_MSG(str,"String is NULL");
 		DataType retData;
-		LockObj lock(m_lock);
+		LockObj lock(m_trieLock);
 		PatriciaTrieLeaf *foundNode=find(m_root,str,0,retData);
 		if(foundNode)
 		{
@@ -624,7 +624,7 @@ namespace epl
 	{
 		EP_VERIFY_INVALID_ARGUMENT_W_MSG(str,"String is NULL");
 		DataType retData;
-		LockObj lock(m_lock);
+		LockObj lock(m_trieLock);
 		PatriciaTrieLeaf *foundNode=find(m_root,str,0,retData);
 		EP_VERIFY_OUT_OF_RANGE(foundNode);
 		return foundNode->GetData();
@@ -633,7 +633,7 @@ namespace epl
 	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
 	void PatriciaTrie<CharacterType,DataType,Terminator,CharCompareFunc>::Clear()
 	{
-		LockObj lock(m_lock);
+		LockObj lock(m_trieLock);
 		m_totalCount=0;	
 		if(m_root)
 			EP_DELETE m_root;
@@ -643,7 +643,7 @@ namespace epl
 	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
 	bool PatriciaTrie<CharacterType,DataType,Terminator,CharCompareFunc>::IsEmpty() const
 	{
-		LockObj lock(m_lock);
+		LockObj lock(m_trieLock);
 		if(m_totalCount)
 			return true;
 		return false;
@@ -652,7 +652,7 @@ namespace epl
 	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
 	unsigned int PatriciaTrie<CharacterType,DataType,Terminator,CharCompareFunc>::Size() const
 	{
-		LockObj lock(m_lock);
+		LockObj lock(m_trieLock);
 		return m_totalCount;
 	}
 
@@ -662,7 +662,7 @@ namespace epl
 	{
 		if(str!=NULL )
 		{		
-			LockObj lock(m_lock);
+			LockObj lock(m_trieLock);
 			if(insert(m_root,str,0,data))
 			{
 				m_totalCount++;
@@ -677,7 +677,7 @@ namespace epl
 	{
 		if(str!=NULL)
 		{
-			LockObj lock(m_lock);
+			LockObj lock(m_trieLock);
 			if(erase(m_root,str,0))
 			{
 				m_totalCount--;
@@ -692,7 +692,7 @@ namespace epl
 	{
 		if(str!=NULL)
 		{
-			LockObj lock(m_lock);
+			LockObj lock(m_trieLock);
 			if(find(m_root,str,0,retData))
 			{
 				return true;
@@ -706,7 +706,7 @@ namespace epl
 	{
 		if(str!=NULL)
 		{
-			LockObj lock(m_lock);
+			LockObj lock(m_trieLock);
 			if(findAll(m_root,str,0,retStrDataPairList))
 			{
 				return true;

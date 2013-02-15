@@ -287,7 +287,7 @@ namespace epl
 		/// the actual heap size
 		unsigned int m_heapSize;
 		/// lock
-		BaseLock *m_lock;
+		BaseLock *m_heapLock;
 		/// Lock Policy
 		LockPolicy m_lockPolicy;
 		/// K-ary Heap Mode
@@ -307,16 +307,16 @@ namespace epl
 		switch(lockPolicyType)
 		{
 		case LOCK_POLICY_CRITICALSECTION:
-			m_lock=EP_NEW CriticalSectionEx();
+			m_heapLock=EP_NEW CriticalSectionEx();
 			break;
 		case LOCK_POLICY_MUTEX:
-			m_lock=EP_NEW Mutex();
+			m_heapLock=EP_NEW Mutex();
 			break;
 		case LOCK_POLICY_NONE:
-			m_lock=EP_NEW NoLock();
+			m_heapLock=EP_NEW NoLock();
 			break;
 		default:
-			m_lock=NULL;
+			m_heapLock=NULL;
 		}
 
 	}
@@ -339,16 +339,16 @@ namespace epl
 		switch(m_lockPolicy)
 		{
 		case LOCK_POLICY_CRITICALSECTION:
-			m_lock=EP_NEW CriticalSectionEx();
+			m_heapLock=EP_NEW CriticalSectionEx();
 			break;
 		case LOCK_POLICY_MUTEX:
-			m_lock=EP_NEW Mutex();
+			m_heapLock=EP_NEW Mutex();
 			break;
 		case LOCK_POLICY_NONE:
-			m_lock=EP_NEW NoLock();
+			m_heapLock=EP_NEW NoLock();
 			break;
 		default:
-			m_lock=NULL;
+			m_heapLock=NULL;
 			break;
 		}
 
@@ -357,7 +357,7 @@ namespace epl
 	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
 	KAryHeap<KeyType,DataType,k,KeyCompareFunc>::~KAryHeap()
 	{
-		m_lock->Lock();
+		m_heapLock->Lock();
 		for(int trav=0;trav<m_heapSize;trav++)
 		{
 			if(m_heap[trav])	
@@ -365,9 +365,9 @@ namespace epl
 
 		}
 		m_heap.Delete();
-		m_lock->Unlock();
-		if(m_lock)
-			EP_DELETE m_lock;
+		m_heapLock->Unlock();
+		if(m_heapLock)
+			EP_DELETE m_heapLock;
 	}
 
 
@@ -377,7 +377,7 @@ namespace epl
 		if(this!=&b)
 		{
 			Clear();
-			LockObj lock(m_lock);
+			LockObj lock(m_heapLock);
 			m_heap.Resize(b.m_heap.Size());
 			for(unsigned int trav=0;trav<b.m_heap.Size();trav++)
 			{
@@ -395,7 +395,7 @@ namespace epl
 	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *)>  
 	DataType &KAryHeap<KeyType,DataType,k,KeyCompareFunc>::operator[](const KeyType & key)
 	{
-		LockObj lock(m_lock);
+		LockObj lock(m_heapLock);
 		int idx=findIndex(key, 0);
 		if(idx>=0)
 			return m_heap[idx]->second;
@@ -409,7 +409,7 @@ namespace epl
 	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *)>  
 	const DataType &KAryHeap<KeyType,DataType,k,KeyCompareFunc>::operator[](const KeyType & key) const
 	{
-		LockObj lock(m_lock);
+		LockObj lock(m_heapLock);
 		int idx=findIndex(key, 0);
 		EP_VERIFY_OUT_OF_RANGE(idx>=0);
 		return m_heap[idx]->second;
@@ -418,7 +418,7 @@ namespace epl
 	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *)>  
 	DataType &KAryHeap<KeyType,DataType,k,KeyCompareFunc>::GetData(const KeyType &key)
 	{
-		LockObj lock(m_lock);
+		LockObj lock(m_heapLock);
 		int idx=findIndex(key, 0);
 		EP_VERIFY_OUT_OF_RANGE_W_MSG(idx>=0,"The given key does not exist in the heap");
 		return m_heap[idx]->second;
@@ -427,7 +427,7 @@ namespace epl
 	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *)>  
 	const DataType &KAryHeap<KeyType,DataType,k,KeyCompareFunc>::GetData(const KeyType &key) const
 	{
-		LockObj lock(m_lock);
+		LockObj lock(m_heapLock);
 		int idx=findIndex(key, 0);
 		EP_VERIFY_OUT_OF_RANGE_W_MSG(idx>=0,"The given key does not exist in the heap");
 		return m_heap[idx]->second;
@@ -436,7 +436,7 @@ namespace epl
 	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *)>  
 	bool KAryHeap<KeyType,DataType,k,KeyCompareFunc>::GetData(const KeyType &key,DataType &retData) const
 	{
-		LockObj lock(m_lock);
+		LockObj lock(m_heapLock);
 		int idx=findIndex(key, 0);
 		if(idx>=0)
 		{
@@ -449,7 +449,7 @@ namespace epl
 	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
 	bool KAryHeap<KeyType,DataType,k,KeyCompareFunc>::Pop( KeyType &retKey, DataType &retData )
 	{
-		LockObj lock(m_lock);
+		LockObj lock(m_heapLock);
 		Pair<KeyType,DataType> retMin;
 		if(pop(retMin))
 		{
@@ -464,7 +464,7 @@ namespace epl
 	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
 	bool KAryHeap<KeyType,DataType,k,KeyCompareFunc>::Front( KeyType &retKey, DataType &retData ) const
 	{		
-		LockObj lock(m_lock);
+		LockObj lock(m_heapLock);
 		if(m_heapSize>0)
 		{
 			retKey=m_heap[0]->first;
@@ -478,7 +478,7 @@ namespace epl
 	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *)>  
 	Pair<KeyType,DataType> KAryHeap<KeyType,DataType,k,KeyCompareFunc>::Front() const
 	{
-		LockObj lock(m_lock);
+		LockObj lock(m_heapLock);
 		EP_VERIFY_OUT_OF_RANGE_W_MSG(m_heapSize>0,"The heap is empty.");
 		return Pair(m_heap[0]->first,m_heap[0]->second);
 	}
@@ -486,7 +486,7 @@ namespace epl
 	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *)>  
 	bool KAryHeap<KeyType,DataType,k,KeyCompareFunc>::ChangeKey(const KeyType &key, const KeyType &newKey)
 	{
-		LockObj lock(m_lock);
+		LockObj lock(m_heapLock);
 		int idx=findIndex(key, 0);
 		if(idx>=0)
 		{
@@ -500,7 +500,7 @@ namespace epl
 	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
 	bool KAryHeap<KeyType,DataType,k,KeyCompareFunc>::ChangeData(const KeyType &key, const DataType &newData)
 	{
-		LockObj lock(m_lock);
+		LockObj lock(m_heapLock);
 		int idx=findIndex(key, 0);
 		if(idx>=0)
 		{
@@ -525,7 +525,7 @@ namespace epl
 	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *)>  
 	bool KAryHeap<KeyType,DataType,k,KeyCompareFunc>::Erase(const KeyType &key)
 	{
-		LockObj lock(m_lock);
+		LockObj lock(m_heapLock);
 		int idx=findIndex(key,0);
 		if(idx>=0)
 		{
@@ -536,7 +536,7 @@ namespace epl
 	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
 	bool KAryHeap<KeyType,DataType,k,KeyCompareFunc>::IsEmpty() const
 	{
-		LockObj lock(m_lock);
+		LockObj lock(m_heapLock);
 		if(m_heapSize)
 			return true;
 		return false;
@@ -545,7 +545,7 @@ namespace epl
 	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
 	unsigned int KAryHeap<KeyType,DataType,k,KeyCompareFunc>::Size() const
 	{
-		LockObj lock(m_lock);
+		LockObj lock(m_heapLock);
 		return m_heapSize;
 	}
 
@@ -554,7 +554,7 @@ namespace epl
 	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
 	DataType &KAryHeap<KeyType,DataType,k,KeyCompareFunc>::Push(const KeyType &key, const DataType &data)
 	{	
-		LockObj lock(m_lock);
+		LockObj lock(m_heapLock);
 		int index=findIndex(key,0);
 		EP_VERIFY_INVALID_ARGUMENT_W_MSG(index==-1,"Given key already exists in the K-ary heap. Duplicated insertion is not allowed.");
 		push(key,data);

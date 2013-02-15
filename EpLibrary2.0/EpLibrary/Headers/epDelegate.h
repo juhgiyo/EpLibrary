@@ -63,16 +63,16 @@ namespace epl
 			switch(lockPolicyType)
 			{
 			case LOCK_POLICY_CRITICALSECTION:
-				m_lock=EP_NEW CriticalSectionEx();
+				m_delegateLock=EP_NEW CriticalSectionEx();
 				break;
 			case LOCK_POLICY_MUTEX:
-				m_lock=EP_NEW Mutex();
+				m_delegateLock=EP_NEW Mutex();
 				break;
 			case LOCK_POLICY_NONE:
-				m_lock=EP_NEW NoLock();
+				m_delegateLock=EP_NEW NoLock();
 				break;
 			default:
-				m_lock=NULL;
+				m_delegateLock=NULL;
 				break;
 			}
 		}
@@ -91,16 +91,16 @@ namespace epl
 			switch(lockPolicyType)
 			{
 			case LOCK_POLICY_CRITICALSECTION:
-				m_lock=EP_NEW CriticalSectionEx();
+				m_delegateLock=EP_NEW CriticalSectionEx();
 				break;
 			case LOCK_POLICY_MUTEX:
-				m_lock=EP_NEW Mutex();
+				m_delegateLock=EP_NEW Mutex();
 				break;
 			case LOCK_POLICY_NONE:
-				m_lock=EP_NEW NoLock();
+				m_delegateLock=EP_NEW NoLock();
 				break;
 			default:
-				m_lock=NULL;
+				m_delegateLock=NULL;
 				break;
 			}
 		}
@@ -118,16 +118,16 @@ namespace epl
 			switch(m_lockPolicy)
 			{
 			case LOCK_POLICY_CRITICALSECTION:
-				m_lock=EP_NEW CriticalSectionEx();
+				m_delegateLock=EP_NEW CriticalSectionEx();
 				break;
 			case LOCK_POLICY_MUTEX:
-				m_lock=EP_NEW Mutex();
+				m_delegateLock=EP_NEW Mutex();
 				break;
 			case LOCK_POLICY_NONE:
-				m_lock=EP_NEW NoLock();
+				m_delegateLock=EP_NEW NoLock();
 				break;
 			default:
-				m_lock=NULL;
+				m_delegateLock=NULL;
 				break;
 			}
 		}
@@ -139,8 +139,8 @@ namespace epl
 		*/
 		virtual ~Delegate()
 		{
-			if(m_lock)
-				EP_DELETE m_lock;
+			if(m_delegateLock)
+				EP_DELETE m_delegateLock;
 		}	
 		
 		/*!
@@ -154,7 +154,7 @@ namespace epl
 		{
 			if(this!=&b)
 			{
-				LockObj lock(m_lock);
+				LockObj lock(m_delegateLock);
 				m_funcList=b.m_funcList;
 			}
 			return *this;
@@ -183,7 +183,7 @@ namespace epl
 		*/
 		void Clear()
 		{
-			LockObj lock(m_lock);
+			LockObj lock(m_delegateLock);
 			m_funcList.clear();
 		}
 
@@ -194,7 +194,7 @@ namespace epl
 		*/
 		virtual Delegate<RetType,ArgType> & operator =(RetType (*func)(ArgType))
 		{
-			LockObj lock(m_lock);
+			LockObj lock(m_delegateLock);
 			m_funcList.clear();
 			m_funcList.push_back(func);
 			return *this;
@@ -207,7 +207,7 @@ namespace epl
 		*/
 		virtual Delegate<RetType,ArgType> & operator +=(RetType (*func)(ArgType))
 		{
-			LockObj lock(m_lock);
+			LockObj lock(m_delegateLock);
 			m_funcList.push_back(func);
 			return *this;
 		}
@@ -231,7 +231,7 @@ namespace epl
 		*/
 		virtual Delegate<RetType,ArgType> & operator +=(const Delegate<RetType,ArgType> &right)
 		{
-			LockObj lock(m_lock);
+			LockObj lock(m_delegateLock);
 			vector<RetType (*)(ArgType)>::const_iterator iter;
 			if(this==&right)
 			{
@@ -269,7 +269,7 @@ namespace epl
 		*/
 		virtual Delegate<RetType,ArgType> & operator -=(RetType (*func)(ArgType))
 		{
-			LockObj lock(m_lock);
+			LockObj lock(m_delegateLock);
 			vector<RetType (*)(ArgType)>::iterator iter;
 			for(iter=m_funcList.begin();iter!=m_funcList.end();)
 			{
@@ -303,7 +303,7 @@ namespace epl
 		*/
 		virtual Delegate<RetType,ArgType> & operator -=(const Delegate<RetType,ArgType> &right)
 		{
-			LockObj lock(m_lock);
+			LockObj lock(m_delegateLock);
 
 			vector<RetType (*)(ArgType)>::const_iterator rightIter;
 			vector<RetType (*)(ArgType)>::iterator iter;
@@ -391,7 +391,7 @@ namespace epl
 		/// function pointer list
 		vector<RetType (*)(ArgType)> m_funcList;
 		/// lock
-		BaseLock *m_lock;
+		BaseLock *m_delegateLock;
 		/// Lock Policy
 		LockPolicy m_lockPolicy;
 	};
@@ -418,16 +418,16 @@ namespace epl
 			switch(lockPolicyType)
 			{
 			case LOCK_POLICY_CRITICALSECTION:
-				m_lock=EP_NEW CriticalSectionEx();
+				m_delegateLock=EP_NEW CriticalSectionEx();
 				break;
 			case LOCK_POLICY_MUTEX:
-				m_lock=EP_NEW Mutex();
+				m_delegateLock=EP_NEW Mutex();
 				break;
 			case LOCK_POLICY_NONE:
-				m_lock=EP_NEW NoLock();
+				m_delegateLock=EP_NEW NoLock();
 				break;
 			default:
-				m_lock=NULL;
+				m_delegateLock=NULL;
 				break;
 			}
 		}
@@ -446,16 +446,16 @@ namespace epl
 			switch(lockPolicyType)
 			{
 			case LOCK_POLICY_CRITICALSECTION:
-				m_lock=EP_NEW CriticalSectionEx();
+				m_delegateLock=EP_NEW CriticalSectionEx();
 				break;
 			case LOCK_POLICY_MUTEX:
-				m_lock=EP_NEW Mutex();
+				m_delegateLock=EP_NEW Mutex();
 				break;
 			case LOCK_POLICY_NONE:
-				m_lock=EP_NEW NoLock();
+				m_delegateLock=EP_NEW NoLock();
 				break;
 			default:
-				m_lock=NULL;
+				m_delegateLock=NULL;
 				break;
 			}
 		}
@@ -473,16 +473,16 @@ namespace epl
 			switch(m_lockPolicy)
 			{
 			case LOCK_POLICY_CRITICALSECTION:
-				m_lock=EP_NEW CriticalSectionEx();
+				m_delegateLock=EP_NEW CriticalSectionEx();
 				break;
 			case LOCK_POLICY_MUTEX:
-				m_lock=EP_NEW Mutex();
+				m_delegateLock=EP_NEW Mutex();
 				break;
 			case LOCK_POLICY_NONE:
-				m_lock=EP_NEW NoLock();
+				m_delegateLock=EP_NEW NoLock();
 				break;
 			default:
-				m_lock=NULL;
+				m_delegateLock=NULL;
 				break;
 			}
 		}
@@ -494,8 +494,8 @@ namespace epl
 		*/
 		virtual ~Delegate()
 		{
-			if(m_lock)
-				EP_DELETE m_lock;
+			if(m_delegateLock)
+				EP_DELETE m_delegateLock;
 		}
 
 		/*!
@@ -509,7 +509,7 @@ namespace epl
 		{
 			if(this!=&b)
 			{
-				LockObj lock(m_lock);
+				LockObj lock(m_delegateLock);
 				m_funcList=b.m_funcList;
 			}
 			return *this;
@@ -538,7 +538,7 @@ namespace epl
 		*/
 		void Clear()
 		{
-			LockObj lock(m_lock);
+			LockObj lock(m_delegateLock);
 			m_funcList.clear();
 		}
 
@@ -549,7 +549,7 @@ namespace epl
 		*/
 		virtual Delegate<RetType,void> & operator =(RetType (*func)(void))
 		{
-			LockObj lock(m_lock);
+			LockObj lock(m_delegateLock);
 			m_funcList.clear();
 			m_funcList.push_back(func);
 			return *this;
@@ -562,7 +562,7 @@ namespace epl
 		*/
 		virtual Delegate<RetType,void> & operator +=(RetType (*func)(void))
 		{
-			LockObj lock(m_lock);
+			LockObj lock(m_delegateLock);
 			m_funcList.push_back(func);
 			return *this;
 		}
@@ -586,7 +586,7 @@ namespace epl
 		*/
 		virtual Delegate<RetType,void> & operator +=(const Delegate<RetType,void> &right)
 		{
-			LockObj lock(m_lock);
+			LockObj lock(m_delegateLock);
 			vector<RetType (*)(void)>::const_iterator iter;
 			if(this==&right)
 			{
@@ -624,7 +624,7 @@ namespace epl
 		*/
 		virtual Delegate<RetType,void> & operator -=(RetType (*func)(void))
 		{
-			LockObj lock(m_lock);
+			LockObj lock(m_delegateLock);
 			vector<RetType (*)(void)>::iterator iter;
 			for(iter=m_funcList.begin();iter!=m_funcList.end();)
 			{
@@ -658,7 +658,7 @@ namespace epl
 		*/
 		virtual Delegate<RetType,void> & operator -=(const Delegate<RetType,void> &right)
 		{
-			LockObj lock(m_lock);
+			LockObj lock(m_delegateLock);
 
 			vector<RetType (*)(void)>::const_iterator rightIter;
 			vector<RetType (*)(void)>::iterator iter;
@@ -745,7 +745,7 @@ namespace epl
 		/// function pointer list
 		vector<RetType (*)(void)> m_funcList;
 		/// lock
-		BaseLock *m_lock;
+		BaseLock *m_delegateLock;
 		/// Lock Policy
 		LockPolicy m_lockPolicy;
 	};

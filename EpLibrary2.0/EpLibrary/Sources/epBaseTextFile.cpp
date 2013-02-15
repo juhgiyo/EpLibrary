@@ -27,16 +27,16 @@ BaseTextFile::BaseTextFile(FileEncodingType encodingType,LockPolicy lockPolicyTy
 	switch(lockPolicyType)
 	{
 	case LOCK_POLICY_CRITICALSECTION:
-		m_lock=EP_NEW CriticalSectionEx();
+		m_baseTextLock=EP_NEW CriticalSectionEx();
 		break;
 	case LOCK_POLICY_MUTEX:
-		m_lock=EP_NEW Mutex();
+		m_baseTextLock=EP_NEW Mutex();
 		break;
 	case LOCK_POLICY_NONE:
-		m_lock=EP_NEW NoLock();
+		m_baseTextLock=EP_NEW NoLock();
 		break;
 	default:
-		m_lock=NULL;
+		m_baseTextLock=NULL;
 		break;
 	}
 }
@@ -48,23 +48,23 @@ BaseTextFile::BaseTextFile(const BaseTextFile& b)
 	switch(m_lockPolicy)
 	{
 	case LOCK_POLICY_CRITICALSECTION:
-		m_lock=EP_NEW CriticalSectionEx();
+		m_baseTextLock=EP_NEW CriticalSectionEx();
 		break;
 	case LOCK_POLICY_MUTEX:
-		m_lock=EP_NEW Mutex();
+		m_baseTextLock=EP_NEW Mutex();
 		break;
 	case LOCK_POLICY_NONE:
-		m_lock=EP_NEW NoLock();
+		m_baseTextLock=EP_NEW NoLock();
 		break;
 	default:
-		m_lock=NULL;
+		m_baseTextLock=NULL;
 		break;
 	}
 }
 BaseTextFile::~BaseTextFile()
 {
-	if(m_lock)
-		EP_DELETE m_lock;
+	if(m_baseTextLock)
+		EP_DELETE m_baseTextLock;
 }
 
 
@@ -106,7 +106,7 @@ void BaseTextFile::writeToFile(const TCHAR *toFileString)
 
 bool BaseTextFile::SaveToFile(const TCHAR *filename)
 {
-	LockObj lock(m_lock);
+	LockObj lock(m_baseTextLock);
 	unsigned int strLength=System::TcsLen(filename);
 	if(strLength<=0)
 		return false;
@@ -143,7 +143,7 @@ bool BaseTextFile::SaveToFile(const TCHAR *filename)
 
 bool BaseTextFile::AppendToFile(const TCHAR *filename)
 {
-	LockObj lock(m_lock);
+	LockObj lock(m_baseTextLock);
 	unsigned int strLength=System::TcsLen(filename);
 	if(strLength<=0)
 		return false;
@@ -181,7 +181,7 @@ bool BaseTextFile::AppendToFile(const TCHAR *filename)
 
 bool BaseTextFile::LoadFromFile(const TCHAR *filename)
 {
-	LockObj lock(m_lock);
+	LockObj lock(m_baseTextLock);
 	unsigned int strLength=System::TcsLen(filename);
 	if(strLength<=0)
 		return false;

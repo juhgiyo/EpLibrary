@@ -37,7 +37,7 @@ XMLFile::~XMLFile()
 }
 void XMLFile::SetNodeValue(const TCHAR * nodeName, const TCHAR * attrName, const TCHAR *attrVal, const TCHAR * nodeVal)
 {
-	LockObj lock(m_lock);
+	LockObj lock(m_baseTextLock);
 	XNodes findList=findAllNode(this,nodeName);
 	XNodes::iterator findIter;
 	for(findIter=findList.begin();findIter!=findList.end();findIter++)
@@ -56,7 +56,7 @@ void XMLFile::SetNodeValue(const TCHAR * nodeName, const TCHAR * attrName, const
 
 vector<const TCHAR *> XMLFile::GetAttrValue(const TCHAR *nodeName, const TCHAR *attrName)
 {
-	LockObj lock(m_lock);
+	LockObj lock(m_baseTextLock);
 	vector<const TCHAR *> retList;
 	XNodes findList=findAllNode(this,nodeName);
 	XNodes::iterator findIter;
@@ -83,7 +83,7 @@ XMLInfo XMLFile::GetXMLInfo()
 
 void XMLFile::Clear()
 {
-	LockObj lock(m_lock);
+	LockObj lock(m_baseTextLock);
 	Close();
 }
 void XMLFile::writeLoop()

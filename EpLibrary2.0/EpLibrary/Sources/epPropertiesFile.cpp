@@ -36,7 +36,7 @@ PropertiesFile::~PropertiesFile()
 
 bool PropertiesFile::SetProperty(const TCHAR *  key, const TCHAR * val)
 {
-	LockObj lock(m_lock);
+	LockObj lock(m_baseTextLock);
 	EpTString opKey=Locale::Trim(key);
 	opKey.append(_T("="));
 	vector<Pair<EpTString, EpTString> >::iterator iter;
@@ -53,7 +53,7 @@ bool PropertiesFile::SetProperty(const TCHAR *  key, const TCHAR * val)
 
 bool PropertiesFile::GetProperty(const TCHAR * key,EpTString &retVal) const
 {
-	LockObj lock(m_lock);
+	LockObj lock(m_baseTextLock);
 	EpTString opKey=Locale::Trim(key);
 	opKey.append(_T("="));
 	vector<Pair<EpTString, EpTString> >::const_iterator iter;
@@ -70,7 +70,7 @@ bool PropertiesFile::GetProperty(const TCHAR * key,EpTString &retVal) const
 
 EpTString &PropertiesFile::GetProperty(const TCHAR * key)
 {
-	LockObj lock(m_lock);
+	LockObj lock(m_baseTextLock);
 	EpTString opKey=Locale::Trim(key);
 	opKey.append(_T("="));
 	vector<Pair<EpTString, EpTString> >::iterator iter;
@@ -87,7 +87,7 @@ EpTString &PropertiesFile::GetProperty(const TCHAR * key)
 
 const EpTString &PropertiesFile::GetProperty(const TCHAR * key) const
 {
-	LockObj lock(m_lock);
+	LockObj lock(m_baseTextLock);
 	EpTString opKey=Locale::Trim(key);
 	opKey.append(_T("="));
 	vector<Pair<EpTString, EpTString> >::const_iterator iter;
@@ -104,7 +104,7 @@ const EpTString &PropertiesFile::GetProperty(const TCHAR * key) const
 
 bool PropertiesFile::AddProperty(const TCHAR * key, const TCHAR * val)
 {
-	LockObj lock(m_lock);
+	LockObj lock(m_baseTextLock);
 	EpTString opKey=Locale::Trim(key);
 	opKey.append(_T("="));
 	vector<Pair<EpTString, EpTString> >::iterator iter;
@@ -124,7 +124,7 @@ bool PropertiesFile::AddProperty(const TCHAR * key, const TCHAR * val)
 
 bool PropertiesFile::RemoveProperty(const TCHAR * key)
 {
-	LockObj lock(m_lock);
+	LockObj lock(m_baseTextLock);
 	EpTString opKey=Locale::Trim(key);
 	opKey.append(_T("="));
 	vector<Pair<EpTString, EpTString> >::iterator iter;
@@ -141,7 +141,7 @@ bool PropertiesFile::RemoveProperty(const TCHAR * key)
 
 void PropertiesFile::Clear()
 {
-	LockObj lock(m_lock);
+	LockObj lock(m_baseTextLock);
 	m_propertyList.clear();
 }
 void PropertiesFile::writeLoop()
@@ -159,7 +159,7 @@ void PropertiesFile::writeLoop()
 
 EpTString& PropertiesFile::operator [](const TCHAR * key)
 {
-	LockObj lock(m_lock);
+	LockObj lock(m_baseTextLock);
 	EpTString opKey=Locale::Trim(key);
 	opKey.append(_T("="));
 	vector<Pair<EpTString, EpTString> >::iterator iter;
@@ -179,7 +179,7 @@ EpTString& PropertiesFile::operator [](const TCHAR * key)
 
 const EpTString& PropertiesFile::operator [](const TCHAR * key) const
 {
-	LockObj lock(m_lock);
+	LockObj lock(m_baseTextLock);
 	EpTString opKey=Locale::Trim(key);
 	opKey.append(_T("="));
 	vector<Pair<EpTString, EpTString> >::const_iterator iter;

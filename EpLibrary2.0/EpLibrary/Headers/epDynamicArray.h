@@ -205,7 +205,7 @@ namespace epl
 		/// number of element
 		unsigned int m_numOfElements;
 		/// lock
-		BaseLock *m_lock;
+		BaseLock *m_arrayLock;
 		/// Lock Policy
 		LockPolicy m_lockPolicy;
 
@@ -221,16 +221,16 @@ namespace epl
 		switch(lockPolicyType)
 		{
 		case LOCK_POLICY_CRITICALSECTION:
-			m_lock=EP_NEW CriticalSectionEx();
+			m_arrayLock=EP_NEW CriticalSectionEx();
 			break;
 		case LOCK_POLICY_MUTEX:
-			m_lock=EP_NEW Mutex();
+			m_arrayLock=EP_NEW Mutex();
 			break;
 		case LOCK_POLICY_NONE:
-			m_lock=EP_NEW NoLock();
+			m_arrayLock=EP_NEW NoLock();
 			break;
 		default:
-			m_lock=NULL;
+			m_arrayLock=NULL;
 			break;
 		}
 	}
@@ -249,16 +249,16 @@ namespace epl
 		switch(m_lockPolicy)
 		{
 		case LOCK_POLICY_CRITICALSECTION:
-			m_lock=EP_NEW CriticalSectionEx();
+			m_arrayLock=EP_NEW CriticalSectionEx();
 			break;
 		case LOCK_POLICY_MUTEX:
-			m_lock=EP_NEW Mutex();
+			m_arrayLock=EP_NEW Mutex();
 			break;
 		case LOCK_POLICY_NONE:
-			m_lock=EP_NEW NoLock();
+			m_arrayLock=EP_NEW NoLock();
 			break;
 		default:
-			m_lock=NULL;
+			m_arrayLock=NULL;
 			break;
 		}
 	}
@@ -266,18 +266,18 @@ namespace epl
 	template <typename DataType>
 	DynamicArray<DataType>::~DynamicArray()
 	{
-		m_lock->Lock();
+		m_arrayLock->Lock();
 		if(m_head)
 			EP_Free(m_head);
-		m_lock->Unlock();
-		if(m_lock)
-			EP_DELETE m_lock;
+		m_arrayLock->Unlock();
+		if(m_arrayLock)
+			EP_DELETE m_arrayLock;
 	}
 
 	template <typename DataType>
 	void DynamicArray<DataType>::Delete()
 	{
-		LockObj lock(m_lock);
+		LockObj lock(m_arrayLock);
 		deleteArr();
 	}
 
@@ -294,7 +294,7 @@ namespace epl
 	template <typename DataType>
 	void DynamicArray<DataType>::Clear()
 	{
-		LockObj lock(m_lock);
+		LockObj lock(m_arrayLock);
 		System::Memset(m_head,0,sizeof(DataType)*m_actualSize);
 		m_numOfElements=0;
 	}
@@ -302,7 +302,7 @@ namespace epl
 	template <typename DataType>
 	bool DynamicArray<DataType>::IsEmpty() const
 	{
-		LockObj lock(m_lock);
+		LockObj lock(m_arrayLock);
 		if(m_numOfElements)
 			return true;
 		return false;
@@ -311,14 +311,14 @@ namespace epl
 	template <typename DataType>
 	unsigned int DynamicArray<DataType>::Size() const
 	{
-		LockObj lock(m_lock);
+		LockObj lock(m_arrayLock);
 		return m_numOfElements;
 	}
 
 	template <typename DataType>
 	bool DynamicArray<DataType>::Resize(unsigned int newSize)
 	{
-		LockObj lock(m_lock);
+		LockObj lock(m_arrayLock);
 		return resize(newSize);
 	}
 
@@ -346,7 +346,7 @@ namespace epl
 	template <typename DataType>
 	DataType &DynamicArray<DataType>::At(unsigned int idx)
 	{
-		LockObj lock(m_lock);
+		LockObj lock(m_arrayLock);
 		if(m_numOfElements<=idx)
 		{
 			resize(idx+1);
@@ -359,14 +359,14 @@ namespace epl
 	template <typename DataType>
 	DynamicArray<DataType> &DynamicArray<DataType>::Append(const DataType &data)
 	{
-		LockObj lock(m_lock);
+		LockObj lock(m_arrayLock);
 		append(data);
 	}
 
 	template <typename DataType>
 	DynamicArray<DataType> &DynamicArray<DataType>::Append(const DynamicArray<DataType> &dArr)
 	{
-		LockObj lock(m_lock);
+		LockObj lock(m_arrayLock);
 		return append(dArr);
 	}
 
@@ -399,7 +399,7 @@ namespace epl
 	{
 		if(this != &b)
 		{
-			LockObj lock(m_lock);
+			LockObj lock(m_arrayLock);
 			deleteArr();
 			m_actualSize=b.m_numOfElements;
 			m_numOfElements=b.m_numOfElements;
@@ -420,14 +420,14 @@ namespace epl
 	template <typename DataType>
 	const DataType& DynamicArray<DataType>::operator[](unsigned int idx) const	
 	{
-		LockObj lock(m_lock);
+		LockObj lock(m_arrayLock);
 		EP_VERIFY_OUT_OF_RANGE(m_numOfElements>idx);
 		return *(m_head+idx);
 	}
 	template <typename DataType>
 	DynamicArray<DataType>& DynamicArray<DataType>::operator+=(const DynamicArray<DataType>& b)
 	{
-		LockObj lock(m_lock);
+		LockObj lock(m_arrayLock);
 		return append(b);
 	}
 
@@ -443,7 +443,7 @@ namespace epl
 	template <typename DataType>
 	DynamicArray<DataType>& DynamicArray<DataType>::operator+=(const DataType& b)
 	{
-		LockObj lock(m_lock);
+		LockObj lock(m_arrayLock);
 		return append(b);
 	}
 
