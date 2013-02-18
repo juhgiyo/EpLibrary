@@ -244,7 +244,7 @@ namespace epl
 			m_head=reinterpret_cast<DataType*>(EP_Malloc(sizeof(DataType)*m_actualSize));
 		else
 			m_head=NULL;
-		EP_VERIFY_BAD_ALLOC(m_head);
+		EP_ASSERT(m_head);
 		System::Memcpy(m_head,sizeof(DataType)*m_actualSize,dArr.m_head,sizeof(DataType)*m_actualSize);
 		switch(m_lockPolicy)
 		{
@@ -339,7 +339,7 @@ namespace epl
 			System::Memset(m_head,0,newSize*sizeof(DataType));
 			m_actualSize=newSize;
 		}
-		EP_VERIFY_BAD_ALLOC(m_head);
+		EP_ASSERT(m_head);
 		return true;
 	}
 
@@ -421,7 +421,7 @@ namespace epl
 	const DataType& DynamicArray<DataType>::operator[](unsigned int idx) const	
 	{
 		LockObj lock(m_arrayLock);
-		EP_VERIFY_OUT_OF_RANGE(m_numOfElements>idx);
+		EP_ASSERT(m_numOfElements>idx);
 		return *(m_head+idx);
 	}
 	template <typename DataType>

@@ -116,7 +116,7 @@ namespace epl
 		{
 			int retIdx;
 			if(BinarySearch(data,&m_queue.at(0),m_queue.size(),Compare::CompFunc,retIdx))
-				EP_VERIFY_INVALID_ARGUMENT_W_MSG(0,"Same Object already in the Queue!!");
+				EP_ASSERT_EXPR(0,_T("Same Object already in the Queue!!"));
 			m_queue.insert(m_queue.begin()+retIdx,data);
 		}
 		else

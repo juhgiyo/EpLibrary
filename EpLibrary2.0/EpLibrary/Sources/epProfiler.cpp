@@ -73,21 +73,21 @@ EpTime Profiler::Stop()
 {
 	m_endTime=0.0;
 	m_endTime=System::GetTime();
-	EP_VERIFY_LOGIC_ERROR_W_MSG(m_endTime-m_startTime<=0.0,"Stop Function called without starting!");
+	EP_ASSERT_EXPR(m_endTime-m_startTime<=0.0,_T("Stop Function called without starting!"));
 	m_lastProfileTime=m_endTime-m_startTime;
 	return m_lastProfileTime;
 }
 
 EpTime Profiler::GetLastProfileTime()
 {
-	EP_VERIFY_LOGIC_ERROR_W_MSG(m_lastProfileTime<=0.0,"There is no last profiled time!");
+	EP_ASSERT_EXPR(m_lastProfileTime<=0.0,_T("There is no last profiled time!"));
 	return m_lastProfileTime;
 }
 
 #if defined(_DEBUG) && defined(EP_ENABLE_PROFILE)
 void Profiler::AddLastProfileTimeToManager()
 {
-	EP_VERIFY_LOGIC_ERROR_W_MSG(m_lastProfileTime<=0.0,"There is no last profiled time!");
+	EP_ASSERT_EXPR(m_lastProfileTime<=0.0,_T("There is no last profiled time!"));
 	epl::SingletonHolder<epl::ProfileManager>::Instance().addProfile(m_uniqueName.c_str(),m_lastProfileTime);
 }
 #endif// defined(_DEBUG) && defined(EP_ENABLE_PROFILE)

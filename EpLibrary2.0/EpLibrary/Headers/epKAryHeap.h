@@ -298,7 +298,7 @@ namespace epl
 	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *)>  
 	KAryHeap<KeyType,DataType,k,KeyCompareFunc>::KAryHeap(KaryHeapMode mode,LockPolicy lockPolicyType)
 	{
-		EP_VERIFY_DOMAIN_ERROR_W_MSG(k>0,"Template Declaration Error: k cannnot be less than/equal to 0");
+		EP_ASSERT_EXPR(k>0,_T("Template Declaration Error: k cannnot be less than/equal to 0"));
 
 		m_heap=DynamicArray<Pair<KeyType,DataType> *>(lockPolicyType);
 		m_heapSize=0;
@@ -324,7 +324,7 @@ namespace epl
 	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *)>  
 	KAryHeap<KeyType,DataType,k,KeyCompareFunc>::KAryHeap(const KAryHeap<KeyType,DataType,k,KeyCompareFunc> & b)
 	{
-		EP_VERIFY_DOMAIN_ERROR_W_MSG(k>0,"Template Declaration Error: k cannnot be less than/equal to 0");
+		EP_ASSERT_EXPR(k>0,_T("Template Declaration Error: k cannnot be less than/equal to 0"));
 		m_lockPolicy=b.m_lockPolicy;
 		m_mode=b.m_mode;
 		m_heap.Resize(b.m_heap.Size());
@@ -401,7 +401,7 @@ namespace epl
 			return m_heap[idx]->second;
 		push(key,reinterpret_cast<DataType>(0));
 		idx=findIndex(key,0);
-		EP_VERIFY_DOMAIN_ERROR(idx>=0);
+		EP_ASSERT(idx>=0);
 		return m_heap[idx]->second;
 		
 	}
@@ -411,7 +411,7 @@ namespace epl
 	{
 		LockObj lock(m_heapLock);
 		int idx=findIndex(key, 0);
-		EP_VERIFY_OUT_OF_RANGE(idx>=0);
+		EP_ASSERT(idx>=0);
 		return m_heap[idx]->second;
 	}
 
@@ -420,7 +420,7 @@ namespace epl
 	{
 		LockObj lock(m_heapLock);
 		int idx=findIndex(key, 0);
-		EP_VERIFY_OUT_OF_RANGE_W_MSG(idx>=0,"The given key does not exist in the heap");
+		EP_ASSERT_EXPR(idx>=0,_T("The given key does not exist in the heap"));
 		return m_heap[idx]->second;
 	}
 
@@ -429,7 +429,7 @@ namespace epl
 	{
 		LockObj lock(m_heapLock);
 		int idx=findIndex(key, 0);
-		EP_VERIFY_OUT_OF_RANGE_W_MSG(idx>=0,"The given key does not exist in the heap");
+		EP_ASSERT_EXPR(idx>=0,_T("The given key does not exist in the heap"));
 		return m_heap[idx]->second;
 	}
 	
@@ -479,7 +479,7 @@ namespace epl
 	Pair<KeyType,DataType> KAryHeap<KeyType,DataType,k,KeyCompareFunc>::Front() const
 	{
 		LockObj lock(m_heapLock);
-		EP_VERIFY_OUT_OF_RANGE_W_MSG(m_heapSize>0,"The heap is empty.");
+		EP_ASSERT_EXPR(m_heapSize>0,_T("The heap is empty."));
 		return Pair(m_heap[0]->first,m_heap[0]->second);
 	}
 
@@ -556,7 +556,7 @@ namespace epl
 	{	
 		LockObj lock(m_heapLock);
 		int index=findIndex(key,0);
-		EP_VERIFY_INVALID_ARGUMENT_W_MSG(index==-1,"Given key already exists in the K-ary heap. Duplicated insertion is not allowed.");
+		EP_ASSERT_EXPR(index==-1,_T("Given key already exists in the K-ary heap. Duplicated insertion is not allowed."));
 		push(key,data);
 		index=findIndex(key,0);
 		return m_heap[index]->second;

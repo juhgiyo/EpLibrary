@@ -51,7 +51,7 @@ bool InterlockedEx::Lock()
 	int threadID=GetCurrentThreadId();
 	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
 	{
-		EP_VERIFY_THREAD_DEADLOCK_ERROR(*iter!=threadID);
+		EP_ASSERT_EXPR(*iter!=threadID,_T("Possible Deadlock detected!"));
 	}
 	InterlockedExchange(&m_interLockDebug, 0);
 #endif //_DEBUG
@@ -81,7 +81,7 @@ long InterlockedEx::TryLock()
 	int threadID=GetCurrentThreadId();
 	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
 	{
-		EP_VERIFY_THREAD_DEADLOCK_ERROR(*iter!=threadID);
+		EP_ASSERT_EXPR(*iter!=threadID,_T("Possible Deadlock detected!"));
 	}
 	InterlockedExchange(&m_interLockDebug, 0);
 #endif //defined(_DEBUG)
@@ -115,7 +115,7 @@ long InterlockedEx::TryLockFor(const unsigned int dwMilliSecond)
 	int threadID=GetCurrentThreadId();
 	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
 	{
-		EP_VERIFY_THREAD_DEADLOCK_ERROR(*iter!=threadID);
+		EP_ASSERT_EXPR(*iter!=threadID,_T("Possible Deadlock detected!"));
 	}
 	InterlockedExchange(&m_interLockDebug, 0);
 #endif //defined(_DEBUG)

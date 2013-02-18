@@ -28,7 +28,7 @@ int Random::GetRandom()
 }
 int Random::GetRandom(int startNum, int endNum)
 {
-	EP_VERIFY_RANGE_ERROR(endNum>=startNum);
+	EP_ASSERT(endNum>=startNum);
 	return rand()%(endNum-startNum+1)+startNum;
 }
 Random::Random()

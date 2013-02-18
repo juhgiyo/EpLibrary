@@ -602,7 +602,7 @@ namespace epl
 	DataType &PatriciaTrie<CharacterType,DataType,Terminator,CharCompareFunc>::operator[](const CharacterType * str)
 	{
 
-		EP_VERIFY_INVALID_ARGUMENT_W_MSG(str,"String is NULL");
+		EP_ASSERT_EXPR(str,_T("String is NULL"));
 		DataType retData;
 		LockObj lock(m_trieLock);
 		PatriciaTrieLeaf *foundNode=find(m_root,str,0,retData);
@@ -613,7 +613,7 @@ namespace epl
 		else
 		{
 			foundNode=insert(m_root,str,0,retData);
-			EP_VERIFY_RUNTIME_ERROR_W_MSG(foundNode,"Insert Failed");
+			EP_ASSERT_EXPR(foundNode,_T("Insert Failed"));
 			m_totalCount++;
 			return foundNode->GetData();		
 		}
@@ -622,11 +622,11 @@ namespace epl
 	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
 	const DataType &PatriciaTrie<CharacterType,DataType,Terminator,CharCompareFunc>::operator[](const CharacterType * str) const
 	{
-		EP_VERIFY_INVALID_ARGUMENT_W_MSG(str,"String is NULL");
+		EP_ASSERT_EXPR(str,_T("String is NULL"));
 		DataType retData;
 		LockObj lock(m_trieLock);
 		PatriciaTrieLeaf *foundNode=find(m_root,str,0,retData);
-		EP_VERIFY_OUT_OF_RANGE(foundNode);
+		EP_ASSERT(foundNode);
 		return foundNode->GetData();
 	}
 

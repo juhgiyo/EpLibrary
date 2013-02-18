@@ -241,7 +241,7 @@ namespace epl
 		LockObj lock(m_queueLock);
 		if(m_queue.empty())
 		{
-			EP_VERIFY_DOMAIN_ERROR_W_MSG(0,"Empty Queue");
+			EP_ASSERT_EXPR(0,_T("Empty Queue"));
 		}
 		return m_queue.front();
 	}
@@ -252,7 +252,7 @@ namespace epl
 		LockObj lock(m_queueLock);
 		if(m_queue.empty())
 		{
-			EP_VERIFY_DOMAIN_ERROR_W_MSG(0,"Empty Queue");
+			EP_ASSERT_EXPR(0,_T("Empty Queue"));
 		}
 		return m_queue.back();
 	}
@@ -286,7 +286,7 @@ namespace epl
 		LockObj lock(m_queueLock);
 		if(m_queue.empty())
 		{
-			EP_VERIFY_DOMAIN_ERROR_W_MSG(0,"Empty Queue");
+			EP_ASSERT_EXPR(0,_T("Empty Queue"));
 		}
 		m_queue.erase(m_queue.begin());
 	}

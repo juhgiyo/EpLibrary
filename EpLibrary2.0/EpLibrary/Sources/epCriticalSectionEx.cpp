@@ -57,7 +57,7 @@ bool CriticalSectionEx::Lock()
 // 	int threadID=GetCurrentThreadId();
 // 	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
 // 	{
-// 		EP_VERIFY_THREAD_DEADLOCK_ERROR(*iter!=threadID);
+// 		EP_ASSERT_EXPR(*iter!=threadID,_T("Possible Deadlock detected!"));
 // 	}
 // 	LeaveCriticalSection(&m_criticalSectionDebug);
 // #endif //defined(_DEBUG)
@@ -79,7 +79,7 @@ long CriticalSectionEx::TryLock()
 // 	int threadID=GetCurrentThreadId();
 // 	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
 // 	{
-// 		EP_VERIFY_THREAD_DEADLOCK_ERROR(*iter!=threadID);
+// 		EP_ASSERT_EXPR(*iter!=threadID,_T("Possible Deadlock detected!"));
 // 	}
 // 	LeaveCriticalSection(&m_criticalSectionDebug);
 // #endif //defined(_DEBUG)
@@ -105,7 +105,7 @@ long CriticalSectionEx::TryLockFor(const unsigned int dwMilliSecond)
 // 	int threadID=GetCurrentThreadId();
 // 	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
 // 	{
-// 		EP_VERIFY_THREAD_DEADLOCK_ERROR(*iter!=threadID);
+// 		EP_ASSERT_EXPR(*iter!=threadID,_T("Possible Deadlock detected!"));
 // 	}
 // 	LeaveCriticalSection(&m_criticalSectionDebug);
 // #endif //defined(_DEBUG)

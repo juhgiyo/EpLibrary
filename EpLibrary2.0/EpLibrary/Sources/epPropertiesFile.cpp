@@ -81,7 +81,7 @@ EpTString &PropertiesFile::GetProperty(const TCHAR * key)
 			return iter->second;
 		}
 	}
-	EP_VERIFY_OUT_OF_RANGE_W_MSG(0,"Given key does not exists in the list.");
+	EP_ASSERT_EXPR(0,_T("Given key does not exists in the list."));
 	return m_nullString;
 }
 
@@ -98,7 +98,7 @@ const EpTString &PropertiesFile::GetProperty(const TCHAR * key) const
 			return iter->second;
 		}
 	}
-	EP_VERIFY_OUT_OF_RANGE_W_MSG(0,"Given key does not exists in the list.");
+	EP_ASSERT_EXPR(0,_T("Given key does not exists in the list."));
 	return m_nullString;
 }
 
@@ -190,7 +190,7 @@ const EpTString& PropertiesFile::operator [](const TCHAR * key) const
 			return iter->second;
 		}
 	}
-	EP_VERIFY_OUT_OF_RANGE(0);
+	EP_ASSERT(0);
 	return m_nullString;
 }
 void PropertiesFile::loadFromFile(const EpTString &lines)

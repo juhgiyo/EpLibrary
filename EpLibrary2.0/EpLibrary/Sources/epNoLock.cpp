@@ -38,7 +38,7 @@ bool NoLock::Lock()
 // 	int threadID=GetCurrentThreadId();
 // 	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
 // 	{
-// 		EP_VERIFY_THREAD_DEADLOCK_ERROR(*iter!=threadID);
+// 		EP_ASSERT_EXPR(*iter!=threadID,_T("Possible Deadlock detected!"));
 // 	}
 // #endif //_DEBUG
 // #if _DEBUG
@@ -54,7 +54,7 @@ long NoLock::TryLock()
 // 	int threadID=GetCurrentThreadId();
 // 	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
 // 	{
-// 		EP_VERIFY_THREAD_DEADLOCK_ERROR(*iter!=threadID);
+// 		EP_ASSERT_EXPR(*iter!=threadID,_T("Possible Deadlock detected!"));
 // 	}
 // 	m_threadList.push_back(threadID);
 // #endif //_DEBUG
@@ -67,7 +67,7 @@ long NoLock::TryLockFor(const unsigned int dwMilliSecond)
 // 	int threadID=GetCurrentThreadId();
 // 	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
 // 	{
-// 		EP_VERIFY_THREAD_DEADLOCK_ERROR(*iter!=threadID);
+// 		EP_ASSERT_EXPR(*iter!=threadID,_T("Possible Deadlock detected!"));
 // 	}
 // 	m_threadList.push_back(threadID);
 // #endif //_DEBUG

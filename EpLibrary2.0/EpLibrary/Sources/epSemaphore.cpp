@@ -55,7 +55,7 @@ bool Semaphore::Lock()
 	int threadID=GetCurrentThreadId();
 	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
 	{
-		EP_VERIFY_THREAD_DEADLOCK_ERROR(*iter!=threadID);
+		EP_ASSERT_EXPR(*iter!=threadID,_T("Possible Deadlock detected!"));
 	}
 	ReleaseSemaphore(m_semDebug,1,NULL);
 #endif //_DEBUG
@@ -76,7 +76,7 @@ long Semaphore::TryLock()
 	int threadID=GetCurrentThreadId();
 	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
 	{
-		EP_VERIFY_THREAD_DEADLOCK_ERROR(*iter!=threadID);
+		EP_ASSERT_EXPR(*iter!=threadID,_T("Possible Deadlock detected!"));
 	}
 	ReleaseSemaphore(m_semDebug,1,NULL);
 #endif //defined(_DEBUG)
@@ -101,7 +101,7 @@ long Semaphore::TryLockFor(const unsigned int dwMilliSecond)
 	int threadID=GetCurrentThreadId();
 	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
 	{
-		EP_VERIFY_THREAD_DEADLOCK_ERROR(*iter!=threadID);
+		EP_ASSERT_EXPR(*iter!=threadID,_T("Possible Deadlock detected!"));
 	}
 	ReleaseSemaphore(m_semDebug,1,NULL);
 #endif //defined(_DEBUG)
