@@ -77,6 +77,7 @@ An Interface for EpLibrary Pre-compiled header
 #include "epSemaphore.h"
 #include "epNoLock.h"
 #include "epInterlockedEx.h"
+#include "epCmdLineOptions.h"
 
 #include "epSingletonHolder.h"
 #include "epSmartObject.h"

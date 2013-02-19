@@ -91,6 +91,7 @@ namespace epl
 	*/
 	class CmdLineOptions:public CmdLineMap
 	{
+	public:
 		/*!
 		Default Constructor
 
