@@ -376,6 +376,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Sources\epBaseTextFile.cpp" />
+    <ClCompile Include="Sources\epCmdLineOptions.cpp" />
     <ClCompile Include="Sources\epCStringEx.cpp" />
     <ClCompile Include="Sources\epFileStream.cpp" />
     <ClCompile Include="Sources\epNetworkStream.cpp" />
@@ -419,6 +420,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\epBaseTextFile.h" />
+    <ClInclude Include="Headers\epCmdLineOptions.h" />
     <ClInclude Include="Headers\epl.h" />
     <ClInclude Include="Headers\epLib.h" />
     <ClInclude Include="Headers\epAlgorithm.h" />

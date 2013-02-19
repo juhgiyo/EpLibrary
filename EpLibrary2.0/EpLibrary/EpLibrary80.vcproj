@@ -635,6 +635,10 @@
 				Name="Frameworks"
 				>
 				<File
+					RelativePath=".\Sources\epCmdLineOptions.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\Sources\epSmartObject.cpp"
 					>
 				</File>
@@ -952,6 +956,10 @@
 			<Filter
 				Name="Frameworks"
 				>
+				<File
+					RelativePath=".\Headers\epCmdLineOptions.h"
+					>
+				</File>
 				<File
 					RelativePath=".\Headers\epSingletonHolder.h"
 					>

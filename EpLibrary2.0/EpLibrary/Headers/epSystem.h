@@ -35,7 +35,7 @@ An Interface for System Class.
 #include "epAlgorithm.h"
 
 #include <vector>
-#include <string.h>
+#include <string>
 
 #include "epMemory.h"
 #include "epAssert.h"

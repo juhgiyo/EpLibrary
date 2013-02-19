@@ -236,6 +236,9 @@
     <ClCompile Include="Sources\epBaseTextFile.cpp">
       <Filter>Source Files\File System</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\epCmdLineOptions.cpp">
+      <Filter>Source Files\Frameworks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\epl.h">
@@ -420,6 +423,9 @@
     </ClInclude>
     <ClInclude Include="Headers\epBaseTextFile.h">
       <Filter>Header Files\File System</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epCmdLineOptions.h">
+      <Filter>Header Files\Frameworks</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -33,12 +33,13 @@ An Interface for Locale Class.
 
 #include "epLib.h"
 #include <vector>
-#include <string.h>
+#include <string>
 namespace epl{
 	/// A type definition for EpString Type
 	typedef std::string EpString;
 	/// A type definition for EpWString Type
 	typedef std::wstring EpWString;
+
 	/// A type definition for EpTString Type
 #if defined(_UNICODE) || defined(UNICODE)
 	typedef EpWString EpTString;

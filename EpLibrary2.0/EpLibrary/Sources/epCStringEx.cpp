@@ -25,7 +25,7 @@ Please refer to <http://www.codeproject.com/Articles/2396/Simple-CString-Extensi
 */
 #include "epCStringEx.h"
 #include <stdio.h>
-#include <string.h>
+#include <string>
 
 using namespace epl;
 

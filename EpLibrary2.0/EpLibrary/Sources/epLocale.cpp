@@ -23,9 +23,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace epl;
 
-
-
-
 bool Locale::IsCAlnum(char c)
 {
 	std::locale loc;
