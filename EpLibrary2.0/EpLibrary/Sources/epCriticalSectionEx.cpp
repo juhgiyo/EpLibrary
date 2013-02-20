@@ -139,7 +139,7 @@ long CriticalSectionEx::TryLockFor(const unsigned int dwMilliSecond)
 				m_lockCounter++;
 				return ret;	
 			}		
-			timeUsed=DateTimeHelper::AbsDiff(DateTimeHelper::GetCurrentDateTime(),startTime);
+			timeUsed=DateTimeHelper::AbsDiffInMilliSec(DateTimeHelper::GetCurrentDateTime(),startTime);
 			waitTime=waitTime-timeUsed;
 			startTime=DateTimeHelper::GetCurrentDateTime();
 		}

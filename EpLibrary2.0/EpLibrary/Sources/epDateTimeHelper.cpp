@@ -26,7 +26,7 @@ SYSTEMTIME DateTimeHelper::GetCurrentDateTime()
 	return currentDate;
 }
 
-__int64 DateTimeHelper::Diff(const SYSTEMTIME time1, const SYSTEMTIME time2)
+__int64 DateTimeHelper::Diff(const SYSTEMTIME &time1, const SYSTEMTIME &time2)
 {
 	union timeunion 
 	{ 
@@ -37,13 +37,13 @@ __int64 DateTimeHelper::Diff(const SYSTEMTIME time1, const SYSTEMTIME time2)
 	timeunion ft1;
 	timeunion ft2;
 
-	SystemTimeToFileTime(&time1, &ft1.fileTime);
-	SystemTimeToFileTime(&time2, &ft2.fileTime);
+	ft1.fileTime=SystemTimeToFileTime(time1);
+	ft2.fileTime=SystemTimeToFileTime(time2);
 
 	return __int64(ft1.ul.QuadPart) - __int64(ft2.ul.QuadPart); 
 }
 
-__int64 DateTimeHelper::AbsDiff(const SYSTEMTIME time1, const SYSTEMTIME time2)
+__int64 DateTimeHelper::AbsDiff(const SYSTEMTIME &time1, const SYSTEMTIME &time2)
 {
 	union timeunion 
 	{ 
@@ -54,16 +54,37 @@ __int64 DateTimeHelper::AbsDiff(const SYSTEMTIME time1, const SYSTEMTIME time2)
 	timeunion ft1;
 	timeunion ft2;
 
-	SystemTimeToFileTime(&time1, &ft1.fileTime);
-	SystemTimeToFileTime(&time2, &ft2.fileTime);
+	ft1.fileTime=SystemTimeToFileTime(time1);
+	ft2.fileTime=SystemTimeToFileTime(time2);
 
 	if(ft1.ul.QuadPart > ft2.ul.QuadPart)
 		return (ft1.ul.QuadPart - ft2.ul.QuadPart); 
 	return (ft2.ul.QuadPart-ft1.ul.QuadPart); 
 }
 
+__int64 DateTimeHelper::DiffInMilliSec(const SYSTEMTIME &time1, const SYSTEMTIME &time2)
+{
+	return DateTimeHelper::Diff(time1,time2)/__int64(10000.0); 
+}
 
-EpTString DateTimeHelper::DateToString(const SYSTEMTIME date)
+__int64 DateTimeHelper::AbsDiffInMilliSec(const SYSTEMTIME &time1, const SYSTEMTIME &time2)
+{
+	return DateTimeHelper::AbsDiff(time1,time2)/__int64(10000.0); 
+}
+
+__int64 DateTimeHelper::DiffInSec(const SYSTEMTIME &time1, const SYSTEMTIME &time2)
+{
+	return DateTimeHelper::Diff(time1,time2)/__int64(10000000.0); 
+}
+
+__int64 DateTimeHelper::AbsDiffInSec(const SYSTEMTIME &time1, const SYSTEMTIME &time2)
+{
+	return DateTimeHelper::AbsDiff(time1,time2)/__int64(10000000.0); 
+}
+
+
+
+EpTString DateTimeHelper::DateToString(const SYSTEMTIME &date)
 {
 	int nDateStringLength = GetDateFormat(LOCALE_USER_DEFAULT, 0, &date, NULL, NULL, 0);
 	if(nDateStringLength == 0)
@@ -86,7 +107,7 @@ EpTString DateTimeHelper::DateToString(const SYSTEMTIME date)
 	return retString;
 }
 
-EpTString DateTimeHelper::TimeToString(const SYSTEMTIME time)
+EpTString DateTimeHelper::TimeToString(const SYSTEMTIME &time)
 {
 	int nTimeStringLength = GetTimeFormat(LOCALE_USER_DEFAULT, 0, &time, NULL, NULL, 0);
 	if(nTimeStringLength == 0)
@@ -109,7 +130,7 @@ EpTString DateTimeHelper::TimeToString(const SYSTEMTIME time)
 	return retString;
 }
 
-EpTString DateTimeHelper::DateTimeToString(const SYSTEMTIME dateTime)
+EpTString DateTimeHelper::DateTimeToString(const SYSTEMTIME &dateTime)
 {
 	int nDateStringLength = GetDateFormat(LOCALE_USER_DEFAULT, 0, &dateTime, NULL, NULL, 0);
 	if(nDateStringLength == 0)
@@ -151,4 +172,268 @@ EpTString DateTimeHelper::DateTimeToString(const SYSTEMTIME dateTime)
 	EP_DELETE[] pszTime;
 
 	return retString;
+}
+
+
+SYSTEMTIME DateTimeHelper::FileTimeToSystemTime( const FILETIME &fileTime)
+{
+	SYSTEMTIME systemTime;
+	::FileTimeToSystemTime(&fileTime,&systemTime);
+	return systemTime;
+}
+
+FILETIME DateTimeHelper::SystemTimeToFileTime( const SYSTEMTIME &systemTime)
+{
+	FILETIME fileTime;
+	::SystemTimeToFileTime(&systemTime,&fileTime);
+	return fileTime;
+}
+
+
+
+__int64 DateTimeHelper::Diff(const FILETIME &time1, const FILETIME &time2)
+{
+	union timeunion 
+	{ 
+		FILETIME fileTime; 
+		ULARGE_INTEGER ul; 
+	};
+
+	timeunion ft1;
+	timeunion ft2;
+
+	ft1.fileTime=time1;
+	ft2.fileTime=time2;
+
+	return __int64(ft1.ul.QuadPart) - __int64(ft2.ul.QuadPart); 
+}
+
+__int64 DateTimeHelper::AbsDiff(const FILETIME &time1, const FILETIME &time2)
+{
+	union timeunion 
+	{ 
+		FILETIME fileTime; 
+		ULARGE_INTEGER ul; 
+	};
+
+	timeunion ft1;
+	timeunion ft2;
+	ft1.fileTime=time1;
+	ft2.fileTime=time2;
+
+	if(ft1.ul.QuadPart > ft2.ul.QuadPart)
+		return (ft1.ul.QuadPart - ft2.ul.QuadPart); 
+	return (ft2.ul.QuadPart-ft1.ul.QuadPart); 
+}
+
+__int64 DateTimeHelper::DiffInMilliSec(const FILETIME &time1, const FILETIME &time2)
+{
+	return DateTimeHelper::Diff(time1,time2)/__int64(10000.0); 
+}
+
+__int64 DateTimeHelper::AbsDiffInMilliSec(const FILETIME &time1, const FILETIME &time2)
+{
+	return DateTimeHelper::AbsDiff(time1,time2)/__int64(10000.0); 
+}
+
+__int64 DateTimeHelper::DiffInSec(const FILETIME &time1, const FILETIME &time2)
+{
+	return DateTimeHelper::Diff(time1,time2)/__int64(10000000.0); 
+}
+
+__int64 DateTimeHelper::AbsDiffInSec(const FILETIME &time1, const FILETIME &time2)
+{
+	return DateTimeHelper::AbsDiff(time1,time2)/__int64(10000000.0); 
+}
+
+
+
+EpTString DateTimeHelper::DateToString(const FILETIME &fTime)
+{
+	SYSTEMTIME systemTime=FileTimeToSystemTime(fTime);
+	return DateToString(systemTime);
+}
+
+EpTString DateTimeHelper::TimeToString(const FILETIME &fTime)
+{
+	SYSTEMTIME systemTime=FileTimeToSystemTime(fTime);
+	return TimeToString(systemTime);
+}
+
+EpTString DateTimeHelper::DateTimeToString(const FILETIME &fTime)
+{
+	SYSTEMTIME systemTime=FileTimeToSystemTime(fTime);
+	return DateTimeToString(systemTime);
+}
+
+#if (_MSC_VER >=1500) // Only for VS2008 and above
+unsigned __int64 DateTimeHelper::GetThreadCPUCycleCount(HANDLE threadHandle)
+{
+	unsigned __int64 cycleCount=0.0;
+	::QueryThreadCycleTime(threadHandle,&cycleCount);
+	return cycleCount;
+}
+
+
+unsigned __int64 DateTimeHelper::GetProcessCPUCycleCount(HANDLE processHandle)
+{
+	unsigned __int64 cycleCount=0.0;
+	::QueryProcessCycleTime(processHandle,&cycleCount);
+	return cycleCount;
+}
+#endif //(_MSC_VER >=1500)
+
+FILETIME DateTimeHelper::GetThreadCreationTime(HANDLE threadHandle)
+{
+	FILETIME creationTime;
+	FILETIME exitTime;
+	FILETIME kernalTime;
+	FILETIME userTime;
+	::GetThreadTimes(threadHandle,&creationTime,&exitTime,&kernalTime,&userTime);
+	return creationTime;
+}
+
+FILETIME DateTimeHelper::GetThreadExitTime(HANDLE threadHandle)
+{
+	FILETIME creationTime;
+	FILETIME exitTime;
+	FILETIME kernalTime;
+	FILETIME userTime;
+	::GetThreadTimes(threadHandle,&creationTime,&exitTime,&kernalTime,&userTime);
+	return exitTime;
+}
+FILETIME DateTimeHelper::GetThreadKernalTime(HANDLE threadHandle)
+{
+	FILETIME creationTime;
+	FILETIME exitTime;
+	FILETIME kernalTime;
+	FILETIME userTime;
+	::GetThreadTimes(threadHandle,&creationTime,&exitTime,&kernalTime,&userTime);
+	return kernalTime;
+}
+FILETIME DateTimeHelper::GetThreadUserTime(HANDLE threadHandle)
+{
+	FILETIME creationTime;
+	FILETIME exitTime;
+	FILETIME kernalTime;
+	FILETIME userTime;
+	::GetThreadTimes(threadHandle,&creationTime,&exitTime,&kernalTime,&userTime);
+	return userTime;
+}
+FILETIME DateTimeHelper::GetThreadTotalRunningTime(HANDLE threadHandle)
+{
+	FILETIME creationTime;
+	FILETIME exitTime;
+	FILETIME kernalTime;
+	FILETIME userTime;
+	::GetThreadTimes(threadHandle,&creationTime,&exitTime,&kernalTime,&userTime);
+
+	union timeunion 
+	{ 
+		FILETIME fileTime; 
+		ULARGE_INTEGER ul; 
+	};
+
+	timeunion ft1;
+	timeunion ft2;
+	timeunion ft3;
+	ft1.fileTime=kernalTime;
+	ft2.fileTime=userTime;
+	ft3.ul.QuadPart=(ft2.ul.QuadPart+ft1.ul.QuadPart);
+	return ft3.fileTime; 
+}
+
+FILETIME DateTimeHelper::GetProcessCreationTime(HANDLE processHandle)
+{
+	FILETIME creationTime;
+	FILETIME exitTime;
+	FILETIME kernalTime;
+	FILETIME userTime;
+	::GetProcessTimes(processHandle,&creationTime,&exitTime,&kernalTime,&userTime);
+	return creationTime;
+}
+FILETIME DateTimeHelper::GetProcessExitTime(HANDLE processHandle)
+{
+	FILETIME creationTime;
+	FILETIME exitTime;
+	FILETIME kernalTime;
+	FILETIME userTime;
+	::GetProcessTimes(processHandle,&creationTime,&exitTime,&kernalTime,&userTime);
+	return exitTime;
+}
+
+FILETIME DateTimeHelper::GetProcessKernalTime(HANDLE processHandle)
+{
+	FILETIME creationTime;
+	FILETIME exitTime;
+	FILETIME kernalTime;
+	FILETIME userTime;
+	::GetProcessTimes(processHandle,&creationTime,&exitTime,&kernalTime,&userTime);
+	return kernalTime;
+}
+FILETIME DateTimeHelper::GetProcessUserTime(HANDLE processHandle)
+{
+	FILETIME creationTime;
+	FILETIME exitTime;
+	FILETIME kernalTime;
+	FILETIME userTime;
+	::GetProcessTimes(processHandle,&creationTime,&exitTime,&kernalTime,&userTime);
+	return userTime;
+}
+
+FILETIME DateTimeHelper::GetProcessTotalRunningTime(HANDLE processHandle)
+{
+	FILETIME creationTime;
+	FILETIME exitTime;
+	FILETIME kernalTime;
+	FILETIME userTime;
+	::GetProcessTimes(processHandle,&creationTime,&exitTime,&kernalTime,&userTime);
+
+	union timeunion 
+	{ 
+		FILETIME fileTime; 
+		ULARGE_INTEGER ul; 
+	};
+
+	timeunion ft1;
+	timeunion ft2;
+	timeunion ft3;
+	ft1.fileTime=kernalTime;
+	ft2.fileTime=userTime;
+	ft3.ul.QuadPart=(ft2.ul.QuadPart+ft1.ul.QuadPart);
+	return ft3.fileTime; 
+}
+
+__int64 DateTimeHelper::In100NanoSec(const FILETIME &fileTime)
+{
+	union timeunion 
+	{ 
+		FILETIME fileTime; 
+		ULARGE_INTEGER ul; 
+	};
+	timeunion ft1;
+	ft1.fileTime=fileTime;
+	return ft1.ul.QuadPart;
+}
+__int64 DateTimeHelper::InMilliSec(const FILETIME &fileTime)
+{
+	union timeunion 
+	{ 
+		FILETIME fileTime; 
+		ULARGE_INTEGER ul; 
+	};
+	timeunion ft1;
+	ft1.fileTime=fileTime;
+	return ft1.ul.QuadPart/10000.0;
+}
+__int64 DateTimeHelper::InSec(const FILETIME &fileTime)
+{
+	union timeunion 
+	{ 
+		FILETIME fileTime; 
+		ULARGE_INTEGER ul; 
+	};
+	timeunion ft1;
+	ft1.fileTime=fileTime;
+	return ft1.ul.QuadPart/10000000.0;
 }

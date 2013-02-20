@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epBinarySearch.h"
 #include "epException.h"
 #include "epFolderHelper.h"
+#include "epDateTimeHelper.h"
 
 using namespace epl;
 
@@ -27,9 +28,9 @@ using namespace epl;
 Profiler::Profiler()
 {
 	m_uniqueName=_T("");
-	m_startTime=0.0;
-	m_endTime=0.0;
-	m_lastProfileTime=0.0;
+	m_startTime=0;
+	m_endTime=0;
+	m_lastProfileTime=0;
 
 }
 
@@ -43,9 +44,9 @@ Profiler::Profiler(const Profiler & b)
 Profiler::Profiler(const TCHAR *uniqueName)
 {
 	m_uniqueName=uniqueName;
-	m_startTime=0.0;
-	m_endTime=0.0;
-	m_lastProfileTime=0.0;
+	m_startTime=0;
+	m_endTime=0;
+	m_lastProfileTime=0;
 }
 
 Profiler &Profiler::operator=(const Profiler & b)
@@ -65,29 +66,31 @@ Profiler::~Profiler()
 }
 void Profiler::Start()
 {
-	m_endTime=0.0;
-	m_startTime=System::GetTime();
+	m_endTime=0;
+	//m_startTime=System::GetTime();
+	m_startTime=DateTimeHelper::InMilliSec(DateTimeHelper::GetThreadTotalRunningTime(System::GetCurrentThread()));
 }
 
 EpTime Profiler::Stop()
 {
-	m_endTime=0.0;
-	m_endTime=System::GetTime();
-	EP_ASSERT_EXPR(m_endTime-m_startTime<=0.0,_T("Stop Function called without starting!"));
+	m_endTime=0;
+	//m_endTime=System::GetTime();
+	m_endTime=DateTimeHelper::InMilliSec(DateTimeHelper::GetThreadTotalRunningTime(System::GetCurrentThread()));
+	EP_ASSERT_EXPR(m_endTime-m_startTime>=0,_T("Stop Function called without starting!"));
 	m_lastProfileTime=m_endTime-m_startTime;
 	return m_lastProfileTime;
 }
 
 EpTime Profiler::GetLastProfileTime()
 {
-	EP_ASSERT_EXPR(m_lastProfileTime<=0.0,_T("There is no last profiled time!"));
+	EP_ASSERT_EXPR(m_lastProfileTime>=0,_T("There is no last profiled time!"));
 	return m_lastProfileTime;
 }
 
 #if defined(_DEBUG) && defined(EP_ENABLE_PROFILE)
 void Profiler::AddLastProfileTimeToManager()
 {
-	EP_ASSERT_EXPR(m_lastProfileTime<=0.0,_T("There is no last profiled time!"));
+	EP_ASSERT_EXPR(m_lastProfileTime>=0,_T("There is no last profiled time!"));
 	epl::SingletonHolder<epl::ProfileManager>::Instance().addProfile(m_uniqueName.c_str(),m_lastProfileTime);
 }
 #endif// defined(_DEBUG) && defined(EP_ENABLE_PROFILE)
@@ -131,13 +134,13 @@ ProfileManager::ProfileNode & ProfileManager::ProfileNode::operator=(const Profi
 
 void ProfileManager::ProfileNode::Print() const
 {
-	System::TPrintf(_T("%s Average : %d ms Total : %d ms Call : %d\n"),m_uniqueName.c_str(),m_totalTime/m_cnt,m_totalTime,m_cnt);
+	System::TPrintf(_T("%s Average : %I64d ms Total : %I64d ms Call : %d\n"),m_uniqueName.c_str(),m_totalTime/m_cnt,m_totalTime,m_cnt);
 }
 
 void ProfileManager::ProfileNode::Write(EpFile* const file)
 {
 	EP_ASSERT_EXPR(file,_T("The File Pointer is NULL!"));
-	System::FTPrintf(file,_T("%s Average : %d ms Total : %d ms Call : %d\n"),m_uniqueName.c_str(),m_totalTime/m_cnt,m_totalTime,m_cnt);
+	System::FTPrintf(file,_T("%s Average : %I64d ms Total : %I64d ms Call : %d\n"),m_uniqueName.c_str(),m_totalTime/m_cnt,m_totalTime,m_cnt);
 }
 
 CompResultType ProfileManager::ProfileNode::Compare(const void * a, const void * b)
@@ -216,8 +219,15 @@ void ProfileManager::addProfile(const TCHAR *uniqueName, const EpTime &time)
 		ProfileNode *profile=EP_NEW ProfileNode(uniqueName);
 		profile->m_totalTime=time;
 		profile->m_cnt=1;
-		std::vector<OutputNode*>::iterator iter=m_list.begin()+retIdx;
-		m_list.insert(iter,profile);
+		if(m_list.size() && retIdx!=-1)
+		{
+			std::vector<OutputNode*>::iterator iter=m_list.begin()+retIdx;
+			m_list.insert(iter,profile);
+		}
+		else
+		{
+			m_list.push_back(profile);
+		}
 	}
 }
 

@@ -148,11 +148,11 @@ namespace epl
 
 	private:
 		/// The start time that profiling started
-		EpTime m_startTime;
+		__int64 m_startTime;
 		/// The end time that profiling ended
-		EpTime m_endTime;
+		__int64 m_endTime;
 		/// The last profile time
-		EpTime m_lastProfileTime;
+		__int64 m_lastProfileTime;
 		/// The Profiling Name
 		EpTString m_uniqueName;
 
@@ -331,7 +331,7 @@ namespace epl
 			/// The Quantity of Profiling occurred
 			int m_cnt;
 			/// The Total Profiling Time elapsed.
-			EpTime m_totalTime;
+			__int64 m_totalTime;
 
 		};
 

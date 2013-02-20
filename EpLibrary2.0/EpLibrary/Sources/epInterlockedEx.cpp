@@ -131,7 +131,7 @@ long InterlockedEx::TryLockFor(const unsigned int dwMilliSecond)
 		if(InterlockedExchange(&m_interLock, 1) != 0)
 		{
 			Sleep(0);
-			timeUsed=DateTimeHelper::AbsDiff(DateTimeHelper::GetCurrentDateTime(),startTime);
+			timeUsed=DateTimeHelper::AbsDiffInMilliSec(DateTimeHelper::GetCurrentDateTime(),startTime);
 			waitTime=waitTime-timeUsed;
 			startTime=DateTimeHelper::GetCurrentDateTime();
 		}
