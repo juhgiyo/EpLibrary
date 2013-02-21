@@ -39,6 +39,9 @@ A Frame Interface for Thread Class.
 namespace epl
 {
 
+
+	
+
 	/*! 
 	@class Thread epThread.h
 	@brief A class that implements base thread class operation.
@@ -78,7 +81,9 @@ namespace epl
 			/// Create the thread using _beginthreadex
 			THREAD_TYPE_BEGIN_THREAD=0,
 			/// Create the thead using CreateThread
-			THREAD_TYPE_CREATE_THREAD
+			THREAD_TYPE_CREATE_THREAD,
+			/// Unknown thread type
+			THREAD_TYPE_UNKNOWN
 		};
 
 		/// type definition for Thread ID.
@@ -128,6 +133,23 @@ namespace epl
 		{
 			if(this!=&b)
 			{
+				m_threadFunc=b.m_threadFunc;
+				if(m_threadFunc!=dummyThreadFunc)
+				{
+					resetThread();
+					m_lockPolicy=b.m_lockPolicy;
+					m_threadLock=b.m_threadLock;
+					m_type=b.m_type;
+					m_parentThreadHandle=b.m_parentThreadHandle;
+					m_parentThreadId=b.m_parentThreadId;
+					m_threadHandle=b.m_threadHandle;
+					m_threadId=b.m_threadId;
+					m_status=b.m_status;
+
+					Thread &unSafeB=const_cast<Thread&>(b);
+					unSafeB.Detach();
+					unSafeB.m_threadLock=NULL;
+				}
 			}
 			return *this;
 		}
@@ -268,6 +290,10 @@ namespace epl
 		virtual void onTerminated(unsigned long exitCode,bool isInDeletion=false);
 
 	private:
+		/*!
+		Dummy thread function
+		*/
+		static void dummyThreadFunc();
 	
 		/*!
 		Terminate the thread successfully.
@@ -279,6 +305,11 @@ namespace epl
 		@return the exit code of the current thread.
 		*/
 		int run();
+
+		/*!
+		Reset Thread
+		*/
+		void resetThread();
 
 		/*!
 		Entry point for the thread created with _beginthreadex
