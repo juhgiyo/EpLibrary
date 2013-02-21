@@ -34,10 +34,6 @@ An Interface for NoLock Class.
 #include "epSystem.h"
 #include "epBaseLock.h"
 
-#if _DEBUG
-#include <vector>
-#endif //_DEBUG
-
 namespace epl
 {
 	/*! 

@@ -34,10 +34,6 @@ An Interface for Mutex Class.
 #include "epSystem.h"
 #include "epBaseLock.h"
 
-#if defined(_DEBUG)
-#include <vector>
-#endif //defined(_DEBUG)
-
 namespace epl
 {
 
