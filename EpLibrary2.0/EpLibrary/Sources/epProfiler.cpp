@@ -71,7 +71,7 @@ void Profiler::Start()
 	m_startTime=DateTimeHelper::InMilliSec(DateTimeHelper::GetThreadTotalRunningTime(System::GetCurrentThread()));
 }
 
-EpTime Profiler::Stop()
+unsigned __int64 Profiler::Stop()
 {
 	m_endTime=0;
 	//m_endTime=System::GetTime();
@@ -81,7 +81,7 @@ EpTime Profiler::Stop()
 	return m_lastProfileTime;
 }
 
-EpTime Profiler::GetLastProfileTime()
+unsigned __int64 Profiler::GetLastProfileTime()
 {
 	EP_ASSERT_EXPR(m_lastProfileTime>=0,_T("There is no last profiled time!"));
 	return m_lastProfileTime;
@@ -204,7 +204,7 @@ bool ProfileManager::isProfileExist(const TCHAR *uniqueName,ProfileNode *&retIte
 
 
 
-void ProfileManager::addProfile(const TCHAR *uniqueName, const EpTime &time)
+void ProfileManager::addProfile(const TCHAR *uniqueName, const unsigned __int64 &time)
 {
 	LockObj lock(m_nodeListLock);
 	ProfileNode *existStruct=NULL;

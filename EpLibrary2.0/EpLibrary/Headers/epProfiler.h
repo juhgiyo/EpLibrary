@@ -121,13 +121,13 @@ namespace epl
 		Stop profiling.
 		@return the profiled time in milliseconds
 		*/
-		EpTime Stop();
+		unsigned __int64 Stop();
 
 		/*!
 		Return the last profiled time in milliseconds.
 		@return the last profiled time in milliseconds.
 		*/
-		EpTime GetLastProfileTime();
+		unsigned __int64 GetLastProfileTime();
 
 #if defined(_DEBUG) && defined(EP_ENABLE_PROFILE)
 		/*!
@@ -148,11 +148,11 @@ namespace epl
 
 	private:
 		/// The start time that profiling started
-		__int64 m_startTime;
+		unsigned __int64 m_startTime;
 		/// The end time that profiling ended
-		__int64 m_endTime;
+		unsigned __int64 m_endTime;
 		/// The last profile time
-		__int64 m_lastProfileTime;
+		unsigned __int64 m_lastProfileTime;
 		/// The Profiling Name
 		EpTString m_uniqueName;
 
@@ -331,7 +331,7 @@ namespace epl
 			/// The Quantity of Profiling occurred
 			int m_cnt;
 			/// The Total Profiling Time elapsed.
-			__int64 m_totalTime;
+			unsigned __int64 m_totalTime;
 
 		};
 
@@ -356,7 +356,7 @@ namespace epl
 		@param[in] uniqueName the Name for the profiler.
 		@param[in] time The ellapsed time of the profiling.
 		*/
-		void addProfile(const TCHAR *uniqueName, const EpTime &time);
+		void addProfile(const TCHAR *uniqueName, const unsigned __int64 &time);
 
 	};
 	/// type definition  for profile object
