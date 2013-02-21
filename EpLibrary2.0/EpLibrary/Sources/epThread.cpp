@@ -102,11 +102,8 @@ Thread::Thread(void (__cdecl *threadFunc)(),LockPolicy lockPolicyType)
 }
 Thread::Thread(const Thread & b)
 {
-	m_threadId=0;
-	m_threadHandle=0;
-	m_parentThreadHandle=0;
-	m_parentThreadId=0;
-	m_exitCode=0;
+	m_threadFunc=b.m_threadFunc;
+
 	m_status=THREAD_STATUS_TERMINATED;
 	m_lockPolicy=b.m_lockPolicy;
 	switch(m_lockPolicy)
@@ -123,6 +120,23 @@ Thread::Thread(const Thread & b)
 	default:
 		m_threadLock=NULL;
 		break;
+	}
+	if(m_threadFunc!=dummyThreadFunc)
+	{
+		m_type=THREAD_TYPE_BEGIN_THREAD;
+		m_parentThreadHandle=GetCurrentThread();
+		m_parentThreadId=GetCurrentThreadId();
+		m_threadHandle=reinterpret_cast<ThreadHandle>(_beginthreadex(NULL,0,Thread::entryPoint,this,THREAD_OPCODE_CREATE_START,&m_threadId));
+		if(!m_threadHandle)
+		{
+			EpTString lastErrMsg;
+			unsigned long lastErrNum=0;
+			System::FormatLastErrorMessage(lastErrMsg,&lastErrNum);
+			EP_ASSERT_EXPR(0,_T("Cannot create the thread!\r\nError Code: %d\r\nError Message: %s"),lastErrNum,lastErrMsg);
+			return;
+
+		}
+		m_status=THREAD_STATUS_STARTED;
 	}
 }
 Thread::~Thread()
