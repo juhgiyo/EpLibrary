@@ -115,14 +115,9 @@ namespace epl
 			@param[in] b the second object
 			@return the new copied object
 			*/
-			BaseLockObj &operator=(const BaseLockObj & b)
-			{
-				return *this;
-			}
-
-		private:
-
+			BaseLockObj &operator=(const BaseLockObj & b);
 			
+		private:
 
 			/*!
 			Default Constructor

@@ -58,7 +58,22 @@ namespace epl
 		@param[in] semName name of the semaphore to distinguish
 		@param[in] lpsaAttributes the security attribute
 		*/
-		Semaphore(unsigned int count=1,const TCHAR *semName=_T(""), LPSECURITY_ATTRIBUTES lpsaAttributes = NULL);
+		Semaphore(unsigned int count=1,const TCHAR *semName=NULL, LPSECURITY_ATTRIBUTES lpsaAttributes = NULL);
+
+		/*!
+		Default Constructor
+
+		Initializes the lock.
+		@remark semName must be supplied if the object will be used across process boundaries.
+		@param[in] count lock count
+		@param[in] initialCount The initial count for the semaphore object. 
+		@param[in] semName name of the semaphore to distinguish
+		@param[in] lpsaAttributes the security attribute
+		@remark initialCount must be greater than or equal to zero and less than or equal to lMaximumCount.<br/>
+		          The state of a semaphore is signaled when its count is greater than zero and nonsignaled when it is zero.
+		*/
+		Semaphore(unsigned int count, unsigned int initialCount,const TCHAR *semName=NULL, LPSECURITY_ATTRIBUTES lpsaAttributes = NULL);
+
 
 		/*!
 		Default Copy Constructor
@@ -80,10 +95,7 @@ namespace epl
 		@param[in] b the second object
 		@return the new copied object
 		*/
-		Semaphore & operator=(const Semaphore&b)
-		{
-			return *this;
-		}
+		Semaphore & operator=(const Semaphore&b);
 
 		/*!
 		Locks the Critical Section
@@ -132,11 +144,10 @@ namespace epl
 		LPSECURITY_ATTRIBUTES m_lpsaAttributes;
 		/// Semaphore Flag
 		unsigned int m_count;
-#if defined(_DEBUG)
-		std::vector<int> m_threadList;
-		/// Semaphore Debug	
-		HANDLE m_semDebug;
-#endif //defined(_DEBUG)
+		/// Semaphore Initial Count
+		unsigned int m_initialiCount;
+		/// Semaphore Name
+		EpTString m_name;
 	};
 
 }

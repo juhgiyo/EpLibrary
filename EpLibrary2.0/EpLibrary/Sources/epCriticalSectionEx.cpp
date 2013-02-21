@@ -26,97 +26,39 @@ CriticalSectionEx::CriticalSectionEx() :BaseLock()
 {
 	InitializeCriticalSection(&m_criticalSection);
 	m_lockCounter=0;
-// #if defined(_DEBUG)
-// 	InitializeCriticalSection(&m_criticalSectionDebug);
-// #endif //defined(_DEBUG)
 }
 
 CriticalSectionEx::CriticalSectionEx(const CriticalSectionEx& b):BaseLock()
 {
 	InitializeCriticalSection(&m_criticalSection);
 	m_lockCounter=0;
-// #if defined(_DEBUG)
-// 	InitializeCriticalSection(&m_criticalSectionDebug);
-// #endif //defined(_DEBUG)
 }
 
 CriticalSectionEx::~CriticalSectionEx()
 {
 	EP_ASSERT_EXPR(m_lockCounter==0,_T("Lock Counter is not 0!"));
 	DeleteCriticalSection(&m_criticalSection);
-// #if defined(_DEBUG)
-// 	DeleteCriticalSection(&m_criticalSectionDebug);
-// #endif //defined(_DEBUG)
 }
 
 bool CriticalSectionEx::Lock()
 {
-// #if defined(_DEBUG)
-// 	EnterCriticalSection(&m_criticalSectionDebug);
-// 	std::vector<int>::iterator iter;
-// 	int threadID=GetCurrentThreadId();
-// 	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
-// 	{
-// 		EP_ASSERT_EXPR(*iter!=threadID,_T("Possible Deadlock detected!"));
-// 	}
-// 	LeaveCriticalSection(&m_criticalSectionDebug);
-// #endif //defined(_DEBUG)
 	EnterCriticalSection(&m_criticalSection);
 	m_lockCounter++;
-// #if defined(_DEBUG)
-// 	EnterCriticalSection(&m_criticalSectionDebug);
-// 	m_threadList.push_back(threadID);
-// 	LeaveCriticalSection(&m_criticalSectionDebug);
-// #endif //defined(_DEBUG)
 	return true;
 }
 
 long CriticalSectionEx::TryLock()
 {
-// #if defined(_DEBUG)
-// 	EnterCriticalSection(&m_criticalSectionDebug);
-// 	std::vector<int>::iterator iter;
-// 	int threadID=GetCurrentThreadId();
-// 	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
-// 	{
-// 		EP_ASSERT_EXPR(*iter!=threadID,_T("Possible Deadlock detected!"));
-// 	}
-// 	LeaveCriticalSection(&m_criticalSectionDebug);
-// #endif //defined(_DEBUG)
 	long ret=TryEnterCriticalSection(&m_criticalSection);
 	if(ret)
 		m_lockCounter++;
-// #if defined(_DEBUG)
-// 	if(ret)
-// 	{
-// 		EnterCriticalSection(&m_criticalSectionDebug);
-// 		m_threadList.push_back(threadID);
-// 		LeaveCriticalSection(&m_criticalSectionDebug);
-// 	}
-// 	
-// #endif //defined(_DEBUG)
 	return ret;
 }
 long CriticalSectionEx::TryLockFor(const unsigned int dwMilliSecond)
 {
-// #if defined(_DEBUG)
-// 	EnterCriticalSection(&m_criticalSectionDebug);
-// 	std::vector<int>::iterator iter;
-// 	int threadID=GetCurrentThreadId();
-// 	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
-// 	{
-// 		EP_ASSERT_EXPR(*iter!=threadID,_T("Possible Deadlock detected!"));
-// 	}
-// 	LeaveCriticalSection(&m_criticalSectionDebug);
-// #endif //defined(_DEBUG)
 	long ret=0;
 	if(ret=TryEnterCriticalSection(&m_criticalSection))
 	{
-// #if defined(_DEBUG)
-// 		EnterCriticalSection(&m_criticalSectionDebug);
-// 		m_threadList.push_back(threadID);
-// 		LeaveCriticalSection(&m_criticalSectionDebug);
-// #endif //defined(_DEBUG)
 		m_lockCounter++;
 		return ret;	
 	}
@@ -131,11 +73,6 @@ long CriticalSectionEx::TryLockFor(const unsigned int dwMilliSecond)
 		{
 			if(ret=TryEnterCriticalSection(&m_criticalSection))
 			{
-// #if defined(_DEBUG)
-// 				EnterCriticalSection(&m_criticalSectionDebug);
-// 				m_threadList.push_back(threadID);
-// 				LeaveCriticalSection(&m_criticalSectionDebug);
-// #endif //defined(_DEBUG)
 				m_lockCounter++;
 				return ret;	
 			}		
@@ -148,20 +85,6 @@ long CriticalSectionEx::TryLockFor(const unsigned int dwMilliSecond)
 }
 void CriticalSectionEx::Unlock()
 {
-// #if defined(_DEBUG)
-// 	EnterCriticalSection(&m_criticalSectionDebug);
-// 	std::vector<int>::iterator iter;
-// 	int threadID=GetCurrentThreadId();
-// 	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
-// 	{
-// 		if(*iter==threadID)
-// 		{
-// 			m_threadList.erase(iter);
-// 			break;
-// 		}
-// 	}
-// 	LeaveCriticalSection(&m_criticalSectionDebug);
-// #endif //defined(_DEBUG)
 	m_lockCounter--;
 	EP_ASSERT_EXPR(m_lockCounter>=0,_T("Lock Counter is less than 0!"));
 	LeaveCriticalSection(&m_criticalSection);

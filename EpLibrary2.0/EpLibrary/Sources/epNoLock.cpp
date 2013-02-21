@@ -33,59 +33,18 @@ NoLock::~NoLock()
 
 bool NoLock::Lock()
 {
-// #if _DEBUG
-// 	std::vector<int>::iterator iter;
-// 	int threadID=GetCurrentThreadId();
-// 	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
-// 	{
-// 		EP_ASSERT_EXPR(*iter!=threadID,_T("Possible Deadlock detected!"));
-// 	}
-// #endif //_DEBUG
-// #if _DEBUG
-// 	m_threadList.push_back(threadID);
-// #endif //_DEBUG
 	return true;
 }
 
 long NoLock::TryLock()
 {
-// #if _DEBUG
-// 	std::vector<int>::iterator iter;
-// 	int threadID=GetCurrentThreadId();
-// 	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
-// 	{
-// 		EP_ASSERT_EXPR(*iter!=threadID,_T("Possible Deadlock detected!"));
-// 	}
-// 	m_threadList.push_back(threadID);
-// #endif //_DEBUG
 	return 1;
 }
 long NoLock::TryLockFor(const unsigned int dwMilliSecond)
 {
-// #if _DEBUG
-// 	std::vector<int>::iterator iter;
-// 	int threadID=GetCurrentThreadId();
-// 	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
-// 	{
-// 		EP_ASSERT_EXPR(*iter!=threadID,_T("Possible Deadlock detected!"));
-// 	}
-// 	m_threadList.push_back(threadID);
-// #endif //_DEBUG
 	return 1;	
 }
 void NoLock::Unlock()
 {
-// #if _DEBUG
-// 	std::vector<int>::iterator iter;
-// 	int threadID=GetCurrentThreadId();
-// 	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
-// 	{
-// 		if(*iter==threadID)
-// 		{
-// 			m_threadList.erase(iter);
-// 			break;
-// 		}
-// 	}
-// #endif //_DEBUG
 }
 

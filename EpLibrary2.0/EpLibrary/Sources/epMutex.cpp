@@ -24,20 +24,59 @@ using namespace epl;
 Mutex::Mutex(const TCHAR *mutexName, LPSECURITY_ATTRIBUTES lpsaAttributes) :BaseLock()
 {
 	m_isMutexAbandoned=false;
-	m_lpsaAttributes=lpsaAttributes;
-	m_mutex=CreateMutex(lpsaAttributes,FALSE,mutexName);
+	m_lpsaAttributes=NULL;
+	if(lpsaAttributes)
+	{
+		m_lpsaAttributes=EP_NEW SECURITY_ATTRIBUTES();
+		*m_lpsaAttributes=*lpsaAttributes;
+	}
+	m_isInitialOwner=false;
+	m_name=mutexName;
+	m_mutex=CreateMutex(m_lpsaAttributes,FALSE,mutexName);
 #if defined(_DEBUG)
-	m_mutexDebug=CreateMutex(lpsaAttributes,FALSE,NULL);
+	m_mutexDebug=CreateMutex(m_lpsaAttributes,FALSE,NULL);
+	m_threadID=0;
+#endif //defined(_DEBUG)
+}
+
+Mutex::Mutex(bool isInitialOwner,const TCHAR *mutexName , LPSECURITY_ATTRIBUTES lpsaAttributes) :BaseLock()
+{
+	m_isMutexAbandoned=false;
+	m_lpsaAttributes=NULL;
+	if(lpsaAttributes)
+	{
+		m_lpsaAttributes=EP_NEW SECURITY_ATTRIBUTES();
+		*m_lpsaAttributes=*lpsaAttributes;
+	}
+	m_isInitialOwner=isInitialOwner;
+	m_name=mutexName;
+	m_mutex=CreateMutex(m_lpsaAttributes,(BOOL)isInitialOwner,mutexName);
+#if defined(_DEBUG)
+	m_mutexDebug=CreateMutex(m_lpsaAttributes,FALSE,NULL);
+	m_threadID=GetCurrentThreadId();
 #endif //defined(_DEBUG)
 }
 
 Mutex::Mutex(const Mutex& b)
 {
 	m_isMutexAbandoned=false;
-	m_lpsaAttributes=b.m_lpsaAttributes;
-	m_mutex=CreateMutex(m_lpsaAttributes,FALSE,NULL);
+	m_lpsaAttributes=NULL;
+	if(b.m_lpsaAttributes)
+	{
+		m_lpsaAttributes=EP_NEW SECURITY_ATTRIBUTES();
+		*m_lpsaAttributes=*b.m_lpsaAttributes;
+	}
+	m_isInitialOwner=b.m_isInitialOwner;
+	m_name=b.m_name;
+	if(m_name.size())
+		m_mutex=CreateMutex(m_lpsaAttributes,(BOOL)m_isInitialOwner,m_name.c_str());
+	else
+		m_mutex=CreateMutex(m_lpsaAttributes,(BOOL)m_isInitialOwner,NULL);
 #if defined(_DEBUG)
 	m_mutexDebug=CreateMutex(m_lpsaAttributes,FALSE,NULL);
+	m_threadID=0;
+	if(m_isInitialOwner)
+		m_threadID=GetCurrentThreadId();
 #endif //defined(_DEBUG)
 }
 
@@ -45,11 +84,47 @@ Mutex::~Mutex()
 {
 
 	CloseHandle(m_mutex);
+	if(m_lpsaAttributes)
+	{
+		EP_DELETE m_lpsaAttributes;
+		m_lpsaAttributes=NULL;
+	}
 #if defined(_DEBUG)
 	CloseHandle(m_mutexDebug);
 #endif //defined(_DEBUG)
 }
 
+Mutex & Mutex::operator=(const Mutex&b)
+{
+	if(this != &b)
+	{
+		CloseHandle(m_mutex);
+		if(m_lpsaAttributes)
+		{
+			EP_DELETE m_lpsaAttributes;
+			m_lpsaAttributes=NULL;
+		}
+
+		if(b.m_lpsaAttributes)
+		{
+			m_lpsaAttributes=EP_NEW SECURITY_ATTRIBUTES();
+			*m_lpsaAttributes=*b.m_lpsaAttributes;
+		}
+		m_isMutexAbandoned=false;
+		m_isInitialOwner=b.m_isInitialOwner;
+		m_name=b.m_name;
+		if(m_name.size())
+			m_mutex=CreateMutex(m_lpsaAttributes,(BOOL)m_isInitialOwner,m_name.c_str());
+		else
+			m_mutex=CreateMutex(m_lpsaAttributes,(BOOL)m_isInitialOwner,NULL);
+#if defined(_DEBUG)
+		m_threadID=0;
+		if(m_isInitialOwner)
+			m_threadID=GetCurrentThreadId();
+#endif //defined(_DEBUG)
+	}
+	return *this;
+}
 bool Mutex::Lock()
 {
 
@@ -57,12 +132,8 @@ bool Mutex::Lock()
 	unsigned long resDebug=System::WaitForSingleObject(m_mutexDebug,WAITTIME_INIFINITE);
 	EP_ASSERT_EXPR(resDebug!=WAIT_ABANDONED,_T("Obtained abandoned Debug Mutex."));
 	
-	std::vector<int>::iterator iter;
-	int threadID=GetCurrentThreadId();
-	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
-	{
-		EP_ASSERT_EXPR(*iter!=threadID,_T("Possible Deadlock detected!"));
-	}
+	unsigned long threadID=GetCurrentThreadId();
+	EP_ASSERT_EXPR(threadID!=m_threadID,_T("Possible Deadlock detected!"));
 #endif //_DEBUG
 
 	bool returnVal=true;
@@ -74,7 +145,7 @@ bool Mutex::Lock()
 	}
 
 #if defined(_DEBUG)
-	m_threadList.push_back(threadID);
+	m_threadID=threadID;
 	ReleaseMutex(m_mutexDebug);
 #endif //defined(_DEBUG)
 	return returnVal;
@@ -85,12 +156,9 @@ long Mutex::TryLock()
 #if defined(_DEBUG)
 	unsigned long resDebug=System::WaitForSingleObject(m_mutexDebug,WAITTIME_INIFINITE);
 	EP_ASSERT_EXPR(resDebug!=WAIT_ABANDONED,_T("Obtained abandoned Debug Mutex."));
-	std::vector<int>::iterator iter;
-	int threadID=GetCurrentThreadId();
-	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
-	{
-		EP_ASSERT_EXPR(*iter!=threadID,_T("Possible Deadlock detected!"));
-	}
+
+	unsigned long threadID=GetCurrentThreadId();
+	EP_ASSERT_EXPR(threadID!=m_threadID,_T("Possible Deadlock detected!"));
 	ReleaseMutex(m_mutexDebug);
 #endif //defined(_DEBUG)
 	long ret=0;
@@ -104,7 +172,7 @@ long Mutex::TryLock()
 	{
 		unsigned long resDebug=System::WaitForSingleObject(m_mutexDebug,WAITTIME_INIFINITE);
 		EP_ASSERT_EXPR(resDebug!=WAIT_ABANDONED,_T("Obtained abandoned Debug Mutex."));
-		m_threadList.push_back(threadID);
+		m_threadID=threadID;
 		ReleaseMutex(m_mutexDebug);
 	}
 #endif //defined(_DEBUG)
@@ -117,12 +185,9 @@ long Mutex::TryLockFor(const unsigned int dwMilliSecond)
 #if defined(_DEBUG)
 	unsigned long resDebug=System::WaitForSingleObject(m_mutexDebug,WAITTIME_INIFINITE);
 	EP_ASSERT_EXPR(resDebug!=WAIT_ABANDONED,_T("Obtained abandoned Debug Mutex."));
-	std::vector<int>::iterator iter;
-	int threadID=GetCurrentThreadId();
-	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
-	{
-		EP_ASSERT_EXPR(*iter!=threadID,_T("Possible Deadlock detected!"));
-	}
+	
+	unsigned long threadID=GetCurrentThreadId();
+	EP_ASSERT_EXPR(threadID!=m_threadID,_T("Possible Deadlock detected!"));
 	ReleaseMutex(m_mutexDebug);
 #endif //defined(_DEBUG)
 	long ret=0;
@@ -136,7 +201,7 @@ long Mutex::TryLockFor(const unsigned int dwMilliSecond)
 	{
 		unsigned long resDebug=System::WaitForSingleObject(m_mutexDebug,WAITTIME_INIFINITE);
 		EP_ASSERT_EXPR(resDebug!=WAIT_ABANDONED,_T("Obtained abandoned Debug Mutex."));
-		m_threadList.push_back(threadID);
+		m_threadID=threadID;
 		ReleaseMutex(m_mutexDebug);
 	}
 #endif //_DEBUG
@@ -148,16 +213,7 @@ void Mutex::Unlock()
 #if _DEBUG
 	unsigned long resDebug=System::WaitForSingleObject(m_mutexDebug,WAITTIME_INIFINITE);
 	EP_ASSERT_EXPR(resDebug!=WAIT_ABANDONED,_T("Obtained abandoned Debug Mutex."));
-	std::vector<int>::iterator iter;
-	int threadID=GetCurrentThreadId();
-	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
-	{
-		if(*iter==threadID)
-		{
-			m_threadList.erase(iter);
-			break;
-		}
-	}
+	m_threadID=0;
 	ReleaseMutex(m_mutexDebug);
 #endif //_DEBUG
 	ReleaseMutex(m_mutex);

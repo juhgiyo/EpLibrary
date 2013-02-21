@@ -23,140 +23,113 @@ using namespace epl;
 
 Semaphore::Semaphore(unsigned int count,const TCHAR *semName, LPSECURITY_ATTRIBUTES lpsaAttributes) :BaseLock()
 {
-	m_lpsaAttributes=lpsaAttributes;
+	m_lpsaAttributes=NULL;
+	if(lpsaAttributes)
+	{
+		m_lpsaAttributes=EP_NEW SECURITY_ATTRIBUTES();
+		*m_lpsaAttributes=*lpsaAttributes;
+	}
 	m_count=count;
-	m_sem=CreateSemaphore(lpsaAttributes,count,count,semName);
-#if defined(_DEBUG)
-	m_semDebug=CreateSemaphore(lpsaAttributes,1,1,NULL);
-#endif //defined(_DEBUG)
+	m_initialiCount=count;
+	m_name=semName;
+	m_sem=CreateSemaphore(m_lpsaAttributes,m_initialiCount,count,semName);
 }
+
+Semaphore::Semaphore(unsigned int count, unsigned int initialCount,const TCHAR *semName, LPSECURITY_ATTRIBUTES lpsaAttributes) :BaseLock()
+{
+	m_lpsaAttributes=NULL;
+	if(lpsaAttributes)
+	{
+		m_lpsaAttributes=EP_NEW SECURITY_ATTRIBUTES();
+		*m_lpsaAttributes=*lpsaAttributes;
+	}
+	m_count=count;
+	m_initialiCount=initialCount;
+	m_name=semName;
+	m_sem=CreateSemaphore(m_lpsaAttributes,initialCount,count,semName);
+}
+
 Semaphore::Semaphore(const Semaphore& b) :BaseLock()
 {
-	m_lpsaAttributes=b.m_lpsaAttributes;
+	m_lpsaAttributes=NULL;
+	if(b.m_lpsaAttributes)
+	{
+		m_lpsaAttributes=EP_NEW SECURITY_ATTRIBUTES();
+		*m_lpsaAttributes=*b.m_lpsaAttributes;
+	}
+	m_initialiCount=b.m_initialiCount;
 	m_count=b.m_count;
-	m_sem=CreateSemaphore(m_lpsaAttributes,m_count,m_count,NULL);
-#if defined(_DEBUG)
-	m_semDebug=CreateSemaphore(m_lpsaAttributes,1,1,NULL);
-#endif //defined(_DEBUG)
+	m_name=b.m_name;
+	if(m_name.size())
+		m_sem=CreateSemaphore(m_lpsaAttributes,m_initialiCount,m_count,m_name.c_str());
+	else
+		m_sem=CreateSemaphore(m_lpsaAttributes,m_initialiCount,m_count,NULL);
 }
+
+Semaphore & Semaphore::operator=(const Semaphore&b)
+{
+	if(this!=&b)
+	{
+		CloseHandle(m_sem);
+		if(m_lpsaAttributes)
+		{
+			EP_DELETE m_lpsaAttributes;
+			m_lpsaAttributes=NULL;
+		}
+
+		if(b.m_lpsaAttributes)
+		{
+			m_lpsaAttributes=EP_NEW SECURITY_ATTRIBUTES();
+			*m_lpsaAttributes=*b.m_lpsaAttributes;
+		}
+		m_initialiCount=b.m_initialiCount;
+		m_count=b.m_count;
+		m_name=b.m_name;
+		if(m_name.size())
+			m_sem=CreateSemaphore(m_lpsaAttributes,m_initialiCount,m_count,m_name.c_str());
+		else
+			m_sem=CreateSemaphore(m_lpsaAttributes,m_initialiCount,m_count,NULL);
+	}
+	return *this;
+}
+
 Semaphore::~Semaphore()
 {
 	CloseHandle(m_sem);
-#if defined(_DEBUG)
-	CloseHandle(m_semDebug);
-#endif //defined(_DEBUG)
+	if(m_lpsaAttributes)
+	{
+		EP_DELETE m_lpsaAttributes;
+		m_lpsaAttributes=NULL;
+	}
 }
 
 bool Semaphore::Lock()
 {
-#if _DEBUG
-	System::WaitForSingleObject(m_semDebug,WAITTIME_INIFINITE);
-	std::vector<int>::iterator iter;
-	int threadID=GetCurrentThreadId();
-	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
-	{
-		EP_ASSERT_EXPR(*iter!=threadID,_T("Possible Deadlock detected!"));
-	}
-	ReleaseSemaphore(m_semDebug,1,NULL);
-#endif //_DEBUG
 	System::WaitForSingleObject(m_sem,WAITTIME_INIFINITE);
-#if defined(_DEBUG)
-	System::WaitForSingleObject(m_semDebug,WAITTIME_INIFINITE);
-	m_threadList.push_back(threadID);
-	ReleaseSemaphore(m_semDebug,1,NULL);
-#endif //defined(_DEBUG)
 	return true;
 }
 
 long Semaphore::TryLock()
 {
-#if defined(_DEBUG)
-	System::WaitForSingleObject(m_semDebug,WAITTIME_INIFINITE);
-	std::vector<int>::iterator iter;
-	int threadID=GetCurrentThreadId();
-	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
-	{
-		EP_ASSERT_EXPR(*iter!=threadID,_T("Possible Deadlock detected!"));
-	}
-	ReleaseSemaphore(m_semDebug,1,NULL);
-#endif //defined(_DEBUG)
 	long ret=0;
 	if(System::WaitForSingleObject(m_sem,WAITTIME_IGNORE) == WAIT_OBJECT_0 )
 		ret=1;
-#if defined(_DEBUG)
-	if(ret)
-	{
-		System::WaitForSingleObject(m_semDebug,WAITTIME_INIFINITE);
-		m_threadList.push_back(threadID);
-		ReleaseSemaphore(m_semDebug,1,NULL);
-	}
-#endif //defined(_DEBUG)
 	return ret;
 }
 long Semaphore::TryLockFor(const unsigned int dwMilliSecond)
 {
-#if defined(_DEBUG)
-	System::WaitForSingleObject(m_semDebug,WAITTIME_INIFINITE);
-	std::vector<int>::iterator iter;
-	int threadID=GetCurrentThreadId();
-	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
-	{
-		EP_ASSERT_EXPR(*iter!=threadID,_T("Possible Deadlock detected!"));
-	}
-	ReleaseSemaphore(m_semDebug,1,NULL);
-#endif //defined(_DEBUG)
 	long ret=0;
 	if( System::WaitForSingleObject(m_sem,dwMilliSecond) == WAIT_OBJECT_0)
 		ret=1;
-#if _DEBUG
-	if(ret)
-	{
-		System::WaitForSingleObject(m_semDebug,WAITTIME_INIFINITE);
-		m_threadList.push_back(threadID);
-		ReleaseSemaphore(m_semDebug,1,NULL);
-	}
-#endif //_DEBUG
 	return ret;
 }
 void Semaphore::Unlock()
 {
-#if defined(_DEBUG)
-	System::WaitForSingleObject(m_semDebug,WAITTIME_INIFINITE);
-	std::vector<int>::iterator iter;
-	int threadID=GetCurrentThreadId();
-	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
-	{
-		if(*iter==threadID)
-		{
-			m_threadList.erase(iter);
-			break;
-		}
-	}
-	ReleaseSemaphore(m_semDebug,1,NULL);
-#endif //_DEBUG
 	ReleaseSemaphore(m_sem,1,NULL);
 }
 
 long Semaphore::Release(long count, long * retPreviousCount)
 {
-#if defined(_DEBUG)
-	long debugCount=count;
-	System::WaitForSingleObject(m_semDebug,WAITTIME_INIFINITE);
-	std::vector<int>::iterator iter;
-	int threadID=GetCurrentThreadId();
-	for(iter=m_threadList.begin();iter!=m_threadList.end();iter++)
-	{
-		if(*iter==threadID)
-		{
-			m_threadList.erase(iter);
-			debugCount--;
-			break;
-		}
-	}
-	if(debugCount>=m_threadList.size())
-		m_threadList.clear();
-	ReleaseSemaphore(m_semDebug,1,NULL);
-#endif //_DEBUG
 	return ReleaseSemaphore(m_sem,count,retPreviousCount);
 }
 

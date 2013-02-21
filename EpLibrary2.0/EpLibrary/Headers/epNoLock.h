@@ -107,10 +107,6 @@ namespace epl
 		*/
 		virtual void Unlock();
 
-	private:
-// #if _DEBUG
-// 		std::vector<int> m_threadList;
-// #endif //_DEBUG
 	};
 
 }

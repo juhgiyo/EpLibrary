@@ -116,7 +116,7 @@ namespace epl
 		/// Actual Semaphore		
 		volatile long m_interLock;
 #if defined(_DEBUG)
-		std::vector<int> m_threadList;
+		unsigned long m_threadID;
 		/// Semaphore Debug	
 		volatile long m_interLockDebug;
 #endif //defined(_DEBUG)

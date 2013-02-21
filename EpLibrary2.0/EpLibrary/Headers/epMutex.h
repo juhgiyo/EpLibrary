@@ -59,6 +59,18 @@ namespace epl
 		Mutex(const TCHAR *mutexName=NULL, LPSECURITY_ATTRIBUTES lpsaAttributes = NULL);
 
 		/*!
+		Default Constructor
+
+		Initializes the lock.
+		@param[in] isInitialOwner flag to own the mutex on creation
+		@param[in] mutexName name of the semaphore to distinguish
+		@param[in] lpsaAttributes the security attribute
+		@remark mutexName must be supplied if the object will be used across process boundaries.
+		@remark if isInitialOwner is TRUE then the mutex is created as locked.
+		*/
+		Mutex(bool isInitialOwner,const TCHAR *mutexName=NULL , LPSECURITY_ATTRIBUTES lpsaAttributes=NULL);
+
+		/*!
 		Default Copy Constructor
 
 		Initializes the Mutex
@@ -78,10 +90,7 @@ namespace epl
 		@param[in] b the second object
 		@return the new copied object
 		*/
-		Mutex & operator=(const Mutex&b)
-		{
-			return *this;
-		}
+		Mutex & operator=(const Mutex&b);
 
 
 		/*!
@@ -127,11 +136,15 @@ namespace epl
 		HANDLE m_mutex;
 		/// Creation Security Info
 		LPSECURITY_ATTRIBUTES m_lpsaAttributes;
+		/// Flag for whether the mutex is locked on creation
+		bool m_isInitialOwner;
 		/// Flag for whether the mutex is abandoned or not.
 		bool m_isMutexAbandoned;
+		/// Mutex Name
+		EpTString m_name;
 
 #if defined(_DEBUG)
-		std::vector<int> m_threadList;
+		unsigned long m_threadID;
 		/// Mutex Debug
 		HANDLE m_mutexDebug;
 #endif //defined(_DEBUG)

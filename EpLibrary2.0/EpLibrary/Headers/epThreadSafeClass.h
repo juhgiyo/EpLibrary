@@ -205,6 +205,18 @@ namespace epl
 			*/
 			ThreadSafeObj & operator=(const ThreadSafeObj&b)
 			{
+				if(this!=&b)
+				{
+					if(m_lockPtr)
+					{
+						m_lockPtr->Unlock();
+						m_lockPtr=NULL;
+					}
+					m_lockPtr=b.m_lockPtr;
+					ThreadSafeObj& unSafeB=const_cast<ThreadSafeObj&>(b);
+					unSafeB.m_lockPtr=NULL;
+
+				}
 				return *this;
 			}
 		private:

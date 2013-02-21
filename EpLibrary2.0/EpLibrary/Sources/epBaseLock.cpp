@@ -45,7 +45,21 @@ BaseLock::BaseLockObj::~BaseLockObj()
 		m_lock->Unlock();
 	}
 }
-
+BaseLock::BaseLockObj &BaseLock::BaseLockObj::operator=(const BaseLockObj & b)
+{
+	if(this!=&b)
+	{
+		if(m_lock)
+		{
+			m_lock->Unlock();
+			m_lock=NULL;
+		}
+		m_lock=b.m_lock;
+		BaseLockObj &unSafeB=const_cast<BaseLockObj&>(b);
+		unSafeB.m_lock=NULL;
+	}
+	return *this;
+}
 BaseLock::BaseLockObj::BaseLockObj()
 {
 	m_lock=NULL;
