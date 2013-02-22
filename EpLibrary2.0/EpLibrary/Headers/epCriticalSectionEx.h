@@ -70,10 +70,8 @@ namespace epl
 		@param[in] b the second object
 		@return the new copied object
 		*/
-		CriticalSectionEx & operator=(const CriticalSectionEx&b)
-		{
-			return *this;
-		}
+		CriticalSectionEx & operator=(const CriticalSectionEx&b);
+		
 
 		/*!
 		Locks the Critical Section

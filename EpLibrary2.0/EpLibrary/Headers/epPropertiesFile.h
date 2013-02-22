@@ -74,7 +74,8 @@ namespace epl{
 			if(this!=&b)
 			{
 				BaseTextFile::operator =(b);
-				LockObj lock(m_baseTextLock);
+				m_nullString=_T("");
+				LockObj lock(b.m_baseTextLock);
 				m_propertyList=b.m_propertyList;
 				
 			}

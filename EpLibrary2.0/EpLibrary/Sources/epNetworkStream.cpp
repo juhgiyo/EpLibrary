@@ -36,7 +36,7 @@ NetworkStream & NetworkStream::operator=(const NetworkStream&b)
 	if(this!=&b)
 	{
 		Stream::operator =(b);
-		LockObj lock(m_streamLock);
+		LockObj lock(b.m_streamLock);
 		m_flushType=b.m_flushType;
 		m_readOffset=b.m_readOffset;
 		

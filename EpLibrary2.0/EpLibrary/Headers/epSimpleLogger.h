@@ -98,14 +98,8 @@ namespace epl
 		@param[in] b the second object
 		@return the new copied object
 		*/
-		SimpleLogManager & operator=(const SimpleLogManager&b)
-		{
-			if(this!=&b)
-			{
-				BaseOutputter::operator =(b);
-			}
-			return *this;
-		}
+		SimpleLogManager & operator=(const SimpleLogManager&b);
+		
 		
 	private:
 		/*! 

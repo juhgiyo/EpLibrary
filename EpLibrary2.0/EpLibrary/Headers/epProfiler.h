@@ -226,14 +226,8 @@ namespace epl
 		@param[in] b the second object
 		@return the new copied object
 		*/
-		ProfileManager & operator=(const ProfileManager&b)
-		{
-			if(this!=&b)
-			{
-				BaseOutputter::operator =(b);
-			}
-			return *this;
-		}
+		ProfileManager & operator=(const ProfileManager&b);
+		
 
 		/*!
 		Write the all data to the file.

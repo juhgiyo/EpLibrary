@@ -84,10 +84,25 @@ SimpleLogManager::SimpleLogManager(LockPolicy lockPolicyType):BaseOutputter(lock
 	m_fileName.append(_T("simplelog.dat"));
 }
 SimpleLogManager::SimpleLogManager(const SimpleLogManager& b):BaseOutputter(b)
-{}
+{
+	LockObj lock(b.m_nodeListLock);
+	m_fileName=b.m_fileName;
+}
 SimpleLogManager::~SimpleLogManager()
 {	
 	FlushToFile();
+}
+SimpleLogManager & SimpleLogManager::operator=(const SimpleLogManager&b)
+{
+	if(this!=&b)
+	{
+		FlushToFile();
+
+		BaseOutputter::operator =(b);
+		LockObj lock(b.m_nodeListLock);
+		m_fileName=b.m_fileName;
+	}
+	return *this;
 }
 
 

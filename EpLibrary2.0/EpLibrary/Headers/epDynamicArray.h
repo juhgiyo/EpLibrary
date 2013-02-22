@@ -238,14 +238,6 @@ namespace epl
 	DynamicArray<DataType>::DynamicArray(const DynamicArray<DataType> &dArr)
 	{
 		m_lockPolicy=dArr.m_lockPolicy;
-		m_actualSize=dArr.m_actualSize;
-		m_numOfElements=dArr.m_numOfElements;
-		if(m_actualSize)
-			m_head=reinterpret_cast<DataType*>(EP_Malloc(sizeof(DataType)*m_actualSize));
-		else
-			m_head=NULL;
-		EP_ASSERT(m_head);
-		System::Memcpy(m_head,sizeof(DataType)*m_actualSize,dArr.m_head,sizeof(DataType)*m_actualSize);
 		switch(m_lockPolicy)
 		{
 		case LOCK_POLICY_CRITICALSECTION:
@@ -261,6 +253,15 @@ namespace epl
 			m_arrayLock=NULL;
 			break;
 		}
+		LockObj lock(dArr.m_arrayLock);
+		m_actualSize=dArr.m_actualSize;
+		m_numOfElements=dArr.m_numOfElements;
+		if(m_actualSize)
+			m_head=reinterpret_cast<DataType*>(EP_Malloc(sizeof(DataType)*m_actualSize));
+		else
+			m_head=NULL;
+		EP_ASSERT(m_head);
+		System::Memcpy(m_head,sizeof(DataType)*m_actualSize,dArr.m_head,sizeof(DataType)*m_actualSize);
 	}
 
 	template <typename DataType>
@@ -399,13 +400,42 @@ namespace epl
 	{
 		if(this != &b)
 		{
-			LockObj lock(m_arrayLock);
-			deleteArr();
-			m_actualSize=b.m_numOfElements;
-			m_numOfElements=b.m_numOfElements;
-			resize(m_actualSize);
-			if(m_head&&b.m_head && b.m_actualSize)
-				System::Memcpy(m_head,b.m_numOfElements*sizeof(DataType),b.m_head,b.m_numOfElements*sizeof(DataType));
+			m_arrayLock->Lock();
+			if(m_head)
+				EP_Free(m_head);
+			m_head=NULL;
+			m_arrayLock->Unlock();
+			if(m_arrayLock)
+				EP_DELETE m_arrayLock;
+			m_arrayLock=NULL;
+
+		
+			m_lockPolicy=dArr.m_lockPolicy;
+			switch(m_lockPolicy)
+			{
+			case LOCK_POLICY_CRITICALSECTION:
+				m_arrayLock=EP_NEW CriticalSectionEx();
+				break;
+			case LOCK_POLICY_MUTEX:
+				m_arrayLock=EP_NEW Mutex();
+				break;
+			case LOCK_POLICY_NONE:
+				m_arrayLock=EP_NEW NoLock();
+				break;
+			default:
+				m_arrayLock=NULL;
+				break;
+			}
+			LockObj lock(dArr.m_arrayLock);
+			m_actualSize=dArr.m_actualSize;
+			m_numOfElements=dArr.m_numOfElements;
+			if(m_actualSize)
+				m_head=reinterpret_cast<DataType*>(EP_Malloc(sizeof(DataType)*m_actualSize));
+			else
+				m_head=NULL;
+			EP_ASSERT(m_head);
+			System::Memcpy(m_head,sizeof(DataType)*m_actualSize,dArr.m_head,sizeof(DataType)*m_actualSize);
+
 
 		}
 		return *this;

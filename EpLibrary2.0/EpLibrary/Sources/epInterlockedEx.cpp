@@ -42,6 +42,11 @@ InterlockedEx::~InterlockedEx()
 {
 }
 
+InterlockedEx & InterlockedEx::operator=(const InterlockedEx&b)
+{
+	return *this;
+}
+
 bool InterlockedEx::Lock()
 {
 #if defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)

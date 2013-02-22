@@ -169,11 +169,26 @@ ProfileManager::ProfileManager(LockPolicy lockPolicyType):BaseOutputter(lockPoli
 }
 ProfileManager::ProfileManager(const ProfileManager& b):BaseOutputter(b)
 {
+	LockObj lock(b.m_nodeListLock);
+	m_fileName=b.m_fileName;
 }
 
 ProfileManager::~ProfileManager()
 {
 	FlushToFile();
+}
+ProfileManager & ProfileManager::operator=(const ProfileManager&b)
+{
+	if(this!=&b)
+	{
+		FlushToFile();
+
+		BaseOutputter::operator =(b);
+		LockObj lock(b.m_nodeListLock);
+		m_fileName=b.m_fileName;
+
+	}
+	return *this;
 }
 bool ProfileManager::isProfileExist(const TCHAR *uniqueName,ProfileNode *&retIter, int &retIdx )
 {

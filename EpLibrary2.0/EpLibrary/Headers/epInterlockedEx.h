@@ -72,10 +72,7 @@ namespace epl
 		@param[in] b the second object
 		@return the new copied object
 		*/
-		InterlockedEx & operator=(const InterlockedEx&b)
-		{
-			return *this;
-		}
+		InterlockedEx & operator=(const InterlockedEx&b);
 
 		/*!
 		Locks the Critical Section

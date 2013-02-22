@@ -546,11 +546,6 @@ namespace epl
 	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
 	PatriciaTrie<CharacterType,DataType,Terminator,CharCompareFunc>::PatriciaTrie(const PatriciaTrie & b)
 	{
-		m_totalCount=b.m_totalCount;
-		m_root=EP_NEW PatriciaTrieNode(Terminator);
-		*m_root=*(b.m_root);
-		m_mode=b.m_mode;
-		m_terminator=b.m_terminator;
 		m_lockPolicy=b.m_lockPolicy;
 		switch(m_lockPolicy)
 		{
@@ -567,6 +562,13 @@ namespace epl
 			m_trieLock=NULL;
 			break;
 		}
+		m_root=EP_NEW PatriciaTrieNode(Terminator);
+		LockObj lock(b.m_trieLock);
+		m_totalCount=b.m_totalCount;
+		*m_root=*(b.m_root);
+		m_mode=b.m_mode;
+		m_terminator=b.m_terminator;
+	
 
 	}
 
@@ -586,13 +588,37 @@ namespace epl
 	{
 		if(this!=&b)
 		{
-			LockObj lock(m_trieLock);
-			m_totalCount=b.m_totalCount;
-			m_mode=b.m_mode;
+			m_trieLock->Lock();
 			if(m_root)
 				EP_DELETE m_root;
+			m_root=NULL;
+			m_trieLock->Unlock();
+			if(m_trieLock)
+				EP_DELETE m_trieLock;
+			m_trieLock=NULL;
+
+
+			m_lockPolicy=b.m_lockPolicy;
+			switch(m_lockPolicy)
+			{
+			case LOCK_POLICY_CRITICALSECTION:
+				m_trieLock=EP_NEW CriticalSectionEx();
+				break;
+			case LOCK_POLICY_MUTEX:
+				m_trieLock=EP_NEW Mutex();
+				break;
+			case LOCK_POLICY_NONE:
+				m_trieLock=EP_NEW NoLock();
+				break;
+			default:
+				m_trieLock=NULL;
+				break;
+			}
 			m_root=EP_NEW PatriciaTrieNode(Terminator);
+			LockObj lock(b.m_trieLock);
+			m_totalCount=b.m_totalCount;
 			*m_root=*(b.m_root);
+			m_mode=b.m_mode;
 			m_terminator=b.m_terminator;
 		}
 		return *this;

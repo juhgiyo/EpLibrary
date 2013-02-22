@@ -70,11 +70,8 @@ namespace epl
 		@param[in] b the second object
 		@return the new copied object
 		*/
-		NoLock & operator=(const NoLock&b)
-		{
-			return *this;
-		}
-
+		NoLock & operator=(const NoLock&b);
+		
 		/*!
 		Locks the NoLock
 		@return true if locked, false otherwise

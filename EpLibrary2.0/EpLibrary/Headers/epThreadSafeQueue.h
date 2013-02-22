@@ -133,6 +133,8 @@ namespace epl
 		*/
 		void Clear();
 
+		std::vector<DataType> GetQueue() const;
+
 	protected:
 		/// Actual queue structure
 		std::vector<DataType> m_queue;
@@ -169,7 +171,7 @@ namespace epl
 	template <typename DataType>
 	ThreadSafeQueue<DataType>::ThreadSafeQueue(const ThreadSafeQueue& b)
 	{
-		m_queue=b.m_queue;
+		m_queue=b.GetQueue();
 		m_lockPolicy=b.m_lockPolicy;
 		switch(m_lockPolicy)
 		{
@@ -199,8 +201,16 @@ namespace epl
 	}
 
 	template <typename DataType>
+	std::vector<DataType> ThreadSafeQueue<DataType>::GetQueue() const
+	{
+		LockObj lock(m_queueLock);
+		return m_queue;
+	}
+
+	template <typename DataType>
 	bool ThreadSafeQueue<DataType>::IsEmpty() const
 	{
+		LockObj lock(m_queueLock);
 		return m_queue.empty();
 	}
 	
@@ -232,6 +242,7 @@ namespace epl
 	template <typename DataType>
 	int ThreadSafeQueue<DataType>::Size() const
 	{
+		LockObj lock(m_queueLock);
 		return m_queue.size();
 	}
 
@@ -296,8 +307,28 @@ namespace epl
 	{
 		if(this != &b)
 		{
-			LockObj lock(m_queueLock);
-			m_queue=b.m_queue;
+			if(m_queueLock)
+			{
+				EP_DELETE m_queueLock;
+				m_queueLock=NULL;
+			}
+			m_lockPolicy=b.m_lockPolicy;
+			switch(m_lockPolicy)
+			{
+			case LOCK_POLICY_CRITICALSECTION:
+				m_queueLock=EP_NEW CriticalSectionEx();
+				break;
+			case LOCK_POLICY_MUTEX:
+				m_queueLock=EP_NEW Mutex();
+				break;
+			case LOCK_POLICY_NONE:
+				m_queueLock=EP_NEW NoLock();
+				break;
+			default:
+				m_queueLock=NULL;
+				break;
+			}
+			m_queue=b.GetQueue();
 		}
 		return *this;
 	}

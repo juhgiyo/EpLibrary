@@ -326,16 +326,6 @@ namespace epl
 	{
 		EP_ASSERT_EXPR(k>0,_T("Template Declaration Error: k cannnot be less than/equal to 0"));
 		m_lockPolicy=b.m_lockPolicy;
-		m_mode=b.m_mode;
-		m_heap.Resize(b.m_heap.Size());
-		for(int trav=0;trav<b.m_heap.Size();trav++)
-		{
-			m_heap[trav]=EP_NEW Pair<KeyType,DataType>();
-			m_heap[trav]->first=b.m_heap[trav]->first;
-			m_heap[trav]->second=b.m_heap[trav]->second;
-
-		}
-		m_heapSize=b.m_heapSize;
 		switch(m_lockPolicy)
 		{
 		case LOCK_POLICY_CRITICALSECTION:
@@ -351,6 +341,18 @@ namespace epl
 			m_heapLock=NULL;
 			break;
 		}
+		LockObj lock(b.m_heapLock);
+		m_mode=b.m_mode;
+		m_heap.Resize(b.m_heap.Size());
+		for(int trav=0;trav<b.m_heap.Size();trav++)
+		{
+			m_heap[trav]=EP_NEW Pair<KeyType,DataType>();
+			m_heap[trav]->first=b.m_heap[trav]->first;
+			m_heap[trav]->second=b.m_heap[trav]->second;
+
+		}
+		m_heapSize=b.m_heapSize;
+	
 
 	}
 
@@ -376,10 +378,40 @@ namespace epl
 	{
 		if(this!=&b)
 		{
-			Clear();
-			LockObj lock(m_heapLock);
+			m_heapLock->Lock();
+			for(int trav=0;trav<m_heapSize;trav++)
+			{
+				if(m_heap[trav])	
+					EP_DELETE m_heap[trav];
+
+			}
+			m_heap.Delete();
+			m_heapLock->Unlock();
+			if(m_heapLock)
+				EP_DELETE m_heapLock;
+			m_heapLock=NULL;
+
+			EP_ASSERT_EXPR(k>0,_T("Template Declaration Error: k cannnot be less than/equal to 0"));
+			m_lockPolicy=b.m_lockPolicy;
+			switch(m_lockPolicy)
+			{
+			case LOCK_POLICY_CRITICALSECTION:
+				m_heapLock=EP_NEW CriticalSectionEx();
+				break;
+			case LOCK_POLICY_MUTEX:
+				m_heapLock=EP_NEW Mutex();
+				break;
+			case LOCK_POLICY_NONE:
+				m_heapLock=EP_NEW NoLock();
+				break;
+			default:
+				m_heapLock=NULL;
+				break;
+			}
+			LockObj lock(b.m_heapLock);
+			m_mode=b.m_mode;
 			m_heap.Resize(b.m_heap.Size());
-			for(unsigned int trav=0;trav<b.m_heap.Size();trav++)
+			for(int trav=0;trav<b.m_heap.Size();trav++)
 			{
 				m_heap[trav]=EP_NEW Pair<KeyType,DataType>();
 				m_heap[trav]->first=b.m_heap[trav]->first;
@@ -387,7 +419,6 @@ namespace epl
 
 			}
 			m_heapSize=b.m_heapSize;
-			m_mode=b.m_mode;
 		}
 		return *this;
 	}

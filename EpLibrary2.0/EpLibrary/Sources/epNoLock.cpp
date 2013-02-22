@@ -30,6 +30,10 @@ NoLock::NoLock(const NoLock& b):BaseLock()
 NoLock::~NoLock()
 {
 }
+NoLock & NoLock::operator=(const NoLock&b)
+{
+	return *this;
+}
 
 bool NoLock::Lock()
 {

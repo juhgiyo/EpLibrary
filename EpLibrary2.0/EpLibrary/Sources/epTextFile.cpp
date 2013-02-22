@@ -25,6 +25,7 @@ TextFile::TextFile(FileEncodingType encodingType, LockPolicy lockPolicyType):Bas
 
 TextFile::TextFile(const TextFile& b):BaseTextFile(b)
 {
+	LockObj lock(b.m_baseTextLock);
 	m_text=b.m_text;
 }
 

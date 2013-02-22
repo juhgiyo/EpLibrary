@@ -114,7 +114,6 @@ namespace epl
 		Delegate(const Delegate<RetType,ArgType> &orig)
 		{
 			m_lockPolicy=orig.m_lockPolicy;
-			m_funcList=orig.m_funcList;
 			switch(m_lockPolicy)
 			{
 			case LOCK_POLICY_CRITICALSECTION:
@@ -130,6 +129,8 @@ namespace epl
 				m_delegateLock=NULL;
 				break;
 			}
+			LockObj lock(b.m_delegateLock);
+			m_funcList=b.m_funcList;
 		}
 
 		/*!
@@ -154,7 +155,29 @@ namespace epl
 		{
 			if(this!=&b)
 			{
-				LockObj lock(m_delegateLock);
+				if(m_delegateLock)
+				{
+					EP_DELETE m_delegateLock;
+					m_delegateLock=NULL;
+				}
+				
+				m_lockPolicy=b.m_lockPolicy;
+				switch(m_lockPolicy)
+				{
+				case LOCK_POLICY_CRITICALSECTION:
+					m_delegateLock=EP_NEW CriticalSectionEx();
+					break;
+				case LOCK_POLICY_MUTEX:
+					m_delegateLock=EP_NEW Mutex();
+					break;
+				case LOCK_POLICY_NONE:
+					m_delegateLock=EP_NEW NoLock();
+					break;
+				default:
+					m_delegateLock=NULL;
+					break;
+				}
+				LockObj lock(b.m_delegateLock);
 				m_funcList=b.m_funcList;
 			}
 			return *this;
@@ -166,6 +189,7 @@ namespace epl
 		*/
 		bool IsEmpty() const
 		{
+			LockObj lock(m_delegateLock);
 			return m_funcList.empty();
 		}
 
@@ -175,6 +199,7 @@ namespace epl
 		*/
 		int Size() const
 		{
+			LockObj lock(m_delegateLock);
 			return m_funcList.size();
 		}
 
@@ -468,8 +493,8 @@ namespace epl
 		*/
 		Delegate(const Delegate<RetType,void> &orig)
 		{
+
 			m_lockPolicy=orig.m_lockPolicy;
-			m_funcList=orig.m_funcList;
 			switch(m_lockPolicy)
 			{
 			case LOCK_POLICY_CRITICALSECTION:
@@ -485,6 +510,8 @@ namespace epl
 				m_delegateLock=NULL;
 				break;
 			}
+			LockObj lock(b.m_delegateLock);
+			m_funcList=orig.m_funcList;
 		}
 
 		/*!
@@ -509,7 +536,29 @@ namespace epl
 		{
 			if(this!=&b)
 			{
-				LockObj lock(m_delegateLock);
+				if(m_delegateLock)
+				{
+					EP_DELETE m_delegateLock;
+					m_delegateLock=NULL;
+				}
+				
+				m_lockPolicy=b.m_lockPolicy;
+				switch(m_lockPolicy)
+				{
+				case LOCK_POLICY_CRITICALSECTION:
+					m_delegateLock=EP_NEW CriticalSectionEx();
+					break;
+				case LOCK_POLICY_MUTEX:
+					m_delegateLock=EP_NEW Mutex();
+					break;
+				case LOCK_POLICY_NONE:
+					m_delegateLock=EP_NEW NoLock();
+					break;
+				default:
+					m_delegateLock=NULL;
+					break;
+				}
+				LockObj lock(b.m_delegateLock);
 				m_funcList=b.m_funcList;
 			}
 			return *this;
@@ -521,6 +570,7 @@ namespace epl
 		*/
 		bool IsEmpty() const
 		{
+			LockObj lock(m_delegateLock);
 			return m_funcList.empty();
 		}
 
@@ -530,6 +580,7 @@ namespace epl
 		*/
 		int Size() const
 		{
+			LockObj lock(m_delegateLock);
 			return m_funcList.size();
 		}
 

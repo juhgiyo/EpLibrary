@@ -51,7 +51,6 @@ BaseOutputter::BaseOutputter(LockPolicy lockPolicyType)
 BaseOutputter::BaseOutputter(const BaseOutputter& b)
 {
 	m_lockPolicy=b.m_lockPolicy;
-	m_fileName=b.m_fileName;
 	switch(m_lockPolicy)
 	{
 	case LOCK_POLICY_CRITICALSECTION:
@@ -67,6 +66,9 @@ BaseOutputter::BaseOutputter(const BaseOutputter& b)
 		m_nodeListLock=NULL;
 		break;
 	}
+	m_fileName=b.m_fileName;
+	LockObj lock(b.m_nodeListLock);
+	m_list=b.m_list;
 }
 BaseOutputter::~BaseOutputter()
 {

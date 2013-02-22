@@ -26,8 +26,9 @@ PropertiesFile::PropertiesFile(FileEncodingType encodingType, LockPolicy lockPol
 
 PropertiesFile::PropertiesFile(const PropertiesFile& b):BaseTextFile(b)
 {
-	m_propertyList=b.m_propertyList;
 	m_nullString=_T("");
+	LockObj lock(b.m_baseTextLock);
+	m_propertyList=b.m_propertyList;
 }
 
 PropertiesFile::~PropertiesFile()

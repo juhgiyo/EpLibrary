@@ -29,6 +29,7 @@ XMLFile::XMLFile(XMLInfo &xmlInfo,FileEncodingType encodingType, LockPolicy lock
 
 XMLFile::XMLFile(const XMLFile& b):XNode(b),BaseTextFile(b)
 {
+	LockObj lock(b.m_baseTextLock);
 	m_xmlInfo=b.m_xmlInfo;
 }
 XMLFile::~XMLFile()

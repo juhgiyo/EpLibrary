@@ -45,12 +45,7 @@ BaseWorkerThread::BaseWorkerThread(const ThreadLifePolicy policy,LockPolicy lock
 
 BaseWorkerThread::BaseWorkerThread(const BaseWorkerThread & b):Thread(b)
 {
-	m_lifePolicy=b.m_lifePolicy;
-	m_callBackClass=b.m_callBackClass;
 	m_lockPolicy=b.m_lockPolicy;
-	m_jobProcessor=b.m_jobProcessor;
-	if(m_jobProcessor)
-		m_jobProcessor->RetainObj();
 	switch(m_lockPolicy)
 	{
 	case LOCK_POLICY_CRITICALSECTION:
@@ -66,6 +61,15 @@ BaseWorkerThread::BaseWorkerThread(const BaseWorkerThread & b):Thread(b)
 		m_callBackLock=NULL;
 		break;
 	}
+	
+	LockObj lock(b.m_callBackLock);
+	m_lifePolicy=b.m_lifePolicy;
+	m_callBackClass=b.m_callBackClass;
+	m_jobProcessor=b.m_jobProcessor;
+	if(m_jobProcessor)
+		m_jobProcessor->RetainObj();
+	m_workPool=b.m_workPool;
+	
 }
 BaseWorkerThread::~BaseWorkerThread()
 {
@@ -86,14 +90,47 @@ BaseWorkerThread &BaseWorkerThread::operator=(const BaseWorkerThread & b)
 {
 	if(this!=&b)
 	{
-		LockObj lock(m_callBackLock);
-		Thread::operator =(b);
-		m_callBackClass=b.m_callBackClass;
 		if(m_jobProcessor)
+		{
 			m_jobProcessor->ReleaseObj();
+		}
+		m_jobProcessor=NULL;
+		while(!m_workPool.IsEmpty())
+		{
+			m_workPool.Front()->JobReport(BaseJob::JOB_STATUS_INCOMPLETE);
+			m_workPool.Pop();
+		}
+		if(m_callBackLock)
+			EP_DELETE m_callBackLock;
+		m_callBackLock=NULL;
+
+		Thread::operator =(b);
+
+		m_lockPolicy=b.m_lockPolicy;
+		switch(m_lockPolicy)
+		{
+		case LOCK_POLICY_CRITICALSECTION:
+			m_callBackLock=EP_NEW CriticalSectionEx();
+			break;
+		case LOCK_POLICY_MUTEX:
+			m_callBackLock=EP_NEW Mutex();
+			break;
+		case LOCK_POLICY_NONE:
+			m_callBackLock=EP_NEW NoLock();
+			break;
+		default:
+			m_callBackLock=NULL;
+			break;
+		}
+
+		LockObj lock(b.m_callBackLock);
+		m_lifePolicy=b.m_lifePolicy;
+		m_callBackClass=b.m_callBackClass;
 		m_jobProcessor=b.m_jobProcessor;
 		if(m_jobProcessor)
 			m_jobProcessor->RetainObj();
+		m_workPool=b.m_workPool;
+
 
 	}
 	return *this;
