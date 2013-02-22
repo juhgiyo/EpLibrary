@@ -151,6 +151,31 @@ Thread::~Thread()
 	resetThread();
 }
 
+Thread &Thread::operator=(const Thread & b)
+{
+	if(this!=&b)
+	{
+		m_threadFunc=b.m_threadFunc;
+		if(m_threadFunc!=dummyThreadFunc)
+		{
+			resetThread();
+			m_lockPolicy=b.m_lockPolicy;
+			m_threadLock=b.m_threadLock;
+			m_type=b.m_type;
+			m_parentThreadHandle=b.m_parentThreadHandle;
+			m_parentThreadId=b.m_parentThreadId;
+			m_threadHandle=b.m_threadHandle;
+			m_threadId=b.m_threadId;
+			m_status=b.m_status;
+
+			Thread &unSafeB=const_cast<Thread&>(b);
+			unSafeB.Detach();
+			unSafeB.m_threadLock=NULL;
+		}
+	}
+	return *this;
+}
+
 void Thread::resetThread()
 {
 	if(m_status!=THREAD_STATUS_TERMINATED)
