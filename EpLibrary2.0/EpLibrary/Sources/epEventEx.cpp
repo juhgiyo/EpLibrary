@@ -212,17 +212,42 @@ bool EventEx::IsManualReset() const
 
 bool EventEx::ResetEvent()
 {
-	return (bool)::ResetEvent(m_event);
+	if(::ResetEvent(m_event))
+	{
+#if defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
+		System::WaitForSingleObject(m_eventDebug,WAITTIME_INIFINITE);
+		m_threadID=GetCurrentThreadId();
+		::SetEvent(m_eventDebug);
+#endif // defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
+		return true;
+	}
+	return false;
 }
 
 bool EventEx::SetEvent()
 {
-	return (bool)::SetEvent(m_event);
+	if(::SetEvent(m_event))
+	{
+#if defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
+		System::WaitForSingleObject(m_eventDebug,WAITTIME_INIFINITE);
+		m_threadID=0;
+		::SetEvent(m_eventDebug);
+#endif // defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
+		return true;
+	}
+	return false;
 }
 bool EventEx::WaitForEvent(const unsigned int dwMilliSecond)
 {	
 	unsigned long eventStatus=System::WaitForSingleObject(m_event,dwMilliSecond);
 	if(eventStatus==WAIT_OBJECT_0)
+	{
+#if defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
+		System::WaitForSingleObject(m_eventDebug,WAITTIME_INIFINITE);
+		m_threadID=GetCurrentThreadId();
+		::SetEvent(m_eventDebug);
+#endif // defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 		return true;
+	}
 	return false;
 }
