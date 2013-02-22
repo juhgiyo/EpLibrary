@@ -73,6 +73,7 @@ An Interface for EpLibrary Pre-compiled header
 //Frameworks
 #include "epBaseLock.h"
 #include "epCriticalSectionEx.h"
+#include "epEventEx.h"
 #include "epMutex.h"
 #include "epSemaphore.h"
 #include "epNoLock.h"
