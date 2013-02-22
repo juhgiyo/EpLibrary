@@ -179,6 +179,10 @@ namespace epl
 		*/
 		ProfileObj &operator=(const ProfileObj & b)
 		{
+			if(this != &b)
+			{
+				m_profiler=b.m_profiler;
+			}
 			return *this;
 		}
 		/*!

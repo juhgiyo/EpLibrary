@@ -114,6 +114,7 @@ namespace epl
 			Assignment operator overloading
 			@param[in] b the second object
 			@return the new copied object
+			@remark this is NOT copying!! This moves b to a.
 			*/
 			BaseLockObj &operator=(const BaseLockObj & b);
 			

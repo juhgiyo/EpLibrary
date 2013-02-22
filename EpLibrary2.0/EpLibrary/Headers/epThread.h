@@ -128,6 +128,9 @@ namespace epl
 		Assignment operator overloading
 		@param[in] b the second object
 		@return the new copied object
+		@remark this is NOT copying!!<br/>
+		        This moves b to a, if m_threadFunc==dummyThreadFunc<br/>
+		        otherwise, it stop the current thread and resets.
 		*/
 		Thread &operator=(const Thread & b);
 		

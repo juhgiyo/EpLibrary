@@ -119,11 +119,19 @@ Thread::Thread(const Thread & b)
 		m_status=b.m_status;
 		m_threadLock=b.m_threadLock;
 		Thread &unSafeB=const_cast<Thread&>(b);
-		unSafeB.Detach();
+		if(unSafeB.Joinable())
+			unSafeB.Detach();
 		unSafeB.m_threadLock=NULL;
 	}
 	else
 	{
+		m_threadId=0;
+		m_threadHandle=0;
+		m_parentThreadHandle=0;
+		m_parentThreadId=0;
+		m_type=THREAD_TYPE_UNKNOWN;
+		m_exitCode=0;
+
 		m_status=THREAD_STATUS_TERMINATED;
 		m_lockPolicy=b.m_lockPolicy;
 		switch(m_lockPolicy)
@@ -169,8 +177,37 @@ Thread &Thread::operator=(const Thread & b)
 			m_status=b.m_status;
 
 			Thread &unSafeB=const_cast<Thread&>(b);
-			unSafeB.Detach();
+			if(unSafeB.Joinable())
+				unSafeB.Detach();
 			unSafeB.m_threadLock=NULL;
+		}
+		else
+		{
+			resetThread();
+			m_threadId=0;
+			m_threadHandle=0;
+			m_parentThreadHandle=0;
+			m_parentThreadId=0;
+			m_type=THREAD_TYPE_UNKNOWN;
+			m_exitCode=0;
+
+			m_status=THREAD_STATUS_TERMINATED;
+			m_lockPolicy=b.m_lockPolicy;
+			switch(m_lockPolicy)
+			{
+			case LOCK_POLICY_CRITICALSECTION:
+				m_threadLock=EP_NEW CriticalSectionEx();
+				break;
+			case LOCK_POLICY_MUTEX:
+				m_threadLock=EP_NEW Mutex();
+				break;
+			case LOCK_POLICY_NONE:
+				m_threadLock=EP_NEW NoLock();
+				break;
+			default:
+				m_threadLock=NULL;
+				break;
+			}
 		}
 	}
 	return *this;
