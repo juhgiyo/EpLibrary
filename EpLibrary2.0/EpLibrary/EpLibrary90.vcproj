@@ -643,6 +643,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\Sources\epEventEx.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\Sources\epInterlockedEx.cpp"
 						>
 					</File>
@@ -970,6 +974,10 @@
 					</File>
 					<File
 						RelativePath=".\Headers\epCriticalSectionEx.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Headers\epEventEx.h"
 						>
 					</File>
 					<File

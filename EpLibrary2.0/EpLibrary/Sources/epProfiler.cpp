@@ -87,13 +87,13 @@ unsigned __int64 Profiler::GetLastProfileTime()
 	return m_lastProfileTime;
 }
 
-#if defined(_DEBUG) && defined(EP_ENABLE_PROFILE)
-void Profiler::AddLastProfileTimeToManager()
+
+void Profiler::addLastProfileTimeToManager()
 {
 	EP_ASSERT_EXPR(m_lastProfileTime>=0,_T("There is no last profiled time!"));
 	epl::SingletonHolder<epl::ProfileManager>::Instance().addProfile(m_uniqueName.c_str(),m_lastProfileTime);
 }
-#endif// defined(_DEBUG) && defined(EP_ENABLE_PROFILE)
+
 
 EpTString Profiler::GetNewUniqueName(TCHAR *fileName, TCHAR *functionName,unsigned int lineNum)
 {
@@ -232,18 +232,18 @@ void ProfileManager::addProfile(const TCHAR *uniqueName, const unsigned __int64 
 }
 
 
-ProfileManager::ProfileObj::ProfileObj(const TCHAR *uniqueName)
+ProfileObj::ProfileObj(const TCHAR *uniqueName)
 {
 	m_profiler=Profiler(uniqueName);
 	m_profiler.Start();
 }
 
 
-ProfileManager::ProfileObj::~ProfileObj()
+ProfileObj::~ProfileObj()
 {
 	m_profiler.Stop();
 #if defined(_DEBUG) && defined(EP_ENABLE_PROFILE)
-	m_profiler.AddLastProfileTimeToManager();
+	m_profiler.addLastProfileTimeToManager();
 #endif// defined(_DEBUG) && defined(EP_ENABLE_PROFILE)
 }
 

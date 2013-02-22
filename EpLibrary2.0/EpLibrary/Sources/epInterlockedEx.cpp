@@ -25,18 +25,18 @@ using namespace epl;
 InterlockedEx::InterlockedEx() :BaseLock()
 {
 	m_interLock=0;
-#if defined(_DEBUG)
+#if defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	m_interLockDebug=0;
 	m_threadID=0;
-#endif //defined(_DEBUG)
+#endif //defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 }
 InterlockedEx::InterlockedEx(const InterlockedEx& b) :BaseLock()
 {
 	m_interLock=0;
-#if defined(_DEBUG)
+#if defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	m_interLockDebug=0;
 	m_threadID=0;
-#endif //defined(_DEBUG)
+#endif //defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 }
 InterlockedEx::~InterlockedEx()
 {
@@ -44,7 +44,7 @@ InterlockedEx::~InterlockedEx()
 
 bool InterlockedEx::Lock()
 {
-#if _DEBUG
+#if defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	while(InterlockedExchange(&m_interLockDebug, 1)	!= 0)
 	{
 		Sleep(0);
@@ -52,25 +52,25 @@ bool InterlockedEx::Lock()
 	unsigned long threadID=GetCurrentThreadId();
 	EP_ASSERT_EXPR(threadID!=m_threadID,_T("Possible Deadlock detected!"));
 	InterlockedExchange(&m_interLockDebug, 0);
-#endif //_DEBUG
+#endif //defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	while(InterlockedExchange(&m_interLock, 1)	!= 0)
 	{
 		Sleep(0);
 	}
-#if defined(_DEBUG)
+#if defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	while(InterlockedExchange(&m_interLockDebug, 1)	!= 0)
 	{
 		Sleep(0);
 	}
 	m_threadID=threadID;
 	InterlockedExchange(&m_interLockDebug, 0);
-#endif //defined(_DEBUG)
+#endif //defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	return true;
 }
 
 long InterlockedEx::TryLock()
 {
-#if defined(_DEBUG)
+#if defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	while(InterlockedExchange(&m_interLockDebug, 1)	!= 0)
 	{
 		Sleep(0);
@@ -78,14 +78,14 @@ long InterlockedEx::TryLock()
 	unsigned long threadID=GetCurrentThreadId();
 	EP_ASSERT_EXPR(threadID!=m_threadID,_T("Possible Deadlock detected!"));
 	InterlockedExchange(&m_interLockDebug, 0);
-#endif //defined(_DEBUG)
+#endif //defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	long ret=0;
 	if(InterlockedExchange(&m_interLock, 1)	== 0)
 	{
 		ret=1;
 	}
 	
-#if defined(_DEBUG)
+#if defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	if(ret)
 	{
 		while(InterlockedExchange(&m_interLockDebug, 1)	!= 0)
@@ -95,12 +95,12 @@ long InterlockedEx::TryLock()
 		m_threadID=threadID;
 		InterlockedExchange(&m_interLockDebug, 0);
 	}
-#endif //defined(_DEBUG)
+#endif //defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	return ret;
 }
 long InterlockedEx::TryLockFor(const unsigned int dwMilliSecond)
 {
-#if defined(_DEBUG)
+#if defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	while(InterlockedExchange(&m_interLockDebug, 1)	!= 0)
 	{
 		Sleep(0);
@@ -108,7 +108,7 @@ long InterlockedEx::TryLockFor(const unsigned int dwMilliSecond)
 	unsigned long threadID=GetCurrentThreadId();
 	EP_ASSERT_EXPR(threadID!=m_threadID,_T("Possible Deadlock detected!"));
 	InterlockedExchange(&m_interLockDebug, 0);
-#endif //defined(_DEBUG)
+#endif //defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	long ret=0;
 	
 	SYSTEMTIME startTime;
@@ -130,7 +130,7 @@ long InterlockedEx::TryLockFor(const unsigned int dwMilliSecond)
 			ret=1;
 		}
 	}while(waitTime>0);
-#if _DEBUG
+#if defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	if(ret)
 	{
 		while(InterlockedExchange(&m_interLockDebug, 1)	!= 0)
@@ -140,19 +140,19 @@ long InterlockedEx::TryLockFor(const unsigned int dwMilliSecond)
 		m_threadID=threadID;
 		InterlockedExchange(&m_interLockDebug, 0);
 	}
-#endif //_DEBUG
+#endif //defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	return ret;
 }
 void InterlockedEx::Unlock()
 {
-#if _DEBUG
+#if defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	while(InterlockedExchange(&m_interLockDebug, 1)	!= 0)
 	{
 		Sleep(0);
 	}
 	m_threadID=0;
 	InterlockedExchange(&m_interLockDebug, 0);
-#endif //_DEBUG
+#endif //defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	InterlockedExchange(&m_interLock, 0);
 }
 

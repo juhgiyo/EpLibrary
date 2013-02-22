@@ -239,6 +239,9 @@
     <ClCompile Include="Sources\epCmdLineOptions.cpp">
       <Filter>Source Files\Frameworks</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\epEventEx.cpp">
+      <Filter>Source Files\Frameworks\Lock</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\epl.h">
@@ -426,6 +429,9 @@
     </ClInclude>
     <ClInclude Include="Headers\epCmdLineOptions.h">
       <Filter>Header Files\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epEventEx.h">
+      <Filter>Header Files\Frameworks\Lock</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

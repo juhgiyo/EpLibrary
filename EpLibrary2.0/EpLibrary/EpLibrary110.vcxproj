@@ -415,6 +415,7 @@
     <ClCompile Include="Sources\epBaseTextFile.cpp" />
     <ClCompile Include="Sources\epCmdLineOptions.cpp" />
     <ClCompile Include="Sources\epCStringEx.cpp" />
+    <ClCompile Include="Sources\epEventEx.cpp" />
     <ClCompile Include="Sources\epFileStream.cpp" />
     <ClCompile Include="Sources\epNetworkStream.cpp" />
     <ClCompile Include="Sources\epStream.cpp" />
@@ -458,6 +459,7 @@
   <ItemGroup>
     <ClInclude Include="Headers\epBaseTextFile.h" />
     <ClInclude Include="Headers\epCmdLineOptions.h" />
+    <ClInclude Include="Headers\epEventEx.h" />
     <ClInclude Include="Headers\epl.h" />
     <ClInclude Include="Headers\epLib.h" />
     <ClInclude Include="Headers\epAlgorithm.h" />

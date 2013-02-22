@@ -62,7 +62,7 @@ Macro that profiles the function where it called.
 @remark Usage: PROFILE_THIS(profile);
 */
 #if  defined(_DEBUG) && defined(EP_ENABLE_PROFILE)
-#define PROFILE_THIS(varName) epl::ProfileManager::ProfileObj varName(GET_NEW_UNIQUE_NAME())
+#define PROFILE_THIS(varName) epl::ProfileObj varName(GET_NEW_UNIQUE_NAME())
 #else
 #define PROFILE_THIS(varName) ((void)0)
 #endif
@@ -129,13 +129,6 @@ namespace epl
 		*/
 		unsigned __int64 GetLastProfileTime();
 
-#if defined(_DEBUG) && defined(EP_ENABLE_PROFILE)
-		/*!
-		Add the last profiled time to ProfileManager
-		*/
-		void AddLastProfileTimeToManager();
-#endif// defined(_DEBUG) && defined(EP_ENABLE_PROFILE)
-
 		/*!
 		Create Name for the Profiler and returns the name
 		@param[in] fileName the file name of the caller
@@ -147,6 +140,11 @@ namespace epl
 
 
 	private:
+		friend class ProfileObj;
+		/*!
+		Add the last profiled time to ProfileManager
+		*/
+		void addLastProfileTimeToManager();
 		/// The start time that profiling started
 		unsigned __int64 m_startTime;
 		/// The end time that profiling ended
@@ -155,6 +153,56 @@ namespace epl
 		unsigned __int64 m_lastProfileTime;
 		/// The Profiling Name
 		EpTString m_uniqueName;
+
+	};
+
+	/*! 
+	@class ProfileObj epProfiler.h
+	@brief This is a class for handling the profiling
+	*/
+	class EP_LIBRARY ProfileObj
+	{
+	public:
+		/*!
+		Default Contructor
+
+		If PROFILE_THIS Macro is used the inputs are automatically generated.
+		@param[in] uniqueName the Name of the profiler.
+		*/
+		ProfileObj(const TCHAR *uniqueName);
+		
+		/*!
+		Assignment operator overloading
+
+		@param[in] b the second object
+		@return the new copied object
+		*/
+		ProfileObj &operator=(const ProfileObj & b)
+		{
+			return *this;
+		}
+		/*!
+		Default Destructor
+		*/
+		virtual ~ProfileObj();
+
+	private:
+		/*!
+		Default Constructor
+
+		*Cannot be Used.
+		*/
+		ProfileObj(){EP_ASSERT(0);}
+
+		/*!
+		Default Copy Constructor
+
+		*Cannot be Used.
+		*/
+		ProfileObj(const ProfileObj & b){EP_ASSERT(0);}
+
+		/// The profiler object
+		Profiler m_profiler;
 
 	};
 
@@ -188,55 +236,7 @@ namespace epl
 		*/
 		virtual void FlushToFile();
 
-		/*! 
-		@class ProfileObj epProfiler.h
-		@brief This is a class for handling the profiling
-		*/
-		class EP_LIBRARY ProfileObj
-		{
-		public:
-			/*!
-			Default Contructor
-
-			If PROFILE_THIS Macro is used the inputs are automatically generated.
-			@param[in] uniqueName the Name of the profiler.
-			*/
-			ProfileObj(const TCHAR *uniqueName);
-			
-			/*!
-			Assignment operator overloading
-
-			@param[in] b the second object
-			@return the new copied object
-			*/
-			ProfileObj &operator=(const ProfileObj & b)
-			{
-				return *this;
-			}
-			/*!
-			Default Destructor
-			*/
-			virtual ~ProfileObj();
-
-		private:
-			/*!
-			Default Constructor
-
-			*Cannot be Used.
-			*/
-			ProfileObj(){EP_ASSERT(0);}
-
-			/*!
-			Default Copy Constructor
-
-			*Cannot be Used.
-			*/
-			ProfileObj(const ProfileObj & b){EP_ASSERT(0);}
-
-			/// The profiler object
-			Profiler m_profiler;
-
-		};
+	
 
 	private:
 		/*!
@@ -335,8 +335,6 @@ namespace epl
 
 		};
 
-
-
 		/*!
 		Check if the Profiling Log already exists in the profiling list.
 
@@ -359,8 +357,6 @@ namespace epl
 		void addProfile(const TCHAR *uniqueName, const unsigned __int64 &time);
 
 	};
-	/// type definition  for profile object
-	typedef ProfileManager::ProfileObj ProfileObj;
 
 }
 #endif //__EP_PROFILER_H__

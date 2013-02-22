@@ -33,10 +33,10 @@ Mutex::Mutex(const TCHAR *mutexName, LPSECURITY_ATTRIBUTES lpsaAttributes) :Base
 	m_isInitialOwner=false;
 	m_name=mutexName;
 	m_mutex=CreateMutex(m_lpsaAttributes,FALSE,mutexName);
-#if defined(_DEBUG)
+#if defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	m_mutexDebug=CreateMutex(m_lpsaAttributes,FALSE,NULL);
 	m_threadID=0;
-#endif //defined(_DEBUG)
+#endif //defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 }
 
 Mutex::Mutex(bool isInitialOwner,const TCHAR *mutexName , LPSECURITY_ATTRIBUTES lpsaAttributes) :BaseLock()
@@ -51,10 +51,12 @@ Mutex::Mutex(bool isInitialOwner,const TCHAR *mutexName , LPSECURITY_ATTRIBUTES 
 	m_isInitialOwner=isInitialOwner;
 	m_name=mutexName;
 	m_mutex=CreateMutex(m_lpsaAttributes,(BOOL)isInitialOwner,mutexName);
-#if defined(_DEBUG)
+#if defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	m_mutexDebug=CreateMutex(m_lpsaAttributes,FALSE,NULL);
-	m_threadID=GetCurrentThreadId();
-#endif //defined(_DEBUG)
+	m_threadID=0;
+	if(m_isInitialOwner)
+		m_threadID=GetCurrentThreadId();
+#endif //defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 }
 
 Mutex::Mutex(const Mutex& b)
@@ -72,12 +74,12 @@ Mutex::Mutex(const Mutex& b)
 		m_mutex=CreateMutex(m_lpsaAttributes,(BOOL)m_isInitialOwner,m_name.c_str());
 	else
 		m_mutex=CreateMutex(m_lpsaAttributes,(BOOL)m_isInitialOwner,NULL);
-#if defined(_DEBUG)
+#if defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	m_mutexDebug=CreateMutex(m_lpsaAttributes,FALSE,NULL);
 	m_threadID=0;
 	if(m_isInitialOwner)
 		m_threadID=GetCurrentThreadId();
-#endif //defined(_DEBUG)
+#endif // defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 }
 
 Mutex::~Mutex()
@@ -89,9 +91,9 @@ Mutex::~Mutex()
 		EP_DELETE m_lpsaAttributes;
 		m_lpsaAttributes=NULL;
 	}
-#if defined(_DEBUG)
+#if defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	CloseHandle(m_mutexDebug);
-#endif //defined(_DEBUG)
+#endif // defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 }
 
 Mutex & Mutex::operator=(const Mutex&b)
@@ -117,24 +119,25 @@ Mutex & Mutex::operator=(const Mutex&b)
 			m_mutex=CreateMutex(m_lpsaAttributes,(BOOL)m_isInitialOwner,m_name.c_str());
 		else
 			m_mutex=CreateMutex(m_lpsaAttributes,(BOOL)m_isInitialOwner,NULL);
-#if defined(_DEBUG)
+#if defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 		m_threadID=0;
 		if(m_isInitialOwner)
 			m_threadID=GetCurrentThreadId();
-#endif //defined(_DEBUG)
+#endif // defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	}
 	return *this;
 }
 bool Mutex::Lock()
 {
 
-#if _DEBUG
+#if defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	unsigned long resDebug=System::WaitForSingleObject(m_mutexDebug,WAITTIME_INIFINITE);
 	EP_ASSERT_EXPR(resDebug!=WAIT_ABANDONED,_T("Obtained abandoned Debug Mutex."));
 	
 	unsigned long threadID=GetCurrentThreadId();
 	EP_ASSERT_EXPR(threadID!=m_threadID,_T("Possible Deadlock detected!"));
-#endif //_DEBUG
+	ReleaseMutex(m_mutexDebug);
+#endif // defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 
 	bool returnVal=true;
 	unsigned long res=System::WaitForSingleObject(m_mutex,WAITTIME_INIFINITE);
@@ -144,30 +147,32 @@ bool Mutex::Lock()
 		returnVal=false;
 	}
 
-#if defined(_DEBUG)
+#if defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
+	resDebug=System::WaitForSingleObject(m_mutexDebug,WAITTIME_INIFINITE);
+	EP_ASSERT_EXPR(resDebug!=WAIT_ABANDONED,_T("Obtained abandoned Debug Mutex."));
 	m_threadID=threadID;
 	ReleaseMutex(m_mutexDebug);
-#endif //defined(_DEBUG)
+#endif // defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	return returnVal;
 }
 
 long Mutex::TryLock()
 {
-#if defined(_DEBUG)
+#if defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	unsigned long resDebug=System::WaitForSingleObject(m_mutexDebug,WAITTIME_INIFINITE);
 	EP_ASSERT_EXPR(resDebug!=WAIT_ABANDONED,_T("Obtained abandoned Debug Mutex."));
 
 	unsigned long threadID=GetCurrentThreadId();
 	EP_ASSERT_EXPR(threadID!=m_threadID,_T("Possible Deadlock detected!"));
 	ReleaseMutex(m_mutexDebug);
-#endif //defined(_DEBUG)
+#endif // defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	long ret=0;
 	unsigned long mutexStatus=System::WaitForSingleObject(m_mutex,WAITTIME_IGNORE);
 	if(mutexStatus== WAIT_OBJECT_0)
 		ret=1;
 	else if(mutexStatus==WAIT_ABANDONED)
 		m_isMutexAbandoned=true;
-#if defined(_DEBUG)
+#if defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	if(ret)
 	{
 		unsigned long resDebug=System::WaitForSingleObject(m_mutexDebug,WAITTIME_INIFINITE);
@@ -175,28 +180,28 @@ long Mutex::TryLock()
 		m_threadID=threadID;
 		ReleaseMutex(m_mutexDebug);
 	}
-#endif //defined(_DEBUG)
+#endif // defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	return ret;
 
 }
 
 long Mutex::TryLockFor(const unsigned int dwMilliSecond)
 {
-#if defined(_DEBUG)
+#if defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	unsigned long resDebug=System::WaitForSingleObject(m_mutexDebug,WAITTIME_INIFINITE);
 	EP_ASSERT_EXPR(resDebug!=WAIT_ABANDONED,_T("Obtained abandoned Debug Mutex."));
 	
 	unsigned long threadID=GetCurrentThreadId();
 	EP_ASSERT_EXPR(threadID!=m_threadID,_T("Possible Deadlock detected!"));
 	ReleaseMutex(m_mutexDebug);
-#endif //defined(_DEBUG)
+#endif // defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	long ret=0;
 	unsigned long mutexStatus=System::WaitForSingleObject(m_mutex,dwMilliSecond);
 	if(mutexStatus==WAIT_OBJECT_0)
 		ret=1;
 	else if(mutexStatus==WAIT_ABANDONED)
 		m_isMutexAbandoned=true;
-#if _DEBUG
+#if defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	if(ret)
 	{
 		unsigned long resDebug=System::WaitForSingleObject(m_mutexDebug,WAITTIME_INIFINITE);
@@ -204,22 +209,22 @@ long Mutex::TryLockFor(const unsigned int dwMilliSecond)
 		m_threadID=threadID;
 		ReleaseMutex(m_mutexDebug);
 	}
-#endif //_DEBUG
+#endif // defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	return ret;
 
 }
 void Mutex::Unlock()
 {
-#if _DEBUG
+#if defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	unsigned long resDebug=System::WaitForSingleObject(m_mutexDebug,WAITTIME_INIFINITE);
 	EP_ASSERT_EXPR(resDebug!=WAIT_ABANDONED,_T("Obtained abandoned Debug Mutex."));
 	m_threadID=0;
 	ReleaseMutex(m_mutexDebug);
-#endif //_DEBUG
+#endif // defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	ReleaseMutex(m_mutex);
 }
 
-bool Mutex::IsMutexAbandoned()
+bool Mutex::IsMutexAbandoned() const
 {
 	return m_isMutexAbandoned;
 }

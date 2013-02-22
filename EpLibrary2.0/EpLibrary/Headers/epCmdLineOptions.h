@@ -76,7 +76,7 @@ namespace epl
 	@struct CmdArgs epCmdLineOptions.h
 	@brief A CmdLine Argument List class.
 	*/
-	struct CmdArgs
+	struct EP_LIBRARY CmdArgs
 	{
 		/// List of arguments
 		vector<EpTString> m_args;
@@ -89,7 +89,7 @@ namespace epl
 	@class CmdLineOptions epCmdLineOptions.h
 	@brief A CmdLine Options class.
 	*/
-	class CmdLineOptions:public CmdLineMap
+	class EP_LIBRARY CmdLineOptions:public CmdLineMap
 	{
 	public:
 		/*!

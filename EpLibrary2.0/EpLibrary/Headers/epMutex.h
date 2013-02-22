@@ -49,7 +49,7 @@ namespace epl
 
 		Initializes the lock.
 		@remark mutexName must be supplied if the object will be used across process boundaries.
-		@param[in] mutexName name of the semaphore to distinguish
+		@param[in] mutexName name of the mutex to distinguish
 		@param[in] lpsaAttributes the security attribute
 		*/
 		Mutex(const TCHAR *mutexName=NULL, LPSECURITY_ATTRIBUTES lpsaAttributes = NULL);
@@ -59,7 +59,7 @@ namespace epl
 
 		Initializes the lock.
 		@param[in] isInitialOwner flag to own the mutex on creation
-		@param[in] mutexName name of the semaphore to distinguish
+		@param[in] mutexName name of the mutex to distinguish
 		@param[in] lpsaAttributes the security attribute
 		@remark mutexName must be supplied if the object will be used across process boundaries.
 		@remark if isInitialOwner is TRUE then the mutex is created as locked.
@@ -124,7 +124,7 @@ namespace epl
 		Returns the flag whether this mutex is abandoned or now.
 		@return true if the mutex is abandoned, otherwise false.
 		*/
-		bool IsMutexAbandoned();
+		bool IsMutexAbandoned() const;
 
 	private:
 
@@ -139,11 +139,12 @@ namespace epl
 		/// Mutex Name
 		EpTString m_name;
 
-#if defined(_DEBUG)
+#if defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
+		/// thread ID that currently holding this mutex
 		unsigned long m_threadID;
 		/// Mutex Debug
 		HANDLE m_mutexDebug;
-#endif //defined(_DEBUG)
+#endif //defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	};
 
 }

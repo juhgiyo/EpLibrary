@@ -56,6 +56,10 @@ An Interface for EpLibrary.
 #ifdef _DEBUG
 #define EP_ENABLE_PROFILE
 #define EP_ENABLE_LOG
+
+/// Limits the usage of the synchronization objects<br/>
+/// Uncomment below line and recompile if you really want this functinality
+// #define ENABLE_POSSIBLE_DEADLOCK_CHECK
 #endif //_DEBUG
 
 #define WIDEN2(x) L ## x
