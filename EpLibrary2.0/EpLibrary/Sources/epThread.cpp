@@ -110,17 +110,24 @@ Thread::Thread(const Thread & b)
 	if(m_threadFunc!=dummyThreadFunc)
 	{
 		m_lockPolicy=b.m_lockPolicy;
-
+		m_threadLock=b.m_threadLock;
 		m_type=b.m_type;
 		m_parentThreadHandle=b.m_parentThreadHandle;
 		m_parentThreadId=b.m_parentThreadId;
 		m_threadHandle=b.m_threadHandle;
 		m_threadId=b.m_threadId;
 		m_status=b.m_status;
-		m_threadLock=b.m_threadLock;
+		m_exitCode=b.m_exitCode;
+
 		Thread &unSafeB=const_cast<Thread&>(b);
-		if(unSafeB.Joinable())
-			unSafeB.Detach();
+		unSafeB.m_type=THREAD_TYPE_UNKNOWN;
+		unSafeB.m_parentThreadHandle=0;
+		unSafeB.m_parentThreadId=0;
+		unSafeB.m_threadHandle=0;
+		unSafeB.m_threadId=0;
+		unSafeB.m_status=THREAD_STATUS_TERMINATED;
+		unSafeB.m_exitCode=0;
+
 		unSafeB.m_threadLock=NULL;
 	}
 	else
@@ -175,10 +182,17 @@ Thread &Thread::operator=(const Thread & b)
 			m_threadHandle=b.m_threadHandle;
 			m_threadId=b.m_threadId;
 			m_status=b.m_status;
+			m_exitCode=b.m_exitCode;
 
 			Thread &unSafeB=const_cast<Thread&>(b);
-			if(unSafeB.Joinable())
-				unSafeB.Detach();
+			unSafeB.m_type=THREAD_TYPE_UNKNOWN;
+			unSafeB.m_parentThreadHandle=0;
+			unSafeB.m_parentThreadId=0;
+			unSafeB.m_threadHandle=0;
+			unSafeB.m_threadId=0;
+			unSafeB.m_status=THREAD_STATUS_TERMINATED;
+			unSafeB.m_exitCode=0;
+
 			unSafeB.m_threadLock=NULL;
 		}
 		else
@@ -224,7 +238,10 @@ void Thread::resetThread()
 	}
 
 	if(m_threadLock)
+	{
 		EP_DELETE m_threadLock;
+		m_threadLock=NULL;
+	}
 }
 
 bool Thread::Start(const ThreadOpCode opCode, const ThreadType threadType, const int stackSize)
