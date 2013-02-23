@@ -86,13 +86,15 @@ Mutex::~Mutex()
 {
 
 	CloseHandle(m_mutex);
+	m_mutex=0;
 	if(m_lpsaAttributes)
 	{
 		EP_DELETE m_lpsaAttributes;
-		m_lpsaAttributes=NULL;
 	}
+	m_lpsaAttributes=NULL;			
 #if defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	CloseHandle(m_mutexDebug);
+	m_mutexDebug=NULL;
 #endif // defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 }
 
@@ -101,11 +103,12 @@ Mutex & Mutex::operator=(const Mutex&b)
 	if(this != &b)
 	{
 		CloseHandle(m_mutex);
+		m_mutex=0;
 		if(m_lpsaAttributes)
 		{
 			EP_DELETE m_lpsaAttributes;
-			m_lpsaAttributes=NULL;
 		}
+		m_lpsaAttributes=NULL;	
 
 		if(b.m_lpsaAttributes)
 		{

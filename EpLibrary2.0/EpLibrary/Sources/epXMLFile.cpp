@@ -36,6 +36,20 @@ XMLFile::~XMLFile()
 {
 	Close();
 }
+XMLFile & XMLFile::operator=(const XMLFile&b)
+{
+	if(this!=&b)
+	{
+		Close();
+
+		BaseTextFile::operator =(b);
+		LockObj lock(b.m_baseTextLock);
+		XNode::operator =(const_cast<XMLFile&>(b));
+		m_xmlInfo=b.m_xmlInfo;
+	}
+	return *this;
+}
+
 void XMLFile::SetNodeValue(const TCHAR * nodeName, const TCHAR * attrName, const TCHAR *attrVal, const TCHAR * nodeVal)
 {
 	LockObj lock(m_baseTextLock);

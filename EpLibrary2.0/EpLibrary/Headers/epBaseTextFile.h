@@ -70,36 +70,8 @@ namespace epl{
 		@param[in] b the second object
 		@return the new copied object
 		*/
-		BaseTextFile & operator=(const BaseTextFile&b)
-		{
-			if(this!=&b)
-			{
-				if(m_baseTextLock)
-					EP_DELETE m_baseTextLock;
-				m_baseTextLock=NULL;
-
-				m_encodingType=b.m_encodingType;
-				m_file=b.m_file;
-				m_lockPolicy=b.m_lockPolicy;
-				switch(m_lockPolicy)
-				{
-				case LOCK_POLICY_CRITICALSECTION:
-					m_baseTextLock=EP_NEW CriticalSectionEx();
-					break;
-				case LOCK_POLICY_MUTEX:
-					m_baseTextLock=EP_NEW Mutex();
-					break;
-				case LOCK_POLICY_NONE:
-					m_baseTextLock=EP_NEW NoLock();
-					break;
-				default:
-					m_baseTextLock=NULL;
-					break;
-				}
-			}
-			return *this;
-		}
-
+		BaseTextFile & operator=(const BaseTextFile&b);
+		
 		/*!
 		Default Destructor
 

@@ -87,13 +87,15 @@ EventEx::~EventEx()
 {
 
 	CloseHandle(m_event);
+	m_event=NULL;
 	if(m_lpsaAttributes)
 	{
 		EP_DELETE m_lpsaAttributes;
-		m_lpsaAttributes=NULL;
-	}
+	}		
+	m_lpsaAttributes=NULL;
 #if defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	CloseHandle(m_eventDebug);
+	m_eventDebug=NULL;
 #endif // defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 }
 
@@ -102,11 +104,12 @@ EventEx & EventEx::operator=(const EventEx&b)
 	if(this != &b)
 	{
 		CloseHandle(m_event);
+		m_event=NULL;
 		if(m_lpsaAttributes)
 		{
 			EP_DELETE m_lpsaAttributes;
-			m_lpsaAttributes=NULL;
-		}
+		}		
+		m_lpsaAttributes=NULL;
 
 		if(b.m_lpsaAttributes)
 		{

@@ -71,11 +71,12 @@ Semaphore & Semaphore::operator=(const Semaphore&b)
 	if(this!=&b)
 	{
 		CloseHandle(m_sem);
+		m_sem=NULL;
 		if(m_lpsaAttributes)
 		{
 			EP_DELETE m_lpsaAttributes;
-			m_lpsaAttributes=NULL;
 		}
+		m_lpsaAttributes=NULL;
 
 		if(b.m_lpsaAttributes)
 		{
@@ -96,11 +97,12 @@ Semaphore & Semaphore::operator=(const Semaphore&b)
 Semaphore::~Semaphore()
 {
 	CloseHandle(m_sem);
+	m_sem=NULL;
 	if(m_lpsaAttributes)
 	{
 		EP_DELETE m_lpsaAttributes;
-		m_lpsaAttributes=NULL;
 	}
+	m_lpsaAttributes=NULL;
 }
 
 bool Semaphore::Lock()

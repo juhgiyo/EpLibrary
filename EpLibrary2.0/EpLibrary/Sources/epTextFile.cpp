@@ -32,6 +32,17 @@ TextFile::TextFile(const TextFile& b):BaseTextFile(b)
 TextFile::~TextFile()
 {
 }
+TextFile & TextFile::operator=(const TextFile&b)
+{
+	if(this!=&b)
+	{
+		BaseTextFile::operator =(b);
+		LockObj lock(b.m_baseTextLock);
+		m_text=b.m_text;
+
+	}
+	return *this;
+}
 
 void TextFile::SetText(const TCHAR * val)
 {

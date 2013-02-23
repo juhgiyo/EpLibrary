@@ -75,8 +75,39 @@ BaseOutputter::~BaseOutputter()
 	Clear();
 	if(m_nodeListLock)
 		EP_DELETE m_nodeListLock;
+	m_nodeListLock=NULL;
 }
+BaseOutputter & BaseOutputter::operator=(const BaseOutputter&b)
+{
+	if(this!=&b)
+	{
+		Clear();
+		if(m_nodeListLock)
+			EP_DELETE m_nodeListLock;
+		m_nodeListLock=NULL;
 
+		m_lockPolicy=b.m_lockPolicy;
+		switch(m_lockPolicy)
+		{
+		case LOCK_POLICY_CRITICALSECTION:
+			m_nodeListLock=EP_NEW CriticalSectionEx();
+			break;
+		case LOCK_POLICY_MUTEX:
+			m_nodeListLock=EP_NEW Mutex();
+			break;
+		case LOCK_POLICY_NONE:
+			m_nodeListLock=EP_NEW NoLock();
+			break;
+		default:
+			m_nodeListLock=NULL;
+			break;
+		}
+		m_fileName=b.m_fileName;
+		LockObj lock(b.m_nodeListLock);
+		m_list=b.m_list;
+	}
+	return *this;
+}
 
 void BaseOutputter::Clear()
 {

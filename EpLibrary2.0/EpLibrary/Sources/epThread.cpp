@@ -240,8 +240,17 @@ void Thread::resetThread()
 	if(m_threadLock)
 	{
 		EP_DELETE m_threadLock;
-		m_threadLock=NULL;
 	}
+	m_threadLock=NULL;
+
+	m_threadId=0;
+	m_threadHandle=0;
+	m_parentThreadHandle=0;
+	m_parentThreadId=0;
+	m_type=THREAD_TYPE_UNKNOWN;
+	m_exitCode=0;
+
+	m_status=THREAD_STATUS_TERMINATED;
 }
 
 bool Thread::Start(const ThreadOpCode opCode, const ThreadType threadType, const int stackSize)

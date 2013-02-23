@@ -34,6 +34,18 @@ PropertiesFile::PropertiesFile(const PropertiesFile& b):BaseTextFile(b)
 PropertiesFile::~PropertiesFile()
 {
 }
+PropertiesFile & PropertiesFile::operator=(const PropertiesFile&b)
+{
+	if(this!=&b)
+	{
+		BaseTextFile::operator =(b);
+		m_nullString=_T("");
+		LockObj lock(b.m_baseTextLock);
+		m_propertyList=b.m_propertyList;
+
+	}
+	return *this;
+}
 
 bool PropertiesFile::SetProperty(const TCHAR *  key, const TCHAR * val)
 {
