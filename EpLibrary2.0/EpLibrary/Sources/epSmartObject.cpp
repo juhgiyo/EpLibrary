@@ -22,44 +22,44 @@ using namespace epl;
 
 SmartObject & SmartObject::operator=(const SmartObject&b)
 {
-	if(this!=&b)
-	{
-		
-		m_refCounterLock->Lock();
-		m_refCount--;
-		m_refCounterLock->Unlock();
-#if defined(_DEBUG)
-		LOG_THIS_MSG(_T("Copying Object : %d (Current Object Reference Count = %d)"),this, this->m_refCount);
-#endif //defined(_DEBUG)
-		EP_ASSERT_EXPR(m_refCount==0,_T("The Reference Count is not 0!! Reference Count : %d"),m_refCount);
-
-		if(m_refCounterLock)
-		{
-			EP_DELETE m_refCounterLock;
-		}
-		m_refCounterLock=NULL;
-
-		m_refCount=1;
-#if defined(_DEBUG)
-		LOG_THIS_MSG(_T("%s::%s(%d) Copied Object : %d (Current Reference Count = %d)"),__TFILE__,__TFUNCTION__,__LINE__,this, this->m_refCount);
-#endif //defined(_DEBUG)
-		m_lockPolicy=b.m_lockPolicy;
-		switch(m_lockPolicy)
-		{
-		case LOCK_POLICY_CRITICALSECTION:
-			m_refCounterLock=EP_NEW CriticalSectionEx();
-			break;
-		case LOCK_POLICY_MUTEX:
-			m_refCounterLock=EP_NEW Mutex();
-			break;
-		case LOCK_POLICY_NONE:
-			m_refCounterLock=EP_NEW NoLock();
-			break;
-		default:
-			m_refCounterLock=NULL;
-			break;
-		}
-	}
+// 	if(this!=&b)
+// 	{
+// 		
+// 		m_refCounterLock->Lock();
+// 		m_refCount--;
+// 		m_refCounterLock->Unlock();
+// #if defined(_DEBUG)
+// 		LOG_THIS_MSG(_T("Copying Object : %d (Current Object Reference Count = %d)"),this, this->m_refCount);
+// #endif //defined(_DEBUG)
+// 		EP_ASSERT_EXPR(m_refCount==0,_T("The Reference Count is not 0!! Reference Count : %d"),m_refCount);
+// 
+// 		if(m_refCounterLock)
+// 		{
+// 			EP_DELETE m_refCounterLock;
+// 		}
+// 		m_refCounterLock=NULL;
+// 
+// 		m_refCount=1;
+// #if defined(_DEBUG)
+// 		LOG_THIS_MSG(_T("%s::%s(%d) Copied Object : %d (Current Reference Count = %d)"),__TFILE__,__TFUNCTION__,__LINE__,this, this->m_refCount);
+// #endif //defined(_DEBUG)
+// 		m_lockPolicy=b.m_lockPolicy;
+// 		switch(m_lockPolicy)
+// 		{
+// 		case LOCK_POLICY_CRITICALSECTION:
+// 			m_refCounterLock=EP_NEW CriticalSectionEx();
+// 			break;
+// 		case LOCK_POLICY_MUTEX:
+// 			m_refCounterLock=EP_NEW Mutex();
+// 			break;
+// 		case LOCK_POLICY_NONE:
+// 			m_refCounterLock=EP_NEW NoLock();
+// 			break;
+// 		default:
+// 			m_refCounterLock=NULL;
+// 			break;
+// 		}
+// 	}
 	
 
 	return *this;
