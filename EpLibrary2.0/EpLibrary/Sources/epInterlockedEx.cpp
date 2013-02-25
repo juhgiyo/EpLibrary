@@ -44,6 +44,10 @@ InterlockedEx::~InterlockedEx()
 
 InterlockedEx & InterlockedEx::operator=(const InterlockedEx&b)
 {
+	if(this!=&b)
+	{
+		m_interLock=0;
+	}
 	return *this;
 }
 

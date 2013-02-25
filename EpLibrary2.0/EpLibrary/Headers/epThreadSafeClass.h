@@ -124,6 +124,7 @@ namespace epl
 		{	
 			if(m_threadSafeLock)
 				EP_DELETE m_threadSafeLock;
+			m_threadSafeLock=NULL;
 		}
 		
 		/*!
@@ -133,6 +134,29 @@ namespace epl
 		*/
 		ThreadSafeClass & operator=(const ThreadSafeClass&b)
 		{
+			if(this!=&b)
+			{
+				if(m_threadSafeLock)
+					EP_DELETE m_threadSafeLock;
+				m_threadSafeLock=NULL;
+
+				m_lockPolicy=b.m_lockPolicy;
+				switch(m_lockPolicy)
+				{
+				case LOCK_POLICY_CRITICALSECTION:
+					m_threadSafeLock=EP_NEW CriticalSectionEx();
+					break;
+				case LOCK_POLICY_MUTEX:
+					m_threadSafeLock=EP_NEW Mutex();
+					break;
+				case LOCK_POLICY_NONE:
+					m_threadSafeLock=EP_NEW NoLock();
+					break;
+				default:
+					m_threadSafeLock=NULL;
+					break;
+				}
+			}
 			return *this;
 		}
 

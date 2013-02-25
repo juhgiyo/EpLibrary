@@ -41,6 +41,14 @@ CriticalSectionEx::~CriticalSectionEx()
 }
 CriticalSectionEx & CriticalSectionEx::operator=(const CriticalSectionEx&b)
 {
+	if(this!=&b)
+	{
+		EP_ASSERT_EXPR(m_lockCounter==0,_T("Lock Counter is not 0!"));
+		DeleteCriticalSection(&m_criticalSection);
+
+		InitializeCriticalSection(&m_criticalSection);
+		m_lockCounter=0;
+	}
 	return *this;
 }
 
