@@ -151,9 +151,10 @@ namespace epl
 		Default Constructor
 
 		Initializes the thread class
+		@param[in] priority The priority of the thread.
 		@param[in] lockPolicyType The lock policy
 		*/
-		Thread(LockPolicy lockPolicyType=EP_LOCK_POLICY);
+		Thread(ThreadPriority priority=EP_THREAD_PRIORITY_NORMAL,LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Constructor
@@ -197,12 +198,11 @@ namespace epl
 		/*!
 		Start the Thread according to parameters given.
 		@param[in] opCode The operation code for creating thread.
-		@param[in] priority The priority of the thread.
 		@param[in] threadType The type of thread creation to use.
 		@param[in] stackSize The stack size for the thread.
 		@return true, if succeeded, otherwise false.
 		*/
-		bool Start(const ThreadOpCode opCode=THREAD_OPCODE_CREATE_START, ThreadPriority priority=EP_THREAD_PRIORITY_NORMAL, const ThreadType threadType=THREAD_TYPE_BEGIN_THREAD, const int stackSize=0);
+		bool Start(const ThreadOpCode opCode=THREAD_OPCODE_CREATE_START, const ThreadType threadType=THREAD_TYPE_BEGIN_THREAD, const int stackSize=0);
 
 		/*!
 		Resume the suspended thread.

@@ -53,11 +53,11 @@ void Thread::dummyThreadFunc()
 
 }
 
-Thread::Thread(LockPolicy lockPolicyType)
+Thread::Thread(ThreadPriority priority,LockPolicy lockPolicyType)
 {
 	m_threadId=0;
 	m_threadHandle=0;
-	m_threadPriority=EP_THREAD_PRIORITY_NORMAL;
+	m_threadPriority=priority;
 	m_parentThreadHandle=0;
 	m_parentThreadId=0;
 	m_type=THREAD_TYPE_UNKNOWN;
@@ -87,6 +87,7 @@ Thread::Thread(void (__cdecl *threadFunc)(), ThreadPriority priority,LockPolicy 
 	EP_ASSERT(threadFunc);
 	m_threadId=0;
 	m_threadHandle=0;
+	m_threadPriority=priority;
 	m_parentThreadHandle=0;
 	m_parentThreadId=0;
 	m_status=THREAD_STATUS_TERMINATED;
@@ -159,7 +160,7 @@ Thread::Thread(const Thread & b)
 	{
 		m_threadId=0;
 		m_threadHandle=0;
-		m_threadPriority=EP_THREAD_PRIORITY_NORMAL;
+		m_threadPriority=b.m_threadPriority;
 		m_parentThreadHandle=0;
 		m_parentThreadId=0;
 		m_type=THREAD_TYPE_UNKNOWN;
@@ -227,7 +228,7 @@ Thread &Thread::operator=(const Thread & b)
 			resetThread();
 			m_threadId=0;
 			m_threadHandle=0;
-			m_threadPriority=EP_THREAD_PRIORITY_NORMAL;
+			m_threadPriority=b.m_threadPriority;
 			m_parentThreadHandle=0;
 			m_parentThreadId=0;
 			m_type=THREAD_TYPE_UNKNOWN;
@@ -281,7 +282,7 @@ void Thread::resetThread()
 	m_status=THREAD_STATUS_TERMINATED;
 }
 
-bool Thread::Start(const ThreadOpCode opCode, ThreadPriority priority, const ThreadType threadType, const int stackSize)
+bool Thread::Start(const ThreadOpCode opCode, const ThreadType threadType, const int stackSize)
 {
 	LockObj lock(m_threadLock);
 	if(m_status==THREAD_STATUS_TERMINATED && !m_threadHandle)
@@ -313,7 +314,7 @@ bool Thread::Start(const ThreadOpCode opCode, ThreadPriority priority, const Thr
 		{
 			m_status=THREAD_STATUS_SUSPENDED;
 		}
-		SetPriority(priority);
+		SetPriority(m_threadPriority);
 		return true;
 	}
 	else

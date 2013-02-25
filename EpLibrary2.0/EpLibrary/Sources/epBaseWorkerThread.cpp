@@ -21,7 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epBaseJobProcessor.h"
 using namespace epl;
 
-BaseWorkerThread::BaseWorkerThread(const ThreadLifePolicy policy,LockPolicy lockPolicyType) :Thread(lockPolicyType)
+BaseWorkerThread::BaseWorkerThread(const ThreadLifePolicy policy,LockPolicy lockPolicyType) :Thread(EP_THREAD_PRIORITY_NORMAL,lockPolicyType)
 {
 	m_lifePolicy=policy;
 	m_callBackClass=NULL;
