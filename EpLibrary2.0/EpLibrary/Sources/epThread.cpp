@@ -20,10 +20,32 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace epl;
 
-HANDLE Thread::CreateThread(LPTHREAD_START_ROUTINE routineFunc,LPVOID param)
+HANDLE Thread::CreateThread(LPTHREAD_START_ROUTINE routineFunc,LPVOID param, ThreadPriority priority)
 {
 	unsigned long threadID=0;
-	return ::CreateThread(NULL, 0,routineFunc,param,0,&threadID);
+	HANDLE retHandle=0;
+	retHandle=::CreateThread(NULL, 0,routineFunc,param,0,&threadID);
+	Thread::SetPriority(retHandle,priority);
+	return retHandle;
+}
+
+bool Thread::SetPriority(HANDLE threadHandle, ThreadPriority priority)
+{
+	bool ret=false;
+	if(threadHandle!=0)
+	{
+		ret=(bool)::SetThreadPriority(threadHandle,(int)priority);
+	}
+	return ret;
+
+}
+ThreadPriority Thread::GetPriority(HANDLE threadHandle)
+{
+	ThreadPriority ret=EP_THREAD_PRIORITY_ERROR_RETURN;
+	if(threadHandle!=0)
+		ret=(ThreadPriority)::GetThreadPriority(threadHandle);
+	return ret;
+
 }
 
 void Thread::dummyThreadFunc()
@@ -35,6 +57,7 @@ Thread::Thread(LockPolicy lockPolicyType)
 {
 	m_threadId=0;
 	m_threadHandle=0;
+	m_threadPriority=EP_THREAD_PRIORITY_NORMAL;
 	m_parentThreadHandle=0;
 	m_parentThreadId=0;
 	m_type=THREAD_TYPE_UNKNOWN;
@@ -59,7 +82,7 @@ Thread::Thread(LockPolicy lockPolicyType)
 	}
 }
 
-Thread::Thread(void (__cdecl *threadFunc)(),LockPolicy lockPolicyType)
+Thread::Thread(void (__cdecl *threadFunc)(), ThreadPriority priority,LockPolicy lockPolicyType)
 {
 	EP_ASSERT(threadFunc);
 	m_threadId=0;
@@ -103,6 +126,7 @@ Thread::Thread(void (__cdecl *threadFunc)(),LockPolicy lockPolicyType)
 
 	}
 	m_status=THREAD_STATUS_STARTED;
+	SetPriority(priority);
 }
 Thread::Thread(const Thread & b)
 {
@@ -115,6 +139,7 @@ Thread::Thread(const Thread & b)
 		m_parentThreadHandle=b.m_parentThreadHandle;
 		m_parentThreadId=b.m_parentThreadId;
 		m_threadHandle=b.m_threadHandle;
+		m_threadPriority=b.m_threadPriority;
 		m_threadId=b.m_threadId;
 		m_status=b.m_status;
 		m_exitCode=b.m_exitCode;
@@ -134,6 +159,7 @@ Thread::Thread(const Thread & b)
 	{
 		m_threadId=0;
 		m_threadHandle=0;
+		m_threadPriority=EP_THREAD_PRIORITY_NORMAL;
 		m_parentThreadHandle=0;
 		m_parentThreadId=0;
 		m_type=THREAD_TYPE_UNKNOWN;
@@ -180,6 +206,7 @@ Thread &Thread::operator=(const Thread & b)
 			m_parentThreadHandle=b.m_parentThreadHandle;
 			m_parentThreadId=b.m_parentThreadId;
 			m_threadHandle=b.m_threadHandle;
+			m_threadPriority=b.m_threadPriority;
 			m_threadId=b.m_threadId;
 			m_status=b.m_status;
 			m_exitCode=b.m_exitCode;
@@ -200,6 +227,7 @@ Thread &Thread::operator=(const Thread & b)
 			resetThread();
 			m_threadId=0;
 			m_threadHandle=0;
+			m_threadPriority=EP_THREAD_PRIORITY_NORMAL;
 			m_parentThreadHandle=0;
 			m_parentThreadId=0;
 			m_type=THREAD_TYPE_UNKNOWN;
@@ -253,7 +281,7 @@ void Thread::resetThread()
 	m_status=THREAD_STATUS_TERMINATED;
 }
 
-bool Thread::Start(const ThreadOpCode opCode, const ThreadType threadType, const int stackSize)
+bool Thread::Start(const ThreadOpCode opCode, ThreadPriority priority, const ThreadType threadType, const int stackSize)
 {
 	LockObj lock(m_threadLock);
 	if(m_status==THREAD_STATUS_TERMINATED && !m_threadHandle)
@@ -285,6 +313,7 @@ bool Thread::Start(const ThreadOpCode opCode, const ThreadType threadType, const
 		{
 			m_status=THREAD_STATUS_SUSPENDED;
 		}
+		SetPriority(priority);
 		return true;
 	}
 	else
@@ -467,7 +496,28 @@ unsigned long Thread::entryPoint2(void * pthis)
 	pt->run();
 	return 0;
 }
+bool Thread::SetPriority(ThreadPriority priority)
+{
+	LockObj lock(m_threadLock);
+	bool ret=false;
+	if(m_threadHandle!=0)
+	{
+		ret=(bool)::SetThreadPriority(m_threadHandle,(int)priority);
+		if(ret)
+			m_threadPriority=priority;
+	}
+	return ret;
 
+}
+ThreadPriority Thread::GetPriority()
+{
+	LockObj lock(m_threadLock);
+	ThreadPriority ret=EP_THREAD_PRIORITY_ERROR_RETURN;
+	if(m_threadHandle!=0)
+		ret=(ThreadPriority)::GetThreadPriority(m_threadHandle);
+	return ret;
+
+}
 void Thread::execute()
 {
 	// Do any execution here

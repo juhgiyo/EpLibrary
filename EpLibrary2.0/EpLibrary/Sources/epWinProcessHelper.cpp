@@ -315,3 +315,20 @@ void WinProcessHelper::CommandOnProcess(const TCHAR *pProcessName, void (__cdecl
 
 	CloseHandle(snapshot);
 }
+
+ProcessPriority WinProcessHelper::GetPriority(HANDLE processHandle)
+{
+	ProcessPriority ret=EP_PROCESS_PRIORITY_ERROR_RETURN;
+	if(processHandle!=0)
+		ret=(ProcessPriority)::GetPriorityClass(processHandle);
+	return ret;
+}
+bool WinProcessHelper::SetPriority(HANDLE processHandle, ProcessPriority priority)
+{
+	bool ret=false;
+	if(processHandle!=0)
+	{
+		ret=(bool)::SetPriorityClass(processHandle,(int)priority);
+	}
+	return ret;
+}
