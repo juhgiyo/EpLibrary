@@ -128,6 +128,18 @@ namespace epl
 		*/
 		static void* Memcpy (void* dest, const void* source, unsigned int srcSizeInByte);
 
+		
+		/*!
+		Compare the two buffers.
+		@param[in] buf1 The first buffer to compare.
+		@param[in] buf2 The second buffer to compare
+		@param[in] compSizeInByte the size of buffer to compare.
+		@return 0 if values of both buffers are equal <br/>
+		        >0 if buf1 is greater than buf2 <br/>
+				<0 if buf1 is less than buf2
+		*/
+		static int Memcmp (void* buf1, const void* buf2, unsigned int compSizeInByte);
+
 		/*!
 		Set the source buffer with given value.
 		@param[in] source The source to be set.

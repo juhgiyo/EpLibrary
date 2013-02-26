@@ -92,6 +92,12 @@ void* System::Memcpy (void* dest, const void* source, unsigned int srcSizeInByte
 {
 	return System::Memcpy(dest,srcSizeInByte,source,srcSizeInByte);
 }
+
+int System::Memcmp (void* buf1, const void* buf2, unsigned int compSizeInByte)
+{
+	return memcmp(buf1,buf2,compSizeInByte);
+}
+
 void* System::Memset(void* source,int val,unsigned int srcSizeInByte)
 {
 	return memset(source,val,srcSizeInByte);
