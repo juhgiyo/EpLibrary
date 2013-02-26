@@ -42,10 +42,12 @@ namespace epl
 	/// Thread Priority Enumerator
 	typedef enum _threadPriority
 	{
+#if (_MSC_VER >=MSVC80) && (WINVER>=WINDOWS_XP) // Only for VS2005 and above and Windows XP and above
 		/// Priority 1 point above the priority class.
 		EP_THREAD_PRIORITY_ABOVE_NORMAL=THREAD_PRIORITY_ABOVE_NORMAL,
 		/// Priority 1 point below the priority class.
 		EP_THREAD_PRIORITY_BELOW_NORMAL=THREAD_PRIORITY_BELOW_NORMAL,
+#endif //(_MSC_VER >=MSVC80) && (WINVER>=WINDOWS_XP)
 		/// Priority 2 points above the priority class.
 		EP_THREAD_PRIORITY_HIGHEST=THREAD_PRIORITY_HIGHEST,
 		/// Base priority of 1 for IDLE_PRIORITY_CLASS, BELOW_NORMAL_PRIORITY_CLASS, <br/>
@@ -62,7 +64,7 @@ namespace epl
 		EP_THREAD_PRIORITY_TIME_CRITICAL=THREAD_PRIORITY_TIME_CRITICAL,
 		/// Returns when GetThreadPriority fails
 		EP_THREAD_PRIORITY_ERROR_RETURN=THREAD_PRIORITY_ERROR_RETURN,
-#if (_MSC_VER >=1500) // Only for VS2008 and above
+#if (_MSC_VER >=MSVC90) && (WINVER>=WINDOWS_VISTA) // Only for VS2008 and above and Windows Vista and above
 		/// Begin background processing mode. <br/>
 		///    The system lowers the resource scheduling priorities of the thread so <br/>
 		///    that it can perform background work without significantly affecting activity in the foreground. <br/>
@@ -77,7 +79,7 @@ namespace epl
 		///    The function fails if the thread is not in background processing mode.<br/>
 		///    Windows Server 2003 and Windows XP:  This value is not supported.<br/>
 		EP_THREAD_PRIORITY_MODE_BACKGROUND_END=THREAD_MODE_BACKGROUND_END,
-#endif //(_MSC_VER >=1500) // Only for VS2008 and above
+#endif //(_MSC_VER >=MSVC90) && (WINVER>=WINDOWS_VISTA)
 	}ThreadPriority;
 	
 

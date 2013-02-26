@@ -41,12 +41,14 @@ namespace epl
 	/// Process Priority Enumerator
 	typedef enum _processPriority
 	{
+#if (_MSC_VER >=MSVC80) && (WINVER>=WINDOWS_XP) // Only for VS2005 and above and Windows XP and above
 		/// Process that has priority above NORMAL_PRIORITY_CLASS <br/>
 		///    but below HIGH_PRIORITY_CLASS.
 		EP_PROCESS_PRIORITY_ABOVE_NORMAL_PRIORITY_CLASS=THREAD_PRIORITY_ABOVE_NORMAL,
 		/// Process that has priority above IDLE_PRIORITY_CLASS<br/>
 		///    but below NORMAL_PRIORITY_CLASS.
 		EP_PROCESS_PRIORITY_BELOW_NORMAL_PRIORITY_CLASS=THREAD_PRIORITY_BELOW_NORMAL,
+#endif //(_MSC_VER >=MSVC80) && (WINVER>=WINDOWS_XP)
 		/// Process that performs time-critical tasks that must be executed<br/>
 		///    immediately for it to run correctly. <br/>
 		///    The threads of a high-priority class process preempt the threads of normal<br/>
@@ -72,7 +74,7 @@ namespace epl
 		/// Returns when GetProcessPriority fails
 		EP_PROCESS_PRIORITY_ERROR_RETURN=0,
 
-#if (_MSC_VER >=1500) // Only for VS2008 and above
+#if (_MSC_VER >=MSVC90) && (WINVER>=WINDOWS_VISTA) // Only for VS2008 and above and Windows Vista and above
 		/// Begin background processing mode.<br/>
 		///    The system lowers the resource scheduling priorities of the process (and its threads)<br/>
 		///    so that it can perform background work without significantly affecting activity in the foreground.<br/>
@@ -87,7 +89,7 @@ namespace epl
 		///    The function fails if the process is not in background processing mode.<br/>
 		///    Windows Server 2003 and Windows XP:  This value is not supported.
 		EP_PROCESS_PRIORITY_MODE_BACKGROUND_END=PROCESS_MODE_BACKGROUND_END,
-#endif //(_MSC_VER >=1500) // Only for VS2008 and above
+#endif //(_MSC_VER >=MSVC90) && (WINVER>=WINDOWS_VISTA)
 	}ProcessPriority;
 
 	/*! 

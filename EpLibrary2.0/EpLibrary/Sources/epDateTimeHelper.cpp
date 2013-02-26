@@ -266,7 +266,7 @@ EpTString DateTimeHelper::DateTimeToString(const FILETIME &fTime)
 	return DateTimeToString(systemTime);
 }
 
-#if (_MSC_VER >=1500) // Only for VS2008 and above
+#if (_MSC_VER >=MSVC90) && (WINVER>=WINDOWS_VISTA) // Only for VS2008 and above and Windows Vista and above
 unsigned __int64 DateTimeHelper::GetThreadCPUCycleCount(HANDLE threadHandle)
 {
 	unsigned __int64 cycleCount=0.0;
@@ -281,7 +281,7 @@ unsigned __int64 DateTimeHelper::GetProcessCPUCycleCount(HANDLE processHandle)
 	::QueryProcessCycleTime(processHandle,&cycleCount);
 	return cycleCount;
 }
-#endif //(_MSC_VER >=1500)
+#endif //(_MSC_VER >=MSVC90) && (WINVER>=WINDOWS_VISTA)
 
 FILETIME DateTimeHelper::GetThreadCreationTime(HANDLE threadHandle)
 {

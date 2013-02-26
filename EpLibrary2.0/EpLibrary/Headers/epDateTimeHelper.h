@@ -220,7 +220,7 @@ namespace epl
 		*/
 		static EpTString DateTimeToString(const FILETIME &fTime);
 
-#if (_MSC_VER >=1500) // Only for VS2008 and above
+#if (_MSC_VER >=MSVC90) && (WINVER>=WINDOWS_VISTA) // Only for VS2008 and above and Windows Vista and above
 		/*!
 		Get Thread's actual CPU Cycle Count
 		@param[in] threadHandle the thread handle
@@ -234,7 +234,7 @@ namespace epl
 		@return the actual CPU Cycle Count ran by given process.
 		*/
 		static unsigned __int64 GetProcessCPUCycleCount(HANDLE processHandle);
-#endif //(_MSC_VER >=1500)
+#endif //(_MSC_VER >=MSVC90) && (WINVER>=WINDOWS_VISTA)
 
 		/*!
 		Get thread's creation time
