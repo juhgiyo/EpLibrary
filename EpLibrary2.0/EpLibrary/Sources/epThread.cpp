@@ -348,10 +348,11 @@ bool Thread::Resume()
 
 bool Thread::Suspend()
 {
-	LockObj lock(m_threadLock);
+	m_threadLock->Lock();
 	if(m_status==THREAD_STATUS_STARTED && m_threadHandle)
 	{
 		m_status=THREAD_STATUS_SUSPENDED;
+		m_threadLock->Unlock();
 		SuspendThread(m_threadHandle);
 		return true;
 	}
@@ -361,19 +362,24 @@ bool Thread::Suspend()
 		System::OutputDebugString(_T("The thread (%x): Thread must be in running state in order to suspend!\r\n"),m_threadId);
 
 	}
+	m_threadLock->Unlock();
 	return false;
 }
 
 
 bool Thread::Terminate()
 {
-	LockObj lock(m_threadLock);
+	EP_ASSERT_EXPR(m_threadHandle!=System::GetCurrentThread(),_T("Exception : Thread should not terminate self."));
+	m_threadLock->Lock();
 	if(m_status!=THREAD_STATUS_TERMINATED && m_threadHandle)
 	{
+		
 		m_status=THREAD_STATUS_TERMINATED;
 		m_exitCode=1;
+		m_threadLock->Unlock();
 		if(System::TerminateThread(m_threadHandle,m_exitCode))
 		{
+			m_threadLock->Lock();
 			if(m_type==THREAD_TYPE_CREATE_THREAD)
 				CloseHandle(m_threadHandle);
 			m_threadId=0;
@@ -381,7 +387,9 @@ bool Thread::Terminate()
 			m_parentThreadId=0;
 			m_parentThreadHandle=0;
 			m_type=THREAD_TYPE_UNKNOWN;
-			onTerminated(m_exitCode);
+			unsigned long exitCode=m_exitCode;
+			m_threadLock->Unlock();
+			onTerminated(exitCode);
 			return true;
 		}
 		else
@@ -391,16 +399,19 @@ bool Thread::Terminate()
 			unsigned long lastErrNum=0;
 			System::FormatLastErrorMessage(lastErrMsg,&lastErrNum);
 			EP_ASSERT_EXPR(0,_T("Cannot terminate thread!\r\nThread ID: %d\r\n Error Code: %d\r\nError Message: %s"),m_threadId,lastErrNum,lastErrMsg);
+			m_threadLock->Lock();
 			m_threadId=0;
 			m_threadHandle=0;
 			m_parentThreadId=0;
 			m_parentThreadHandle=0;
 			m_type=THREAD_TYPE_UNKNOWN;
+			m_threadLock->Unlock();
 			return false;
 		}
 	}
 	else
 	{
+		m_threadLock->Unlock();
 		// No Thread Exists
 		System::OutputDebugString(_T("The thread (%x): There is no thread to terminate!\r\n"),m_threadId);
 	}
