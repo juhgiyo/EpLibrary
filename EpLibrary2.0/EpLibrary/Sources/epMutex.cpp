@@ -31,7 +31,10 @@ Mutex::Mutex(const TCHAR *mutexName, LPSECURITY_ATTRIBUTES lpsaAttributes) :Base
 		*m_lpsaAttributes=*lpsaAttributes;
 	}
 	m_isInitialOwner=false;
-	m_name=mutexName;
+	if(mutexName)
+		m_name=mutexName;
+	else
+		m_name=_T("");
 	m_mutex=CreateMutex(m_lpsaAttributes,FALSE,mutexName);
 #if defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	m_mutexDebug=CreateMutex(m_lpsaAttributes,FALSE,NULL);
@@ -49,7 +52,10 @@ Mutex::Mutex(bool isInitialOwner,const TCHAR *mutexName , LPSECURITY_ATTRIBUTES 
 		*m_lpsaAttributes=*lpsaAttributes;
 	}
 	m_isInitialOwner=isInitialOwner;
-	m_name=mutexName;
+	if(mutexName)
+		m_name=mutexName;
+	else
+		m_name=_T("");
 	m_mutex=CreateMutex(m_lpsaAttributes,(BOOL)isInitialOwner,mutexName);
 #if defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	m_mutexDebug=CreateMutex(m_lpsaAttributes,FALSE,NULL);

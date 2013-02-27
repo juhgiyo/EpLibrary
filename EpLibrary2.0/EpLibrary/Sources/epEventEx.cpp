@@ -31,7 +31,10 @@ EventEx::EventEx(const TCHAR *eventName, LPSECURITY_ATTRIBUTES lpsaAttributes) :
 		m_lpsaAttributes=EP_NEW SECURITY_ATTRIBUTES();
 		*m_lpsaAttributes=*lpsaAttributes;
 	}
-	m_name=eventName;
+	if(eventName)
+		m_name=eventName;
+	else
+		m_name=_T("");
 	m_event=CreateEvent(m_lpsaAttributes,(BOOL)m_isManualReset,(BOOL)m_isInitialRaised,eventName);
 #if defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	m_eventDebug=CreateEvent(m_lpsaAttributes,FALSE,TRUE,NULL);
@@ -50,7 +53,10 @@ EventEx::EventEx(bool isInitialRaised, bool isManualReset,const TCHAR *eventName
 		*m_lpsaAttributes=*lpsaAttributes;
 	}
 
-	m_name=eventName;
+	if(eventName)
+		m_name=eventName;
+	else
+		m_name=_T("");
 	m_event=CreateEvent(m_lpsaAttributes,(BOOL)m_isManualReset,(BOOL)m_isInitialRaised,eventName);
 #if defined(_DEBUG) && defined(ENABLE_POSSIBLE_DEADLOCK_CHECK)
 	m_eventDebug=CreateEvent(m_lpsaAttributes,FALSE,TRUE,NULL);

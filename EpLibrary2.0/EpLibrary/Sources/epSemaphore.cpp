@@ -31,7 +31,10 @@ Semaphore::Semaphore(unsigned int count,const TCHAR *semName, LPSECURITY_ATTRIBU
 	}
 	m_count=count;
 	m_initialiCount=count;
-	m_name=semName;
+	if(semName)
+		m_name=semName;
+	else
+		m_name=_T("");
 	m_sem=CreateSemaphore(m_lpsaAttributes,m_initialiCount,count,semName);
 }
 
@@ -45,7 +48,10 @@ Semaphore::Semaphore(unsigned int count, unsigned int initialCount,const TCHAR *
 	}
 	m_count=count;
 	m_initialiCount=initialCount;
-	m_name=semName;
+	if(semName)
+		m_name=semName;
+	else
+		m_name=_T("");
 	m_sem=CreateSemaphore(m_lpsaAttributes,initialCount,count,semName);
 }
 
