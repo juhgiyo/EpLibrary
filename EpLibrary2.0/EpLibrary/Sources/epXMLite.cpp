@@ -29,11 +29,11 @@ Please refer to <http://www.codeproject.com/Articles/3426/XMLite-simple-XML-pars
 #include <string>
 
 
-#ifdef _DEBUG
+#if defined(_DEBUG) && defined(EP_ENABLE_CRTDBG)
 #define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
-#endif
+#endif // defined(_DEBUG) && defined(EP_ENABLE_CRTDBG)
 
 using namespace epl;
 
