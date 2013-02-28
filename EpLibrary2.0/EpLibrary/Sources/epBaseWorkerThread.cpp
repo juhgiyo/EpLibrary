@@ -19,6 +19,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epSmartObject.h"
 #include "epWorkerThreadDelegate.h"
 #include "epBaseJobProcessor.h"
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
 using namespace epl;
 
 BaseWorkerThread::BaseWorkerThread(const ThreadLifePolicy policy,LockPolicy lockPolicyType) :Thread(EP_THREAD_PRIORITY_NORMAL,lockPolicyType)

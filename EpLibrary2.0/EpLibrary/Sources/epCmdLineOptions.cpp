@@ -51,6 +51,12 @@ Please refer to <http://www.codeproject.com/Articles/1205/CCmdLine-command-line-
 
 #include "epCmdLineOptions.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
 using namespace epl;
 
 CmdLineOptions::CmdLineOptions():CmdLineMap()

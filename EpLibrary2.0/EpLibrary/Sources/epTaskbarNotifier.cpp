@@ -25,6 +25,12 @@ Please refer to <http://www.codeproject.com/Articles/2562/Taskbar-Notification-d
 */
 #include "epTaskbarNotifier.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
 using namespace epl;
 
 #define IDT_HIDDEN		0

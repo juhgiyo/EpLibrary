@@ -121,7 +121,7 @@ An Interface for the Platform Dependencies.
 #include <afxcmn.h>                     // MFC support for Windows Common Controls
 #endif // _AFX_NO_AFXCMN_SUPPORT
 
-#pragma warning( disable : 4018 4244 4251 4291 4786 4800 4996 4275 4200)
+#pragma warning( disable : 4018 4244 4251 4291 4345 4786 4800 4996 4275 4200)
 
 #else //defined(_WIN32) || defined(_WIN64)
 

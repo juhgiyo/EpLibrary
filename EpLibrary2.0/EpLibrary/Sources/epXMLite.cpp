@@ -29,13 +29,13 @@ Please refer to <http://www.codeproject.com/Articles/3426/XMLite-simple-XML-pars
 #include <string>
 
 
-using namespace epl;
-
 #ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
+
+using namespace epl;
 
 static const TCHAR szXMLPIOpen[] = _T("<?");
 static const TCHAR szXMLPIClose[] = _T("?>");

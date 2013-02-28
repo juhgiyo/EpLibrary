@@ -19,6 +19,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epException.h"
 using namespace epl;
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
 DECLARE_THREAD_SAFE_CLASS(System);
 
 BaseOutputter::OutputNode::OutputNode()

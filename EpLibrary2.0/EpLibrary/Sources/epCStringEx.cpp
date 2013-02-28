@@ -27,6 +27,12 @@ Please refer to <http://www.codeproject.com/Articles/2396/Simple-CString-Extensi
 #include <stdio.h>
 #include <string>
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
 using namespace epl;
 
 CStringEx::CStringEx(int i, const TCHAR* format, unsigned long options)

@@ -18,6 +18,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "epThread.h"
 #include "epException.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
 using namespace epl;
 
 HANDLE Thread::CreateThread(LPTHREAD_START_ROUTINE routineFunc,LPVOID param, ThreadPriority priority)

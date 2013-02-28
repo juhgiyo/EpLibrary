@@ -78,5 +78,14 @@ An Interface for EpLibrary.
 #define NULL 0
 #endif
 
+#if defined(_DEBUG)
+#ifndef _CRTDBG_MAP_ALLOC
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+#endif // _CRTDBG_MAP_ALLOC
+#endif //defined(_DEBUG)
+
 #include "epPlatform.h"
+
 #endif //__EP_LIB_H__

@@ -29,6 +29,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "epTinyObject.h"
 #include "epException.h"
+
+
 namespace epl
 {
 	void StaticAllocator::Fragment::Init(unsigned int blockSize, unsigned char blocks)
