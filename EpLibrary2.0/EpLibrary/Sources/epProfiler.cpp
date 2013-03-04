@@ -196,7 +196,7 @@ ProfileManager & ProfileManager::operator=(const ProfileManager&b)
 	}
 	return *this;
 }
-bool ProfileManager::isProfileExist(const TCHAR *uniqueName,ProfileNode *&retIter, int &retIdx )
+bool ProfileManager::isProfileExist(const TCHAR *uniqueName,ProfileNode *&retIter, size_t &retIdx )
 {
 	if(!m_list.size())
 		return false;
@@ -229,8 +229,8 @@ void ProfileManager::addProfile(const TCHAR *uniqueName, const unsigned __int64 
 {
 	LockObj lock(m_nodeListLock);
 	ProfileNode *existStruct=NULL;
-	int retIdx=-1;
-	if(isProfileExist(uniqueName,existStruct,retIdx) && existStruct && retIdx!=-1)
+	size_t retIdx=-1;
+	if(isProfileExist(uniqueName,existStruct,retIdx) && existStruct)
 	{
 		existStruct->m_totalTime+=time;
 		existStruct->m_cnt++;

@@ -125,7 +125,7 @@ namespace epl
 		Get job count in work pool.
 		@return the job count in work pool.
 		*/
-		int GetJobCount() const;
+		size_t GetJobCount() const;
 
 		/*!
 		Assignment operator overloading

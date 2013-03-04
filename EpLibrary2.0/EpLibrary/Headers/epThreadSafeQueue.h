@@ -97,7 +97,7 @@ namespace epl
 		Return the size of the queue.
 		@return the size of the queue.
 		*/
-		int Size() const;
+		size_t Size() const;
 
 		/*!
 		Return the first item within the queue.
@@ -240,7 +240,7 @@ namespace epl
 	}
 
 	template <typename DataType>
-	int ThreadSafeQueue<DataType>::Size() const
+	size_t ThreadSafeQueue<DataType>::Size() const
 	{
 		LockObj lock(m_queueLock);
 		return m_queue.size();

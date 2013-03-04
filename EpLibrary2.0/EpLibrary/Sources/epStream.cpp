@@ -97,7 +97,7 @@ void Stream::Clear()
 	m_stream.clear();
 }
 
-int Stream::GetStreamSize() const
+size_t Stream::GetStreamSize() const
 {
 	return m_stream.size();
 }
@@ -109,7 +109,7 @@ const unsigned char *Stream::GetBuffer() const
 	return NULL;
 }
 
-void Stream::SetSeek(const StreamSeekType seekType,const unsigned int offset)
+void Stream::SetSeek(const StreamSeekType seekType,size_t offset)
 {
 	LockObj lock(m_streamLock);
 	switch(seekType)
@@ -124,16 +124,16 @@ void Stream::SetSeek(const StreamSeekType seekType,const unsigned int offset)
 		m_offset=m_stream.size();
 	}
 }
-unsigned int Stream::GetSeek() const
+size_t Stream::GetSeek() const
 {
 	return m_offset;
 }
 
-bool Stream::write(const void *value,const int byteSize)
+bool Stream::write(const void *value,size_t byteSize)
 {
 	if(!value)
 		return false;
-	if(m_stream.size()<static_cast<size_t>(m_offset+byteSize))
+	if(m_stream.size()<m_offset+byteSize)
 	{
 		m_stream.resize(m_offset+byteSize);
 	}
@@ -143,12 +143,12 @@ bool Stream::write(const void *value,const int byteSize)
 	return true;
 }
 
-bool Stream::read(void *value,const int byteSize)
+bool Stream::read(void *value,size_t byteSize)
 {
 	if(m_stream.empty() || !value)
 		return false;
 
-	if(m_stream.size()>static_cast<size_t>(m_offset+byteSize))
+	if(m_stream.size()>m_offset+byteSize)
 	{
 		System::Memcpy(value,&m_stream.at(m_offset) , byteSize);
 		m_offset+=byteSize;
@@ -200,37 +200,37 @@ bool Stream::WriteByte(const unsigned char value)
 	return write(&value,sizeof(unsigned char));
 }
 
-bool Stream::WriteShorts(const short *shortList, const unsigned int listSize)
+bool Stream::WriteShorts(const short *shortList, size_t listSize)
 {
 	LockObj lock(m_streamLock);
 	return write(shortList,sizeof(short)*listSize);
 }
-bool Stream::WriteUShorts(const unsigned short *ushortList, const unsigned int listSize)
+bool Stream::WriteUShorts(const unsigned short *ushortList, size_t listSize)
 {
 	LockObj lock(m_streamLock);
 	return write(ushortList,sizeof(unsigned short)*listSize);
 }
-bool Stream::WriteInts(const int *intList, const unsigned int listSize)
+bool Stream::WriteInts(const int *intList, size_t listSize)
 {
 	LockObj lock(m_streamLock);
 	return write(intList,sizeof(int)*listSize);
 }
-bool Stream::WriteUInts(const unsigned int *uintList, const unsigned int listSize)
+bool Stream::WriteUInts(const unsigned int *uintList, size_t listSize)
 {
 	LockObj lock(m_streamLock);
 	return write(uintList,sizeof(unsigned int)*listSize);
 }
-bool Stream::WriteFloats(const float *floatList, const unsigned int listSize)
+bool Stream::WriteFloats(const float *floatList, size_t listSize)
 {
 	LockObj lock(m_streamLock);
 	return write(floatList,sizeof(float)*listSize);
 }
-bool Stream::WriteDoubles(const double *doubleList,const unsigned int listSize)
+bool Stream::WriteDoubles(const double *doubleList,size_t listSize)
 {
 	LockObj lock(m_streamLock);
 	return write(doubleList,sizeof(double)*listSize);
 }
-bool Stream::WriteBytes(const unsigned char* byteList,const unsigned int listSize)
+bool Stream::WriteBytes(const unsigned char* byteList,size_t listSize)
 {
 	LockObj lock(m_streamLock);
 	return write(byteList,sizeof(unsigned char)*listSize);
@@ -311,37 +311,37 @@ bool Stream::ReadByte(unsigned char &retVal)
 	return read(&retVal,sizeof(unsigned char));
 }
 
-bool Stream::ReadShorts(short *retShortList, const unsigned int listSize)
+bool Stream::ReadShorts(short *retShortList, size_t listSize)
 {
 	LockObj lock(m_streamLock);
 	return read(retShortList,sizeof(short)*listSize);
 }
-bool Stream::ReadUShorts(unsigned short *retUshortList, const unsigned int listSize)
+bool Stream::ReadUShorts(unsigned short *retUshortList, size_t listSize)
 {
 	LockObj lock(m_streamLock);
 	return read(retUshortList,sizeof(unsigned short)*listSize);
 }
-bool Stream::ReadInts(int *retIntList, const unsigned int listSize)
+bool Stream::ReadInts(int *retIntList, size_t listSize)
 {
 	LockObj lock(m_streamLock);
 	return read(retIntList,sizeof(int)*listSize);
 }
-bool Stream::ReadUInts(unsigned int *retUintList, const unsigned int listSize)
+bool Stream::ReadUInts(unsigned int *retUintList, size_t listSize)
 {
 	LockObj lock(m_streamLock);
 	return read(retUintList,sizeof(unsigned int)*listSize);
 }
-bool Stream::ReadFloats(float *retFloatList, const unsigned int listSize)
+bool Stream::ReadFloats(float *retFloatList,size_t listSize)
 {
 	LockObj lock(m_streamLock);
 	return read(retFloatList,sizeof(float)*listSize);
 }
-bool Stream::ReadDoubles(double *retDoubleList, const unsigned int listSize)
+bool Stream::ReadDoubles(double *retDoubleList, size_t listSize)
 {
 	LockObj lock(m_streamLock);
 	return read(retDoubleList,sizeof(float)*listSize);
 }
-bool Stream::ReadBytes(unsigned char* retByteList, const unsigned int listSize)
+bool Stream::ReadBytes(unsigned char* retByteList, size_t listSize)
 {
 	LockObj lock(m_streamLock);
 	return read(retByteList,sizeof(unsigned char)*listSize);

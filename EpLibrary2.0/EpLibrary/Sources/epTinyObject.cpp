@@ -33,18 +33,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace epl
 {
-	void StaticAllocator::Fragment::Init(unsigned int blockSize, unsigned char blocks)
+	void StaticAllocator::Fragment::Init(size_t blockSize, unsigned char blocks)
 	{
 		EP_ASSERT(blockSize > 0);
 		EP_ASSERT(blocks > 0);
 		EP_ASSERT((blockSize * blocks) / blockSize == blocks);
 
-		m_Data = EP_NEW unsigned char[blockSize * static_cast<unsigned int>(blocks)];
+		m_Data = EP_NEW unsigned char[blockSize * static_cast<size_t>(blocks)];
 		Reset(blockSize, blocks);
 
 	}
 
-	void StaticAllocator::Fragment::Reset(unsigned int blockSize, unsigned char blocks)
+	void StaticAllocator::Fragment::Reset(size_t blockSize, unsigned char blocks)
 	{
 		EP_ASSERT(blockSize > 0);
 		EP_ASSERT(blocks > 0);
@@ -58,7 +58,7 @@ namespace epl
 			*tmp=++i;
 		}
 	}
-	void *StaticAllocator::Fragment::Allocate(unsigned int blockSize)
+	void *StaticAllocator::Fragment::Allocate(size_t blockSize)
 	{
 		if(!numBlocksAvailable)
 			return 0;
@@ -69,7 +69,7 @@ namespace epl
 		return result;
 	}
 
-	void StaticAllocator::Fragment::Deallocate(void *p, unsigned int blockSize)
+	void StaticAllocator::Fragment::Deallocate(void *p, size_t blockSize)
 	{
 		EP_ASSERT(p>=m_Data);
 		unsigned char * releaseData= reinterpret_cast<unsigned char*>(p);
@@ -91,14 +91,14 @@ namespace epl
 	}
 
 
-	StaticAllocator::StaticAllocator(unsigned int blockSize)
+	StaticAllocator::StaticAllocator(size_t blockSize)
 		: m_blockSize(blockSize)
 		, m_allocFragment(0)
 		, m_deallocFragment(0)
 	{
 		EP_ASSERT(m_blockSize > 0);
 
-		unsigned int numBlocks = DEFAULT_FRAGMENT_SIZE / blockSize;
+		size_t numBlocks = DEFAULT_FRAGMENT_SIZE / blockSize;
 		if (numBlocks > UCHAR_MAX) numBlocks = UCHAR_MAX;
 		else if (numBlocks == 0) numBlocks = 8 * blockSize;
 
@@ -133,7 +133,7 @@ namespace epl
 
 	void StaticAllocator::Swap(StaticAllocator& rhs)
 	{
-		SwapFunc<unsigned int>(&m_blockSize, &(rhs.m_blockSize));
+		SwapFunc<size_t>(&m_blockSize, &(rhs.m_blockSize));
 		SwapFunc<unsigned char>(&m_numBlocks, &(rhs.m_numBlocks));
 		SwapFunc<Fragments>(&m_fragments, &(rhs.m_fragments));
 		SwapFunc<Fragment*>(&m_allocFragment, &(rhs.m_allocFragment));
@@ -145,7 +145,7 @@ namespace epl
 		if(m_allocFragment==0 || m_allocFragment->numBlocksAvailable==0)
 		{
 
-			unsigned int i;
+			size_t i;
 			for(i=0;i<=m_fragments.size();i++)
 			{
 				Fragment* iter=NULL;
@@ -192,7 +192,7 @@ namespace epl
 	}
 	void StaticAllocator::Delete()
 	{
-		unsigned int trav;
+		size_t trav;
 		Fragment *tmp = NULL; 
 		for(trav=0;trav<m_fragments.size();trav++)
 		{
@@ -210,8 +210,8 @@ namespace epl
 	{
 		if(type&CACHE_TYPE_FRAGMENT)
 		{
-			int trav;
-			for(trav=m_fragments.size()-1;trav>=0;trav--)
+			ssize_t trav;
+			for(trav=static_cast<ssize_t>(m_fragments.size())-1;trav>=0;trav--)
 			{
 				Fragment *tmp=&(m_fragments.at(trav));
 				if(tmp->numBlocksAvailable==m_numBlocks)
@@ -237,7 +237,7 @@ namespace epl
 		EP_ASSERT(!m_fragments.empty());
 		EP_ASSERT(m_deallocFragment);
 
-		unsigned int chunkLength = static_cast<unsigned int>(m_numBlocks) * m_blockSize;
+		size_t chunkLength = m_numBlocks * m_blockSize;
 
 		Fragment* lo = m_deallocFragment;
 		Fragment* hi = m_deallocFragment + 1;
@@ -340,13 +340,13 @@ namespace epl
 
 
 
-	TinyObjAllocator::TinyObjAllocator(unsigned int fragmentSize,unsigned int maxObjectSize)
+	TinyObjAllocator::TinyObjAllocator(size_t fragmentSize,size_t maxObjectSize)
 		: m_lastAlloc(0), m_lastDealloc(0), m_fragmentSize(fragmentSize), m_maxObjectSize(maxObjectSize) 
 	{   
 	}
 	TinyObjAllocator::~TinyObjAllocator()
 	{
-		unsigned int trav;
+		size_t trav;
 		for(trav=0;trav<m_pool.size();trav++)
 		{
 			StaticAllocator *tmp=&(m_pool.at(trav));
@@ -356,7 +356,7 @@ namespace epl
 
 	}
 
-	void* TinyObjAllocator::Allocate(unsigned int numBytes)
+	void* TinyObjAllocator::Allocate(size_t numBytes)
 	{
 		if (numBytes > m_maxObjectSize) 
 			return operator new(numBytes);
@@ -367,13 +367,13 @@ namespace epl
 		}
 		StaticAllocator *i;
 
-		unsigned int trav;
+		size_t trav;
 		for(trav=0;trav<m_pool.size();trav++)
 		{
 			if(m_pool.at(trav).GetBlockSize()>=numBytes)
 				break;
 		}
-		unsigned int idx=trav;
+		size_t idx=trav;
 		i=NULL;
 		if(m_pool.size()>idx)
 			i=&(m_pool.at(idx));
@@ -388,7 +388,7 @@ namespace epl
 		return m_lastAlloc->Allocate();
 	}
 
-	void TinyObjAllocator::Deallocate(void* p, unsigned int numBytes, CacheType type)
+	void TinyObjAllocator::Deallocate(void* p, size_t numBytes, CacheType type)
 	{
 		if (numBytes > m_maxObjectSize) 
 		{
@@ -406,15 +406,14 @@ namespace epl
 
 		StaticAllocator *i = NULL;
 
-		unsigned int trav;
+		size_t trav;
 		for(trav=0;trav<m_pool.size();trav++)
 		{
 			if(m_pool.at(trav).GetBlockSize()>=numBytes)
 				break;
 		}
-		int idx=trav;
+		size_t idx=trav;
 
-		EP_ASSERT(idx !=-1);
 		i=&(m_pool.at(idx));
 		EP_ASSERT(i->GetBlockSize() == numBytes);
 		m_lastDealloc = i;
@@ -442,8 +441,8 @@ namespace epl
 
 	void TinyObjAllocator::Compress(CacheType type)
 	{
-		int trav;
-		for(trav=m_pool.size()-1;trav>=0;trav--)
+		ssize_t trav;
+		for(trav=static_cast<ssize_t>(m_pool.size())-1;trav>=0;trav--)
 		{
 			StaticAllocator *tmp=&(m_pool.at(trav));
 			tmp->Compress(type);

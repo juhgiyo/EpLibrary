@@ -50,16 +50,16 @@ namespace epl
 	@return the pointer to the item found. If not found returns NULL.
 	*/
 	template <typename T,typename T2>
-	T2 * BinarySearch (T const &_pKey,T2* searchList,const unsigned int listSize,CompResultType (__cdecl *CompareFunc)(const void * , const void *), int &retIdx)
+	T2 * BinarySearch (T const &_pKey,T2* searchList,size_t listSize,CompResultType (__cdecl *CompareFunc)(const void * , const void *), size_t &retIdx)
 	{
 		if (searchList == NULL || listSize<1)
 		{
 			retIdx=listSize;
 			return NULL;
 		}
-		int low = 0;
-		int high= listSize-1;
-		int med = (low+high)/2;
+		size_t low = 0;
+		size_t high= listSize-1;
+		size_t med = (low+high)/2;
 
 		T2 * tpCur = NULL;
 		while ( 1 )

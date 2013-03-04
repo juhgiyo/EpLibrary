@@ -105,7 +105,7 @@ namespace epl
 		@param[in] byteSize the byte size of the value
 		@return true if successful, otherwise false.
 		*/
-		virtual bool write(const void * value,const int byteSize);
+		virtual bool write(const void * value,size_t byteSize);
 
 		/*!
 		Read the value from the stream.
@@ -113,7 +113,7 @@ namespace epl
 		@param[in] byteSize the byte size of the value
 		@return true if successful, otherwise false.
 		*/
-		virtual bool read(void * value,const int byteSize);
+		virtual bool read(void * value,size_t byteSize);
 
 		/// The file name to load/write the stream
 		EpTString m_fileName;

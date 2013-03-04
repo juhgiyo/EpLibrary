@@ -79,7 +79,7 @@ unsigned int System::GetTickCount()
 }
 
 
-void* System::Memcpy (void* dest, unsigned int dstSizeInByte, const void* source, unsigned int srcSizeInByte)
+void* System::Memcpy (void* dest, size_t dstSizeInByte, const void* source, size_t srcSizeInByte)
 {
 	if(dstSizeInByte<srcSizeInByte)
 		return 0;
@@ -94,49 +94,49 @@ void* System::Memcpy (void* dest, unsigned int dstSizeInByte, const void* source
 	}
 }
 
-void* System::Memcpy (void* dest, const void* source, unsigned int srcSizeInByte)
+void* System::Memcpy (void* dest, const void* source, size_t srcSizeInByte)
 {
 	return System::Memcpy(dest,srcSizeInByte,source,srcSizeInByte);
 }
 
-int System::Memcmp (void* buf1, const void* buf2, unsigned int compSizeInByte)
+int System::Memcmp (void* buf1, const void* buf2, size_t compSizeInByte)
 {
 	return memcmp(buf1,buf2,compSizeInByte);
 }
 
-void* System::Memset(void* source,int val,unsigned int srcSizeInByte)
+void* System::Memset(void* source,int val,size_t srcSizeInByte)
 {
 	return memset(source,val,srcSizeInByte);
 }
 
 
 
-EpErrno System::StrDate(char * buffer, unsigned int numberOfElements)
+EpErrno System::StrDate(char * buffer, size_t numberOfElements)
 {
 	return _strdate_s(buffer,numberOfElements);
 }
 
-EpErrno System::StrTime(char * buffer, unsigned int numberOfElements)
+EpErrno System::StrTime(char * buffer, size_t numberOfElements)
 {
 	return _strtime_s(buffer,numberOfElements);
 }
 
-EpErrno System::WStrDate(wchar_t * buffer, unsigned int numberOfElements)
+EpErrno System::WStrDate(wchar_t * buffer, size_t numberOfElements)
 {
 	return _wstrdate_s(buffer,numberOfElements);
 }
 
-EpErrno System::WStrTime(wchar_t * buffer, unsigned int numberOfElements)
+EpErrno System::WStrTime(wchar_t * buffer,size_t numberOfElements)
 {
 	return _wstrtime_s(buffer,numberOfElements);
 }
 
-EpErrno System::TcsDate(TCHAR * buffer, unsigned int numberOfElements)
+EpErrno System::TcsDate(TCHAR * buffer, size_t numberOfElements)
 {
 	return _tstrdate_s(buffer,numberOfElements);
 }
 
-EpErrno System::TcsTime(TCHAR * buffer, unsigned int numberOfElements)
+EpErrno System::TcsTime(TCHAR * buffer, size_t numberOfElements)
 {
 	return _tstrtime_s(buffer,numberOfElements);
 }
@@ -195,7 +195,7 @@ int System::Printf_V(const char* format, va_list args)
 }
 
 
-int System::SPrintf(char *dest,unsigned int dstSizeInCharacter,const char *format,...)
+int System::SPrintf(char *dest,size_t dstSizeInCharacter,const char *format,...)
 {
 	va_list args=NULL;
 	int retVal=0;
@@ -205,7 +205,7 @@ int System::SPrintf(char *dest,unsigned int dstSizeInCharacter,const char *forma
 	return retVal;
 }
 
-int System::SPrintf_V(char *dest,unsigned int dstSizeInCharacter,const char *format,va_list args)
+int System::SPrintf_V(char *dest,size_t dstSizeInCharacter,const char *format,va_list args)
 {
 	return vsprintf_s(dest,dstSizeInCharacter,format,args);
 }
@@ -256,7 +256,7 @@ int System::WPrintf_V(const wchar_t* format, va_list args)
 }
 
 
-int System::SWPrintf(wchar_t *dest,unsigned int dstSizeInCharacter,const wchar_t *format,...)
+int System::SWPrintf(wchar_t *dest,size_t dstSizeInCharacter,const wchar_t *format,...)
 {
 	va_list args=NULL;
 	int retVal=0;
@@ -266,7 +266,7 @@ int System::SWPrintf(wchar_t *dest,unsigned int dstSizeInCharacter,const wchar_t
 	return retVal;
 }
 
-int System::SWPrintf_V(wchar_t *dest,unsigned int dstSizeInCharacter,const wchar_t *format,va_list args)
+int System::SWPrintf_V(wchar_t *dest,size_t dstSizeInCharacter,const wchar_t *format,va_list args)
 {
 	return vswprintf_s(dest,dstSizeInCharacter,format,args);
 }
@@ -313,7 +313,7 @@ int System::TPrintf_V(const TCHAR* format, va_list args)
 {
 	return _vtprintf_s(format,args);
 }
-int System::STPrintf(TCHAR *dest,unsigned int dstSizeInCharacter,const TCHAR *format,...)
+int System::STPrintf(TCHAR *dest,size_t dstSizeInCharacter,const TCHAR *format,...)
 {
 	va_list args=NULL; 
 	int retVal=0;
@@ -323,7 +323,7 @@ int System::STPrintf(TCHAR *dest,unsigned int dstSizeInCharacter,const TCHAR *fo
 	return retVal;
 }
 
-int System::STPrintf_V(TCHAR *dest,unsigned int dstSizeInCharacter,const TCHAR *format,va_list args)
+int System::STPrintf_V(TCHAR *dest,size_t dstSizeInCharacter,const TCHAR *format,va_list args)
 {
 	return _vstprintf_s(dest,dstSizeInCharacter,format,args);
 }
@@ -369,7 +369,7 @@ int System::StrLen(const char *format,...)
 	return retVal;
 }
 
-char* System::StrCat (char* dest, unsigned int dstSizeInCharacter, const char* source)
+char* System::StrCat (char* dest, size_t dstSizeInCharacter, const char* source)
 {
 	int err = strcat_s(dest,dstSizeInCharacter,source);
 	if (err == 0)
@@ -382,7 +382,7 @@ char* System::StrCat (char* dest, unsigned int dstSizeInCharacter, const char* s
 	}
 }
 
-char* System::StrNCpy (char* dest, unsigned int dstSizeInCharacter, const char* source, unsigned int srcSizeInCharacter)
+char* System::StrNCpy (char* dest, size_t dstSizeInCharacter, const char* source, size_t srcSizeInCharacter)
 {
 	int err = strncpy_s(dest,dstSizeInCharacter,source,srcSizeInCharacter);
 	if (err == 0)
@@ -426,7 +426,7 @@ int System::MbsLen(const unsigned char *format,...)
 	return retVal;
 }
 
-unsigned char* System::MbsCat (unsigned char* dest, unsigned int dstSizeInCharacter, const unsigned char* source)
+unsigned char* System::MbsCat (unsigned char* dest, size_t dstSizeInCharacter, const unsigned char* source)
 {
 	int err = _mbscat_s(dest,dstSizeInCharacter,source);
 	if (err == 0)
@@ -439,7 +439,7 @@ unsigned char* System::MbsCat (unsigned char* dest, unsigned int dstSizeInCharac
 	}
 }
 
-unsigned char* System::MbsNCpy (unsigned char* dest, unsigned int dstSizeInCharacter, const unsigned char* source, unsigned int srcSizeInCharacter)
+unsigned char* System::MbsNCpy (unsigned char* dest, size_t dstSizeInCharacter, const unsigned char* source, size_t srcSizeInCharacter)
 {
 	int err = _mbsncpy_s(dest,dstSizeInCharacter,source,srcSizeInCharacter);
 	if (err == 0)
@@ -481,7 +481,7 @@ int System::WcsLen(const wchar_t *format,...)
 	return retVal;
 }
 
-wchar_t* System::WcsCat (wchar_t* dest, unsigned int dstSizeInCharacter, const wchar_t* source)
+wchar_t* System::WcsCat (wchar_t* dest, size_t dstSizeInCharacter, const wchar_t* source)
 {
 	int err = wcscat_s(dest,dstSizeInCharacter,source);
 	if (err == 0)
@@ -494,7 +494,7 @@ wchar_t* System::WcsCat (wchar_t* dest, unsigned int dstSizeInCharacter, const w
 	}
 }
 
-wchar_t* System::WcsNCpy (wchar_t* dest, unsigned int dstSizeInCharacter, const wchar_t* source, unsigned int srcSizeInCharacter)
+wchar_t* System::WcsNCpy (wchar_t* dest, size_t dstSizeInCharacter, const wchar_t* source, size_t srcSizeInCharacter)
 {
 	int err = wcsncpy_s(dest,dstSizeInCharacter,source,srcSizeInCharacter);
 	if (err == 0)
@@ -536,7 +536,7 @@ int System::TcsLen(const TCHAR *format,...)
 	va_end(args); 
 	return retVal;
 }
-TCHAR* System::TcsCat (TCHAR* dest, unsigned int dstSizeInCharacter, const TCHAR* source)
+TCHAR* System::TcsCat (TCHAR* dest, size_t dstSizeInCharacter, const TCHAR* source)
 {
 	int err = _tcscat_s(dest,dstSizeInCharacter,source);
 	if (err == 0)
@@ -548,7 +548,7 @@ TCHAR* System::TcsCat (TCHAR* dest, unsigned int dstSizeInCharacter, const TCHAR
 		return 0;
 	}
 }
-TCHAR* System::TcsNCpy (TCHAR* dest, unsigned int dstSizeInCharacter, const TCHAR* source, unsigned int srcSizeInCharacter)
+TCHAR* System::TcsNCpy (TCHAR* dest, size_t dstSizeInCharacter, const TCHAR* source, size_t srcSizeInCharacter)
 {
 	int err = _tcsncpy_s(dest,dstSizeInCharacter,source,srcSizeInCharacter);
 	if (err == 0)
@@ -650,7 +650,7 @@ int System::FClose(EpFile * const fileStream)
 	return fclose(fileStream);
 }
 
-unsigned int System::FWrite(const void* buffer,unsigned int sizeInByte, unsigned int count, EpFile * const fileStream)
+unsigned int System::FWrite(const void* buffer,size_t sizeInByte, size_t count, EpFile * const fileStream)
 {
 	return fwrite(buffer,sizeInByte,count,fileStream);
 }
@@ -664,7 +664,7 @@ long System::FSize(EpFile* const fileStream)
 	return fileSize;
 }
 
-unsigned int System::FRead(void *retBuff,unsigned int sizeInByte, unsigned int count,EpFile * const fileStream)
+unsigned int System::FRead(void *retBuff,size_t sizeInByte, size_t count,EpFile * const fileStream)
 {
 	return fread(retBuff,sizeInByte,count,fileStream);
 }
@@ -674,7 +674,7 @@ unsigned long System::GetLastError()
 {
 	return ::GetLastError();
 }
-unsigned long System::FormatLastErrorMessage(TCHAR *retBuff, const unsigned int maxElementCount,unsigned long *retErrNo) 
+unsigned long System::FormatLastErrorMessage(TCHAR *retBuff, unsigned long maxElementCount,unsigned long *retErrNo) 
 {
 	unsigned long err=System::GetLastError();
 	if(retErrNo!=NULL)
@@ -766,7 +766,7 @@ unsigned long System::FormatLastErrorMessage(EpWString &retString,unsigned long 
 	return retVal;
 }
 
-int System::NoticeBox(const TCHAR* fileName, const TCHAR* funcName, const unsigned int lineNum,const TCHAR* format,...)
+int System::NoticeBox(const TCHAR* fileName, const TCHAR* funcName, size_t lineNum,const TCHAR* format,...)
 {
 	int length,fullLength;
 	TCHAR *tmpString=NULL;
@@ -791,7 +791,7 @@ int System::NoticeBox(const TCHAR* fileName, const TCHAR* funcName, const unsign
 
 }
 
-EpTString System::HexToString(const unsigned char *buff, unsigned int len)
+EpTString System::HexToString(const unsigned char *buff, size_t len)
 {
 
 	EpTString result;
@@ -831,9 +831,9 @@ EpTString System::HexToString(const unsigned char *buff, unsigned int len)
 }
 
 
-EpWString System::MultiByteToWideChar(const char *multiByteCharString, unsigned int stringLength)
+EpWString System::MultiByteToWideChar(const char *multiByteCharString, int stringLength)
 {
-	unsigned int sizeNeeded=::MultiByteToWideChar(CP_ACP,0,multiByteCharString,stringLength,NULL,0);
+	int sizeNeeded=::MultiByteToWideChar(CP_ACP,0,multiByteCharString,stringLength,NULL,0);
 	wchar_t *tString=EP_NEW wchar_t[sizeNeeded+1];
 	System::Memset(tString,0,sizeof(wchar_t)*(sizeNeeded+1));
 	//mbstowcs(tString,multiByteCharString,stringLength);
@@ -846,7 +846,7 @@ EpWString System::MultiByteToWideChar(const char *multiByteCharString, unsigned 
 
 EpWString System::MultiByteToWideChar(const char *multiByteCharString)
 {
-	unsigned int sizeNeeded=::MultiByteToWideChar(CP_ACP,0,multiByteCharString,-1,NULL,0);
+	int sizeNeeded=::MultiByteToWideChar(CP_ACP,0,multiByteCharString,-1,NULL,0);
 	wchar_t *tString=EP_NEW wchar_t[sizeNeeded+1];
 	System::Memset(tString,0,sizeof(wchar_t)*(sizeNeeded+1));
 	//mbstowcs(tString,multiByteCharString,stringLength);
@@ -857,14 +857,14 @@ EpWString System::MultiByteToWideChar(const char *multiByteCharString)
 	return retString;
 }
 
-int System::MultiByteToWideChar(const char *multiByteCharString, unsigned int stringLength, wchar_t *retWideCharString)
+int System::MultiByteToWideChar(const char *multiByteCharString, int stringLength, wchar_t *retWideCharString)
 {
 	if(retWideCharString==NULL)
 	{
 		return ::MultiByteToWideChar(CP_ACP,0,multiByteCharString,stringLength,NULL,0);
 	}
 	int result;
-	unsigned int sizeNeeded=::MultiByteToWideChar(CP_ACP,0,multiByteCharString,stringLength,NULL,0);
+	int sizeNeeded=::MultiByteToWideChar(CP_ACP,0,multiByteCharString,stringLength,NULL,0);
 	//result=mbstowcs(retWideCharString,multiByteCharString,stringLength);
 	result=::MultiByteToWideChar(CP_ACP,0,multiByteCharString,stringLength,retWideCharString,sizeNeeded);
 	if(retWideCharString)
@@ -879,7 +879,7 @@ int System::MultiByteToWideChar(const char *multiByteCharString, wchar_t *retWid
 		return ::MultiByteToWideChar(CP_ACP,0,multiByteCharString,-1,NULL,0);
 	}
 	int result;
-	unsigned int sizeNeeded=::MultiByteToWideChar(CP_ACP,0,multiByteCharString,-1,NULL,0);
+	int sizeNeeded=::MultiByteToWideChar(CP_ACP,0,multiByteCharString,-1,NULL,0);
 	//result=mbstowcs(retWideCharString,multiByteCharString,stringLength);
 	result=::MultiByteToWideChar(CP_ACP,0,multiByteCharString,-1,retWideCharString,sizeNeeded);
 	if(retWideCharString)
@@ -888,14 +888,14 @@ int System::MultiByteToWideChar(const char *multiByteCharString, wchar_t *retWid
 }
 
 
-unsigned int System::WideCharToMultiByte(const wchar_t* wideCharString, char *retMultiByteString)
+int System::WideCharToMultiByte(const wchar_t* wideCharString, char *retMultiByteString)
 {
 	if(retMultiByteString==NULL)
 	{
 		return ::WideCharToMultiByte(CP_ACP,0,wideCharString,-1,NULL,0,NULL,NULL);
 	}
-	unsigned int result;
-	unsigned int sizeNeeded=::WideCharToMultiByte(CP_ACP,0,wideCharString,-1,NULL,0,NULL,NULL);
+	int result;
+	int sizeNeeded=::WideCharToMultiByte(CP_ACP,0,wideCharString,-1,NULL,0,NULL,NULL);
 	//result=wcstombs(retMultiByteString,wideCharString,sizeNeeded);
 	result=::WideCharToMultiByte(CP_ACP,0,wideCharString,-1,retMultiByteString,sizeNeeded,NULL,NULL);
 	if(retMultiByteString)
@@ -903,14 +903,14 @@ unsigned int System::WideCharToMultiByte(const wchar_t* wideCharString, char *re
 	return result;
 }
 
-unsigned int System::WideCharToMultiByte(const wchar_t* wideCharString, unsigned int stringLength,char *retMultiByteString)
+int System::WideCharToMultiByte(const wchar_t* wideCharString, int stringLength,char *retMultiByteString)
 {
 	if(retMultiByteString==NULL)
 	{
 		return ::WideCharToMultiByte(CP_ACP,0,wideCharString,stringLength,NULL,0,NULL,NULL);
 	}
-	unsigned int result;
-	unsigned int sizeNeeded=::WideCharToMultiByte(CP_ACP,0,wideCharString,stringLength,NULL,0,NULL,NULL);
+	int result;
+	int sizeNeeded=::WideCharToMultiByte(CP_ACP,0,wideCharString,stringLength,NULL,0,NULL,NULL);
 	//result=wcstombs(retMultiByteString,wideCharString,stringLength);
 	result=::WideCharToMultiByte(CP_ACP,0,wideCharString,stringLength,retMultiByteString,sizeNeeded,NULL,NULL);
 	if(retMultiByteString)
@@ -918,10 +918,10 @@ unsigned int System::WideCharToMultiByte(const wchar_t* wideCharString, unsigned
 	return result;
 }
 
-EpString System::WideCharToMultiByte(const wchar_t *wideCharString, unsigned int stringLength)
+EpString System::WideCharToMultiByte(const wchar_t *wideCharString, int stringLength)
 {
-	unsigned int result;
-	unsigned int sizeNeeded=::WideCharToMultiByte(CP_ACP,0,wideCharString,stringLength,NULL,0,NULL,NULL);
+	int result;
+	int sizeNeeded=::WideCharToMultiByte(CP_ACP,0,wideCharString,stringLength,NULL,0,NULL,NULL);
 	char *cString=EP_NEW char[sizeNeeded+1];
 	System::Memset(cString,0,sizeof(char)*(sizeNeeded+1));
 	//result=wcstombs(cString,wideCharString,stringLength);
@@ -934,8 +934,8 @@ EpString System::WideCharToMultiByte(const wchar_t *wideCharString, unsigned int
 
 EpString System::WideCharToMultiByte(const wchar_t *wideCharString)
 {
-	unsigned int result;
-	unsigned int sizeNeeded=::WideCharToMultiByte(CP_ACP,0,wideCharString,-1,NULL,0,NULL,NULL);
+	int result;
+	int sizeNeeded=::WideCharToMultiByte(CP_ACP,0,wideCharString,-1,NULL,0,NULL,NULL);
 	char *cString=EP_NEW char[sizeNeeded+1];
 	System::Memset(cString,0,sizeof(char)*(sizeNeeded+1));
 	//result=wcstombs(cString,wideCharString,stringLength);
@@ -947,36 +947,36 @@ EpString System::WideCharToMultiByte(const wchar_t *wideCharString)
 }
 
 
-unsigned int  System::UTF16ToUTF8(const wchar_t* utf16String, char *retutf8String)
+int  System::UTF16ToUTF8(const wchar_t* utf16String, char *retutf8String)
 {
 	if(retutf8String==NULL)
 	{
 		return ::WideCharToMultiByte(CP_UTF8,0,utf16String,-1,NULL,0,NULL,NULL);
 	}
-	unsigned int result;
-	unsigned int sizeNeeded=::WideCharToMultiByte(CP_UTF8,0,utf16String,-1,NULL,0,NULL,NULL);
+	int result;
+	int sizeNeeded=::WideCharToMultiByte(CP_UTF8,0,utf16String,-1,NULL,0,NULL,NULL);
 	result=::WideCharToMultiByte(CP_UTF8,0,utf16String,-1,retutf8String,sizeNeeded,NULL,NULL);
 	if(retutf8String)
 		retutf8String[sizeNeeded]='\0';
 	return result;
 }
-unsigned int  System::UTF16ToUTF8(const wchar_t* utf16String,unsigned int stringLength, char *retutf8String)
+int  System::UTF16ToUTF8(const wchar_t* utf16String,int stringLength, char *retutf8String)
 {
 	if(retutf8String==NULL)
 	{
 		return ::WideCharToMultiByte(CP_UTF8,0,utf16String,stringLength,NULL,0,NULL,NULL);
 	}
-	unsigned int result;
-	unsigned int sizeNeeded=::WideCharToMultiByte(CP_UTF8,0,utf16String,stringLength,NULL,0,NULL,NULL);
+	int result;
+	int sizeNeeded=::WideCharToMultiByte(CP_UTF8,0,utf16String,stringLength,NULL,0,NULL,NULL);
 	result=::WideCharToMultiByte(CP_UTF8,0,utf16String,stringLength,retutf8String,sizeNeeded,NULL,NULL);
 	if(retutf8String)
 		retutf8String[sizeNeeded]='\0';
 	return result;
 }
-EpString System::UTF16ToUTF8(const wchar_t *utf16String, unsigned int stringLength)
+EpString System::UTF16ToUTF8(const wchar_t *utf16String, int stringLength)
 {
-	unsigned int result;
-	unsigned int sizeNeeded=::WideCharToMultiByte(CP_UTF8,0,utf16String,stringLength,NULL,0,NULL,NULL);
+	int result;
+	int sizeNeeded=::WideCharToMultiByte(CP_UTF8,0,utf16String,stringLength,NULL,0,NULL,NULL);
 	char *cString=EP_NEW char[sizeNeeded+1];
 	System::Memset(cString,0,sizeof(char)*(sizeNeeded+1));
 	result=::WideCharToMultiByte(CP_UTF8,0,utf16String,stringLength,cString,sizeNeeded,NULL,NULL);
@@ -987,8 +987,8 @@ EpString System::UTF16ToUTF8(const wchar_t *utf16String, unsigned int stringLeng
 }
 EpString System::UTF16ToUTF8(const wchar_t *utf16String)
 {
-	unsigned int result;
-	unsigned int sizeNeeded=::WideCharToMultiByte(CP_UTF8,0,utf16String,-1,NULL,0,NULL,NULL);
+	int result;
+	int sizeNeeded=::WideCharToMultiByte(CP_UTF8,0,utf16String,-1,NULL,0,NULL,NULL);
 	char *cString=EP_NEW char[sizeNeeded+1];
 	System::Memset(cString,0,sizeof(char)*(sizeNeeded+1));
 	result=::WideCharToMultiByte(CP_UTF8,0,utf16String,-1,cString,sizeNeeded,NULL,NULL);
@@ -999,9 +999,9 @@ EpString System::UTF16ToUTF8(const wchar_t *utf16String)
 }
 
 
-EpWString System::UTF8ToUTF16(const char *utf8String, unsigned int stringLength)
+EpWString System::UTF8ToUTF16(const char *utf8String, int stringLength)
 {
-	unsigned int sizeNeeded=::MultiByteToWideChar(CP_UTF8,0,utf8String,stringLength,NULL,0);
+	int sizeNeeded=::MultiByteToWideChar(CP_UTF8,0,utf8String,stringLength,NULL,0);
 	wchar_t *tString=EP_NEW wchar_t[sizeNeeded+1];
 	System::Memset(tString,0,sizeof(wchar_t)*(sizeNeeded+1));
 	::MultiByteToWideChar(CP_UTF8,0,utf8String,stringLength,tString,sizeNeeded);
@@ -1012,7 +1012,7 @@ EpWString System::UTF8ToUTF16(const char *utf8String, unsigned int stringLength)
 }
 EpWString System::UTF8ToUTF16(const char *utf8String)
 {
-	unsigned int sizeNeeded=::MultiByteToWideChar(CP_UTF8,0,utf8String,-1,NULL,0);
+	int sizeNeeded=::MultiByteToWideChar(CP_UTF8,0,utf8String,-1,NULL,0);
 	wchar_t *tString=EP_NEW wchar_t[sizeNeeded+1];
 	System::Memset(tString,0,sizeof(wchar_t)*(sizeNeeded+1));
 	::MultiByteToWideChar(CP_UTF8,0,utf8String,-1,tString,sizeNeeded);
@@ -1021,14 +1021,14 @@ EpWString System::UTF8ToUTF16(const char *utf8String)
 	EP_DELETE[] tString;
 	return retString;
 }
-int System::UTF8ToUTF16(const char *utf8String, unsigned int stringLength, wchar_t *retUtf16String)
+int System::UTF8ToUTF16(const char *utf8String, int stringLength, wchar_t *retUtf16String)
 {
 	if(retUtf16String==NULL)
 	{
 		return ::MultiByteToWideChar(CP_UTF8,0,utf8String,stringLength,NULL,0);
 	}
 	int result;
-	unsigned int sizeNeeded=::MultiByteToWideChar(CP_UTF8,0,utf8String,stringLength,NULL,0);
+	int sizeNeeded=::MultiByteToWideChar(CP_UTF8,0,utf8String,stringLength,NULL,0);
 	result=::MultiByteToWideChar(CP_UTF8,0,utf8String,stringLength,retUtf16String,sizeNeeded);
 	if(retUtf16String)
 		retUtf16String[sizeNeeded]=WIDEN('\0');
@@ -1041,14 +1041,14 @@ int System::UTF8ToUTF16(const char *utf8String, wchar_t *retUtf16String)
 		return ::MultiByteToWideChar(CP_UTF8,0,utf8String,-1,NULL,0);
 	}
 	int result;
-	unsigned int sizeNeeded=::MultiByteToWideChar(CP_UTF8,0,utf8String,-1,NULL,0);
+	int sizeNeeded=::MultiByteToWideChar(CP_UTF8,0,utf8String,-1,NULL,0);
 	result=::MultiByteToWideChar(CP_UTF8,0,utf8String,-1,retUtf16String,sizeNeeded);
 	if(retUtf16String)
 		retUtf16String[sizeNeeded]=WIDEN('\0');
 	return result;
 }
 
-bool System::IsMultiByte(byte *multiByteString, unsigned int byteLength)
+bool System::IsMultiByte(byte *multiByteString,size_t byteLength)
 {
 	for(int stringTrav=0;stringTrav<byteLength;stringTrav++)
 	{

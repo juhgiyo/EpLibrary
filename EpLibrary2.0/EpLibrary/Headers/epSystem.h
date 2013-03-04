@@ -85,6 +85,12 @@ namespace epl
 	/// A type definition for EpErrno Type
 	typedef int EpErrno;
 
+#ifdef  _WIN64
+	typedef __int64    ssize_t;
+#else
+	typedef int   ssize_t;
+#endif
+
 	/*! 
 	@class System epSystem.h
 	@brief This is a base class for System  Class
@@ -117,7 +123,7 @@ namespace epl
 		@param[in] srcSizeInByte the size of source to copy.
 		@return the resulting buffer.
 		*/
-		static void* Memcpy (void* dest, unsigned int dstSizeInByte, const void* source, unsigned int srcSizeInByte);
+		static void* Memcpy (void* dest, size_t dstSizeInByte, const void* source, size_t srcSizeInByte);
 
 		/*!
 		Copy the source buffer to destination buffer.
@@ -126,7 +132,7 @@ namespace epl
 		@param[in] srcSizeInByte the size of source to copy.
 		@return the resulting buffer.
 		*/
-		static void* Memcpy (void* dest, const void* source, unsigned int srcSizeInByte);
+		static void* Memcpy (void* dest, const void* source, size_t srcSizeInByte);
 
 		
 		/*!
@@ -138,7 +144,7 @@ namespace epl
 		        >0 if buf1 is greater than buf2 <br/>
 				<0 if buf1 is less than buf2
 		*/
-		static int Memcmp (void* buf1, const void* buf2, unsigned int compSizeInByte);
+		static int Memcmp (void* buf1, const void* buf2, size_t compSizeInByte);
 
 		/*!
 		Set the source buffer with given value.
@@ -147,7 +153,7 @@ namespace epl
 		@param[in] srcSizeInByte the size of source.
 		@return the resulting buffer.
 		*/
-		static void* Memset(void* source,int val,unsigned int srcSizeInByte);
+		static void* Memset(void* source,int val,size_t srcSizeInByte);
 
 
 		/*!
@@ -156,7 +162,7 @@ namespace epl
 		@param[in] numberOfElements the Maximum number of elements in the buffer.
 		@return 0 if successful, otherwise an error code.
 		*/
-		static EpErrno StrDate(char * buffer, unsigned int numberOfElements);
+		static EpErrno StrDate(char * buffer, size_t numberOfElements);
 
 		/*!
 		Copy the current time to a buffer.
@@ -164,7 +170,7 @@ namespace epl
 		@param[in] numberOfElements the Maximum number of elements in the buffer.
 		@return 0 if successful, otherwise an error code.
 		*/
-		static EpErrno StrTime(char * buffer, unsigned int numberOfElements);
+		static EpErrno StrTime(char * buffer, size_t numberOfElements);
 
 		/*!
 		Copy the current time to a buffer.
@@ -172,7 +178,7 @@ namespace epl
 		@param[in] numberOfElements the Maximum number of elements in the buffer.
 		@return 0 if successful, otherwise an error code.
 		*/
-		static EpErrno WStrTime(wchar_t * buffer, unsigned int numberOfElements);
+		static EpErrno WStrTime(wchar_t * buffer, size_t numberOfElements);
 		
 				/*!
 		Copy the current system date to a buffer.
@@ -180,7 +186,7 @@ namespace epl
 		@param[in] numberOfElements the Maximum number of elements in the buffer.
 		@return 0 if successful, otherwise an error code.
 		*/
-		static EpErrno WStrDate(wchar_t * buffer, unsigned int numberOfElements);
+		static EpErrno WStrDate(wchar_t * buffer, size_t numberOfElements);
 
 		/*!
 		Copy the current system date to a buffer.
@@ -188,7 +194,7 @@ namespace epl
 		@param[in] numberOfElements the Maximum number of elements in the buffer.
 		@return 0 if successful, otherwise an error code.
 		*/
-		static EpErrno TcsDate(TCHAR * buffer, unsigned int numberOfElements);
+		static EpErrno TcsDate(TCHAR * buffer, size_t numberOfElements);
 
 		/*!
 		Copy the current time to a buffer.
@@ -196,7 +202,7 @@ namespace epl
 		@param[in] numberOfElements the Maximum number of elements in the buffer.
 		@return 0 if successful, otherwise an error code.
 		*/
-		static EpErrno TcsTime(TCHAR * buffer, unsigned int numberOfElements);
+		static EpErrno TcsTime(TCHAR * buffer, size_t numberOfElements);
 
 
 		/*!
@@ -311,7 +317,7 @@ namespace epl
 		@param[in] format The format buffer to print out.
 		@return the number of characters written, not including the terminating null character, or a negative value if an output error occurs.
 		*/
-		static int SPrintf(char *dest,unsigned int dstSizeInCharacter,const char *format,...);
+		static int SPrintf(char *dest,size_t dstSizeInCharacter,const char *format,...);
 
 		/*!
 		Print the given buffer to the console.
@@ -321,7 +327,7 @@ namespace epl
 		@param[in] args Pointer to a list of arguments.
 		@return the number of characters written, not including the terminating null character, or a negative value if an output error occurs.
 		*/
-		static int SPrintf_V(char *dest,unsigned int dstSizeInCharacter,const char *format,va_list args);
+		static int SPrintf_V(char *dest,size_t dstSizeInCharacter,const char *format,va_list args);
 
 				/*!
 		Print the given buffer to the console.
@@ -364,7 +370,7 @@ namespace epl
 		@param[in] format The format buffer to print out.
 		@return the number of characters written, not including the terminating null character, or a negative value if an output error occurs.
 		*/
-		static int SWPrintf(wchar_t *dest,unsigned int dstSizeInCharacter,const wchar_t *format,...);
+		static int SWPrintf(wchar_t *dest,size_t dstSizeInCharacter,const wchar_t *format,...);
 
 		/*!
 		Print the given buffer to the console.
@@ -374,7 +380,7 @@ namespace epl
 		@param[in] args Pointer to a list of arguments.
 		@return the number of characters written, not including the terminating null character, or a negative value if an output error occurs.
 		*/
-		static int SWPrintf_V(wchar_t *dest,unsigned int dstSizeInCharacter,const wchar_t *format,va_list args);
+		static int SWPrintf_V(wchar_t *dest,size_t dstSizeInCharacter,const wchar_t *format,va_list args);
 
 		/*!
 		Print the given buffer to the console.
@@ -418,7 +424,7 @@ namespace epl
 		@param[in] format The format buffer to print out.
 		@return the number of characters written, not including the terminating null character, or a negative value if an output error occurs.
 		*/
-		static int STPrintf(TCHAR *dest,unsigned int dstSizeInCharacter,const TCHAR *format,...);
+		static int STPrintf(TCHAR *dest,size_t dstSizeInCharacter,const TCHAR *format,...);
 
 		/*!
 		Print the given buffer to the console.
@@ -428,7 +434,7 @@ namespace epl
 		@param[in] args Pointer to a list of arguments.
 		@return the number of characters written, not including the terminating null character, or a negative value if an output error occurs.
 		*/
-		static int STPrintf_V(TCHAR *dest,unsigned int dstSizeInCharacter,const TCHAR *format,va_list args);
+		static int STPrintf_V(TCHAR *dest,size_t dstSizeInCharacter,const TCHAR *format,va_list args);
 		
 		/*!
 		Print the given buffer to the console.
@@ -463,7 +469,7 @@ namespace epl
 		@param[in] source The source string to be concatenated.
 		@return the resulting buffer.
 		*/
-		static char* StrCat (char* dest, unsigned int dstSizeInCharacter, const char* source);
+		static char* StrCat (char* dest, size_t dstSizeInCharacter, const char* source);
 
 		/*!
 		Copy the source strings to destination string.
@@ -473,7 +479,7 @@ namespace epl
 		@param[in] srcSizeInCharacter the number of source strings.
 		@return the resulting buffer.
 		*/
-		static char* StrNCpy (char* dest, unsigned int dstSizeInCharacter, const char* source, unsigned int srcSizeInCharacter);
+		static char* StrNCpy (char* dest, size_t dstSizeInCharacter, const char* source, size_t srcSizeInCharacter);
 
 		/*!
 		Tokenize the string by delimiters.
@@ -523,7 +529,7 @@ namespace epl
 		@param[in] source The source string to be concatenated.
 		@return the resulting buffer.
 		*/
-		static unsigned char* MbsCat (unsigned char* dest, unsigned int dstSizeInCharacter, const unsigned char* source);
+		static unsigned char* MbsCat (unsigned char* dest, size_t dstSizeInCharacter, const unsigned char* source);
 
 		/*!
 		Copy the source strings to destination string.
@@ -533,7 +539,7 @@ namespace epl
 		@param[in] srcSizeInCharacter the number of source strings.
 		@return the resulting buffer.
 		*/
-		static unsigned char* MbsNCpy (unsigned char* dest, unsigned int dstSizeInCharacter, const unsigned char* source, unsigned int srcSizeInCharacter);
+		static unsigned char* MbsNCpy (unsigned char* dest, size_t dstSizeInCharacter, const unsigned char* source, size_t srcSizeInCharacter);
 
 		/*!
 		Tokenize the string by delimiters.
@@ -582,7 +588,7 @@ namespace epl
 		@param[in] source The source string to be concatenated.
 		@return the resulting buffer.
 		*/
-		static wchar_t* WcsCat (wchar_t* dest, unsigned int dstSizeInCharacter, const wchar_t* source);
+		static wchar_t* WcsCat (wchar_t* dest, size_t dstSizeInCharacter, const wchar_t* source);
 
 		/*!
 		Copy the source strings to destination string.
@@ -592,7 +598,7 @@ namespace epl
 		@param[in] srcSizeInCharacter the number of source strings.
 		@return the resulting buffer.
 		*/
-		static wchar_t* WcsNCpy (wchar_t* dest, unsigned int dstSizeInCharacter, const wchar_t* source, unsigned int srcSizeInCharacter);
+		static wchar_t* WcsNCpy (wchar_t* dest, size_t dstSizeInCharacter, const wchar_t* source, size_t srcSizeInCharacter);
 
 		/*!
 		Tokenize the string by delimiters.
@@ -644,7 +650,7 @@ namespace epl
 		@param[in] source The source string to be concatenated.
 		@return the resulting buffer.
 		*/
-		static TCHAR* TcsCat (TCHAR* dest, unsigned int dstSizeInCharacter, const TCHAR* source);
+		static TCHAR* TcsCat (TCHAR* dest, size_t dstSizeInCharacter, const TCHAR* source);
 
 		/*!
 		Copy the source strings to destination string.
@@ -654,7 +660,7 @@ namespace epl
 		@param[in] srcSizeInCharacter the number of source strings.
 		@return the resulting buffer.
 		*/
-		static TCHAR* TcsNCpy (TCHAR* dest, unsigned int dstSizeInCharacter, const TCHAR* source, unsigned int srcSizeInCharacter);
+		static TCHAR* TcsNCpy (TCHAR* dest, size_t dstSizeInCharacter, const TCHAR* source, size_t srcSizeInCharacter);
 
 		/*!
 		Tokenize the string by delimiters.
@@ -786,7 +792,7 @@ namespace epl
 		@param[in] fileStream Pointer to FILE structure.
 		@return the number of full items actually written.
 		*/
-		static unsigned int FWrite(const void* buffer,unsigned int sizeInByte, unsigned int count, EpFile * const fileStream);
+		static size_t FWrite(const void* buffer,size_t sizeInByte, size_t count, EpFile * const fileStream);
 		
 		/*!
 		Read from the given file stream and write to the given buffer.
@@ -796,7 +802,7 @@ namespace epl
 		@param[in] fileStream Pointer to FILE structure.
 		@return the number of full items actually read.
 		*/
-		static unsigned int FRead(void *retBuff,unsigned int sizeInByte, unsigned int count,EpFile * const fileStream);
+		static size_t FRead(void *retBuff,size_t sizeInByte, size_t count,EpFile * const fileStream);
 
 		/*!
 		Return the file size in byte.
@@ -818,7 +824,7 @@ namespace epl
 		@param[out] retErrNo the last error number
 		@return if succeeds, the number of TCHARs stored in the output buffer, excluding the terminating null character otherwise zero.
 		*/
-		static unsigned long FormatLastErrorMessage(TCHAR *retBuff, const unsigned int maxElementCount,unsigned long *retErrNo=NULL);
+		static unsigned long FormatLastErrorMessage(TCHAR *retBuff, unsigned long maxElementCount,unsigned long *retErrNo=NULL);
 
 		/*!
 		Format the Last Error Code to String
@@ -843,7 +849,7 @@ namespace epl
 		@param[in] format the format of the message
 		@return if succeeds, one of the menu-item values otherwise zero.
 		*/
-		static int NoticeBox(const TCHAR* fileName, const TCHAR* funcName,const unsigned int lineNum,const TCHAR* format,...);
+		static int NoticeBox(const TCHAR* fileName, const TCHAR* funcName,size_t lineNum,const TCHAR* format,...);
 
 		/*!
 		Convert hexadecimal value of given array to EpTString.
@@ -851,7 +857,7 @@ namespace epl
 		@param[in] len length of given array.
 		@return EpTString that contains hexadecimal value.
 		*/
-		static EpTString HexToString(const unsigned char *buff, unsigned int len);
+		static EpTString HexToString(const unsigned char *buff, size_t len);
 
 		/*!
 		Convert MultiByte String to WideChar String. [ANSI -> UTF-16]
@@ -859,7 +865,7 @@ namespace epl
 		@param[in] stringLength length of the MultiByte string excluding the terminating NULL.
 		@return EpWString that contains converted WideChar String.
 		*/
-		static EpWString MultiByteToWideChar(const char *multiByteCharString, unsigned int stringLength);
+		static EpWString MultiByteToWideChar(const char *multiByteCharString, int stringLength);
 
 		/*!
 		Convert MultiByte String to WideChar String. [ANSI -> UTF-16]
@@ -875,7 +881,7 @@ namespace epl
 		@param[out] retWideCharString string that contains converted WideChar String.
 		@return the result status of the conversion.
 		*/
-		static int MultiByteToWideChar(const char *multiByteCharString, unsigned int stringLength, wchar_t *retWideCharString);
+		static int MultiByteToWideChar(const char *multiByteCharString, int stringLength, wchar_t *retWideCharString);
 
 		/*!
 		Convert MultiByte String to WideChar String. [ANSI -> UTF-16]
@@ -892,7 +898,7 @@ namespace epl
 		@param[out] retMultiByteString string that contains converted MultiByte String.
 		@return the number of bytes written into the MultiByte output string, excluding the terminating NULL .
 		*/
-		static unsigned int  WideCharToMultiByte(const wchar_t* wideCharString, char *retMultiByteString);
+		static int  WideCharToMultiByte(const wchar_t* wideCharString, char *retMultiByteString);
 
 		/*!
 		Convert WideChar String to MultiByte String. [UTF-16 -> ANSI]
@@ -901,7 +907,7 @@ namespace epl
 		@param[out] retMultiByteString string that contains converted MultiByte String.
 		@return the number of bytes written into the MultiByte output string, excluding the terminating NULL .
 		*/
-		static unsigned int  WideCharToMultiByte(const wchar_t* wideCharString,unsigned int stringLength, char *retMultiByteString);
+		static int  WideCharToMultiByte(const wchar_t* wideCharString,int stringLength, char *retMultiByteString);
 
 
 		/*!
@@ -910,7 +916,7 @@ namespace epl
 		@param[in] stringLength length of the MultiByte string excluding the terminating NULL.
 		@return EpString that contains converted MultiByte String.
 		*/
-		static EpString WideCharToMultiByte(const wchar_t *wideCharString, unsigned int stringLength);
+		static EpString WideCharToMultiByte(const wchar_t *wideCharString,int stringLength);
 
 		/*!
 		Convert MultiByte String to WideChar String. [UTF-16 -> ANSI]
@@ -926,7 +932,7 @@ namespace epl
 		@param[out] retutf8String string that contains converted UTF-8 String.
 		@return the number of bytes written into the MultiByte output string, excluding the terminating NULL .
 		*/
-		static unsigned int  UTF16ToUTF8(const wchar_t* utf16String, char *retutf8String);
+		static int  UTF16ToUTF8(const wchar_t* utf16String, char *retutf8String);
 
 		/*!
 		Convert UTF-16 String to UTF-8 String. [UTF-16 -> UTF-8]
@@ -935,7 +941,7 @@ namespace epl
 		@param[out] retutf8String string that contains converted UTF-8 String.
 		@return the number of bytes written into the UTF-8 output string, excluding the terminating NULL .
 		*/
-		static unsigned int  UTF16ToUTF8(const wchar_t* utf16String,unsigned int stringLength, char *retutf8String);
+		static int  UTF16ToUTF8(const wchar_t* utf16String,int stringLength, char *retutf8String);
 
 
 		/*!
@@ -944,7 +950,7 @@ namespace epl
 		@param[in] stringLength length of the UTF-8 string excluding the terminating NULL.
 		@return EpString that contains converted UTF-8 String.
 		*/
-		static EpString UTF16ToUTF8(const wchar_t *utf16String, unsigned int stringLength);
+		static EpString UTF16ToUTF8(const wchar_t *utf16String, int stringLength);
 
 		/*!
 		Convert UTF-16 String to UTF-8 String. [UTF-16 -> UTF-8]
@@ -960,7 +966,7 @@ namespace epl
 		@param[in] stringLength length of the UTF-8 string excluding the terminating NULL.
 		@return EpWString that contains converted UTF-16 String.
 		*/
-		static EpWString UTF8ToUTF16(const char *utf8String, unsigned int stringLength);
+		static EpWString UTF8ToUTF16(const char *utf8String, int stringLength);
 
 		/*!
 		Convert UTF-8 String to UTF-16 String. [UTF-8 -> UTF-16]
@@ -976,7 +982,7 @@ namespace epl
 		@param[out] retUtf16String string that contains converted UTF-16 String.
 		@return the result status of the conversion.
 		*/
-		static int UTF8ToUTF16(const char *utf8String, unsigned int stringLength, wchar_t *retUtf16String);
+		static int UTF8ToUTF16(const char *utf8String,int stringLength, wchar_t *retUtf16String);
 
 		/*!
 		Convert UTF-8 String to UTF-16 String. [UTF-8 -> UTF-16]
@@ -992,7 +998,7 @@ namespace epl
 		@param[out] byteLength byte size of the given string.
 		@return true if string contains multi-byte character, otherwise false.
 		*/
-		static bool IsMultiByte(byte *multiByteString, unsigned int byteLength);
+		static bool IsMultiByte(byte *multiByteString, size_t byteLength);
 
 		/*!
 		Output the debug message

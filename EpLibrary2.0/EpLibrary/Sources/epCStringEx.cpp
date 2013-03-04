@@ -143,15 +143,15 @@ CStringEx CStringEx::CommaDelimitNumber(const TCHAR* s)
 	bool posNeg=!isdigit(posNegChar);							// if not digit, then assume + or -
 	if (posNeg)											// if so, strip off
 	{
-		q=q.SubStr(1, _tcslen(q)-1);
+		q=q.SubStr(1, static_cast<int>(_tcslen(q))-1);
 	}
 	CStringEx dp=s2.Right(_T('.'));								// remember everything to the right of the decimal point
 	CStringEx q2;											// working string
 	while (_tcslen(q) > 3)									// if more than three digits...
 	{
-		CStringEx s3=CStringEx(_T(","))+q.SubStr(_tcslen(q)-3, 3);		// insert a comma before the last three digits (100's)
+		CStringEx s3=CStringEx(_T(","))+q.SubStr(static_cast<int>(_tcslen(q))-3, 3);		// insert a comma before the last three digits (100's)
 		q2=s3+q2;											// append this to our working string
-		q=q.SubStr(0, _tcslen(q)-3);							// get everything except the last three digits
+		q=q.SubStr(0, static_cast<int>(_tcslen(q))-3);							// get everything except the last three digits
 	}
 	q2=q+q2;												// prepend remainder to the working string
 	if (dp != _T(""))											// if we have decimal point...

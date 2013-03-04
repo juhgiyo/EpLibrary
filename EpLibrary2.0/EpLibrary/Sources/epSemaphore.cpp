@@ -28,7 +28,7 @@ static char THIS_FILE[] = __FILE__;
 using namespace epl;
 
 
-Semaphore::Semaphore(unsigned int count,const TCHAR *semName, LPSECURITY_ATTRIBUTES lpsaAttributes) :BaseLock()
+Semaphore::Semaphore(long count,const TCHAR *semName, LPSECURITY_ATTRIBUTES lpsaAttributes) :BaseLock()
 {
 	m_lpsaAttributes=NULL;
 	if(lpsaAttributes)
@@ -45,7 +45,7 @@ Semaphore::Semaphore(unsigned int count,const TCHAR *semName, LPSECURITY_ATTRIBU
 	m_sem=CreateSemaphore(m_lpsaAttributes,m_initialiCount,count,semName);
 }
 
-Semaphore::Semaphore(unsigned int count, unsigned int initialCount,const TCHAR *semName, LPSECURITY_ATTRIBUTES lpsaAttributes) :BaseLock()
+Semaphore::Semaphore(long count, long initialCount,const TCHAR *semName, LPSECURITY_ATTRIBUTES lpsaAttributes) :BaseLock()
 {
 	m_lpsaAttributes=NULL;
 	if(lpsaAttributes)

@@ -381,7 +381,7 @@ namespace epl
 		@param[in] idx the index to return the function pointer
 		@return the function pointer at given index
 		*/
-		virtual FuncType operator [](unsigned int idx) const
+		virtual FuncType operator [](size_t idx) const
 		{
 			EP_ASSERT(idx<m_funcList.size());
 			vector<RetType (*)(ArgType)>::const_iterator iter=m_funcList.begin();
@@ -762,7 +762,7 @@ namespace epl
 		@param[in] idx the index to return the function pointer
 		@return the function pointer at given index
 		*/
-		virtual FuncType operator [](unsigned int idx) const
+		virtual FuncType operator [](size_t idx) const
 		{
 			EP_ASSERT(idx<m_funcList.size());
 			vector<RetType (*)(void)>::const_iterator iter=m_funcList.begin();

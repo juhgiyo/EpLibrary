@@ -79,7 +79,7 @@ CmdLineOptions &CmdLineOptions::operator=(const CmdLineOptions & b)
 	}
 	return *this;
 }
-unsigned int CmdLineOptions::Parse(int argc, TCHAR **argv)
+size_t CmdLineOptions::Parse(int argc, TCHAR **argv)
 {
 	clear();
 
@@ -108,7 +108,7 @@ bool CmdLineOptions::HasOption(const TCHAR *option) const
 	return (find(option)!=end());
 }
 
-EpTString CmdLineOptions::GetArgument(const TCHAR *option,unsigned int idx, const TCHAR *defaultArg) const
+EpTString CmdLineOptions::GetArgument(const TCHAR *option,size_t idx, const TCHAR *defaultArg) const
 {
 	EpTString retString=_T("");
 	if(defaultArg!=NULL)
@@ -123,7 +123,7 @@ EpTString CmdLineOptions::GetArgument(const TCHAR *option,unsigned int idx, cons
 	return defaultArg;
 }
 
-EpTString CmdLineOptions::GetArgument(const TCHAR *option,unsigned int idx) const
+EpTString CmdLineOptions::GetArgument(const TCHAR *option,size_t idx) const
 {
 	CmdLineMap::const_iterator iter;
 	if((iter=find(option))!=end())

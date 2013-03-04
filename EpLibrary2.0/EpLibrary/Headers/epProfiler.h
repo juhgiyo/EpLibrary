@@ -343,7 +343,7 @@ namespace epl
 		@param[out] retIdx The index of the found profiling log.
 		@return true if found, otherwise false.
 		*/
-		bool isProfileExist(const TCHAR *uniqueName,ProfileNode * &retIter, int &retIdx );
+		bool isProfileExist(const TCHAR *uniqueName,ProfileNode * &retIter, size_t &retIdx );
 
 
 		

@@ -53,7 +53,7 @@ namespace epl
 		@param[in] semName name of the semaphore to distinguish
 		@param[in] lpsaAttributes the security attribute
 		*/
-		Semaphore(unsigned int count=1,const TCHAR *semName=NULL, LPSECURITY_ATTRIBUTES lpsaAttributes = NULL);
+		Semaphore(long count=1,const TCHAR *semName=NULL, LPSECURITY_ATTRIBUTES lpsaAttributes = NULL);
 
 		/*!
 		Default Constructor
@@ -67,7 +67,7 @@ namespace epl
 		@remark initialCount must be greater than or equal to zero and less than or equal to lMaximumCount.<br/>
 		          The state of a semaphore is signaled when its count is greater than zero and nonsignaled when it is zero.
 		*/
-		Semaphore(unsigned int count, unsigned int initialCount,const TCHAR *semName=NULL, LPSECURITY_ATTRIBUTES lpsaAttributes = NULL);
+		Semaphore(long count, long initialCount,const TCHAR *semName=NULL, LPSECURITY_ATTRIBUTES lpsaAttributes = NULL);
 
 
 		/*!
@@ -138,9 +138,9 @@ namespace epl
 		/// Creation Info
 		LPSECURITY_ATTRIBUTES m_lpsaAttributes;
 		/// Semaphore Flag
-		unsigned int m_count;
+		long m_count;
 		/// Semaphore Initial Count
-		unsigned int m_initialiCount;
+		long m_initialiCount;
 		/// Semaphore Name
 		EpTString m_name;
 	};

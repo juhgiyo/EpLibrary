@@ -115,7 +115,7 @@ void FolderHelper::DeleteFolder(const TCHAR * strPath)
 		return;
 	EpTString path=strPath;
 	path=Locale::Trim(path);
-	int length=path.length();
+	size_t length=path.length();
 	if(path.at(length-1)!=_T('\\'))
 	{
 		path.append(_T("\\"));
@@ -147,10 +147,10 @@ bool FolderHelper::CopyFile(const TCHAR *strFromFile, const TCHAR * strToFile,bo
 	return false;
 }
 
-unsigned int FolderHelper::GetActualFileLength(CFile &file)
+size_t FolderHelper::GetActualFileLength(CFile &file)
 {
-	//unsigned int length= (unsigned int)file.SeekToEnd()+1;
-	unsigned int length= static_cast<unsigned int>(file.SeekToEnd());
+	//size_t length= (unsigned int)file.SeekToEnd()+1;
+	size_t length= file.SeekToEnd();
 	file.SeekToBegin();
 	return length;
 }
@@ -158,10 +158,10 @@ unsigned int FolderHelper::GetActualFileLength(CFile &file)
 EpTString FolderHelper::GetPathOnly(const TCHAR * filePath)
 {
 	EpTString retString=filePath;
-	//unsigned int strLength=System::TcsLen(filePath);
-	unsigned int strLength=retString.length();
+	//size_t strLength=System::TcsLen(filePath);
+	size_t strLength=retString.length();
 
-	for(int stringTrav=strLength-1;stringTrav>=0;stringTrav--)
+	for(ssize_t stringTrav=static_cast<ssize_t>(strLength)-1;stringTrav>=0;stringTrav--)
 	{
 		if(retString.at(stringTrav)!=_T('\\'))
 			retString.erase(stringTrav,1);
@@ -174,10 +174,10 @@ EpTString FolderHelper::GetPathOnly(const TCHAR * filePath)
 EpTString FolderHelper::GetFileExtension(const TCHAR *filePath)
 {
 	EpTString tmpString=filePath;
-	//unsigned int strLength=System::TcsLen(filePath);
-	unsigned int strLength=tmpString.length();
+	//size_t strLength=System::TcsLen(filePath);
+	size_t strLength=tmpString.length();
 	EpTString retString=_T("");
-	for(int stringTrav=strLength-1;stringTrav>=0;stringTrav--)
+	for(ssize_t stringTrav=static_cast<ssize_t>(strLength-1);stringTrav>=0;stringTrav--)
 	{
 		if(tmpString.at(stringTrav)==_T('.'))
 		{

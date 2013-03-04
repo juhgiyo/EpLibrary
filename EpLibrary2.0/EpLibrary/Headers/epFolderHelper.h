@@ -100,7 +100,7 @@ namespace epl
 		@param[in] file the file to find the length
 		@return the actual length of the given file in byte size
 		*/
-		static unsigned int GetActualFileLength(CFile &file);
+		static size_t GetActualFileLength(CFile &file);
 
 		
 		/*!

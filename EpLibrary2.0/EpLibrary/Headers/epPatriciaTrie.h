@@ -147,7 +147,7 @@ namespace epl
 		return the number of element in the trie.
 		@return the number of element in the trie
 		*/
-		unsigned int Size() const;
+		size_t Size() const;
 	protected:
 
 		/*! 
@@ -392,7 +392,7 @@ namespace epl
 		@remark returns NULL if insertion fails
 		@return Pointer to the node inserted.
 		*/
-		PatriciaTrieLeaf *insert(BasePatriciaTrieNode *root,const CharacterType* str,unsigned int strTrav,const DataType &data);
+		PatriciaTrieLeaf *insert(BasePatriciaTrieNode *root,const CharacterType* str,size_t strTrav,const DataType &data);
 
 		/*!
 		Actually remove the given string from the trie by recursive
@@ -401,7 +401,7 @@ namespace epl
 		@param[in] strTrav the current index of the string traversing
 		@return true if succeeded otherwise false
 		*/
-		bool erase(BasePatriciaTrieNode *root,const CharacterType* str,unsigned int strTrav);
+		bool erase(BasePatriciaTrieNode *root,const CharacterType* str,size_t strTrav);
 
 		/*!
 		Actually find the given string from the trie by recursive and return the data
@@ -412,7 +412,7 @@ namespace epl
 		@remark returns NULL if find fails
 		@return Pointer to the node found.
 		*/
-		PatriciaTrieLeaf * find(BasePatriciaTrieNode *root,const CharacterType* str,unsigned int strTrav, DataType &retData) const;
+		PatriciaTrieLeaf * find(BasePatriciaTrieNode *root,const CharacterType* str,size_t strTrav, DataType &retData) const;
 
 		/*!
 		Actually find the strings starts with the given string from the trie by recursive
@@ -422,7 +422,7 @@ namespace epl
 		@param[out] retStrDataPairList the string and data pair which the string starts with the given string.
 		@return true if succeeded otherwise false.
 		*/
-		bool findAll(BasePatriciaTrieNode *root,const CharacterType* str,unsigned int strTrav, vector<Pair<const CharacterType*,DataType> > &retStrDataPairList) const;
+		bool findAll(BasePatriciaTrieNode *root,const CharacterType* str,size_t strTrav, vector<Pair<const CharacterType*,DataType> > &retStrDataPairList) const;
 
 		/*!
 		Traverse the all nodes and return the all string and data pair from the trie by recursive
@@ -442,7 +442,7 @@ namespace epl
 		@remark returns NULL if insertion fails
 		@return Pointer to the node inserted.
 		*/
-		PatriciaTrieLeaf *insertLoop(BasePatriciaTrieNode *root,const CharacterType* str,unsigned int strTrav,const DataType &data);
+		PatriciaTrieLeaf *insertLoop(BasePatriciaTrieNode *root,const CharacterType* str,size_t strTrav,const DataType &data);
 
 		/*!
 		Actually remove the given string from the trie by loop
@@ -451,7 +451,7 @@ namespace epl
 		@param[in] strTrav the current index of the string traversing
 		@return true if succeeded otherwise false
 		*/
-		bool eraseLoop(BasePatriciaTrieNode *root,const CharacterType* str,unsigned int strTrav);
+		bool eraseLoop(BasePatriciaTrieNode *root,const CharacterType* str,size_t strTrav);
 
 		/*!
 		Actually find the given string from the trie by loop and return the data
@@ -462,7 +462,7 @@ namespace epl
 		@remark returns NULL if find fails
 		@return Pointer to the node found.
 		*/
-		PatriciaTrieLeaf * findLoop(BasePatriciaTrieNode *root,const CharacterType* str,unsigned int strTrav, DataType &retData) const;
+		PatriciaTrieLeaf * findLoop(BasePatriciaTrieNode *root,const CharacterType* str,size_t strTrav, DataType &retData) const;
 
 		/*!
 		Actually find the strings starts with the given string from the trie by loop
@@ -472,7 +472,7 @@ namespace epl
 		@param[out] retStrDataPairList the string and data pair which the string starts with the given string.
 		@return true if succeeded otherwise false.
 		*/
-		bool findAllLoop(BasePatriciaTrieNode *root,const CharacterType* str,unsigned int strTrav, vector<Pair<const CharacterType*,DataType> > &retStrDataPairList) const;
+		bool findAllLoop(BasePatriciaTrieNode *root,const CharacterType* str,size_t strTrav, vector<Pair<const CharacterType*,DataType> > &retStrDataPairList) const;
 
 		/*!
 		Traverse the all nodes and return the all string and data pair from the trie by loop
@@ -504,7 +504,7 @@ namespace epl
 		/// Root of the trie
 		PatriciaTrieNode* m_root;
 		/// Total number of strings in the trie
-		unsigned int m_totalCount;             
+		size_t m_totalCount;             
 		/// String Terminator holder
 		CharacterType m_terminator;
 		/// lock
@@ -676,7 +676,7 @@ namespace epl
 	}
 
 	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	unsigned int PatriciaTrie<CharacterType,DataType,Terminator,CharCompareFunc>::Size() const
+	size_t PatriciaTrie<CharacterType,DataType,Terminator,CharCompareFunc>::Size() const
 	{
 		LockObj lock(m_trieLock);
 		return m_totalCount;
@@ -743,7 +743,7 @@ namespace epl
 
 
 	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	typename PatriciaTrie<CharacterType,DataType,Terminator,CharCompareFunc>::PatriciaTrieLeaf *PatriciaTrie<CharacterType,DataType,Terminator,CharCompareFunc>::insert(BasePatriciaTrieNode *root,const CharacterType* str,unsigned int strTrav,const DataType &data)
+	typename PatriciaTrie<CharacterType,DataType,Terminator,CharCompareFunc>::PatriciaTrieLeaf *PatriciaTrie<CharacterType,DataType,Terminator,CharCompareFunc>::insert(BasePatriciaTrieNode *root,const CharacterType* str,size_t strTrav,const DataType &data)
 	{
 		if(m_mode==PATRICIA_TRIE_MODE_RECURSIVE)
 		{
@@ -780,12 +780,12 @@ namespace epl
 	}
 
 	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	typename PatriciaTrie<CharacterType,DataType,Terminator,CharCompareFunc>::PatriciaTrieLeaf *PatriciaTrie<CharacterType,DataType,Terminator,CharCompareFunc>::insertLoop(BasePatriciaTrieNode *root,const CharacterType* str,unsigned int strTrav,const DataType &data)
+	typename PatriciaTrie<CharacterType,DataType,Terminator,CharCompareFunc>::PatriciaTrieLeaf *PatriciaTrie<CharacterType,DataType,Terminator,CharCompareFunc>::insertLoop(BasePatriciaTrieNode *root,const CharacterType* str,size_t strTrav,const DataType &data)
 	{
 		struct SnapShotStruct
 		{
 			BasePatriciaTrieNode *root;
-			unsigned int strTrav;
+			size_t strTrav;
 		};
 
 		stack<SnapShotStruct> snapshotStack;
@@ -840,7 +840,7 @@ namespace epl
 
 
 	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	bool PatriciaTrie<CharacterType,DataType,Terminator,CharCompareFunc>::erase(BasePatriciaTrieNode *root,const CharacterType* str,unsigned int strTrav)
+	bool PatriciaTrie<CharacterType,DataType,Terminator,CharCompareFunc>::erase(BasePatriciaTrieNode *root,const CharacterType* str,size_t strTrav)
 	{
 		if(m_mode==PATRICIA_TRIE_MODE_RECURSIVE)
 		{
@@ -872,12 +872,12 @@ namespace epl
 
 
 	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	bool PatriciaTrie<CharacterType,DataType,Terminator,CharCompareFunc>::eraseLoop(BasePatriciaTrieNode *root,const CharacterType* str,unsigned int strTrav)
+	bool PatriciaTrie<CharacterType,DataType,Terminator,CharCompareFunc>::eraseLoop(BasePatriciaTrieNode *root,const CharacterType* str,size_t strTrav)
 	{
 		struct SnapShotStruct
 		{
 			BasePatriciaTrieNode *root;
-			unsigned int strTrav;
+			size_t strTrav;
 			int stage;
 		};
 
@@ -937,7 +937,7 @@ namespace epl
 	}
 
 	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	typename PatriciaTrie<CharacterType,DataType,Terminator,CharCompareFunc>::PatriciaTrieLeaf *PatriciaTrie<CharacterType,DataType,Terminator,CharCompareFunc>::find(BasePatriciaTrieNode *root,const CharacterType* str,unsigned int strTrav, DataType &retData) const
+	typename PatriciaTrie<CharacterType,DataType,Terminator,CharCompareFunc>::PatriciaTrieLeaf *PatriciaTrie<CharacterType,DataType,Terminator,CharCompareFunc>::find(BasePatriciaTrieNode *root,const CharacterType* str,size_t strTrav, DataType &retData) const
 	{
 		if(m_mode==PATRICIA_TRIE_MODE_RECURSIVE)
 		{
@@ -969,12 +969,12 @@ namespace epl
 
 
 	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	typename PatriciaTrie<CharacterType,DataType,Terminator,CharCompareFunc>::PatriciaTrieLeaf *PatriciaTrie<CharacterType,DataType,Terminator,CharCompareFunc>::findLoop(BasePatriciaTrieNode *root,const CharacterType* str,unsigned int strTrav, DataType &retData) const
+	typename PatriciaTrie<CharacterType,DataType,Terminator,CharCompareFunc>::PatriciaTrieLeaf *PatriciaTrie<CharacterType,DataType,Terminator,CharCompareFunc>::findLoop(BasePatriciaTrieNode *root,const CharacterType* str,size_t strTrav, DataType &retData) const
 	{
 		struct SnapShotStruct
 		{
 			BasePatriciaTrieNode *root;
-			unsigned int strTrav;
+			size_t strTrav;
 		};
 
 		stack<SnapShotStruct> snapshotStack;
@@ -1019,7 +1019,7 @@ namespace epl
 	}
 
 	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	bool PatriciaTrie<CharacterType,DataType,Terminator,CharCompareFunc>::findAll(BasePatriciaTrieNode *root,const CharacterType* str,unsigned int strTrav, vector<Pair<const CharacterType*,DataType> > &retStrDataPairList) const
+	bool PatriciaTrie<CharacterType,DataType,Terminator,CharCompareFunc>::findAll(BasePatriciaTrieNode *root,const CharacterType* str,size_t strTrav, vector<Pair<const CharacterType*,DataType> > &retStrDataPairList) const
 	{
 		if(m_mode==PATRICIA_TRIE_MODE_RECURSIVE)
 		{
@@ -1060,12 +1060,12 @@ namespace epl
 
 
 	template<typename CharacterType, typename DataType , CharacterType Terminator, CompResultType (__cdecl *CharCompareFunc)(const void *,const void *)>
-	bool PatriciaTrie<CharacterType,DataType,Terminator,CharCompareFunc>::findAllLoop(BasePatriciaTrieNode *root,const CharacterType* str,unsigned int strTrav, vector<Pair<const CharacterType*,DataType> > &retStrDataPairList) const
+	bool PatriciaTrie<CharacterType,DataType,Terminator,CharCompareFunc>::findAllLoop(BasePatriciaTrieNode *root,const CharacterType* str,size_t strTrav, vector<Pair<const CharacterType*,DataType> > &retStrDataPairList) const
 	{
 		struct SnapShotStruct
 		{
 			BasePatriciaTrieNode *root;
-			unsigned int strTrav;
+			size_t strTrav;
 			BasePatriciaTrieNode *currentNode;
 			int stage;
 		};

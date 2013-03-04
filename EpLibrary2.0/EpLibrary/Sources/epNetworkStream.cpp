@@ -74,18 +74,18 @@ void NetworkStream::Flush()
 	m_readOffset=0;
 }
 
-void NetworkStream::SetWriteSeek(const StreamSeekType seekType,const unsigned int offset)
+void NetworkStream::SetWriteSeek(const StreamSeekType seekType,size_t offset)
 {
 	Stream::SetSeek(seekType,offset);
 }
 
-unsigned int NetworkStream::GetWriteSeek() const
+size_t NetworkStream::GetWriteSeek() const
 {
 	return Stream::GetSeek();
 }
 
 
-void NetworkStream::SetReadSeek(const StreamSeekType seekType,const unsigned int offset)
+void NetworkStream::SetReadSeek(const StreamSeekType seekType,size_t offset)
 {
 	LockObj lock(m_streamLock);
 	switch(seekType)
@@ -101,26 +101,26 @@ void NetworkStream::SetReadSeek(const StreamSeekType seekType,const unsigned int
 	}
 }
 
-unsigned int NetworkStream::GetReadSeek() const
+size_t NetworkStream::GetReadSeek() const
 {
 	return m_readOffset;
 }
 
-void NetworkStream::SetSeek(const StreamSeekType seekType,const unsigned int offset)
+void NetworkStream::SetSeek(const StreamSeekType seekType,size_t offset)
 {
 	return;
 }
 
-unsigned int NetworkStream::GetSeek() const
+size_t NetworkStream::GetSeek() const
 {
 	return 0;
 }
 
-bool NetworkStream::read(void *value,const int byteSize)
+bool NetworkStream::read(void *value,size_t byteSize)
 {
 	bool retVal=false;
 
-	if(!m_stream.empty() && value && m_stream.size()>=static_cast<unsigned int>(m_readOffset+byteSize))
+	if(!m_stream.empty() && value && m_stream.size()>=m_readOffset+byteSize)
 	{
 		System::Memcpy(value,&m_stream.at(m_readOffset) , byteSize);
 		m_readOffset+=byteSize;

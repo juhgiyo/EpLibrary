@@ -95,7 +95,7 @@ namespace epl
 		Return the byte size of the stream
 		@return the byte size of the stream.
 		*/
-		int GetStreamSize() const;
+		size_t GetStreamSize() const;
 
 		/*!
 		Return the buffer pointer of the stream
@@ -108,13 +108,13 @@ namespace epl
 		@param[in] seekType The type of Seek to set
 		@param[in] offset The offset from the seek type.
 		*/
-		virtual void SetSeek(const StreamSeekType seekType,const unsigned int offset=0);
+		virtual void SetSeek(const StreamSeekType seekType,size_t offset=0);
 		
 		/*!
 		Get the current seek offset.
 		@return the current seek offset.
 		*/
-		virtual unsigned int GetSeek() const;
+		virtual size_t GetSeek() const;
 
 		/*!
 		Write the short value to the stream.
@@ -171,7 +171,7 @@ namespace epl
 		@param[in] listSize the size of the list
 		@return true if successful, otherwise false.
 		*/
-		virtual bool WriteShorts(const short *shortList, const unsigned int listSize);
+		virtual bool WriteShorts(const short *shortList, size_t listSize);
 
 		/*!
 		Write the unsigned short values to the stream.
@@ -179,7 +179,7 @@ namespace epl
 		@param[in] listSize the size of the list
 		@return true if successful, otherwise false.
 		*/
-		virtual bool WriteUShorts(const unsigned short *ushortList, const unsigned int listSize);
+		virtual bool WriteUShorts(const unsigned short *ushortList, size_t listSize);
 
 		/*!
 		Write the int values to the stream.
@@ -187,7 +187,7 @@ namespace epl
 		@param[in] listSize the size of the list
 		@return true if successful, otherwise false.
 		*/
-		virtual bool WriteInts(const int *intList, const unsigned int listSize);
+		virtual bool WriteInts(const int *intList,size_t listSize);
 
 		/*!
 		Write the unsigned int values to the stream.
@@ -195,7 +195,7 @@ namespace epl
 		@param[in] listSize the size of the list
 		@return true if successful, otherwise false.
 		*/
-		virtual bool WriteUInts(const unsigned int *uintList, const unsigned int listSize);
+		virtual bool WriteUInts(const unsigned int *uintList,size_t listSize);
 
 		/*!
 		Write the float values to the stream.
@@ -203,7 +203,7 @@ namespace epl
 		@param[in] listSize the size of the list
 		@return true if successful, otherwise false.
 		*/
-		virtual bool WriteFloats(const float *floatList, const unsigned int listSize);
+		virtual bool WriteFloats(const float *floatList, size_t listSize);
 
 		/*!
 		Write the double values to the stream.
@@ -211,7 +211,7 @@ namespace epl
 		@param[in] listSize the size of the list
 		@return true if successful, otherwise false.
 		*/
-		virtual bool WriteDoubles(const double *doubleList,const unsigned int listSize);
+		virtual bool WriteDoubles(const double *doubleList,size_t listSize);
 
 		/*!
 		Write the byte values to the stream.
@@ -219,7 +219,7 @@ namespace epl
 		@param[in] listSize the size of the list
 		@return true if successful, otherwise false.
 		*/
-		virtual bool WriteBytes(const unsigned char* byteList,const unsigned int listSize);
+		virtual bool WriteBytes(const unsigned char* byteList,size_t listSize);
 
 		/*!
 		Write given string to the stream
@@ -320,7 +320,7 @@ namespace epl
 		@param[in] listSize the size of the list
 		@return true if successful, otherwise false.
 		*/
-		virtual bool ReadShorts(short *retShortList, const unsigned int listSize);
+		virtual bool ReadShorts(short *retShortList, size_t listSize);
 
 		/*!
 		Read the unsigned short values from the stream.
@@ -328,7 +328,7 @@ namespace epl
 		@param[in] listSize the size of the list
 		@return true if successful, otherwise false.
 		*/
-		virtual bool ReadUShorts(unsigned short *retUshortList, const unsigned int listSize);
+		virtual bool ReadUShorts(unsigned short *retUshortList, size_t listSize);
 
 		/*!
 		Read the int values from the stream.
@@ -336,7 +336,7 @@ namespace epl
 		@param[in] listSize the size of the list
 		@return true if successful, otherwise false.
 		*/
-		virtual bool ReadInts(int *retIntList, const unsigned int listSize);
+		virtual bool ReadInts(int *retIntList, size_t listSize);
 
 		/*!
 		Read the unsigned int values from the stream.
@@ -344,7 +344,7 @@ namespace epl
 		@param[in] listSize the size of the list
 		@return true if successful, otherwise false.
 		*/
-		virtual bool ReadUInts(unsigned int *retUintList, const unsigned int listSize);
+		virtual bool ReadUInts(unsigned int *retUintList,size_t listSize);
 
 		/*!
 		Read the float values from the stream.
@@ -352,7 +352,7 @@ namespace epl
 		@param[in] listSize the size of the list
 		@return true if successful, otherwise false.
 		*/
-		virtual bool ReadFloats(float *retFloatList, const unsigned int listSize);
+		virtual bool ReadFloats(float *retFloatList, size_t listSize);
 
 		/*!
 		Read the double values from the stream.
@@ -360,7 +360,7 @@ namespace epl
 		@param[in] listSize the size of the list
 		@return true if successful, otherwise false.
 		*/
-		virtual bool ReadDoubles(double *retDoubleList, const unsigned int listSize);
+		virtual bool ReadDoubles(double *retDoubleList, size_t listSize);
 
 		/*!
 		Read the byte values from the stream.
@@ -368,7 +368,7 @@ namespace epl
 		@param[in] listSize the size of the list
 		@return true if successful, otherwise false.
 		*/
-		virtual bool ReadBytes(unsigned char* retByteList, const unsigned int listSize);
+		virtual bool ReadBytes(unsigned char* retByteList, size_t listSize);
 
 		/*!
 		Get String from the stream
@@ -405,7 +405,7 @@ namespace epl
 		@param[in] byteSize the byte size of the value
 		@return true if successful, otherwise false.
 		*/
-		virtual bool write(const void *value,const int byteSize);
+		virtual bool write(const void *value,size_t byteSize);
 
 		/*!
 		Read the value from the stream.
@@ -413,12 +413,12 @@ namespace epl
 		@param[in] byteSize the byte size of the value
 		@return true if successful, otherwise false.
 		*/
-		virtual bool read(void *value,const int byteSize);
+		virtual bool read(void *value,size_t byteSize);
 
 		/// The actual stream buffer
 		std::vector<unsigned char> m_stream;
 		/// The offset for the seek
-		unsigned int m_offset;
+		size_t m_offset;
 		/// The Stream Lock
 		BaseLock *m_streamLock;
 		/// Lock Policy

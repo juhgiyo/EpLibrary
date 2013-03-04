@@ -105,11 +105,11 @@ BaseTextFile & BaseTextFile::operator=(const BaseTextFile&b)
 
 void BaseTextFile::writeToFile(const TCHAR *toFileString)
 {
-	unsigned int strLength=System::TcsLen(toFileString);
+	size_t strLength=System::TcsLen(toFileString);
 	if(m_encodingType==FILE_ENCODING_TYPE_ANSI)
 	{	
 #if defined(_UNICODE) || defined(UNICODE)
-		unsigned int sizeNeeded= System::WideCharToMultiByte(toFileString,(char*)NULL);
+		size_t sizeNeeded= System::WideCharToMultiByte(toFileString,(char*)NULL);
 		char *multiByteToFile = EP_NEW char[sizeNeeded+1];
 		System::Memset(multiByteToFile,0,sizeNeeded+1);
 		System::WideCharToMultiByte(toFileString,multiByteToFile);
@@ -127,7 +127,7 @@ void BaseTextFile::writeToFile(const TCHAR *toFileString)
 		if(m_file)
 			System::FWrite(toFileString,sizeof(wchar_t),strLength,m_file);
 #else //defined(_UNICODE) || defined(UNICODE)
-		unsigned int sizeNeeded=System::MultiByteToWideChar(toFileString,(wchar_t*)NULL);
+		size_t sizeNeeded=System::MultiByteToWideChar(toFileString,(wchar_t*)NULL);
 		wchar_t *wideCharToFile = EP_NEW wchar_t[sizeNeeded+1];
 
 		System::Memset(wideCharToFile,0,(sizeNeeded+1)*sizeof(wchar_t));
@@ -142,7 +142,7 @@ void BaseTextFile::writeToFile(const TCHAR *toFileString)
 bool BaseTextFile::SaveToFile(const TCHAR *filename)
 {
 	LockObj lock(m_baseTextLock);
-	unsigned int strLength=System::TcsLen(filename);
+	size_t strLength=System::TcsLen(filename);
 	if(strLength<=0)
 		return false;
 
@@ -179,7 +179,7 @@ bool BaseTextFile::SaveToFile(const TCHAR *filename)
 bool BaseTextFile::AppendToFile(const TCHAR *filename)
 {
 	LockObj lock(m_baseTextLock);
-	unsigned int strLength=System::TcsLen(filename);
+	size_t strLength=System::TcsLen(filename);
 	if(strLength<=0)
 		return false;
 
@@ -217,7 +217,7 @@ bool BaseTextFile::AppendToFile(const TCHAR *filename)
 bool BaseTextFile::LoadFromFile(const TCHAR *filename)
 {
 	LockObj lock(m_baseTextLock);
-	unsigned int strLength=System::TcsLen(filename);
+	size_t strLength=System::TcsLen(filename);
 	if(strLength<=0)
 		return false;
 
@@ -244,7 +244,7 @@ bool BaseTextFile::LoadFromFile(const TCHAR *filename)
 	EpTString rest;
 
 	//Find the actual length of file
-	unsigned int length= static_cast<unsigned int>(System::FSize(m_file));
+	size_t length= System::FSize(m_file);
 	if(length<=0)
 	{
 		fileLock.Unlock();
@@ -257,7 +257,7 @@ bool BaseTextFile::LoadFromFile(const TCHAR *filename)
 	{
 		char *cFileBuf=EP_NEW char[length+1];
 		//System::Memset(cFileBuf,0,length+1);
-		int read=System::FRead(cFileBuf,sizeof(char),length,m_file);
+		size_t read=System::FRead(cFileBuf,sizeof(char),length,m_file);
 		System::Memset(cFileBuf+read,0,(length+1-read)*sizeof(char));
 		System::FClose(m_file);
 		rest=System::MultiByteToWideChar(cFileBuf);
@@ -267,7 +267,7 @@ bool BaseTextFile::LoadFromFile(const TCHAR *filename)
 	{
 		wchar_t *wFileBuf=EP_NEW wchar_t[length+1];
 		//System::Memset(tFileBuf,0,(length+1)*sizeof(wchar_t));
-		int read=System::FRead(wFileBuf,sizeof(wchar_t),length,m_file);
+		size_t read=System::FRead(wFileBuf,sizeof(wchar_t),length,m_file);
 		System::Memset(wFileBuf+read,0,(length+1-read)*sizeof(wchar_t));
 		System::FClose(m_file);
 		rest=wFileBuf;
@@ -278,7 +278,7 @@ bool BaseTextFile::LoadFromFile(const TCHAR *filename)
 	{
 		wchar_t *wFileBuf=EP_NEW wchar_t[length/sizeof(wchar_t)+1];
 		//System::Memset(wFileBuf,0,length/sizeof(wchar_t)+1);
-		int read=System::FRead(wFileBuf,sizeof(wchar_t),length/sizeof(wchar_t),m_file);
+		size_t read=System::FRead(wFileBuf,sizeof(wchar_t),length/sizeof(wchar_t),m_file);
 		System::Memset(wFileBuf+read,0,((length/sizeof(wchar_t)+1)-read)*sizeof(wchar_t));
 		System::FClose(m_file);
 		if(wFileBuf[0]==0xFEFF) // BOM
@@ -297,7 +297,7 @@ bool BaseTextFile::LoadFromFile(const TCHAR *filename)
 
 		char *cFileBuf=EP_NEW char[length+1];
 		//System::Memset(cFileBuf,0,length+1);
-		int read=System::FRead(cFileBuf,sizeof(char),length,m_file);
+		size_t read=System::FRead(cFileBuf,sizeof(char),length,m_file);
 		System::Memset(cFileBuf+read,0,(length+1-read)*sizeof(char));
 		System::FClose(m_file);
 		rest=cFileBuf;
@@ -307,7 +307,7 @@ bool BaseTextFile::LoadFromFile(const TCHAR *filename)
 	{
 		wchar_t *wFileBuf=EP_NEW wchar_t[length+1];
 		//System::Memset(wFileBuf,0,(length+1)*sizeof(wchar_t));
-		int read=System::FRead(wFileBuf,sizeof(wchar_t),length,m_file);
+		size_t read=System::FRead(wFileBuf,sizeof(wchar_t),length,m_file);
 		System::Memset(wFileBuf+read,0,(length+1-read)*sizeof(wchar_t));
 		System::FClose(m_file);
 		rest=System::WideCharToMultiByte(wFileBuf);;
@@ -317,7 +317,7 @@ bool BaseTextFile::LoadFromFile(const TCHAR *filename)
 	{
 		wchar_t *wFileBuf=EP_NEW wchar_t[length/sizeof(wchar_t)+1];
 		//System::Memset(wFileBuf,0,length/sizeof(wchar_t)+1);
-		int read=System::FRead(wFileBuf,sizeof(wchar_t),length/sizeof(wchar_t),m_file);
+		size_t read=System::FRead(wFileBuf,sizeof(wchar_t),length/sizeof(wchar_t),m_file);
 		System::Memset(wFileBuf+read,0,((length/sizeof(wchar_t)+1)-read)*sizeof(wchar_t));
 		System::FClose(m_file);
 		if(wFileBuf[0]==0xFEFF) // BOM
@@ -341,7 +341,7 @@ bool BaseTextFile::LoadFromFile(const TCHAR *filename)
 // 	{	
 // #if defined(_UNICODE) || defined(UNICODE)
 // 		//Find the actual length of file
-// 		unsigned int length= static_cast<unsigned int>(System::FSize(m_file));
+// 		size_t length= System::FSize(m_file);
 // 
 // 		char *cFileBuf=EP_NEW char[length+1];
 // 		System::Memset(cFileBuf,0,length+1);
@@ -356,7 +356,7 @@ bool BaseTextFile::LoadFromFile(const TCHAR *filename)
 // 		EP_DELETE[] tFileBuf;
 // #else //defined(_UNICODE) || defined(UNICODE)
 // 		//Find the actual length of file
-// 		unsigned int length= static_cast<unsigned int>(System::FSize(m_file));
+// 		size_t length= System::FSize(m_file);
 // 
 // 		char *cFileBuf=EP_NEW char[length+1];
 // 		System::Memset(cFileBuf,0,length+1);
@@ -371,7 +371,7 @@ bool BaseTextFile::LoadFromFile(const TCHAR *filename)
 // 	{
 // #if defined(_UNICODE) || defined(UNICODE)
 // 		//Find the actual length of file
-// 		unsigned int length=static_cast<unsigned int>( System::FSize(m_file)/sizeof(wchar_t) );
+// 		size_t length= System::FSize(m_file)/sizeof(wchar_t) ;
 // 
 // 		wchar_t *tFileBuf=EP_NEW wchar_t[length+1];
 // 		System::Memset(tFileBuf,0,sizeof(wchar_t)*(length+1));
@@ -382,7 +382,7 @@ bool BaseTextFile::LoadFromFile(const TCHAR *filename)
 // 		EP_DELETE[] tFileBuf;
 // #else //defined(_UNICODE) || defined(UNICODE)
 // 		//Find the actual length of file
-// 		unsigned int length=static_cast<unsigned int>( System::FSize(m_file)/sizeof(wchar_t) );
+// 		size_t length=System::FSize(m_file)/sizeof(wchar_t) ;
 // 
 // 		wchar_t *tFileBuf=EP_NEW wchar_t[length+1];
 // 		System::Memset(tFileBuf,0,sizeof(wchar_t)*(length+1));
@@ -406,13 +406,13 @@ bool BaseTextFile::LoadFromFile(const TCHAR *filename)
 }
 
 
-bool BaseTextFile::GetLine(const EpTString &buf,int startIdx, EpTString &retLine, int *retEndIdx, EpTString *retRest)
+bool BaseTextFile::GetLine(const EpTString &buf,size_t startIdx, EpTString &retLine, size_t *retEndIdx, EpTString *retRest)
 {
-	if(((int)buf.length())-startIdx<=0)
+	if(static_cast<ssize_t>(buf.length())-static_cast<ssize_t>(startIdx)<=0)
 		return false;
 	TCHAR splitChar=0;
 	EpTString lineSTring=_T("");
-	int bufTrav=startIdx;
+	ssize_t bufTrav=static_cast<ssize_t>(startIdx);
 
 	do{
 		splitChar=buf.at(bufTrav);

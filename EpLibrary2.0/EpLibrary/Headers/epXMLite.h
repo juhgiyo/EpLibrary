@@ -206,7 +206,7 @@ namespace epl
 		LPXNode	Find( const TCHAR * name );
 
 		// modify DOM 
-		int		GetChildCount();
+		size_t		GetChildCount();
 		LPXNode GetChild( int i );
 		XNodes::iterator GetChildIterator( LPXNode node );
 		LPXNode CreateNode( const TCHAR * name = NULL, const TCHAR * value = NULL );

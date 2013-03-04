@@ -217,7 +217,7 @@ void PropertiesFile::loadFromFile(const EpTString &lines)
 {
 	m_propertyList.clear();
 	EpTString line=_T("");
-	int skipIdx=0;
+	size_t skipIdx=0;
 	while(BaseTextFile::GetLine(lines,skipIdx,line,&skipIdx))
 	{
 		EpTString key;

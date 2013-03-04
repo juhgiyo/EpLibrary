@@ -92,20 +92,20 @@ namespace epl
 		Return the number of elements using in the given array.
 		@return the number of elements  using in the given array.
 		*/
-		unsigned int Size() const;
+		size_t Size() const;
 
 		/*!
 		Resize the given array to given size.
 		@param[in] newSize The new size to resize.
 		*/
-		bool Resize(unsigned int newSize);
+		bool Resize(size_t newSize);
 
 		/*!
 		Return the element at the given index of the given array.
 		@param[in] idx The index to return the element.
 		@return the element at the given index.
 		*/
-		DataType &At(unsigned int idx);
+		DataType &At(size_t idx);
 
 		/*!
 		Append the element given to the dynamic array given.
@@ -133,7 +133,7 @@ namespace epl
 		@param[in] idx The index to return the element.
 		@return the element at the given index.
 		*/
-		DataType& operator[](unsigned int idx);
+		DataType& operator[](size_t idx);
 
 
 		/*!
@@ -141,7 +141,7 @@ namespace epl
 		@param[in] idx The index to return the element.
 		@return the element at the given index.
 		*/
-		const DataType& operator[](unsigned int idx) const;
+		const DataType& operator[](size_t idx) const;
 
 
 		/*!
@@ -176,7 +176,7 @@ namespace epl
 		Actual resize the given array to given size.
 		@param[in] newSize The new size to resize.
 		*/
-		bool resize(unsigned int newSize);
+		bool resize(size_t newSize);
 
 		/*!
 		Actual append the element given to the dynamic array given.
@@ -201,9 +201,9 @@ namespace epl
 		/// the actual dynamic array
 		DataType *m_head;
 		/// the actual array size
-		unsigned int m_actualSize;
+		size_t m_actualSize;
 		/// number of element
-		unsigned int m_numOfElements;
+		size_t m_numOfElements;
 		/// lock
 		BaseLock *m_arrayLock;
 		/// Lock Policy
@@ -310,21 +310,21 @@ namespace epl
 	}
 
 	template <typename DataType>
-	unsigned int DynamicArray<DataType>::Size() const
+	size_t DynamicArray<DataType>::Size() const
 	{
 		LockObj lock(m_arrayLock);
 		return m_numOfElements;
 	}
 
 	template <typename DataType>
-	bool DynamicArray<DataType>::Resize(unsigned int newSize)
+	bool DynamicArray<DataType>::Resize(size_t newSize)
 	{
 		LockObj lock(m_arrayLock);
 		return resize(newSize);
 	}
 
 	template <typename DataType>
-	bool DynamicArray<DataType>::resize(unsigned int newSize)
+	bool DynamicArray<DataType>::resize(size_t newSize)
 	{
 		if(m_actualSize>=newSize)
 			return false;
@@ -345,7 +345,7 @@ namespace epl
 	}
 
 	template <typename DataType>
-	DataType &DynamicArray<DataType>::At(unsigned int idx)
+	DataType &DynamicArray<DataType>::At(size_t idx)
 	{
 		LockObj lock(m_arrayLock);
 		if(m_numOfElements<=idx)
@@ -442,13 +442,13 @@ namespace epl
 	}
 
 	template <typename DataType>
-	DataType& DynamicArray<DataType>::operator[](unsigned int idx)
+	DataType& DynamicArray<DataType>::operator[](size_t idx)
 	{
 		return At(idx);
 	}
 
 	template <typename DataType>
-	const DataType& DynamicArray<DataType>::operator[](unsigned int idx) const	
+	const DataType& DynamicArray<DataType>::operator[](size_t idx) const	
 	{
 		LockObj lock(m_arrayLock);
 		EP_ASSERT(m_numOfElements>idx);

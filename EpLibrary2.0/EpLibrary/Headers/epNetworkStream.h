@@ -95,26 +95,26 @@ namespace epl
 		@param[in] seekType The type of Seek to set
 		@param[in] offset The offset from the seek type.
 		*/
-		void SetWriteSeek(const StreamSeekType seekType,const unsigned int offset=0);
+		void SetWriteSeek(const StreamSeekType seekType,size_t offset=0);
 
 		/*!
 		Get the current write seek offset.
 		@return the current write seek offset.
 		*/
-		unsigned int GetWriteSeek() const;
+		size_t GetWriteSeek() const;
 
 		/*!
 		Set the read seek offset. 
 		@param[in] seekType The type of Seek to set
 		@param[in] offset The offset from the seek type.
 		*/
-		void SetReadSeek(const StreamSeekType seekType,const unsigned int offset=0);
+		void SetReadSeek(const StreamSeekType seekType,size_t offset=0);
 
 		/*!
 		Get the current read seek offset.
 		@return the current read seek offset.
 		*/
-		unsigned int GetReadSeek() const;
+		size_t GetReadSeek() const;
 
 		
 
@@ -124,14 +124,14 @@ namespace epl
 		@param[in] seekType The type of Seek to set
 		@param[in] offset The offset from the seek type.
 		*/
-		virtual void SetSeek(const StreamSeekType seekType,const unsigned int offset=0);
+		virtual void SetSeek(const StreamSeekType seekType,size_t offset=0);
 
 		/*!
 		Network Stream does not support this method!!
 		(DO NOT Use This Method for Network Stream!!)
 		@return the current seek offset.
 		*/
-		virtual unsigned int GetSeek() const;
+		virtual size_t GetSeek() const;
 	private:
 		/*!
 		Read the value from the stream.
@@ -139,12 +139,12 @@ namespace epl
 		@param[in] byteSize the byte size of the value
 		@return true if successful, otherwise false.
 		*/
-		virtual bool read(void *value,const int byteSize);
+		virtual bool read(void *value,size_t byteSize);
 
 		/// Network Stream Flush Type
 		NetworkStreamFlushType m_flushType;
 		/// Read Seek Offset
-		unsigned int m_readOffset;
+		size_t m_readOffset;
 	};
 }
 

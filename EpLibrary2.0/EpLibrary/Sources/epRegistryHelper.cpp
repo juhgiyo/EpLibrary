@@ -34,7 +34,7 @@ bool RegistryHelper::SetRegistryData(HKEY key,const TCHAR * subKey,const TCHAR *
 	return false;
 }
 
-bool RegistryHelper::SetRegistryData(HKEY key,const TCHAR *subKey,const TCHAR * regName,unsigned long regType,void * regData,unsigned int sizeInByte)
+bool RegistryHelper::SetRegistryData(HKEY key,const TCHAR *subKey,const TCHAR * regName,unsigned long regType,void * regData,unsigned long sizeInByte)
 {
 	if(SHSetValue(key,subKey,regName,regType,regData,sizeInByte)==ERROR_SUCCESS)
 		return true;
@@ -60,7 +60,7 @@ bool RegistryHelper::GetRegistryData(HKEY key,const TCHAR *subKey,const TCHAR * 
 	return false;
 }
 
-bool RegistryHelper::GetRegistryData(HKEY key,const TCHAR *subKey,const TCHAR *regName,unsigned int sizeInByte,void *retBuf, unsigned int &retSizeReadInByte, unsigned long &retRegType)
+bool RegistryHelper::GetRegistryData(HKEY key,const TCHAR *subKey,const TCHAR *regName,unsigned long sizeInByte,void *retBuf, unsigned long &retSizeReadInByte, unsigned long &retRegType)
 {
 	unsigned long size=sizeInByte;
 	if(SHGetValue(key,subKey,regName,&retRegType,retBuf,&size)==ERROR_SUCCESS)
@@ -72,7 +72,7 @@ bool RegistryHelper::GetRegistryData(HKEY key,const TCHAR *subKey,const TCHAR *r
 
 }
 
-unsigned int RegistryHelper::GetRegistryDataSize(HKEY key,const TCHAR *subKey,const TCHAR * regName)
+unsigned long RegistryHelper::GetRegistryDataSize(HKEY key,const TCHAR *subKey,const TCHAR * regName)
 {
 	unsigned long size;
 	SHGetValue(key,subKey,regName,NULL,NULL,&size);

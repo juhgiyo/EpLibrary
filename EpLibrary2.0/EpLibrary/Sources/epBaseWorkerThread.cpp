@@ -166,7 +166,7 @@ bool BaseWorkerThread::Erase(BaseJob *const work)
 	}
 	return retVal;
 }
-int BaseWorkerThread::GetJobCount() const
+size_t BaseWorkerThread::GetJobCount() const
 {
 	return m_workPool.Size();
 }

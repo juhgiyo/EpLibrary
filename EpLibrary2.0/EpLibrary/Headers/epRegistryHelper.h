@@ -64,7 +64,7 @@ namespace epl
 		@param[in] sizeInByte the size of data in Byte
 		@return true if successful, otherwise false
 		*/
-		static bool SetRegistryData(HKEY key,const TCHAR *subKey,const TCHAR * regName,unsigned long regType,void * regData,unsigned int sizeInByte);
+		static bool SetRegistryData(HKEY key,const TCHAR *subKey,const TCHAR * regName,unsigned long regType,void * regData,unsigned long sizeInByte);
 
 		/*!
 		Get the given registry string data of given registry name
@@ -88,7 +88,7 @@ namespace epl
 		@param[out] retRegType the type of the data read ex. (REG_SZ)
 		@return true if successful, otherwise false
 		*/
-		static bool GetRegistryData(HKEY key,const TCHAR * subKey,const TCHAR * regName,unsigned int sizeInByte,void *retBuf, unsigned int &retSizeReadInByte, unsigned long &retRegType);
+		static bool GetRegistryData(HKEY key,const TCHAR * subKey,const TCHAR * regName,unsigned long sizeInByte,void *retBuf, unsigned long &retSizeReadInByte, unsigned long &retRegType);
 
 		/*!
 		Get the approximately larger size of the data in Registry
@@ -97,7 +97,7 @@ namespace epl
 		@param[in] regName the name of the registry to get the data size
 		@return the data size of the given registry name
 		*/
-		static unsigned int GetRegistryDataSize(HKEY key,const TCHAR * subKey,const TCHAR * regName);
+		static unsigned long GetRegistryDataSize(HKEY key,const TCHAR * subKey,const TCHAR * regName);
 
 		/*!
 		Delete the given registry value

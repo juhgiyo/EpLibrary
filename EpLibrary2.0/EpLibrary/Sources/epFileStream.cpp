@@ -77,7 +77,7 @@ bool FileStream::LoadStreamFromFile()
 	System::FTOpen(file,m_fileName.c_str(),_T("rb"));
 	fileSize=System::FSize(file);
 	m_stream.resize(fileSize);
-	int read=System::FRead(&m_stream.at(0),sizeof(unsigned char), fileSize,file);
+	size_t read=System::FRead(&m_stream.at(0),sizeof(unsigned char), fileSize,file);
 	m_stream.erase(m_stream.begin()+read,m_stream.end());
 	System::FClose(file);
 	m_offset=m_stream.size();
@@ -103,11 +103,11 @@ bool FileStream::WriteStreamToFile()
 	return true;
 }
 
-bool FileStream::write(const void *value,const int byteSize)
+bool FileStream::write(const void *value,size_t byteSize)
 {
 	if(!value)
 		return false;
-	if(m_stream.size()<static_cast<size_t>(m_offset+byteSize))
+	if(m_stream.size()<m_offset+byteSize)
 	{
 		m_stream.resize(m_offset+byteSize);
 	}
@@ -117,12 +117,12 @@ bool FileStream::write(const void *value,const int byteSize)
 	return true;
 }
 
-bool FileStream::read(void *value,const int byteSize)
+bool FileStream::read(void *value,size_t byteSize)
 {
 	if(m_stream.empty() || !value)
 		return false;
 
-	if(m_stream.size()>static_cast<size_t>(m_offset+byteSize))
+	if(m_stream.size()>m_offset+byteSize)
 	{
 		System::Memcpy(value,&m_stream.at(m_offset) , byteSize);
 		m_offset+=byteSize;

@@ -50,7 +50,7 @@ namespace epl
 	@class KAryHeap epKAryHeap.h
 	@brief A K-ary Heap Template class.
 	*/
-	template <typename KeyType,typename DataType, unsigned int k=5, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *)=CompClass<KeyType>::CompFunc >
+	template <typename KeyType,typename DataType, size_t k=5, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *)=CompClass<KeyType>::CompFunc >
 	class KAryHeap
 	{
 	public:
@@ -195,7 +195,7 @@ namespace epl
 		return the number of element in the heap.
 		@return the number of element in the heap
 		*/
-		unsigned int Size() const;
+		size_t Size() const;
 			
 		
 
@@ -285,7 +285,7 @@ namespace epl
 		///  K-ary heap
 		DynamicArray<Pair<KeyType,DataType> *> m_heap;
 		/// the actual heap size
-		unsigned int m_heapSize;
+		size_t m_heapSize;
 		/// lock
 		BaseLock *m_heapLock;
 		/// Lock Policy
@@ -295,7 +295,7 @@ namespace epl
 
 	};
 
-	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *)>  
+	template <typename KeyType,typename DataType,size_t k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *)>  
 	KAryHeap<KeyType,DataType,k,KeyCompareFunc>::KAryHeap(KaryHeapMode mode,LockPolicy lockPolicyType)
 	{
 		EP_ASSERT_EXPR(k>0,_T("Template Declaration Error: k cannnot be less than/equal to 0"));
@@ -321,7 +321,7 @@ namespace epl
 
 	}
 
-	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *)>  
+	template <typename KeyType,typename DataType,size_t k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *)>  
 	KAryHeap<KeyType,DataType,k,KeyCompareFunc>::KAryHeap(const KAryHeap<KeyType,DataType,k,KeyCompareFunc> & b)
 	{
 		EP_ASSERT_EXPR(k>0,_T("Template Declaration Error: k cannnot be less than/equal to 0"));
@@ -356,7 +356,7 @@ namespace epl
 
 	}
 
-	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
+	template <typename KeyType,typename DataType,size_t k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
 	KAryHeap<KeyType,DataType,k,KeyCompareFunc>::~KAryHeap()
 	{
 		m_heapLock->Lock();
@@ -373,7 +373,7 @@ namespace epl
 	}
 
 
-	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *)>  
+	template <typename KeyType,typename DataType,size_t k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *)>  
 	KAryHeap<KeyType,DataType,k,KeyCompareFunc> &KAryHeap<KeyType,DataType,k,KeyCompareFunc>::operator=(const KAryHeap<KeyType,DataType,k,KeyCompareFunc> & b)
 	{
 		if(this!=&b)
@@ -423,7 +423,7 @@ namespace epl
 		return *this;
 	}
 	
-	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *)>  
+	template <typename KeyType,typename DataType,size_t k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *)>  
 	DataType &KAryHeap<KeyType,DataType,k,KeyCompareFunc>::operator[](const KeyType & key)
 	{
 		LockObj lock(m_heapLock);
@@ -437,7 +437,7 @@ namespace epl
 		
 	}
 
-	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *)>  
+	template <typename KeyType,typename DataType,size_t k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *)>  
 	const DataType &KAryHeap<KeyType,DataType,k,KeyCompareFunc>::operator[](const KeyType & key) const
 	{
 		LockObj lock(m_heapLock);
@@ -446,7 +446,7 @@ namespace epl
 		return m_heap[idx]->second;
 	}
 
-	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *)>  
+	template <typename KeyType,typename DataType,size_t k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *)>  
 	DataType &KAryHeap<KeyType,DataType,k,KeyCompareFunc>::GetData(const KeyType &key)
 	{
 		LockObj lock(m_heapLock);
@@ -455,7 +455,7 @@ namespace epl
 		return m_heap[idx]->second;
 	}
 
-	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *)>  
+	template <typename KeyType,typename DataType,size_t k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *)>  
 	const DataType &KAryHeap<KeyType,DataType,k,KeyCompareFunc>::GetData(const KeyType &key) const
 	{
 		LockObj lock(m_heapLock);
@@ -464,7 +464,7 @@ namespace epl
 		return m_heap[idx]->second;
 	}
 	
-	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *)>  
+	template <typename KeyType,typename DataType,size_t k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *)>  
 	bool KAryHeap<KeyType,DataType,k,KeyCompareFunc>::GetData(const KeyType &key,DataType &retData) const
 	{
 		LockObj lock(m_heapLock);
@@ -477,7 +477,7 @@ namespace epl
 		return false;
 	}
 
-	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
+	template <typename KeyType,typename DataType,size_t k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
 	bool KAryHeap<KeyType,DataType,k,KeyCompareFunc>::Pop( KeyType &retKey, DataType &retData )
 	{
 		LockObj lock(m_heapLock);
@@ -492,7 +492,7 @@ namespace epl
 				
 	}
 
-	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
+	template <typename KeyType,typename DataType,size_t k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
 	bool KAryHeap<KeyType,DataType,k,KeyCompareFunc>::Front( KeyType &retKey, DataType &retData ) const
 	{		
 		LockObj lock(m_heapLock);
@@ -506,7 +506,7 @@ namespace epl
 	}
 
 
-	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *)>  
+	template <typename KeyType,typename DataType,size_t k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *)>  
 	Pair<KeyType,DataType> KAryHeap<KeyType,DataType,k,KeyCompareFunc>::Front() const
 	{
 		LockObj lock(m_heapLock);
@@ -514,7 +514,7 @@ namespace epl
 		return Pair(m_heap[0]->first,m_heap[0]->second);
 	}
 
-	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *)>  
+	template <typename KeyType,typename DataType,size_t k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *)>  
 	bool KAryHeap<KeyType,DataType,k,KeyCompareFunc>::ChangeKey(const KeyType &key, const KeyType &newKey)
 	{
 		LockObj lock(m_heapLock);
@@ -528,7 +528,7 @@ namespace epl
 	}
 
 	
-	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
+	template <typename KeyType,typename DataType,size_t k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
 	bool KAryHeap<KeyType,DataType,k,KeyCompareFunc>::ChangeData(const KeyType &key, const DataType &newData)
 	{
 		LockObj lock(m_heapLock);
@@ -541,7 +541,7 @@ namespace epl
 		return false;
 	}
 
-	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
+	template <typename KeyType,typename DataType,size_t k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
 	void KAryHeap<KeyType,DataType,k,KeyCompareFunc>::Clear()
 	{
 		for(int trav=0;trav<m_heapSize;trav++)
@@ -553,7 +553,7 @@ namespace epl
 		m_heapSize=0;
 	}
 
-	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *)>  
+	template <typename KeyType,typename DataType,size_t k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *)>  
 	bool KAryHeap<KeyType,DataType,k,KeyCompareFunc>::Erase(const KeyType &key)
 	{
 		LockObj lock(m_heapLock);
@@ -564,7 +564,7 @@ namespace epl
 		}
 		return false;
 	}
-	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
+	template <typename KeyType,typename DataType,size_t k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
 	bool KAryHeap<KeyType,DataType,k,KeyCompareFunc>::IsEmpty() const
 	{
 		LockObj lock(m_heapLock);
@@ -573,8 +573,8 @@ namespace epl
 		return false;
 	}
 
-	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
-	unsigned int KAryHeap<KeyType,DataType,k,KeyCompareFunc>::Size() const
+	template <typename KeyType,typename DataType,size_t k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
+	size_t KAryHeap<KeyType,DataType,k,KeyCompareFunc>::Size() const
 	{
 		LockObj lock(m_heapLock);
 		return m_heapSize;
@@ -582,7 +582,7 @@ namespace epl
 
 
 
-	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
+	template <typename KeyType,typename DataType,size_t k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
 	DataType &KAryHeap<KeyType,DataType,k,KeyCompareFunc>::Push(const KeyType &key, const DataType &data)
 	{	
 		LockObj lock(m_heapLock);
@@ -595,7 +595,7 @@ namespace epl
 
 
 
-	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
+	template <typename KeyType,typename DataType,size_t k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
 	bool KAryHeap<KeyType,DataType,k,KeyCompareFunc>::pop( Pair<KeyType,DataType> &retMin )
 	{
 		if(m_heap.Size()> 0 && m_heapSize >0)
@@ -612,7 +612,7 @@ namespace epl
 		return false;
 	}
 
-	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
+	template <typename KeyType,typename DataType,size_t k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
 	void KAryHeap<KeyType,DataType,k,KeyCompareFunc>::push(const KeyType &key, const DataType &data)
 	{
 	
@@ -628,7 +628,7 @@ namespace epl
 
 	}
 
-	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
+	template <typename KeyType,typename DataType,size_t k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
 	void KAryHeap<KeyType,DataType,k,KeyCompareFunc>::changeKey(int index, const KeyType &newKey)
 	{
 
@@ -647,7 +647,7 @@ namespace epl
 		}
 	}
 
-	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
+	template <typename KeyType,typename DataType,size_t k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
 	void KAryHeap<KeyType,DataType,k,KeyCompareFunc>::changeData(int index, const DataType &newData)
 	{
 
@@ -657,7 +657,7 @@ namespace epl
 		}
 	}
 
-	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
+	template <typename KeyType,typename DataType,size_t k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
 	void KAryHeap<KeyType,DataType,k,KeyCompareFunc>::erase(int index)
 	{
 
@@ -675,7 +675,7 @@ namespace epl
 
 
 
-	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
+	template <typename KeyType,typename DataType,size_t k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
 	void KAryHeap<KeyType,DataType,k,KeyCompareFunc>::heapifyUp(int idx)
 	{
 		if(m_heap.Size()>0)
@@ -701,7 +701,7 @@ namespace epl
 		}
 	}
 
-	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
+	template <typename KeyType,typename DataType,size_t k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
 	void KAryHeap<KeyType,DataType,k,KeyCompareFunc>::heapifyDown(int idx)
 	{
 		if(m_heap.Size()>0)
@@ -728,7 +728,7 @@ namespace epl
 		}
 	}
 
-	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
+	template <typename KeyType,typename DataType,size_t k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
 	int KAryHeap<KeyType,DataType,k,KeyCompareFunc>::findMinChild(int parentIdx) const
 	{
 		int arrTrav;
@@ -750,7 +750,7 @@ namespace epl
 
 	}
 
-	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
+	template <typename KeyType,typename DataType,size_t k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
 	int KAryHeap<KeyType,DataType,k,KeyCompareFunc>::findIndexLoop(const KeyType &key, int rootIdx) const
 	{
 		struct SnapShotStruct
@@ -839,7 +839,7 @@ namespace epl
 		return retValue;
 	}
 
-	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
+	template <typename KeyType,typename DataType,size_t k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
 	int KAryHeap<KeyType,DataType,k,KeyCompareFunc>::findIndex(const KeyType &key, int rootIdx) const
 	{
 		if(m_mode==KARY_HEAP_MODE_RECURSIVE)
@@ -882,7 +882,7 @@ namespace epl
 
 	}
 
-	template <typename KeyType,typename DataType,unsigned int k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
+	template <typename KeyType,typename DataType,size_t k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
 	int KAryHeap<KeyType,DataType,k,KeyCompareFunc>::getParentIdx(int childIdx) const
 	{
 		if(childIdx%k ==0)

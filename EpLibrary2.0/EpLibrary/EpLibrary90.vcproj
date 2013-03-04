@@ -176,6 +176,7 @@
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough="epPCH.h"
 				WarningLevel="3"
+				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -252,6 +253,7 @@
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough=""
 				WarningLevel="3"
+				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -390,6 +392,7 @@
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough="epPCH.h"
 				WarningLevel="3"
+				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -530,6 +533,7 @@
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough=""
 				WarningLevel="3"
+				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
 			/>
 			<Tool

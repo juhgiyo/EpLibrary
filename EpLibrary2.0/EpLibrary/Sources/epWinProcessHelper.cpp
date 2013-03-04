@@ -290,7 +290,7 @@ bool WinProcessHelper::TerminateProcess(const TCHAR *pProcessName)
 	return true;
 }
 
-unsigned int WinProcessHelper::GetNumberOfProcess(const TCHAR * pProcessName)
+size_t WinProcessHelper::GetNumberOfProcess(const TCHAR * pProcessName)
 {
 	std::vector<unsigned long> setOfPid;
 	epl::WinProcessHelper::GetProcessID(pProcessName,setOfPid);

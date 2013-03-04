@@ -290,7 +290,7 @@ LPTSTR _tcsenistr( const TCHAR * psz, const TCHAR * str, int len, int escape )
 //========================================================
 LPTSTR _tcseistr( const TCHAR * psz, const TCHAR * str, int escape )
 {
-	int len = _tcslen( str );
+	int len = static_cast<int>(_tcslen( str ));
 	return _tcsenistr( psz, str, len, escape );
 }
 
@@ -1332,7 +1332,7 @@ LPXNode _tagXMLNode::GetChild( int i )
 // Coder    Date                      Desc
 // bro      2002-12-26
 //========================================================
-int	_tagXMLNode::GetChildCount()
+size_t	_tagXMLNode::GetChildCount()
 {
 	return m_childs.size();
 }
@@ -1843,7 +1843,7 @@ CString _tagXMLEntitys::Ref2Entity( const TCHAR * estr )
 	CString es;
 	if( estr )
 	{
-		int len = _tcslen(estr);
+		int len =static_cast<int>(_tcslen(estr));
 		LPTSTR esbuf = es.GetBufferSetLength( len+1 );
 		if( esbuf )
 			Ref2Entity( estr, esbuf, len );
@@ -1859,7 +1859,7 @@ CString _tagXMLEntitys::Entity2Ref( const TCHAR * str )
 		int nEntityCount = GetEntityCount(str);
 		if( nEntityCount == 0 )
 			return CString(str);
-		int len = _tcslen(str) + nEntityCount*10 ;
+		int len = static_cast<int>(_tcslen(str)) + nEntityCount*10 ;
 		LPTSTR sbuf = s.GetBufferSetLength( len+1 );
 		if( sbuf )
 			Entity2Ref( str, sbuf, len );

@@ -163,7 +163,7 @@ namespace epl
 		@param[in] pProcessName the name of the window process
 		@return the number of process with the given name
 		*/
-		static unsigned int GetNumberOfProcess(const TCHAR * pProcessName);
+		static size_t GetNumberOfProcess(const TCHAR * pProcessName);
 
 		/*!
 		Get the process handle by process name and input as parameter for function Func

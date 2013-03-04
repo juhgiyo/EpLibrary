@@ -76,17 +76,17 @@ namespace epl {
 		{
 			friend StaticAllocator;
 
-			void Init(unsigned int blockSize, unsigned char blocks);
-			void *Allocate(unsigned int blockSize);
-			void Deallocate(void *p, unsigned int blockSize);
-			void Reset(unsigned int blockSize, unsigned char blocks);
+			void Init(size_t blockSize, unsigned char blocks);
+			void *Allocate(size_t blockSize);
+			void Deallocate(void *p, size_t blockSize);
+			void Reset(size_t blockSize, unsigned char blocks);
 			void Clear();
 			unsigned char *m_Data;
 			unsigned char firstAvailableBlock;
 			unsigned char numBlocksAvailable;
 		};
 
-		StaticAllocator(unsigned int blockSize = 0);
+		StaticAllocator(size_t blockSize = 0);
 		StaticAllocator(const StaticAllocator& rhs);
 		StaticAllocator& operator=(const StaticAllocator& rhs);
 
@@ -98,16 +98,16 @@ namespace epl {
 		void Compress(CacheType type);
 		void Delete();
 
-		unsigned int GetBlockSize() const
+		size_t GetBlockSize() const
 		{
 			return m_blockSize;
 		}
-		bool operator<(unsigned int rhs) const
+		bool operator<(size_t rhs) const
 		{ 
 			return GetBlockSize() < rhs; 
 		}
 
-		unsigned int Size() const
+		size_t Size() const
 		{
 			return m_fragments.size();
 		}
@@ -118,7 +118,7 @@ namespace epl {
 	private:
 		void Release(void* p, CacheType type);
 		Fragment* VicinityFind(void* p);
-		unsigned int m_blockSize;
+		size_t m_blockSize;
 		unsigned char m_numBlocks;
 		typedef std::vector<Fragment> Fragments;
 		Fragments m_fragments;
@@ -131,12 +131,12 @@ namespace epl {
 	{
 	public:
 		TinyObjAllocator(
-			unsigned int fragmentSize, 
-			unsigned int maxObjectSize);
+			size_t fragmentSize, 
+			size_t maxObjectSize);
 		~TinyObjAllocator();
 
-		void* Allocate(unsigned int numBytes);
-		void Deallocate(void* p, unsigned int size, CacheType type);
+		void* Allocate(size_t numBytes);
+		void Deallocate(void* p, size_t size, CacheType type);
 		void Compress(CacheType type);
 
 
@@ -148,15 +148,15 @@ namespace epl {
 		Pool m_pool;
 		StaticAllocator* m_lastAlloc;
 		StaticAllocator* m_lastDealloc;
-		unsigned int m_fragmentSize;
-		unsigned int m_maxObjectSize;
+		size_t m_fragmentSize;
+		size_t m_maxObjectSize;
 	};
 
 	template
 		<
 		CacheType cacheType = CACHE_TYPE_STATIC|CACHE_TYPE_POOL,
-		unsigned int fragmentSize = DEFAULT_FRAGMENT_SIZE,
-		unsigned int maxTinyObjectSize = MAX_TINY_OBJECT_SIZE
+		size_t fragmentSize = DEFAULT_FRAGMENT_SIZE,
+		size_t maxTinyObjectSize = MAX_TINY_OBJECT_SIZE
 		>
 	class EP_LIBRARY TinyObject
 	{
@@ -168,7 +168,7 @@ namespace epl {
 		};
 		typedef ThreadSafeClass< MyTinyObjAllocator > MyThreadSafeClass;
 	public:
-		static void* operator new(unsigned int size)
+		static void* operator new(size_t size)
 		{
 			typename MyThreadSafeClass::InstantLock lock;
 #if (MAX_TINY_OBJECT_SIZE != 0) && (DEFAULT_FRAGMENT_SIZE != 0)
@@ -177,7 +177,7 @@ namespace epl {
 			return ::operator new(size);
 #endif
 		}
-		static void operator delete(void* p, unsigned int size)
+		static void operator delete(void* p, size_t size)
 		{
 			typename MyThreadSafeClass::InstantLock lock;
 #if (MAX_TINY_OBJECT_SIZE != 0) && (DEFAULT_FRAGMENT_SIZE != 0)

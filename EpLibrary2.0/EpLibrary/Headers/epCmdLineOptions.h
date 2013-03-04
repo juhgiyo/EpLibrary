@@ -128,7 +128,7 @@ namespace epl
 		@param[in] argv the array of argument strings.
 		@return the number of CmdLine Options parsed
 		*/
-		unsigned int Parse(int argc, TCHAR **argv);
+		size_t Parse(int argc, TCHAR **argv);
 
 		/*!
 		Check if CmdLineOptions contain the given option
@@ -145,7 +145,7 @@ namespace epl
 		@return the argument string found.
 		@remark if the argument does not exist then return given default argument string.
 		*/
-		EpTString GetArgument(const TCHAR *option,unsigned int idx, const TCHAR *defaultArg) const;
+		EpTString GetArgument(const TCHAR *option,size_t idx, const TCHAR *defaultArg) const;
 
 		/*!
 		Get argument of given option at given index.
@@ -154,7 +154,7 @@ namespace epl
 		@return the argument string found.
 		@remark if the argument does not exist then throws exception 0.
 		*/
-		EpTString GetArgument(const TCHAR *option,unsigned int idx) const;
+		EpTString GetArgument(const TCHAR *option,size_t idx) const;
 
 		/*!
 		Get the number of arguments of given option
