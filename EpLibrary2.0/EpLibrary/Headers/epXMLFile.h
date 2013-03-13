@@ -79,11 +79,11 @@ namespace epl
 		Default Constructor
 
 		Initializes the XML File 
-		@param[in] xmlInfo the xml parsing info
 		@param[in] encodingType the encoding type for this file
+		@param[in] xmlInfo the xml parsing info
 		@param[in] lockPolicyType The lock policy
 		*/
-		XMLFile(XMLInfo &xmlInfo=XMLInfo::xmlDefault,FileEncodingType encodingType=FILE_ENCODING_TYPE_UTF16LE, LockPolicy lockPolicyType=EP_LOCK_POLICY);
+		XMLFile(FileEncodingType encodingType=FILE_ENCODING_TYPE_UTF16LE,XMLInfo &xmlInfo=XMLInfo::xmlDefault, LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Copy Constructor

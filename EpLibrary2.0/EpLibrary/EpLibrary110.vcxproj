@@ -417,6 +417,7 @@
     <ClCompile Include="Sources\epCStringEx.cpp" />
     <ClCompile Include="Sources\epEventEx.cpp" />
     <ClCompile Include="Sources\epFileStream.cpp" />
+    <ClCompile Include="Sources\epLogWriter.cpp" />
     <ClCompile Include="Sources\epNetworkStream.cpp" />
     <ClCompile Include="Sources\epStream.cpp" />
     <ClCompile Include="Sources\epBaseOutputter.cpp" />
@@ -465,6 +466,7 @@
     <ClInclude Include="Headers\epAlgorithm.h" />
     <ClInclude Include="Headers\epBinarySearch.h" />
     <ClInclude Include="Headers\epInsertionSort.h" />
+    <ClInclude Include="Headers\epLogWriter.h" />
     <ClInclude Include="Headers\epMergeSort.h" />
     <ClInclude Include="Headers\epQuickSort.h" />
     <ClInclude Include="Headers\epFastLog.h" />

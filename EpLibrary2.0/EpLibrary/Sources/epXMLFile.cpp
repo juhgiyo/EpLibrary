@@ -28,7 +28,7 @@ using namespace epl;
 
 XMLInfo _xmlInfo::xmlDefault=XMLInfo();
 
-XMLFile::XMLFile(XMLInfo &xmlInfo,FileEncodingType encodingType, LockPolicy lockPolicyType) :XNode(), BaseTextFile(encodingType,lockPolicyType)
+XMLFile::XMLFile(FileEncodingType encodingType,XMLInfo &xmlInfo, LockPolicy lockPolicyType) :XNode(), BaseTextFile(encodingType,lockPolicyType)
 {
 	m_xmlInfo=xmlInfo;
 }
