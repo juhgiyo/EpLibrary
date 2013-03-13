@@ -69,6 +69,7 @@ An Interface for EpLibrary Pre-compiled header
 #include "epXMLFile.h"
 #include "epXMLite.h"
 #include "epTextFile.h"
+#include "epLogWriter.h"
 
 //Frameworks
 #include "epBaseLock.h"

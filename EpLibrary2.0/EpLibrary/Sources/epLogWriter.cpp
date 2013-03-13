@@ -15,9 +15,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "stdafx.h"
 #include "epLogWriter.h"
-
+#include "epFolderHelper.h"
+using namespace epl;
 #if  defined(_UNICODE) || defined(UNICODE)
 LogWriter::LogWriter(LockPolicy lockPolicyType):BaseTextFile(FILE_ENCODING_TYPE_UTF16LE,lockPolicyType)
 #else // defined(_UNICODE) || defined(UNICODE)
