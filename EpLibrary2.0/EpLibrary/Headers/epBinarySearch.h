@@ -57,9 +57,9 @@ namespace epl
 			retIdx=listSize;
 			return NULL;
 		}
-		size_t low = 0;
-		size_t high= listSize-1;
-		size_t med = (low+high)/2;
+		ssize_t low = 0;
+		ssize_t high= ssize_t(listSize)-1;
+		ssize_t med = (low+high)/2;
 
 		T2 * tpCur = NULL;
 		while ( 1 )
@@ -70,7 +70,7 @@ namespace epl
 			CompResultType ret = CompareFunc(&_pKey, tpCur );
 			if ( ret == COMP_RESULT_EQUAL)
 			{
-				retIdx=med;
+				retIdx=size_t(med);
 				return tpCur;
 			}
 			else if (ret > COMP_RESULT_EQUAL)
@@ -88,7 +88,7 @@ namespace epl
 				break;
 			}
 		}
-		retIdx=low;
+		retIdx=size_t(low);
 		return NULL;
 	}
 

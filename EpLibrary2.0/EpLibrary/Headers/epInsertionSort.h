@@ -45,14 +45,14 @@ namespace epl
 	@param[in] SortFunc The Compare Function pointer.
 	*/
 	template<typename T>
-	inline void InsertionSort(T* sortList, int low, int high,CompResultType (__cdecl *SortFunc)(const void * , const void *))
+	inline void InsertionSort(T* sortList, ssize_t low, ssize_t high,CompResultType (__cdecl *SortFunc)(const void * , const void *))
 	{
-		int i;
+		ssize_t i;
 		for(i=low+1; i<=high; i++)
 		{
 			T tmp;
 			tmp=sortList[i];
-			int j=i-1;
+			ssize_t j=i-1;
 			while(j>=low && SortFunc(&sortList[j],&tmp)>COMP_RESULT_EQUAL)
 			{
 				sortList[j+1]=sortList[j];

@@ -59,7 +59,7 @@ namespace epl
 	@param[in] minSize the minimum size for the insertion sort start
 	*/
 	template <typename T>
-	void QuickSort (T* sortList,const unsigned int listSize,CompResultType (__cdecl *SortFunc)(const void * , const void *), QSortMode mode=QSORT_MODE_STL, int minSize=-1)
+	void QuickSort (T* sortList,const size_t listSize,CompResultType (__cdecl *SortFunc)(const void * , const void *), QSortMode mode=QSORT_MODE_STL, ssize_t minSize=-1)
 	{
 		if(mode==QSORT_MODE_STL)
 		{
@@ -67,8 +67,8 @@ namespace epl
 		}
 		else
 		{
-			if(minSize<0 || minSize>listSize)
-				minSize=listSize/2;
+			if(minSize<0 || minSize>ssize_t(listSize))
+				minSize=ssize_t(listSize)/2;
 			if(mode==QSORT_MODE_RECURSIVE)
 				subQuickSortRecursive<T>(sortList,0,listSize-1,SortFunc, minSize);
 			else if(mode==QSORT_MODE_LOOP)
@@ -88,7 +88,7 @@ namespace epl
 	@param[in] minSize the minimum size of the list for insertion Sort operation
 	*/
 	template<typename T>
-	inline void subQuickSortRecursive(T* sortList, int low, int high,CompResultType (__cdecl *SortFunc)(const void * , const void *), int minSize)
+	inline void subQuickSortRecursive(T* sortList, ssize_t low, ssize_t high,CompResultType (__cdecl *SortFunc)(const void * , const void *), ssize_t minSize)
 	{
 		if(high>low+1)
 		{
@@ -98,7 +98,7 @@ namespace epl
 			}
 			else
 			{
-				int index = partitionWrapper<T>(sortList, low, high,SortFunc);
+				ssize_t index = partitionWrapper<T>(sortList, low, high,SortFunc);
 				subQuickSortRecursive<T>(sortList, low, index-1,SortFunc, minSize);
 				subQuickSortRecursive<T>(sortList,index+1, high,SortFunc,minSize);
 			}
@@ -119,10 +119,10 @@ namespace epl
 	@return the median index
 	*/
 	template<typename T>
-	inline int partitionWrapper(T* sortList, int low, int high,CompResultType (__cdecl *SortFunc)(const void * , const void *))
+	inline ssize_t partitionWrapper(T* sortList, ssize_t low, ssize_t high,CompResultType (__cdecl *SortFunc)(const void * , const void *))
 	{
 		SwapFunc<T>(&sortList[low], &sortList[medianLocation<T>(sortList,low+1,high,(low+high)/2,SortFunc)]);
-		int med=partition<T>(sortList, low+1, high, sortList[low],SortFunc);
+		ssize_t med=partition<T>(sortList, low+1, high, sortList[low],SortFunc);
 		SwapFunc<T>(&sortList[low],&sortList[med]);
 		return med;
 	}
@@ -137,7 +137,7 @@ namespace epl
 	@return the median index
 	*/
 	template<typename T>
-	inline int medianLocation(T* sortList, int i, int j, int k,CompResultType (__cdecl *SortFunc)(const void * , const void *))
+	inline ssize_t medianLocation(T* sortList, ssize_t i, ssize_t j, ssize_t k,CompResultType (__cdecl *SortFunc)(const void * , const void *))
 	{
 		if (SortFunc(&sortList[i] , &sortList[j])<COMP_RESULT_GREATERTHAN)
 			if (SortFunc(&sortList[j] , &sortList[k])<COMP_RESULT_GREATERTHAN)
@@ -165,7 +165,7 @@ namespace epl
 	@return the median index
 	*/
 	template<typename T>
-	inline int partition(T* sortList, int low, int high, T &pivot,CompResultType (__cdecl *SortFunc)(const void * , const void *))
+	inline ssize_t partition(T* sortList, ssize_t low, ssize_t high, T &pivot,CompResultType (__cdecl *SortFunc)(const void * , const void *))
 	{
 		while(high!=low)
 		{
@@ -203,12 +203,12 @@ namespace epl
 	@param[in] minSize the minimum size of the list for insertion Sort operation
 	*/
 	template<typename T>
-	inline void subQuickSortLoop(T* sortList, int iLow, int iHigh,CompResultType (__cdecl *SortFunc)(const void *,const void *),int minSize)
+	inline void subQuickSortLoop(T* sortList, ssize_t iLow, ssize_t iHigh,CompResultType (__cdecl *SortFunc)(const void *,const void *),ssize_t minSize)
 	{
 		struct SnapShotStruct
 		{
-			int low;
-			int high;
+			ssize_t low;
+			ssize_t high;
 		};
 
 		stack<SnapShotStruct> snapshotStack;
@@ -228,10 +228,10 @@ namespace epl
 				}
 				else
 				{
-					int i=currentSnaptshot.low+1;
-					int j=(currentSnaptshot.low+currentSnaptshot.high)/2;
-					int k=currentSnaptshot.high;
-					int medLoc;
+					ssize_t i=currentSnaptshot.low+1;
+					ssize_t j=(currentSnaptshot.low+currentSnaptshot.high)/2;
+					ssize_t k=currentSnaptshot.high;
+					ssize_t medLoc;
 					if (SortFunc(&sortList[i] , &sortList[j])<COMP_RESULT_GREATERTHAN)
 						if (SortFunc(&sortList[j] , &sortList[k])<COMP_RESULT_GREATERTHAN)
 							medLoc=j;
@@ -253,8 +253,8 @@ namespace epl
 						sortList[medLoc]=tmp;
 
 						T &pivot=sortList[currentSnaptshot.low];
-						int relHigh=currentSnaptshot.high;
-						int relLow=currentSnaptshot.low+1;
+						ssize_t relHigh=currentSnaptshot.high;
+						ssize_t relLow=currentSnaptshot.low+1;
 						CompResultType res1=SortFunc(&sortList[relLow],&pivot);
 						CompResultType res2=SortFunc(&sortList[relHigh],&pivot);
 						while(relHigh!=relLow)
@@ -288,7 +288,7 @@ namespace epl
 								}
 							}
 						}
-						int med;
+						ssize_t med;
 						if (SortFunc(&sortList[relLow], &pivot) < COMP_RESULT_EQUAL)
 							med= relLow;
 						else
@@ -296,7 +296,7 @@ namespace epl
 						tmp=sortList[currentSnaptshot.low];
 						sortList[currentSnaptshot.low]=sortList[med];
 						sortList[med]=tmp;
-						int index = med;
+						ssize_t index = med;
 
 						SnapShotStruct leftHalf,rightHalf;
 						leftHalf.low=currentSnaptshot.low;

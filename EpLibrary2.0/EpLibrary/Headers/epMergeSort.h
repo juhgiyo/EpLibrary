@@ -54,7 +54,7 @@ namespace epl
 	@param[in] mode the flag for recursive or loop mode
 	*/
 	template<typename T>
-	inline void MergeSort(T *sortList, int listSize,CompResultType (__cdecl *SortFunc)(const void * , const void *), MSortMode mode=MSORT_MODE_LOOP)
+	inline void MergeSort(T *sortList, size_t listSize,CompResultType (__cdecl *SortFunc)(const void * , const void *), MSortMode mode=MSORT_MODE_LOOP)
 	{ 
 		if(sortList==NULL || listSize<=1)
 			return;
@@ -78,17 +78,17 @@ namespace epl
 	@param[in] SortFunc The Compare Function pointer.
 	*/
 	template<typename T>
-	inline T* subMergeSortRecursive(T *sortList, int listSize, T* workSpace,CompResultType (__cdecl *SortFunc)(const void * , const void *))
+	inline T* subMergeSortRecursive(T *sortList, size_t listSize, T* workSpace,CompResultType (__cdecl *SortFunc)(const void * , const void *))
 	{
 		if(listSize!=1)
 		{
-			int leftSize= listSize/2;
-			int rightSize= listSize-leftSize;
+			size_t leftSize= listSize/2;
+			size_t rightSize= listSize-leftSize;
 			T* leftSortedList= subMergeSortRecursive<T>(sortList,leftSize,workSpace,SortFunc);
 
 			T* rightSortedList=subMergeSortRecursive<T>(sortList+leftSize, rightSize, workSpace,SortFunc);
 
-			int trav;
+			size_t trav;
 			for(trav=0;trav<listSize;trav++)
 			{
 				if(leftSize==0)
@@ -137,14 +137,14 @@ namespace epl
 	@param[in] SortFunc The Compare Function pointer.
 	*/
 	template<typename T>
-	inline T* subMergeSortLoop(T *sortList, int listSize, T* workSpace,CompResultType (__cdecl *SortFunc)(const void * , const void *))
+	inline T* subMergeSortLoop(T *sortList, size_t listSize, T* workSpace,CompResultType (__cdecl *SortFunc)(const void * , const void *))
 	{
 		struct SnapShotStruct
 		{
 			T*sortList;
-			int listSize;
-			int leftSize;
-			int rightSize;
+			size_t listSize;
+			size_t leftSize;
+			size_t rightSize;
 			T* leftSortedList;
 			T* rightSortedList;
 			int stage;
@@ -206,7 +206,7 @@ namespace epl
 				break;
 			case 2:
 				currentSnaptshot.rightSortedList=retList;
-				int trav;
+				size_t trav;
 				for(trav=0;trav<currentSnaptshot.listSize;trav++)
 				{
 					if(currentSnaptshot.leftSize==0)
