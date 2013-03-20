@@ -33,7 +33,7 @@ An Interface for Binary Search Algorithm.
 
 #include "epLib.h"
 #include "epAlgorithm.h"
-
+#include "epSystem.h"
 namespace epl
 {
 	/*!
