@@ -51,9 +51,10 @@ namespace epl
 		Default Constructor
 
 		Initializes the Dynamic Array
+		@param[in] initialSize The initial size of the array
 		@param[in] lockPolicyType The lock policy
 		*/
-		DynamicArray(LockPolicy lockPolicyType=EP_LOCK_POLICY);
+		DynamicArray(size_t initialSize=0,LockPolicy lockPolicyType=EP_LOCK_POLICY);
 
 		/*!
 		Default Constructor
@@ -212,11 +213,8 @@ namespace epl
 	};
 
 	template <typename DataType>
-	DynamicArray<DataType>::DynamicArray(LockPolicy lockPolicyType)
+	DynamicArray<DataType>::DynamicArray(size_t initialSize,LockPolicy lockPolicyType)
 	{
-		m_head=NULL;
-		m_actualSize=0;
-		m_numOfElements=0;
 		m_lockPolicy=lockPolicyType;
 		switch(lockPolicyType)
 		{
@@ -233,6 +231,16 @@ namespace epl
 			m_arrayLock=NULL;
 			break;
 		}
+		m_actualSize=initialSize;
+		m_numOfElements=initialSize;
+		if(m_actualSize)
+		{
+			m_head=reinterpret_cast<DataType*>(EP_Malloc(sizeof(DataType)*m_actualSize));
+			EP_ASSERT(m_head);
+		}
+		else
+			m_head=NULL;
+		
 	}
 	template <typename DataType>
 	DynamicArray<DataType>::DynamicArray(const DynamicArray<DataType> &dArr)
@@ -257,11 +265,14 @@ namespace epl
 		m_actualSize=dArr.m_actualSize;
 		m_numOfElements=dArr.m_numOfElements;
 		if(m_actualSize)
+		{
 			m_head=reinterpret_cast<DataType*>(EP_Malloc(sizeof(DataType)*m_actualSize));
+			EP_ASSERT(m_head);
+			System::Memcpy(m_head,sizeof(DataType)*m_actualSize,dArr.m_head,sizeof(DataType)*m_actualSize);
+		}
 		else
 			m_head=NULL;
-		EP_ASSERT(m_head);
-		System::Memcpy(m_head,sizeof(DataType)*m_actualSize,dArr.m_head,sizeof(DataType)*m_actualSize);
+
 	}
 
 	template <typename DataType>
