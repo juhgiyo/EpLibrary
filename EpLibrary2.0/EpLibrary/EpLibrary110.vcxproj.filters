@@ -245,6 +245,9 @@
     <ClCompile Include="Sources\epLogWriter.cpp">
       <Filter>Source Files\File System</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\epBinaryFile.cpp">
+      <Filter>Source Files\File System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\epl.h">
@@ -437,6 +440,9 @@
       <Filter>Header Files\Frameworks\Lock</Filter>
     </ClInclude>
     <ClInclude Include="Headers\epLogWriter.h">
+      <Filter>Header Files\File System</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epBinaryFile.h">
       <Filter>Header Files\File System</Filter>
     </ClInclude>
   </ItemGroup>

@@ -413,6 +413,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Sources\epBaseTextFile.cpp" />
+    <ClCompile Include="Sources\epBinaryFile.cpp" />
     <ClCompile Include="Sources\epCmdLineOptions.cpp" />
     <ClCompile Include="Sources\epCStringEx.cpp" />
     <ClCompile Include="Sources\epEventEx.cpp" />
@@ -459,6 +460,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\epBaseTextFile.h" />
+    <ClInclude Include="Headers\epBinaryFile.h" />
     <ClInclude Include="Headers\epCmdLineOptions.h" />
     <ClInclude Include="Headers\epEventEx.h" />
     <ClInclude Include="Headers\epl.h" />

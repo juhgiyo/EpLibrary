@@ -784,6 +784,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Sources\epBinaryFile.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\Sources\epFolderHelper.cpp"
 					>
 				</File>
@@ -1115,6 +1119,10 @@
 				>
 				<File
 					RelativePath=".\Headers\epBaseTextFile.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Headers\epBinaryFile.h"
 					>
 				</File>
 				<File
