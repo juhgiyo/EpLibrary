@@ -264,7 +264,7 @@ namespace epl
 		/*!
 		Wait for thread to terminate, and if not terminated, then Terminate.
 		@param[in] tMilliseconds the time-out interval, in milliseconds.
-		@return the event that caused the function to return.(WaitForSingleObject)
+		@return the terminate result of the thread
 		*/
 		TerminateResult TerminateAfter(const unsigned long tMilliseconds);
 
