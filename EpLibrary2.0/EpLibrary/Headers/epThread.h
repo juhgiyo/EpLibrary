@@ -144,6 +144,18 @@ namespace epl
 			THREAD_TYPE_UNKNOWN
 		};
 
+		/// Enumerator for Thread Terminate Result
+		enum TerminateResult{
+			/// Failed to terminate the thread
+			TERMINATE_RESULT_FAILED=0,
+			/// The thread terminated gracefully
+			TERMINATE_RESULT_GRACEFULLY_TERMINATED,
+			/// The thread terminated forcefully
+			TERMINATE_RESULT_FORCEFULLY_TERMINATE,
+			/// The thread was not running
+			TERMINATE_RESULT_NOT_ON_RUNNING,
+		};
+
 		/// type definition for Thread ID.
 		typedef unsigned int ThreadID;
 		/// type definition for Thread Handle.
@@ -254,7 +266,7 @@ namespace epl
 		@param[in] tMilliseconds the time-out interval, in milliseconds.
 		@return the event that caused the function to return.(WaitForSingleObject)
 		*/
-		bool TerminateAfter(const unsigned long tMilliseconds);
+		TerminateResult TerminateAfter(const unsigned long tMilliseconds);
 
 
 		/*!

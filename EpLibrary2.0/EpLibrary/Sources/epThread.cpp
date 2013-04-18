@@ -464,7 +464,7 @@ void Thread::Detach()
 	m_threadLock->Unlock();
 
 }
-bool Thread::TerminateAfter(const unsigned long tMilliseconds)
+Thread::TerminateResult Thread::TerminateAfter(const unsigned long tMilliseconds)
 {
 	if(m_status!=THREAD_STATUS_TERMINATED && m_threadHandle)
 	{
@@ -475,17 +475,19 @@ bool Thread::TerminateAfter(const unsigned long tMilliseconds)
 		case WAIT_TIMEOUT:
 		case WAIT_FAILED:
 
-			return Terminate();
+			if(Terminate())
+				return TERMINATE_RESULT_FORCEFULLY_TERMINATE;
+			return TERMINATE_RESULT_FAILED;
 			break;
 		default:
 			break;
 		}
-		return true;
+		return TERMINATE_RESULT_GRACEFULLY_TERMINATED;
 	}
 	else
 	{
 		System::OutputDebugString(_T("The thread (%x): Thread is not started!\r\n"),m_threadId);
-		return true;
+		return TERMINATE_RESULT_NOT_ON_RUNNING;
 	}
 
 }
