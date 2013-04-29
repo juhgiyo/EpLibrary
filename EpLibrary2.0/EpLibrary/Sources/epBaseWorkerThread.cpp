@@ -145,6 +145,8 @@ BaseWorkerThread &BaseWorkerThread::operator=(const BaseWorkerThread & b)
 void BaseWorkerThread::Push(BaseJob* const  work)
 {
 	m_workPool.Push(work);
+	if(m_lifePolicy==THREAD_LIFE_SUSPEND_AFTER_WORK)
+		Resume();
 }
 
 BaseJob * &BaseWorkerThread::Front()
