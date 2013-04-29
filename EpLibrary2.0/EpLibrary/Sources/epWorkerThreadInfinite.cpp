@@ -24,11 +24,31 @@ static char THIS_FILE[] = __FILE__;
 #endif // defined(_DEBUG) && defined(EP_ENABLE_CRTDBG)
 
 using namespace epl;
+WorkerThreadInfinite::WorkerThreadInfinite(const ThreadLifePolicy policy):BaseWorkerThread(policy)
+{
+	m_terminateEvent=EventEx(false,false);
+}
+
+WorkerThreadInfinite::WorkerThreadInfinite(const WorkerThreadInfinite & b):BaseWorkerThread(b)
+{
+	m_terminateEvent=EventEx(false,false);
+}
+
+Thread::TerminateResult WorkerThreadInfinite::TerminateWorker(unsigned int waitTimeInMilliSec)
+{
+	m_terminateEvent.SetEvent();
+	return TerminateAfter(waitTimeInMilliSec);
+
+}
 
 void WorkerThreadInfinite::execute()
 {
 	while(true)
 	{
+		if(m_terminateEvent.WaitForEvent(0))
+		{
+			return;
+		}
 		if(m_workPool.IsEmpty())
 		{
 			if(m_lifePolicy==THREAD_LIFE_SUSPEND_AFTER_WORK)

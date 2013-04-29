@@ -34,6 +34,7 @@ A Interface for Infinite-looping Worker Thread Class.
 #include "epWorkerThreadFactory.h"
 #include "epCriticalSectionEx.h"
 #include "epBaseJobProcessor.h"
+#include "epEventEx.h"
 
 namespace epl
 {
@@ -50,9 +51,7 @@ namespace epl
 		Initializes the thread class
 		@param[in] policy the life policy of this worker thread.
 		*/
-		WorkerThreadInfinite(const ThreadLifePolicy policy):BaseWorkerThread(policy)
-		{
-		}
+		WorkerThreadInfinite(const ThreadLifePolicy policy);
 
 		/*!
 		Default Copy Constructor
@@ -60,8 +59,7 @@ namespace epl
 		Initializes the Thread class
 		@param[in] b the second object
 		*/
-		WorkerThreadInfinite(const WorkerThreadInfinite & b):BaseWorkerThread(b)
-		{}
+		WorkerThreadInfinite(const WorkerThreadInfinite & b);
 
 		/*!
 		Default Destructor
@@ -84,11 +82,22 @@ namespace epl
 			return *this;
 		}
 
+		/*!
+		Wait for worker thread to terminate, and if not terminated, then Terminate.
+		@param[in] tMilliseconds the time-out interval, in milliseconds.
+		@return the terminate result of the thread
+		*/
+		TerminateResult TerminateWorker(unsigned int waitTimeInMilliSec=WAITTIME_INIFINITE);
+
 	protected:
 		/*!
 		Actual infinite-looping Thread Code.
 		*/
 		virtual void execute();
+
+	private:
+		/// Terminate Signal Event
+		EventEx m_terminateEvent;
 
 	};
 

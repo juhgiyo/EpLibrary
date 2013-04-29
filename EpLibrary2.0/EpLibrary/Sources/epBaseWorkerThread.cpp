@@ -191,6 +191,12 @@ void BaseWorkerThread::SetCallBackClass(void *callBackClass)
 	m_callBackClass=callBackClass;
 }
 
+Thread::TerminateResult BaseWorkerThread::TerminateWorker(unsigned int waitTimeInMilliSec)
+{
+	return TerminateAfter(waitTimeInMilliSec);
+
+}
+
 void BaseWorkerThread::callCallBack()
 {
 	LockObj lock(m_callBackLock);

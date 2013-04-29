@@ -101,6 +101,19 @@ namespace epl
 	{
 
 	public:
+
+		/*!
+		Return the System information.
+		@return the System information..
+		*/
+		static SYSTEM_INFO GetSystemInfo();
+
+		/*!
+		Return the number of cores of running computer.
+		@return the number of cores of running computer.
+		*/
+		static unsigned long GetNumberOfCores();
+
 		/*!
 		Return the time in milliseconds from first call of GetTime.
 		@return the time in milliseconds from first call of GetTime.

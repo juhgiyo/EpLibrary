@@ -29,6 +29,18 @@ using namespace epl;
 
 #define MAX_UNSIGNED_INT ((unsigned int)(0xffffffff))
 
+SYSTEM_INFO System::GetSystemInfo()
+{
+	SYSTEM_INFO sysinfo;
+	::GetSystemInfo( &sysinfo );
+	return sysinfo;
+}
+unsigned long System::GetNumberOfCores()
+{
+	SYSTEM_INFO sysinfo;
+	::GetSystemInfo( &sysinfo );
+	return sysinfo.dwNumberOfProcessors;
+}
 
 EpTime System::GetTime()
 {
