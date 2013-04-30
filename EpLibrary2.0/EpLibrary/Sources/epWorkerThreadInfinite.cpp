@@ -37,6 +37,7 @@ WorkerThreadInfinite::WorkerThreadInfinite(const WorkerThreadInfinite & b):BaseW
 Thread::TerminateResult WorkerThreadInfinite::TerminateWorker(unsigned int waitTimeInMilliSec)
 {
 	m_terminateEvent.SetEvent();
+	Resume();
 	return TerminateAfter(waitTimeInMilliSec);
 
 }
@@ -68,7 +69,7 @@ void WorkerThreadInfinite::execute()
 		jobPtr->RetainObj();
 		m_workPool.Pop();
 		jobPtr->JobReport(BaseJob::JOB_STATUS_IN_PROCESS);
-		m_jobProcessor->DoJob(GetID(),m_lifePolicy, jobPtr);
+		m_jobProcessor->DoJob(this, jobPtr);
 		jobPtr->JobReport(BaseJob::JOB_STATUS_DONE);
 		jobPtr->ReleaseObj();
 	}

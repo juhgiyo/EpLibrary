@@ -34,6 +34,7 @@ A Interface for Base Worker Thread Class.
 #include "epJobScheduleQueue.h"
 #include "epThread.h"
 #include "epBaseJob.h"
+#include "epWorkerThreadDelegate.h"
 
 namespace epl
 {
@@ -119,13 +120,25 @@ namespace epl
 		Set call back class to call when work is done.
 		@param[in] callBackClass the call back class.
 		*/
-		virtual void SetCallBackClass(void *callBackClass);
+		virtual void SetCallBackClass(WorkerThreadDelegate *callBackClass);
 
 		/*!
 		Get job count in work pool.
 		@return the job count in work pool.
 		*/
 		size_t GetJobCount() const;
+
+		/*!
+		Set new Job Processor.
+		@param[in] jobProcessor set new Job Processor for this thread.
+		*/
+		void SetJobProcessor(BaseJobProcessor* jobProcessor);
+
+		/*!
+		Get Job Processor.
+		@return the Job Processor for this thread.
+		*/
+		BaseJobProcessor* GetJobProcessor();
 
 		/*!
 		Assignment operator overloading
@@ -142,17 +155,7 @@ namespace epl
 		virtual TerminateResult TerminateWorker(unsigned int waitTimeInMilliSec=WAITTIME_INIFINITE);
 
 	protected:
-		/*!
-		Set new Job Processor.
-		@param[in] jobProcessor set new Job Processor for this thread.
-		*/
-		void setJobProcessor(BaseJobProcessor* jobProcessor);
 
-		/*!
-		Get Job Processor.
-		@return the Job Processor for this thread.
-		*/
-		BaseJobProcessor* getJobProcessor();
 
 		/*!
 		Pure Worker Thread Code.
@@ -169,7 +172,7 @@ namespace epl
 		/// the life policy of the thread
 		ThreadLifePolicy m_lifePolicy;
 		/// the call back class
-		void *m_callBackClass;
+		WorkerThreadDelegate *m_callBackClass;
 
 		/// callback Lock
 		BaseLock * m_callBackLock;

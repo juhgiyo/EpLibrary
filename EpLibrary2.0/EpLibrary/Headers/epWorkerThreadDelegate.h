@@ -55,7 +55,7 @@ namespace epl
 		Call Back Function.
 		@param[in] p the argument for call back function.
 		*/
-		virtual void CallBackFunc(void *p)=0;
+		virtual void CallBackFunc(BaseWorkerThread *p)=0;
 	};
 
 }

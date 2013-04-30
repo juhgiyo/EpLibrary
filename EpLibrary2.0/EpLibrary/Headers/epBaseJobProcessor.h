@@ -73,11 +73,10 @@ namespace epl
 
 		/*!
 		Process the job given, subclasses must implement this function.
-		@param[in] threadId The Thread Id which doing the job.
-		@param[in] threadLifePolicy the life policy of the thread that this job assigned to.
+		@param[in] workerThread The worker thread which called the DoJob.
 		@param[in] data The job given to this object.
 		*/
-		virtual void DoJob(const BaseWorkerThread::ThreadID threadId, const BaseWorkerThread::ThreadLifePolicy threadLifePolicy,  BaseJob* const data)=0;
+		virtual void DoJob(BaseWorkerThread *workerThread,  BaseJob* const data)=0;
 
 
 	protected:

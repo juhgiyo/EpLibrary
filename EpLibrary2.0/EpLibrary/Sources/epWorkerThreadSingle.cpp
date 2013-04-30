@@ -38,7 +38,7 @@ void WorkerThreadSingle::execute()
 		jobPtr->RetainObj();
 		m_workPool.Pop();
 		jobPtr->JobReport(BaseJob::JOB_STATUS_IN_PROCESS);
-		m_jobProcessor->DoJob(GetID(),m_lifePolicy,jobPtr);
+		m_jobProcessor->DoJob(this,jobPtr);
 		jobPtr->JobReport(BaseJob::JOB_STATUS_DONE);
 		jobPtr->ReleaseObj();
 	}

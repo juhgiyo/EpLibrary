@@ -172,7 +172,7 @@ size_t BaseWorkerThread::GetJobCount() const
 {
 	return m_workPool.Size();
 }
-void BaseWorkerThread::setJobProcessor(BaseJobProcessor* jobProcessor)
+void BaseWorkerThread::SetJobProcessor(BaseJobProcessor* jobProcessor)
 {
 	if(m_jobProcessor)
 		m_jobProcessor->ReleaseObj();
@@ -181,11 +181,11 @@ void BaseWorkerThread::setJobProcessor(BaseJobProcessor* jobProcessor)
 		m_jobProcessor->RetainObj();
 }
 
-BaseJobProcessor* BaseWorkerThread::getJobProcessor()
+BaseJobProcessor* BaseWorkerThread::GetJobProcessor()
 {
 	return m_jobProcessor;
 }
-void BaseWorkerThread::SetCallBackClass(void *callBackClass)
+void BaseWorkerThread::SetCallBackClass(WorkerThreadDelegate *callBackClass)
 {
 	LockObj lock(m_callBackLock);
 	m_callBackClass=callBackClass;
@@ -201,6 +201,6 @@ void BaseWorkerThread::callCallBack()
 {
 	LockObj lock(m_callBackLock);
 	if(m_callBackClass)	
-		(reinterpret_cast<WorkerThreadDelegate*>(m_callBackClass))->CallBackFunc(this);
+		m_callBackClass->CallBackFunc(this);
 	m_callBackClass=NULL;
 }
