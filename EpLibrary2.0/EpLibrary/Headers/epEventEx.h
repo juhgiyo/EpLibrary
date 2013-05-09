@@ -149,6 +149,12 @@ namespace epl
 		*/
 		bool WaitForEvent(const unsigned int dwMilliSecond=WAITTIME_INIFINITE);
 
+
+		/*!
+		Get Event Handle
+		@return event handle of this object
+		*/
+		HANDLE GetEventHandle();
 	private:
 
 		/// EventEx

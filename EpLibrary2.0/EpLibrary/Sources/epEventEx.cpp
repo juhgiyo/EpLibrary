@@ -267,3 +267,8 @@ bool EventEx::WaitForEvent(const unsigned int dwMilliSecond)
 	}
 	return false;
 }
+
+HANDLE EventEx::GetEventHandle()
+{
+	return m_event;
+}
