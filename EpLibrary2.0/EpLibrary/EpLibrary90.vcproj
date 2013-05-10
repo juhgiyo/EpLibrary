@@ -667,6 +667,22 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="IPC"
+					>
+					<File
+						RelativePath=".\Sources\epIpcClient.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Sources\epIpcPipe.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Sources\epIpcServer.cpp"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="System"
@@ -1006,6 +1022,26 @@
 					</File>
 					<File
 						RelativePath=".\Headers\epSemaphore.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="IPC"
+					>
+					<File
+						RelativePath=".\Headers\epIpcClient.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Headers\epIpcPipe.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Headers\epIpcServer.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Headers\epIpcServerInterfaces.h"
 						>
 					</File>
 				</Filter>
