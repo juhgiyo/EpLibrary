@@ -26,7 +26,7 @@ static char THIS_FILE[] = __FILE__;
 using namespace epl;
 
 
-Pipe::Pipe(EpTString pipeName, IpcServerOps options)
+Pipe::Pipe(EpTString pipeName, IpcServerOps options,epl::LockPolicy lockPolicyType): SmartObject(lockPolicyType)
 {
 	m_pipeName=pipeName;
 	m_options=options;

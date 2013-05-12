@@ -60,6 +60,8 @@ namespace epl{
 		virtual void StopServer();
 	private:
 		virtual void execute();
+
+		void stopServer();
 		
 	private:
 
@@ -69,6 +71,7 @@ namespace epl{
 		bool m_started;
 		IpcServerOps m_options;
 		EpTString m_pipeName;
+		LockPolicy m_lockPolicy;
 	};
 
 }

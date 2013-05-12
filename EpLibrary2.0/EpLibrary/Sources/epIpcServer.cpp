@@ -25,8 +25,9 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace epl;
 
-IpcServer::IpcServer(epl::LockPolicy lockPolicyType)
+IpcServer::IpcServer(epl::LockPolicy lockPolicyType):Thread(EP_THREAD_PRIORITY_NORMAL,lockPolicyType)
 {
+	m_lockPolicy=lockPolicyType;
 }
 
 IpcServer::~IpcServer()
@@ -54,7 +55,7 @@ bool IpcServer::StartServer(const IpcServerOps &ops)
 
 	for(unsigned int trav=0;trav<m_options.maximumInstances;trav++)
 	{
-		Pipe *pipeInst=EP_NEW Pipe(m_pipeName,m_options);
+		Pipe *pipeInst=EP_NEW Pipe(m_pipeName,m_options,m_lockPolicy);
 		if(pipeInst->Create())
 		{
 			m_events.push_back(pipeInst->GetEventHandle());
@@ -67,7 +68,7 @@ bool IpcServer::StartServer(const IpcServerOps &ops)
 		}
 	}
 
-	Start();
+	return Start();
 
 
 }
@@ -141,4 +142,14 @@ void IpcServer::StopServer()
 	
 }
 
+void IpcServer::stopServer()
+{
+	for(int trav=0;trav<m_pipes.size();trav++)
+	{
+		m_pipes.at(trav)->KillConnection();
+		m_pipes.at(trav)->ReleaseObj();
+	}
+	m_pipes.clear();
+	m_events.clear();
+}
 

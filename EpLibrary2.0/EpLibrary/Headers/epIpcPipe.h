@@ -32,6 +32,7 @@ An Interface for the Pipe Class.
 #include "epLib.h"
 #include "epEventEx.h"
 #include "epIpcServerInterfaces.h"
+#include "epSmartObject.h"
 
 namespace epl{
 
@@ -41,13 +42,13 @@ namespace epl{
 		PIPE_STATE_WRITING
 	}PipeState;
 
-	class EP_LIBRARY Pipe:public IpcInterface
+	class EP_LIBRARY Pipe:public IpcInterface, public SmartObject
 	{
 		friend class IpcServer;
 	public:
-		Pipe(EpTString pipeName, IpcServerOps options);
+		Pipe(EpTString pipeName, IpcServerOps options,epl::LockPolicy lockPolicyType);
 
-		~Pipe();
+		virtual ~Pipe();
 
 		bool Create();
 		/*!
