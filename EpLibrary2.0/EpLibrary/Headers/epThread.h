@@ -243,7 +243,7 @@ namespace epl
 		@param[in] tMilliseconds the time-out interval, in milliseconds.
 		@return the event that caused the function to return.(WaitForSingleObject)
 		*/
-		unsigned long WaitFor(const unsigned long tMilliseconds);
+		unsigned long WaitFor(const unsigned long tMilliseconds=WAITTIME_INIFINITE);
 
 		/*!
 		Join the thread

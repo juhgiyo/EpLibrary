@@ -381,6 +381,10 @@
     <ClCompile Include="Sources\epCStringEx.cpp" />
     <ClCompile Include="Sources\epEventEx.cpp" />
     <ClCompile Include="Sources\epFileStream.cpp" />
+    <ClCompile Include="Sources\epIpcClient.cpp" />
+    <ClCompile Include="Sources\epIpcConf.cpp" />
+    <ClCompile Include="Sources\epIpcPipe.cpp" />
+    <ClCompile Include="Sources\epIpcServer.cpp" />
     <ClCompile Include="Sources\epLogWriter.cpp" />
     <ClCompile Include="Sources\epNetworkStream.cpp" />
     <ClCompile Include="Sources\epStream.cpp" />
@@ -426,6 +430,12 @@
     <ClInclude Include="Headers\epBinaryFile.h" />
     <ClInclude Include="Headers\epCmdLineOptions.h" />
     <ClInclude Include="Headers\epEventEx.h" />
+    <ClInclude Include="Headers\epIpcClient.h" />
+    <ClInclude Include="Headers\epIpcClientInterfaces.h" />
+    <ClInclude Include="Headers\epIpcConf.h" />
+    <ClInclude Include="Headers\epIpcPipe.h" />
+    <ClInclude Include="Headers\epIpcServer.h" />
+    <ClInclude Include="Headers\epIpcServerInterfaces.h" />
     <ClInclude Include="Headers\epl.h" />
     <ClInclude Include="Headers\epLib.h" />
     <ClInclude Include="Headers\epAlgorithm.h" />

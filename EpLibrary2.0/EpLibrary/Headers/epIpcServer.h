@@ -41,12 +41,52 @@ An Interface for the IPC Server Class.
 using namespace std;
 namespace epl{
 
-
-	class EP_LIBRARY IpcServer:public Thread{
+	/*! 
+	@class IpcServer epIpcServer.h
+	@brief A class for IPC Server.
+	*/
+	class EP_LIBRARY IpcServer:public Thread,public IpcServerInterface{
 	public:
+		/*!
+		Default Constructor
+
+		Initializes the IPC Server
+		@param[in] lockPolicyType lock policy
+		*/
 		IpcServer(epl::LockPolicy lockPolicyType=epl::EP_LOCK_POLICY);
 	
-		~IpcServer();
+		/*!
+		Default Destructor
+
+		Destroy the Server
+		*/
+		virtual ~IpcServer();
+
+		
+		/*!
+		Get the pipe name of server
+		@return the pipe name in string
+		*/
+		virtual epl::EpTString GetFullPipeName() const;
+
+		/*!
+		Get the Maximum Instances of server
+		@return the Maximum Instances
+		*/
+		virtual unsigned int GetMaximumInstances() const;
+
+		/*!
+		Set the Callback Object for the server.
+		@param[in] callBackObj The Callback Object to set.
+		*/
+		virtual void SetCallbackObject(IpcServerCallbackInterface *callBackObj);
+
+		/*!
+		Get the Callback Object of server
+		@return the current Callback Object
+		*/
+		virtual IpcServerCallbackInterface *GetCallbackObject();
+
 		/*!
 		Start the server
 		@param[in] ops the server options
@@ -58,20 +98,58 @@ namespace epl{
 		Stop the server
 		*/
 		virtual void StopServer();
+
+		/*!
+		Check if the server is started
+		@return true if the server is started otherwise false
+		*/
+		virtual bool IsServerStarted() const=0;
+
+		/*!
+		Terminate all clients' socket connected.
+		*/
+		virtual void ShutdownAllClient()=0;
+
+		/*!
+		Get the maximum write data byte size
+		@return the maximum write data byte size
+		*/
+		virtual unsigned int GetMaxWriteDataByteSize() const;
+		/*!
+		Get the maximum read data byte size
+		@return the maximum read data byte size
+		*/
+		virtual unsigned int GetMaxReadDataByteSize() const;
 	private:
+		/*!
+		Listening Loop Function
+		*/
 		virtual void execute();
 
+		/*!
+		Actually Stop the server
+		*/
 		void stopServer();
 		
 	private:
-
-		vector<Pipe*> m_pipes; 
+		/// pipe list
+		vector<IpcPipe*> m_pipes; 
+		/// overlapped event list
 		vector<HANDLE> m_events; 
 
+		/// flag whether the server is started
 		bool m_started;
+		/// IPC server options
 		IpcServerOps m_options;
+		/// Name of the pipe
 		EpTString m_pipeName;
+		/// Lock policy
 		LockPolicy m_lockPolicy;
+		/// pipe list lock
+		BaseLock *m_pipesLock;
+
+		/// Server termination event
+		EventEx m_serverThreadEvent;
 	};
 
 }

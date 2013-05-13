@@ -11,9 +11,6 @@
     <Filter Include="Source Files\Containers\Streams">
       <UniqueIdentifier>{c7b6e1fd-f63e-4a15-8618-b903d58c1e7f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Debugger">
-      <UniqueIdentifier>{3b677b10-b74e-4494-99f6-bcb6adbdac2e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Frameworks">
       <UniqueIdentifier>{2018338d-b7b5-4148-9d8f-22dfc70e3396}</UniqueIdentifier>
     </Filter>
@@ -28,24 +25,6 @@
     </Filter>
     <Filter Include="Source Files\Algo\Math">
       <UniqueIdentifier>{64ee0f90-af3f-4a2a-a839-799a5c90a250}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Thread System">
-      <UniqueIdentifier>{59cca012-1fe3-4989-9f86-3b6e9618462d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Thread System\Job System">
-      <UniqueIdentifier>{5e1b7ea6-e7bb-4519-9c08-70d852255ab4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Thread System\Schedule System">
-      <UniqueIdentifier>{676a4c4e-c3c1-4467-984c-976d011d32f6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Thread System\WorkerThread System">
-      <UniqueIdentifier>{e092100a-14ca-4f2e-a8c5-930e328f31da}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Thread System\WorkerThread System\Add On">
-      <UniqueIdentifier>{7c9a551b-ad71-495a-86bf-5ff7b58e7399}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\File System">
-      <UniqueIdentifier>{132bc019-8f7b-4c0b-9d4f-188f98a384d3}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\GUI">
       <UniqueIdentifier>{790a4f63-df7a-44f6-bc7b-a9e2747cb3af}</UniqueIdentifier>
@@ -66,9 +45,6 @@
     <Filter Include="Header Files\Algo\Math">
       <UniqueIdentifier>{1902005f-3089-4a7e-b9e9-c1ca246229c0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Debugger">
-      <UniqueIdentifier>{f95fef67-cffc-48bb-acdf-10220f1f06a6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Containers">
       <UniqueIdentifier>{a5e863d9-1455-42f4-a66e-5c8cb2fbfd93}</UniqueIdentifier>
     </Filter>
@@ -87,29 +63,59 @@
     <Filter Include="Header Files\System">
       <UniqueIdentifier>{1e6ae889-6886-43b4-a8ba-50fea53f7355}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Thread System">
-      <UniqueIdentifier>{3b343577-8077-4ec4-9b6a-47f71f325846}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Thread System\Job System">
-      <UniqueIdentifier>{a45da000-59de-47c3-8d2e-eeda728dd2dd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Thread System\Schedule System">
-      <UniqueIdentifier>{31d97798-4c4e-4dc4-ad47-702dfced0f93}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Thread System\WorkerThread System">
-      <UniqueIdentifier>{7a9374ed-94da-4e10-8e22-7edf8cbc07cf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Thread System\WorkerThread System\Add On">
-      <UniqueIdentifier>{fcb3a664-8dd9-4b77-9798-e280c3305e31}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\File System">
-      <UniqueIdentifier>{bcfcf23d-9167-4e32-8162-e306eae53a67}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\GUI">
       <UniqueIdentifier>{926202d6-0581-485e-a1d3-ab0202985e53}</UniqueIdentifier>
     </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{edcd2c9f-b86e-4da1-a2fb-5a42c6f08acd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Frameworks\IPC">
+      <UniqueIdentifier>{e99119b7-53f5-4539-a839-7bbc8e7809cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Frameworks\Thread System">
+      <UniqueIdentifier>{3b343577-8077-4ec4-9b6a-47f71f325846}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Frameworks\Thread System\Job System">
+      <UniqueIdentifier>{a45da000-59de-47c3-8d2e-eeda728dd2dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Frameworks\Thread System\Schedule System">
+      <UniqueIdentifier>{31d97798-4c4e-4dc4-ad47-702dfced0f93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Frameworks\Thread System\WorkerThread System">
+      <UniqueIdentifier>{7a9374ed-94da-4e10-8e22-7edf8cbc07cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Frameworks\Thread System\WorkerThread System\Add On">
+      <UniqueIdentifier>{fcb3a664-8dd9-4b77-9798-e280c3305e31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Frameworks\File System">
+      <UniqueIdentifier>{bcfcf23d-9167-4e32-8162-e306eae53a67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Frameworks\Debugger">
+      <UniqueIdentifier>{f95fef67-cffc-48bb-acdf-10220f1f06a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Frameworks\File System">
+      <UniqueIdentifier>{132bc019-8f7b-4c0b-9d4f-188f98a384d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Frameworks\Debugger">
+      <UniqueIdentifier>{3b677b10-b74e-4494-99f6-bcb6adbdac2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Frameworks\Thread System">
+      <UniqueIdentifier>{59cca012-1fe3-4989-9f86-3b6e9618462d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Frameworks\Thread System\Job System">
+      <UniqueIdentifier>{5e1b7ea6-e7bb-4519-9c08-70d852255ab4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Frameworks\Thread System\Schedule System">
+      <UniqueIdentifier>{676a4c4e-c3c1-4467-984c-976d011d32f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Frameworks\Thread System\WorkerThread System">
+      <UniqueIdentifier>{e092100a-14ca-4f2e-a8c5-930e328f31da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Frameworks\Thread System\WorkerThread System\Add On">
+      <UniqueIdentifier>{7c9a551b-ad71-495a-86bf-5ff7b58e7399}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Frameworks\IPC">
+      <UniqueIdentifier>{b41e20e1-344d-4f7a-b4d8-deac23206f97}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -126,13 +132,13 @@
       <Filter>Source Files\Containers\Streams</Filter>
     </ClCompile>
     <ClCompile Include="Sources\epBaseOutputter.cpp">
-      <Filter>Source Files\Debugger</Filter>
+      <Filter>Source Files\Frameworks\Debugger</Filter>
     </ClCompile>
     <ClCompile Include="Sources\epProfiler.cpp">
-      <Filter>Source Files\Debugger</Filter>
+      <Filter>Source Files\Frameworks\Debugger</Filter>
     </ClCompile>
     <ClCompile Include="Sources\epSimpleLogger.cpp">
-      <Filter>Source Files\Debugger</Filter>
+      <Filter>Source Files\Frameworks\Debugger</Filter>
     </ClCompile>
     <ClCompile Include="Sources\epSmartObject.cpp">
       <Filter>Source Files\Frameworks</Filter>
@@ -189,43 +195,43 @@
       <Filter>Source Files\Algo\Math</Filter>
     </ClCompile>
     <ClCompile Include="Sources\epThread.cpp">
-      <Filter>Source Files\Thread System</Filter>
+      <Filter>Source Files\Frameworks\Thread System</Filter>
     </ClCompile>
     <ClCompile Include="Sources\epBaseJob.cpp">
-      <Filter>Source Files\Thread System\Job System</Filter>
+      <Filter>Source Files\Frameworks\Thread System\Job System</Filter>
     </ClCompile>
     <ClCompile Include="Sources\epBaseJobProcessor.cpp">
-      <Filter>Source Files\Thread System\Job System</Filter>
+      <Filter>Source Files\Frameworks\Thread System\Job System</Filter>
     </ClCompile>
     <ClCompile Include="Sources\epJobScheduleQueue.cpp">
-      <Filter>Source Files\Thread System\Schedule System</Filter>
+      <Filter>Source Files\Frameworks\Thread System\Schedule System</Filter>
     </ClCompile>
     <ClCompile Include="Sources\epBaseWorkerThread.cpp">
-      <Filter>Source Files\Thread System\WorkerThread System</Filter>
+      <Filter>Source Files\Frameworks\Thread System\WorkerThread System</Filter>
     </ClCompile>
     <ClCompile Include="Sources\epWorkerThreadFactory.cpp">
-      <Filter>Source Files\Thread System\WorkerThread System</Filter>
+      <Filter>Source Files\Frameworks\Thread System\WorkerThread System</Filter>
     </ClCompile>
     <ClCompile Include="Sources\epWorkerThreadInfinite.cpp">
-      <Filter>Source Files\Thread System\WorkerThread System\Add On</Filter>
+      <Filter>Source Files\Frameworks\Thread System\WorkerThread System\Add On</Filter>
     </ClCompile>
     <ClCompile Include="Sources\epWorkerThreadSingle.cpp">
-      <Filter>Source Files\Thread System\WorkerThread System\Add On</Filter>
+      <Filter>Source Files\Frameworks\Thread System\WorkerThread System\Add On</Filter>
     </ClCompile>
     <ClCompile Include="Sources\epFolderHelper.cpp">
-      <Filter>Source Files\File System</Filter>
+      <Filter>Source Files\Frameworks\File System</Filter>
     </ClCompile>
     <ClCompile Include="Sources\epPropertiesFile.cpp">
-      <Filter>Source Files\File System</Filter>
+      <Filter>Source Files\Frameworks\File System</Filter>
     </ClCompile>
     <ClCompile Include="Sources\epTextFile.cpp">
-      <Filter>Source Files\File System</Filter>
+      <Filter>Source Files\Frameworks\File System</Filter>
     </ClCompile>
     <ClCompile Include="Sources\epXMLFile.cpp">
-      <Filter>Source Files\File System</Filter>
+      <Filter>Source Files\Frameworks\File System</Filter>
     </ClCompile>
     <ClCompile Include="Sources\epXMLite.cpp">
-      <Filter>Source Files\File System</Filter>
+      <Filter>Source Files\Frameworks\File System</Filter>
     </ClCompile>
     <ClCompile Include="Sources\epTaskbarNotifier.cpp">
       <Filter>Source Files\GUI</Filter>
@@ -234,7 +240,7 @@
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="Sources\epBaseTextFile.cpp">
-      <Filter>Source Files\File System</Filter>
+      <Filter>Source Files\Frameworks\File System</Filter>
     </ClCompile>
     <ClCompile Include="Sources\epCmdLineOptions.cpp">
       <Filter>Source Files\Frameworks</Filter>
@@ -243,10 +249,22 @@
       <Filter>Source Files\Frameworks\Lock</Filter>
     </ClCompile>
     <ClCompile Include="Sources\epLogWriter.cpp">
-      <Filter>Source Files\File System</Filter>
+      <Filter>Source Files\Frameworks\File System</Filter>
     </ClCompile>
     <ClCompile Include="Sources\epBinaryFile.cpp">
-      <Filter>Source Files\File System</Filter>
+      <Filter>Source Files\Frameworks\File System</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epIpcClient.cpp">
+      <Filter>Source Files\Frameworks\IPC</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epIpcConf.cpp">
+      <Filter>Source Files\Frameworks\IPC</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epIpcPipe.cpp">
+      <Filter>Source Files\Frameworks\IPC</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\epIpcServer.cpp">
+      <Filter>Source Files\Frameworks\IPC</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -284,13 +302,13 @@
       <Filter>Header Files\Algo\Math</Filter>
     </ClInclude>
     <ClInclude Include="Headers\epBaseOutputter.h">
-      <Filter>Header Files\Debugger</Filter>
+      <Filter>Header Files\Frameworks\Debugger</Filter>
     </ClInclude>
     <ClInclude Include="Headers\epProfiler.h">
-      <Filter>Header Files\Debugger</Filter>
+      <Filter>Header Files\Frameworks\Debugger</Filter>
     </ClInclude>
     <ClInclude Include="Headers\epSimpleLogger.h">
-      <Filter>Header Files\Debugger</Filter>
+      <Filter>Header Files\Frameworks\Debugger</Filter>
     </ClInclude>
     <ClInclude Include="Headers\epCStringEx.h">
       <Filter>Header Files\Containers</Filter>
@@ -383,46 +401,46 @@
       <Filter>Header Files\System</Filter>
     </ClInclude>
     <ClInclude Include="Headers\epThread.h">
-      <Filter>Header Files\Thread System</Filter>
+      <Filter>Header Files\Frameworks\Thread System</Filter>
     </ClInclude>
     <ClInclude Include="Headers\epBaseJob.h">
-      <Filter>Header Files\Thread System\Job System</Filter>
+      <Filter>Header Files\Frameworks\Thread System\Job System</Filter>
     </ClInclude>
     <ClInclude Include="Headers\epBaseJobProcessor.h">
-      <Filter>Header Files\Thread System\Job System</Filter>
+      <Filter>Header Files\Frameworks\Thread System\Job System</Filter>
     </ClInclude>
     <ClInclude Include="Headers\epJobScheduleQueue.h">
-      <Filter>Header Files\Thread System\Schedule System</Filter>
+      <Filter>Header Files\Frameworks\Thread System\Schedule System</Filter>
     </ClInclude>
     <ClInclude Include="Headers\epBaseWorkerThread.h">
-      <Filter>Header Files\Thread System\WorkerThread System</Filter>
+      <Filter>Header Files\Frameworks\Thread System\WorkerThread System</Filter>
     </ClInclude>
     <ClInclude Include="Headers\epWorkerThreadDelegate.h">
-      <Filter>Header Files\Thread System\WorkerThread System</Filter>
+      <Filter>Header Files\Frameworks\Thread System\WorkerThread System</Filter>
     </ClInclude>
     <ClInclude Include="Headers\epWorkerThreadFactory.h">
-      <Filter>Header Files\Thread System\WorkerThread System</Filter>
+      <Filter>Header Files\Frameworks\Thread System\WorkerThread System</Filter>
     </ClInclude>
     <ClInclude Include="Headers\epWorkerThreadInfinite.h">
-      <Filter>Header Files\Thread System\WorkerThread System\Add On</Filter>
+      <Filter>Header Files\Frameworks\Thread System\WorkerThread System\Add On</Filter>
     </ClInclude>
     <ClInclude Include="Headers\epWorkerThreadSingle.h">
-      <Filter>Header Files\Thread System\WorkerThread System\Add On</Filter>
+      <Filter>Header Files\Frameworks\Thread System\WorkerThread System\Add On</Filter>
     </ClInclude>
     <ClInclude Include="Headers\epFolderHelper.h">
-      <Filter>Header Files\File System</Filter>
+      <Filter>Header Files\Frameworks\File System</Filter>
     </ClInclude>
     <ClInclude Include="Headers\epPropertiesFile.h">
-      <Filter>Header Files\File System</Filter>
+      <Filter>Header Files\Frameworks\File System</Filter>
     </ClInclude>
     <ClInclude Include="Headers\epTextFile.h">
-      <Filter>Header Files\File System</Filter>
+      <Filter>Header Files\Frameworks\File System</Filter>
     </ClInclude>
     <ClInclude Include="Headers\epXMLFile.h">
-      <Filter>Header Files\File System</Filter>
+      <Filter>Header Files\Frameworks\File System</Filter>
     </ClInclude>
     <ClInclude Include="Headers\epXMLite.h">
-      <Filter>Header Files\File System</Filter>
+      <Filter>Header Files\Frameworks\File System</Filter>
     </ClInclude>
     <ClInclude Include="Headers\epTaskbarNotifier.h">
       <Filter>Header Files\GUI</Filter>
@@ -431,7 +449,7 @@
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
     <ClInclude Include="Headers\epBaseTextFile.h">
-      <Filter>Header Files\File System</Filter>
+      <Filter>Header Files\Frameworks\File System</Filter>
     </ClInclude>
     <ClInclude Include="Headers\epCmdLineOptions.h">
       <Filter>Header Files\Frameworks</Filter>
@@ -440,10 +458,28 @@
       <Filter>Header Files\Frameworks\Lock</Filter>
     </ClInclude>
     <ClInclude Include="Headers\epLogWriter.h">
-      <Filter>Header Files\File System</Filter>
+      <Filter>Header Files\Frameworks\File System</Filter>
     </ClInclude>
     <ClInclude Include="Headers\epBinaryFile.h">
-      <Filter>Header Files\File System</Filter>
+      <Filter>Header Files\Frameworks\File System</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epIpcClient.h">
+      <Filter>Header Files\Frameworks\IPC</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epIpcClientInterfaces.h">
+      <Filter>Header Files\Frameworks\IPC</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epIpcConf.h">
+      <Filter>Header Files\Frameworks\IPC</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epIpcPipe.h">
+      <Filter>Header Files\Frameworks\IPC</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epIpcServer.h">
+      <Filter>Header Files\Frameworks\IPC</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epIpcServerInterfaces.h">
+      <Filter>Header Files\Frameworks\IPC</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

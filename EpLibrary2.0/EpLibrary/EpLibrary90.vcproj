@@ -609,22 +609,6 @@
 				</Filter>
 			</Filter>
 			<Filter
-				Name="Debugger"
-				>
-				<File
-					RelativePath=".\Sources\epBaseOutputter.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Sources\epProfiler.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Sources\epSimpleLogger.cpp"
-					>
-				</File>
-			</Filter>
-			<Filter
 				Name="Frameworks"
 				>
 				<File
@@ -675,6 +659,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\Sources\epIpcConf.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\Sources\epIpcPipe.cpp"
 						>
 					</File>
@@ -682,6 +670,110 @@
 						RelativePath=".\Sources\epIpcServer.cpp"
 						>
 					</File>
+				</Filter>
+				<Filter
+					Name="Debugger"
+					>
+					<File
+						RelativePath=".\Sources\epBaseOutputter.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Sources\epProfiler.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Sources\epSimpleLogger.cpp"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="File System"
+					>
+					<File
+						RelativePath=".\Sources\epBaseTextFile.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Sources\epBinaryFile.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Sources\epFolderHelper.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Sources\epLogWriter.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Sources\epPropertiesFile.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Sources\epTextFile.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Sources\epXMLFile.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Sources\epXMLite.cpp"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Thread System"
+					>
+					<File
+						RelativePath=".\Sources\epThread.cpp"
+						>
+					</File>
+					<Filter
+						Name="Job System"
+						>
+						<File
+							RelativePath=".\Sources\epBaseJob.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\Sources\epBaseJobProcessor.cpp"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="Schedule System"
+						>
+						<File
+							RelativePath=".\Sources\epJobScheduleQueue.cpp"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="WorkerThread System"
+						>
+						<File
+							RelativePath=".\Sources\epBaseWorkerThread.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\Sources\epWorkerThreadFactory.cpp"
+							>
+						</File>
+						<Filter
+							Name="Add On"
+							>
+							<File
+								RelativePath=".\Sources\epWorkerThreadInfinite.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\Sources\epWorkerThreadSingle.cpp"
+								>
+							</File>
+						</Filter>
+					</Filter>
 				</Filter>
 			</Filter>
 			<Filter
@@ -739,94 +831,6 @@
 						>
 					</File>
 				</Filter>
-			</Filter>
-			<Filter
-				Name="Thread System"
-				>
-				<File
-					RelativePath=".\Sources\epThread.cpp"
-					>
-				</File>
-				<Filter
-					Name="Job System"
-					>
-					<File
-						RelativePath=".\Sources\epBaseJob.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\Sources\epBaseJobProcessor.cpp"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="Schedule System"
-					>
-					<File
-						RelativePath=".\Sources\epJobScheduleQueue.cpp"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="WorkerThread System"
-					>
-					<File
-						RelativePath=".\Sources\epBaseWorkerThread.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\Sources\epWorkerThreadFactory.cpp"
-						>
-					</File>
-					<Filter
-						Name="Add On"
-						>
-						<File
-							RelativePath=".\Sources\epWorkerThreadInfinite.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\Sources\epWorkerThreadSingle.cpp"
-							>
-						</File>
-					</Filter>
-				</Filter>
-			</Filter>
-			<Filter
-				Name="File System"
-				>
-				<File
-					RelativePath=".\Sources\epBaseTextFile.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Sources\epBinaryFile.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Sources\epFolderHelper.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Sources\epLogWriter.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Sources\epPropertiesFile.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Sources\epTextFile.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Sources\epXMLFile.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Sources\epXMLite.cpp"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="GUI"
@@ -905,22 +909,6 @@
 						>
 					</File>
 				</Filter>
-			</Filter>
-			<Filter
-				Name="Debugger"
-				>
-				<File
-					RelativePath=".\Headers\epBaseOutputter.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Headers\epProfiler.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Headers\epSimpleLogger.h"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="Containers"
@@ -1033,6 +1021,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\Headers\epIpcClientInterfaces.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Headers\epIpcConf.h"
+						>
+					</File>
+					<File
 						RelativePath=".\Headers\epIpcPipe.h"
 						>
 					</File>
@@ -1044,6 +1040,114 @@
 						RelativePath=".\Headers\epIpcServerInterfaces.h"
 						>
 					</File>
+				</Filter>
+				<Filter
+					Name="Debugger"
+					>
+					<File
+						RelativePath=".\Headers\epBaseOutputter.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Headers\epProfiler.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Headers\epSimpleLogger.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="File System"
+					>
+					<File
+						RelativePath=".\Headers\epBaseTextFile.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Headers\epBinaryFile.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Headers\epFolderHelper.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Headers\epLogWriter.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Headers\epPropertiesFile.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Headers\epTextFile.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Headers\epXMLFile.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Headers\epXMLite.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Thread System"
+					>
+					<File
+						RelativePath=".\Headers\epThread.h"
+						>
+					</File>
+					<Filter
+						Name="Job System"
+						>
+						<File
+							RelativePath=".\Headers\epBaseJob.h"
+							>
+						</File>
+						<File
+							RelativePath=".\Headers\epBaseJobProcessor.h"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="Schedule System"
+						>
+						<File
+							RelativePath=".\Headers\epJobScheduleQueue.h"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="WorkerThread System"
+						>
+						<File
+							RelativePath=".\Headers\epBaseWorkerThread.h"
+							>
+						</File>
+						<File
+							RelativePath=".\Headers\epWorkerThreadDelegate.h"
+							>
+						</File>
+						<File
+							RelativePath=".\Headers\epWorkerThreadFactory.h"
+							>
+						</File>
+						<Filter
+							Name="Add On"
+							>
+							<File
+								RelativePath=".\Headers\epWorkerThreadInfinite.h"
+								>
+							</File>
+							<File
+								RelativePath=".\Headers\epWorkerThreadSingle.h"
+								>
+							</File>
+						</Filter>
+					</Filter>
 				</Filter>
 			</Filter>
 			<Filter
@@ -1091,98 +1195,6 @@
 				</File>
 				<File
 					RelativePath=".\Headers\epTinyObject.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="Thread System"
-				>
-				<File
-					RelativePath=".\Headers\epThread.h"
-					>
-				</File>
-				<Filter
-					Name="Job System"
-					>
-					<File
-						RelativePath=".\Headers\epBaseJob.h"
-						>
-					</File>
-					<File
-						RelativePath=".\Headers\epBaseJobProcessor.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="Schedule System"
-					>
-					<File
-						RelativePath=".\Headers\epJobScheduleQueue.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="WorkerThread System"
-					>
-					<File
-						RelativePath=".\Headers\epBaseWorkerThread.h"
-						>
-					</File>
-					<File
-						RelativePath=".\Headers\epWorkerThreadDelegate.h"
-						>
-					</File>
-					<File
-						RelativePath=".\Headers\epWorkerThreadFactory.h"
-						>
-					</File>
-					<Filter
-						Name="Add On"
-						>
-						<File
-							RelativePath=".\Headers\epWorkerThreadInfinite.h"
-							>
-						</File>
-						<File
-							RelativePath=".\Headers\epWorkerThreadSingle.h"
-							>
-						</File>
-					</Filter>
-				</Filter>
-			</Filter>
-			<Filter
-				Name="File System"
-				>
-				<File
-					RelativePath=".\Headers\epBaseTextFile.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Headers\epBinaryFile.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Headers\epFolderHelper.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Headers\epLogWriter.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Headers\epPropertiesFile.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Headers\epTextFile.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Headers\epXMLFile.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Headers\epXMLite.h"
 					>
 				</File>
 			</Filter>

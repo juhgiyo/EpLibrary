@@ -28,11 +28,46 @@ using namespace epl;
 IpcServer::IpcServer(epl::LockPolicy lockPolicyType):Thread(EP_THREAD_PRIORITY_NORMAL,lockPolicyType)
 {
 	m_lockPolicy=lockPolicyType;
+	switch(m_lockPolicy)
+	{
+	case LOCK_POLICY_CRITICALSECTION:
+		m_pipesLock=EP_NEW CriticalSectionEx();
+		break;
+	case LOCK_POLICY_MUTEX:
+		m_pipesLock=EP_NEW Mutex();
+		break;
+	case LOCK_POLICY_NONE:
+		m_pipesLock=EP_NEW NoLock();
+		break;
+	default:
+		m_pipesLock=NULL;
+		break;
+	}
+	m_serverThreadEvent=EventEx(false,false);
 }
 
 IpcServer::~IpcServer()
 {
 	StopServer();
+	if(m_pipesLock)
+		EP_DELETE m_pipesLock;
+}
+
+epl::EpTString IpcServer::GetFullPipeName() const
+{
+	return m_pipeName;
+}
+unsigned int IpcServer::GetMaximumInstances() const
+{
+	return m_options.maximumInstances;
+}
+void IpcServer::SetCallbackObject(IpcServerCallbackInterface *callBackObj)
+{
+	m_options.callBackObj=callBackObj;
+}
+IpcServerCallbackInterface *IpcServer::GetCallbackObject()
+{
+	return m_options.callBackObj;
 }
 
 bool IpcServer::StartServer(const IpcServerOps &ops)
@@ -41,7 +76,9 @@ bool IpcServer::StartServer(const IpcServerOps &ops)
 	EP_ASSERT(ops.callBackObj);
 	if(ops.pipeName)
 	{
-		m_pipeName=_T("\\\\.\\pipe\\");
+		m_pipeName=_T("\\\\");
+		m_pipeName.append(ops.domain);
+		m_pipeName.append(_T("\\pipe\\"));
 		m_pipeName.append(ops.pipeName);
 	}
 
@@ -51,24 +88,29 @@ bool IpcServer::StartServer(const IpcServerOps &ops)
 	if(ops.numOfReadBytes==0)
 		m_options.numOfWriteBytes=DEFAULT_READ_BUF_SIZE;
 
-	m_started=true;
+	
 
+	m_pipesLock->Lock();
 	for(unsigned int trav=0;trav<m_options.maximumInstances;trav++)
 	{
-		Pipe *pipeInst=EP_NEW Pipe(m_pipeName,m_options,m_lockPolicy);
+		IpcPipe *pipeInst=EP_NEW IpcPipe(m_pipeName,m_options,m_lockPolicy);
 		if(pipeInst->Create())
 		{
+			
 			m_events.push_back(pipeInst->GetEventHandle());
 			m_pipes.push_back(pipeInst);	
 		}
 		else
 		{
 			EP_DELETE pipeInst;
+			m_pipesLock->Unlock();
 			return false;
 		}
 	}
+	m_pipesLock->Unlock();
 
-	return Start();
+	m_started=Start();
+	return m_started;
 
 
 }
@@ -76,6 +118,10 @@ void IpcServer::execute()
 {
 	while (1) 
 	{ 
+		if(m_serverThreadEvent.WaitForEvent(0))
+		{
+			break;
+		}
 		unsigned long waitResult;
 		unsigned long retBytes;
 		bool success;
@@ -114,7 +160,7 @@ void IpcServer::execute()
 				return;
 			}
 
-
+			m_pipesLock->Lock();
 			if (m_pipes.at(index)->m_pendingIO) 
 			{ 
 				success = GetOverlappedResult( 
@@ -125,13 +171,20 @@ void IpcServer::execute()
 				if (!success) 
 				{
 					printf("ConnectNamedPipe (%d)\n", GetLastError()); 
-					stopServer();
+					m_pipesLock->Unlock();
+					stopServer();					
 					return;
 				}
 			} 
 			m_options.callBackObj->OnNewConnection(m_pipes.at(index));
-			Pipe::OnWriteComplete(0, 0, (LPOVERLAPPED) m_pipes.at(index)); 
-
+			ReadFileEx( 
+				m_pipes.at(index)->m_pipeHandle, 
+				m_pipes.at(index)->m_readBuffer, 
+				m_pipes.at(index)->m_options.numOfReadBytes, 
+				(LPOVERLAPPED) m_pipes.at(index), 
+				(LPOVERLAPPED_COMPLETION_ROUTINE) IpcPipe::OnReadComplete); 
+			//Pipe::OnWriteComplete(0, 0, (LPOVERLAPPED) m_pipes.at(index)); 
+			m_pipesLock->Unlock();
 			break; 
 		} 
 	} 
@@ -139,11 +192,14 @@ void IpcServer::execute()
 }
 void IpcServer::StopServer()
 {
-	
+	m_serverThreadEvent.SetEvent();
+	WaitFor(m_options.waitTimeInMilliSec);
+	m_serverThreadEvent.ResetEvent();
 }
 
 void IpcServer::stopServer()
 {
+	LockObj lock(m_pipesLock);
 	for(int trav=0;trav<m_pipes.size();trav++)
 	{
 		m_pipes.at(trav)->KillConnection();
@@ -151,5 +207,28 @@ void IpcServer::stopServer()
 	}
 	m_pipes.clear();
 	m_events.clear();
+	m_started=false;
 }
 
+bool IpcServer::IsServerStarted() const
+{
+	return m_started;
+}
+void IpcServer::ShutdownAllClient()
+{
+	LockObj lock(m_pipesLock);
+	for(int trav=0;trav<m_pipes.size();trav++)
+	{
+		IpcPipe::DisconnectAndReconnect(m_pipes.at(trav));
+	}
+	
+}
+
+unsigned int IpcServer::GetMaxReadDataByteSize() const
+{
+	return m_options.numOfReadBytes;
+}
+unsigned int IpcServer::GetMaxWriteDataByteSize() const
+{
+	return m_options.numOfWriteBytes;
+}

@@ -1,9 +1,9 @@
 /*! 
-@file epIpcServerInterfaces.h
+@file epIpcClientInterfaces.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
 		<http://github.com/juhgiyo/eplibrary>
 @date October 01, 2011
-@brief IPC Server Interfaces
+@brief IPC Client Interfaces
 @version 2.0
 
 @section LICENSE
@@ -25,28 +25,28 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 @section DESCRIPTION
 
-An Interface for the IPC Server Interfaces.
+An Interface for the IPC Client Interfaces.
 
 */
 
-#ifndef __EP_IPC_SERVER_INTERFACES_H__
-#define __EP_IPC_SERVER_INTERFACES_H__
+#ifndef __EP_IPC_CLIENT_INTERFACES_H__
+#define __EP_IPC_CLIENT_INTERFACES_H__
 
 
 #include "epLib.h"
 #include "epIpcConf.h"
-
 namespace epl
 {
 
-	class IpcServerCallbackInterface;
+
+	class IpcClientCallbackInterface;
 	/*! 
 	@struct ServerOps epIpcServerInterfaces.h
 	@brief A class for IPC Server Options.
 	*/
-	struct EP_LIBRARY IpcServerOps{
+	struct EP_LIBRARY IpcClientOps{
 		/// Callback Object
-		IpcServerCallbackInterface *callBackObj;
+		IpcClientCallbackInterface *callBackObj;
 		
 		/// Domain
 		TCHAR *domain;
@@ -54,8 +54,6 @@ namespace epl
 		TCHAR *pipeName;
 		/// Wait time in millisecond for pipe threads
 		unsigned int waitTimeInMilliSec;
-		///The maximum possible number of pipe instances
-		unsigned int maximumInstances;
 		/// read byte size
 		unsigned int numOfReadBytes;
 		/// write byte size
@@ -66,27 +64,26 @@ namespace epl
 
 		Initializes the Server Options
 		*/
-		IpcServerOps()
+		IpcClientOps()
 		{
 			domain=_T(".");
 			callBackObj=NULL;
 			pipeName=NULL;
 			waitTimeInMilliSec=WAITTIME_INIFINITE;
-			maximumInstances=PIPE_UNLIMITED_INSTANCES;
 			numOfReadBytes=DEFAULT_READ_BUF_SIZE;
 			numOfWriteBytes=DEFAULT_WRITE_BUF_SIZE;
 
 		}
 
 		/// Default IPC Server options
-		static IpcServerOps defaultIpcServerOps;
+		static IpcClientOps defaultIpcClientOps;
 	};
 
 	/*! 
-	@class IpcServerInterface epIpcServerInterfaces.h
-	@brief A class for IPC Server Interface.
+	@class IpcClientInterface epIpcClientInterfaces.h
+	@brief A class for IPC Client Interface.
 	*/
-	class EP_LIBRARY IpcServerInterface{
+	class EP_LIBRARY IpcClientInterface{
 
 		/*!
 		Get the pipe name of server
@@ -95,45 +92,34 @@ namespace epl
 		virtual epl::EpTString GetFullPipeName() const=0;
 
 		/*!
-		Get the Maximum Instances of server
-		@return the Maximum Instances
-		*/
-		virtual unsigned int GetMaximumInstances() const=0;
-
-		/*!
 		Set the Callback Object for the server.
 		@param[in] callBackObj The Callback Object to set.
 		*/
-		virtual void SetCallbackObject(IpcServerCallbackInterface *callBackObj)=0;
+		virtual void SetCallbackObject(IpcClientCallbackInterface *callBackObj)=0;
 
 		/*!
 		Get the Callback Object of server
 		@return the current Callback Object
 		*/
-		virtual IpcServerCallbackInterface *GetCallbackObject()=0;
+		virtual IpcClientCallbackInterface *GetCallbackObject()=0;
 
 		/*!
-		Start the server
+		Connect to the server
 		@param[in] ops the server options
-		@return true if successfully started otherwise false
+		@return Connect status
 		@remark if argument is NULL then previously setting value is used
 		*/
-		virtual bool StartServer(const IpcServerOps &ops=IpcServerOps::defaultIpcServerOps)=0;
+		virtual ConnectStatus Connect(const IpcClientOps &ops=IpcClientOps::defaultIpcClientOps)=0;
 		/*!
-		Stop the server
+		Disconnect from the server
 		*/
-		virtual void StopServer()=0;
+		virtual void Disconnect()=0;
 
 		/*!
-		Check if the server is started
-		@return true if the server is started otherwise false
+		Check if the client is connected to server
+		@return true if the client is connected to server otherwise false
 		*/
-		virtual bool IsServerStarted() const=0;
-
-		/*!
-		Terminate all clients' pipe connected.
-		*/
-		virtual void ShutdownAllClient()=0;
+		virtual bool IsConnected() const=0;
 
 		/*!
 		Get the maximum write data byte size
@@ -150,59 +136,11 @@ namespace epl
 
 	
 	/*! 
-	@class IpcInterface epIpcServerInterfaces.h
-	@brief A class for IPC Interface.
-	*/
-	class EP_LIBRARY IpcInterface{
-	public:
-
-		/*!
-		Write data to the pipe
-		@param[in] data the data to write
-		@param[in] dataByteSize byte size of the data
-		*/
-		virtual void Write(char *data,unsigned int dataByteSize)=0;
-	
-		/*!
-		Check if the connection is alive
-		@return true if the connection is alive otherwise false
-		*/
-		virtual bool IsConnectionAlive() const=0;
-
-		/*!
-		Kill the connection
-		*/
-		virtual void KillConnection()=0;
-
-		/*!
-		Set the Callback Object for the server.
-		@param[in] callBackObj The Callback Object to set.
-		*/
-		virtual void SetCallbackObject(IpcServerCallbackInterface *callBackObj)=0;
-
-		/*!
-		Get the Callback Object of server
-		@return the current Callback Object
-		*/
-		virtual IpcServerCallbackInterface *GetCallbackObject()=0;
-
-	};
-
-	
-	/*! 
-	@class IpcServerCallbackInterface epIpcServerInterfaces.h
+	@class IpcClientCallbackInterface epServerInterfaces.h
 	@brief A class for Server Callback Interface.
 	*/
-	class EP_LIBRARY IpcServerCallbackInterface{
+	class EP_LIBRARY IpcClientCallbackInterface{
 	public:
-		/*!
-		When accepted client tries to make connection.
-		@param[in] pipe the pipe
-		@remark When this function calls, it is right before making connection,<br/>
-		        so user can configure the pipe before the connection is actually made.		
-		*/
-		virtual void OnNewConnection(IpcInterface *pipe){}
-
 		/*!
 		Received the data from the client.
 		@param[in] pipe the pipe which received the packet
@@ -211,7 +149,7 @@ namespace epl
 		@param[in] status the status of read
 		@param[in] errCode the error code
 		*/
-		virtual void OnReadComplete(IpcInterface *pipe,const char*receivedData, unsigned int receivedDataByteSize, ReadStatus status, unsigned long errCode)=0;
+		virtual void OnReadComplete(IpcClientInterface *pipe,const char*receivedData, unsigned int receivedDataByteSize, ReadStatus status, unsigned long errCode)=0;
 
 		/*!
 		Received the packet from the client.
@@ -220,16 +158,16 @@ namespace epl
 		@param[in] status the status of write
 		@param[in] errCode the error code
 		*/
-		virtual void OnWriteComplete(IpcInterface *pipe,unsigned int writtenDataByteSize, WriteStatus status, unsigned long errCode){}
+		virtual void OnWriteComplete(IpcClientInterface *pipe,unsigned int writtenDataByteSize, WriteStatus status, unsigned long errCode){}
 
 		/*!
 		The pipe is disconnected.
 		@param[in] pipe the pipe, disconnected.
 		*/
-		virtual void OnDisconnect(IpcInterface *pipe){}
+		virtual void OnDisconnect(IpcClientInterface *pipe){}
 	};
 
 
 }
 
-#endif //__EP_PIPE_SERVER_INTERFACES_H__
+#endif //__EP_IPC_CLIENT_INTERFACES_H__
