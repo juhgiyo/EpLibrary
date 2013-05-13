@@ -112,10 +112,6 @@ ConnectStatus IpcClient::Connect(const IpcClientOps &ops, unsigned int waitTimeI
 		{
 			return CONNECT_STATUS_FAIL_PIPE_OPEN_FAILED;
 		}
-		else
-		{
-			return CONNECT_STATUS_FAIL_PIPE_BUSY;
-		}
 
  		if(!WaitNamedPipe(m_pipeName.c_str(), waitTimeInMilliSec)) 
  		{ 

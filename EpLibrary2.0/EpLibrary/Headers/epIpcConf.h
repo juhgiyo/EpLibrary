@@ -44,8 +44,6 @@ namespace epl
 	typedef enum _connectStatus{
 		/// Success
 		CONNECT_STATUS_SUCCESS=0,
-		/// Invalid handle
-		CONNECT_STATUS_FAIL_PIPE_BUSY,
 		/// Pipe open failed
 		CONNECT_STATUS_FAIL_PIPE_OPEN_FAILED,
 		/// SetNamedPipeHandleState failed
