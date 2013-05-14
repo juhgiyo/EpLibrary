@@ -149,7 +149,7 @@ namespace epl
 
 		/*!
 		Wait for worker thread to terminate, and if not terminated, then Terminate.
-		@param[in] tMilliseconds the time-out interval, in milliseconds.
+		@param[in] waitTimeInMilliSec the time-out interval, in milliseconds.
 		@return the terminate result of the thread
 		*/
 		virtual TerminateResult TerminateWorker(unsigned int waitTimeInMilliSec=WAITTIME_INIFINITE);

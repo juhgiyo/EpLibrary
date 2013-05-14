@@ -72,6 +72,14 @@ An Interface for EpLibrary Pre-compiled header
 #include "epTextFile.h"
 #include "epLogWriter.h"
 
+//IPC
+#include "epIpcClient.h"
+#include "epIpcClientInterfaces.h"
+#include "epIpcConf.h"
+#include "epIpcPipe.h"
+#include "epIpcServer.h"
+#include "epIpcServerInterfaces.h"
+
 //Frameworks
 #include "epBaseLock.h"
 #include "epCriticalSectionEx.h"

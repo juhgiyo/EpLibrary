@@ -136,7 +136,7 @@ namespace epl
 
 	
 	/*! 
-	@class IpcClientCallbackInterface epServerInterfaces.h
+	@class IpcClientCallbackInterface epIpcClientInterfaces.h
 	@brief A class for Server Callback Interface.
 	*/
 	class EP_LIBRARY IpcClientCallbackInterface{

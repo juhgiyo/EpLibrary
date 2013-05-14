@@ -28,7 +28,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 An Interface for the IPC Pipe Class.
 
 */
-
+#ifndef __EP_IPC_PIPE_H__
+#define __EP_IPC_PIPE_H__
 #include "epLib.h"
 #include "epEventEx.h"
 #include "epIpcServerInterfaces.h"
@@ -190,3 +191,4 @@ namespace epl{
 		LockPolicy m_lockPolicy;
 	};
 }
+#endif //__EP_IPC_PIPE_H__
