@@ -162,7 +162,7 @@ bool CmdLineOptions::isOption(const TCHAR *option) const
 	{
 		if(checkSectorString.at(0)==_T('-'))
 		{
-			return Locale::IsDigit(checkSectorString.at(1));
+			return !Locale::IsDigit(checkSectorString.at(1));
 		}
 	}
 	return false;
