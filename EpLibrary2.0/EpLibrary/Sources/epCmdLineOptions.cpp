@@ -120,7 +120,7 @@ EpTString CmdLineOptions::GetArgument(const TCHAR *option,size_t idx, const TCHA
 	catch (...)
 	{
 	}
-	return defaultArg;
+	return retString;
 }
 
 EpTString CmdLineOptions::GetArgument(const TCHAR *option,size_t idx) const
