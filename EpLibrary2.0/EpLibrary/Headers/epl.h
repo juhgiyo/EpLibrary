@@ -97,6 +97,7 @@ An Interface for EpLibrary Pre-compiled header
 //GUI
 #include "epTaskbarNotifier.h"
 #include "epWinProcessHelper.h"
+#include "epWinResizer.h"
 
 //System
 #include "epAssert.h"

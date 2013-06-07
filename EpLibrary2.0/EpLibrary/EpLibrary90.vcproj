@@ -843,6 +843,10 @@
 					RelativePath=".\Sources\epWinProcessHelper.cpp"
 					>
 				</File>
+				<File
+					RelativePath=".\Sources\epWinResizer.cpp"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -1207,6 +1211,10 @@
 				</File>
 				<File
 					RelativePath=".\Headers\epWinProcessHelper.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Headers\epWinResizer.h"
 					>
 				</File>
 			</Filter>

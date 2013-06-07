@@ -34,6 +34,20 @@ Please refer to <http://www.codeproject.com/Articles/2562/Taskbar-Notification-d
 @section DESCRIPTION
 
 An Interface for TaskbarNotifier Class.
+
+-------------------------------------------------------------------------------
+
+@section USAGE
+
+CTaskbarNotifier m_notifyWin;
+...
+m_notifyWin.Create(this);
+m_notifyWin.SetSkin(IDB_BITMAP1);
+m_notifyWin.SetTextFont(_T("Arial"),90,TN_TEXT_NORMAL,TN_TEXT_UNDERLINE);
+m_notifyWin.SetTextColor(RGB(0,0,0),RGB(0,0,200));
+m_notifyWin.SetTextRect(CRect(10,40,m_notifyWin.m_nSkinWidth-10,m_notifyWin.m_nSkinHeight-25));
+...
+m_notifyWin.Show(_T("Message."),TN_POP_UP_TIME_TO_SHOW,TN_POP_UP_TIME_TO_STAY,TN_POP_UP_TIME_TO_HIDE);
 */
 #ifndef __EP_TASKBAR_NOTIFIER_H__
 #define __EP_TASKBAR_NOTIFIER_H__
@@ -47,6 +61,10 @@ An Interface for TaskbarNotifier Class.
 #define TN_TEXT_BOLD			0x0001
 #define TN_TEXT_ITALIC			0x0002
 #define TN_TEXT_UNDERLINE		0x0004
+
+#define TN_POP_UP_TIME_TO_SHOW 500
+#define TN_POP_UP_TIME_TO_STAY 3000
+#define TN_POP_UP_TIME_TO_HIDE 500
 
 namespace epl
 {
@@ -63,7 +81,7 @@ namespace epl
 		virtual ~CTaskbarNotifier();
 
 		int Create(CWnd *pWndParent);
-		void Show(const TCHAR * szCaption,unsigned long dwTimeToShow=500,unsigned long dwTimeToStay=3000,unsigned long dwTimeToHide=500,int nIncrement=1);
+		void Show(const TCHAR * szCaption,unsigned long dwTimeToShow=TN_POP_UP_TIME_TO_SHOW,unsigned long dwTimeToStay=TN_POP_UP_TIME_TO_STAY,unsigned long dwTimeToHide=TN_POP_UP_TIME_TO_HIDE,int nIncrement=1);
 		void Hide();
 		BOOL SetSkin(UINT nBitmapID,short red=-1,short green=-1,short blue=-1);
 		BOOL SetSkin(const TCHAR * szFileName,short red=-1,short green=-1,short blue=-1);

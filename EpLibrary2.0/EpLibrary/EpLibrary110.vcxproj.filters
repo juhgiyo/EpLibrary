@@ -266,6 +266,9 @@
     <ClCompile Include="Sources\epIpcServer.cpp">
       <Filter>Source Files\Frameworks\IPC</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\epWinResizer.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\epl.h">
@@ -480,6 +483,9 @@
     </ClInclude>
     <ClInclude Include="Headers\epIpcServerInterfaces.h">
       <Filter>Header Files\Frameworks\IPC</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epWinResizer.h">
+      <Filter>Header Files\GUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -451,6 +451,7 @@
     <ClCompile Include="Sources\epBaseJobProcessor.cpp" />
     <ClCompile Include="Sources\epJobScheduleQueue.cpp" />
     <ClCompile Include="Sources\epBaseWorkerThread.cpp" />
+    <ClCompile Include="Sources\epWinResizer.cpp" />
     <ClCompile Include="Sources\epWorkerThreadFactory.cpp" />
     <ClCompile Include="Sources\epWorkerThreadInfinite.cpp" />
     <ClCompile Include="Sources\epWorkerThreadSingle.cpp" />
@@ -523,6 +524,7 @@
     <ClInclude Include="Headers\epBaseJobProcessor.h" />
     <ClInclude Include="Headers\epJobScheduleQueue.h" />
     <ClInclude Include="Headers\epBaseWorkerThread.h" />
+    <ClInclude Include="Headers\epWinResizer.h" />
     <ClInclude Include="Headers\epWorkerThreadDelegate.h" />
     <ClInclude Include="Headers\epWorkerThreadFactory.h" />
     <ClInclude Include="Headers\epWorkerThreadInfinite.h" />
