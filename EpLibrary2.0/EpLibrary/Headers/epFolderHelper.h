@@ -136,6 +136,235 @@ namespace epl
 		*/
 		static void removeDir(const TCHAR * strPath);
 	};
+
+	/*! 
+	@class OpenFileDialog epFolderHelper.h
+	@brief This is a class for Open File Dialog
+
+	Implements the Open File Dialog.
+	*/
+	class EP_LIBRARY OpenFileDialog{
+	public:
+		/*!
+		Default Constructor
+
+		Initializes the Open File Dialog
+		@param[in] title the title of the dialog
+		@param[in] defaultExt The default extension
+		@param[in] defaultDir The default directory
+		@param[in] filter The file extension filter
+		@param[in] pParentWnd The parent window
+		*/
+		OpenFileDialog(TCHAR *title=NULL, TCHAR * defaultExt=NULL,TCHAR* defaultDir=NULL, TCHAR *filter=NULL,CWnd* pParentWnd = NULL );
+
+		/*!
+		Default Destructor
+
+		Destroy the Open File Dialog
+		*/
+		virtual ~OpenFileDialog();
+
+		/*! 
+		Return full path and filename
+		@return full path and filename
+		*/
+		CString GetPathName() const; 
+		
+		/*! 
+		Return only filename
+		@return filename
+		*/
+		CString GetFileName() const; 
+
+		/*!
+		Return only ext
+		@return ext
+		*/
+		CString GetFileExt() const;  
+
+		/*!
+		Return file title
+		@return file title
+		*/
+		CString GetFileTitle() const;
+
+		/*! 
+		Do modal and return Modal result
+		@return Modal result
+		*/
+		virtual int DoModal();
+	private:
+		/// file dialog
+		CFileDialog *m_fileDialog;
+	};
+
+
+	/*!
+	@def DEFAULT_MULTIFILE_BUFFER_SIZE
+	@brief default buffer size in byte for the Open Multi-File Dialog
+
+	Macro for default buffer size in byte of the Open Multi-File Dialog.
+	*/
+	#define DEFAULT_MULTIFILE_BUFFER_SIZE 100000
+
+	/*! 
+	@class OpenMultiFileDialog epFolderHelper.h
+	@brief This is a class for Open Multi-File Dialog
+
+	Implements the Open Multi-File Dialog.
+	*/
+	class EP_LIBRARY OpenMultiFileDialog{
+	public:
+		/*!
+		Default Constructor
+
+		Initializes the Open Multi-File Dialog
+		@param[in] title the title of the dialog
+		@param[in] defaultExt The default extension
+		@param[in] defaultDir The default directory
+		@param[in] filter The file extension filter
+		@param[in] pParentWnd The parent window
+		@param[in] bufferSize the buffer size for multi-file list string
+		*/
+		OpenMultiFileDialog(TCHAR *title=NULL, TCHAR * defaultExt=NULL,TCHAR* defaultDir=NULL, TCHAR *filter=NULL,CWnd* pParentWnd = NULL , int bufferSize=DEFAULT_MULTIFILE_BUFFER_SIZE);
+
+		/*!
+		Default Destructor
+
+		Destroy the Open Multi-File Dialog
+		*/
+		virtual ~OpenMultiFileDialog();
+
+		/*! 
+		Return next path name
+		@return the next path name
+		@remark when this function is first called, it returns the first path name.
+		*/
+		CString GetNextPathName(); 
+
+		/*! 
+		Rewind to the first path name
+		*/
+		void Rewind(); 
+		
+		/*! 
+		Do modal and return Modal result
+		@return Modal result
+		*/
+		virtual int DoModal();
+	private:
+		/// file dialog
+		CFileDialog *m_fileDialog;
+		/// path name list buffer
+		TCHAR *m_buffer;
+		/// position
+		POSITION m_ps;
+	};
+
+	/*! 
+	@class OpenFolderDialog epFolderHelper.h
+	@brief This is a class for Open Folder Dialog
+
+	Implements the Open Folder Dialog.
+	*/
+	class EP_LIBRARY OpenFolderDialog{
+	public:
+		/*!
+		Default Constructor
+
+		Initializes the Open Folder Dialog
+		@param[in] hParent the parent window's handle
+		@param[in] title the title of the dialog
+		*/
+		OpenFolderDialog(HWND hParent,TCHAR *title=NULL);
+
+		/*!
+		Default Destructor
+
+		Destroy the Open Folder Dialog
+		*/
+		virtual ~OpenFolderDialog();
+
+		/*! 
+		Return full directory path
+		@return full directory path
+		*/
+		CString GetPathName() const; 
+
+		/*! 
+		Do modal and return Modal result
+		@return Modal result
+		*/
+		virtual int DoModal();
+	private :
+		/// folder path
+		EpTString m_folderPath;
+		/// browse info
+		BROWSEINFO m_bi;
+		/// buffer from folder path variable
+		LPTSTR m_pBuffer;
+	};
+
+	/*! 
+	@class SaveFileDialog epFolderHelper.h
+	@brief This is a class for Save File Dialog
+
+	Implements the Save File Dialog.
+	*/
+	class EP_LIBRARY SaveFileDialog{
+	public:
+		/*!
+		Default Constructor
+
+		Initializes the Save File Dialog
+		@param[in] title the title of the dialog
+		@param[in] defaultExt The default extension
+		@param[in] defaultDir The default directory
+		@param[in] filter The file extension filter
+		@param[in] pParentWnd The parent window
+		*/
+		SaveFileDialog(TCHAR *title=NULL, TCHAR * defaultExt=NULL,TCHAR* defaultDir=NULL, TCHAR *filter=NULL,CWnd* pParentWnd = NULL );
+		
+		/*!
+		Default Destructor
+
+		Destroy the Save File Dialog
+		*/
+		virtual ~SaveFileDialog();
+		
+		/*!
+		Return full path and filename
+		@return full path and filename
+		*/
+		CString GetPathName() const; 
+		
+		/*!
+		Return only filename
+		@return filename
+		*/
+		CString GetFileName() const; 
+
+		/*! 
+		Return only ext
+		@return ext
+		*/
+		CString GetFileExt() const;  
+
+		/*! 
+		Return file title
+		@return file title
+		*/
+		CString GetFileTitle() const;
+
+		/*! 
+		Do modal and return Modal result
+		@return Modal result
+		*/
+		virtual int DoModal();
+	private:
+		/// file dialog
+		CFileDialog *m_fileDialog;
+	};
 }
 
 #endif //__EP_FOLDER_HELPER_H__

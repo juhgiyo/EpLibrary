@@ -203,3 +203,173 @@ EpTString FolderHelper::GetModuleFileDirectory()
 	EpTString retString=GetModuleFileName();
 	return GetPathOnly(retString.c_str());
 }
+
+OpenFileDialog::OpenFileDialog(TCHAR *title, TCHAR * defaultExt,TCHAR* defaultDir, TCHAR *filter,CWnd* pParentWnd)
+{
+	m_fileDialog=EP_NEW CFileDialog(TRUE,defaultExt,NULL,OFN_FILEMUSTEXIST,filter,pParentWnd);
+	EP_ASSERT(m_fileDialog);
+	if(title)
+		m_fileDialog->m_ofn.lpstrTitle=title;
+	if(defaultDir)
+		m_fileDialog->m_ofn.lpstrInitialDir=defaultDir;
+}
+OpenFileDialog::~OpenFileDialog()
+{
+	if(m_fileDialog)
+		EP_DELETE m_fileDialog;
+}
+CString OpenFileDialog::GetPathName() const
+{
+	EP_ASSERT(m_fileDialog);
+	return m_fileDialog->GetPathName();
+}
+CString OpenFileDialog::GetFileName() const
+{
+	EP_ASSERT(m_fileDialog);
+	return m_fileDialog->GetFileName();
+}
+CString OpenFileDialog::GetFileExt() const
+{
+	EP_ASSERT(m_fileDialog);
+	return m_fileDialog->GetFileExt();
+}
+CString OpenFileDialog::GetFileTitle() const
+{
+	EP_ASSERT(m_fileDialog);
+	return m_fileDialog->GetFileTitle();
+}
+int OpenFileDialog::DoModal()
+{
+	EP_ASSERT(m_fileDialog);
+	return m_fileDialog->DoModal();
+}
+
+
+
+OpenMultiFileDialog::OpenMultiFileDialog(TCHAR *title, TCHAR * defaultExt,TCHAR* defaultDir, TCHAR *filter,CWnd* pParentWnd , int bufferSize)
+{
+	m_buffer = new TCHAR[bufferSize];
+	EP_ASSERT(m_buffer);
+	m_fileDialog=EP_NEW CFileDialog(TRUE,defaultExt,NULL,OFN_ALLOWMULTISELECT | OFN_NOVALIDATE,filter,pParentWnd);
+	EP_ASSERT(m_fileDialog);
+	m_fileDialog->m_ofn.nMaxFile = bufferSize;
+	m_fileDialog->m_ofn.lpstrFile = m_buffer;
+	m_fileDialog->m_ofn.lpstrFile[0] = NULL;
+	if(title)
+		m_fileDialog->m_ofn.lpstrTitle=title;
+	if(defaultDir)
+		m_fileDialog->m_ofn.lpstrInitialDir=defaultDir;
+}
+
+OpenMultiFileDialog::~OpenMultiFileDialog()
+{
+	if(m_fileDialog)
+		EP_DELETE m_fileDialog;
+	if(m_buffer)
+		EP_DELETE m_buffer;
+}
+CString OpenMultiFileDialog::GetNextPathName()
+{
+	EP_ASSERT(m_fileDialog);
+	return m_fileDialog->GetNextPathName(m_ps);
+}
+
+void OpenMultiFileDialog::Rewind()
+{
+	EP_ASSERT(m_fileDialog);
+	m_ps=m_fileDialog->GetStartPosition();
+}
+
+int OpenMultiFileDialog::DoModal()
+{
+	EP_ASSERT(m_fileDialog);
+	int result=m_fileDialog->DoModal();
+	if(result==IDOK)
+		m_ps=m_fileDialog->GetStartPosition(); 
+	return result;
+}
+
+OpenFolderDialog::OpenFolderDialog(HWND hParent,TCHAR *title)
+{
+
+	::ZeroMemory(&m_bi, sizeof(m_bi));
+	m_folderPath.insert(m_folderPath.begin(),MAX_PATH,_T('\0'));
+	m_pBuffer = const_cast<TCHAR*>(m_folderPath.data());
+
+	m_bi.hwndOwner = hParent;
+	m_bi.pszDisplayName = m_pBuffer;
+	m_bi.lpszTitle = title;
+	m_bi.pidlRoot = 0;
+	m_bi.ulFlags = BIF_RETURNONLYFSDIRS | 
+		BIF_NEWDIALOGSTYLE;
+}
+OpenFolderDialog::~OpenFolderDialog()
+{
+
+}
+CString OpenFolderDialog::GetPathName() const
+{
+	EpTString retString=m_folderPath;
+	int length = System::TcsLen(retString.c_str());
+	if(length>0 && retString.at(length-1)!=_T('\\'))
+	{
+		retString.at(length)=_T('\\');
+	}
+	return CString(retString.c_str());
+}
+int OpenFolderDialog::DoModal()
+{
+	int success = IDCANCEL;
+	LPITEMIDLIST pItem = ::SHBrowseForFolder(&m_bi);
+	if (pItem != NULL)
+	{
+		::SHGetPathFromIDList(pItem, m_pBuffer);
+		success = IDOK;
+
+		CComPtr<IMalloc> pMalloc;
+		if (SUCCEEDED(::SHGetMalloc(&pMalloc)))
+			pMalloc->Free(pItem);
+	}
+	return success;
+}
+
+
+SaveFileDialog::SaveFileDialog(TCHAR *title, TCHAR * defaultExt,TCHAR* defaultDir, TCHAR *filter,CWnd* pParentWnd)
+{
+	m_fileDialog=EP_NEW CFileDialog(FALSE,defaultExt,NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,filter,pParentWnd);
+	EP_ASSERT(m_fileDialog);
+	if(title)
+		m_fileDialog->m_ofn.lpstrTitle=title;
+	if(defaultDir)
+		m_fileDialog->m_ofn.lpstrInitialDir=defaultDir;
+}
+SaveFileDialog::~SaveFileDialog()
+{
+	if(m_fileDialog)
+		EP_DELETE m_fileDialog;
+}
+CString SaveFileDialog::GetPathName() const
+{
+	EP_ASSERT(m_fileDialog);
+	return m_fileDialog->GetPathName();
+}
+CString SaveFileDialog::GetFileName() const
+{
+	EP_ASSERT(m_fileDialog);
+	return m_fileDialog->GetFileName();
+}
+CString SaveFileDialog::GetFileExt() const
+{
+	EP_ASSERT(m_fileDialog);
+	return m_fileDialog->GetFileExt();
+}
+CString SaveFileDialog::GetFileTitle() const
+{
+	EP_ASSERT(m_fileDialog);
+	return m_fileDialog->GetFileTitle();
+}
+int SaveFileDialog::DoModal()
+{
+	EP_ASSERT(m_fileDialog);
+	return m_fileDialog->DoModal();
+}
