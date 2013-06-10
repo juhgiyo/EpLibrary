@@ -334,12 +334,10 @@ int OpenFolderDialog::DoModal()
 }
 
 
-SaveFileDialog::SaveFileDialog(TCHAR *title, TCHAR * defaultExt,TCHAR* defaultDir, TCHAR *filter,CWnd* pParentWnd)
+SaveFileDialog::SaveFileDialog(TCHAR * defaultExt,TCHAR* defaultDir, TCHAR *filter,CWnd* pParentWnd)
 {
 	m_fileDialog=EP_NEW CFileDialog(FALSE,defaultExt,NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,filter,pParentWnd);
 	EP_ASSERT(m_fileDialog);
-	if(title)
-		m_fileDialog->m_ofn.lpstrTitle=title;
 	if(defaultDir)
 		m_fileDialog->m_ofn.lpstrInitialDir=defaultDir;
 }

@@ -317,13 +317,12 @@ namespace epl
 		Default Constructor
 
 		Initializes the Save File Dialog
-		@param[in] title the title of the dialog
 		@param[in] defaultExt The default extension
 		@param[in] defaultDir The default directory
 		@param[in] filter The file extension filter
 		@param[in] pParentWnd The parent window
 		*/
-		SaveFileDialog(TCHAR *title=NULL, TCHAR * defaultExt=NULL,TCHAR* defaultDir=NULL, TCHAR *filter=NULL,CWnd* pParentWnd = NULL );
+		SaveFileDialog(TCHAR * defaultExt=NULL,TCHAR* defaultDir=NULL, TCHAR *filter=NULL,CWnd* pParentWnd = NULL );
 		
 		/*!
 		Default Destructor
