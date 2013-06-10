@@ -31,6 +31,10 @@ XMLInfo _xmlInfo::xmlDefault=XMLInfo();
 XMLFile::XMLFile(FileEncodingType encodingType,XMLInfo &xmlInfo, LockPolicy lockPolicyType) :XNode(), BaseTextFile(encodingType,lockPolicyType)
 {
 	m_xmlInfo=xmlInfo;
+	if(m_encodingType==FILE_ENCODING_TYPE_UTF16LE)
+		m_xmlInfo.m_xmlEncoding=_T("UTF-16");
+	else
+		m_xmlInfo.m_xmlEncoding=_T("UTF-8");
 }
 
 XMLFile::XMLFile(const XMLFile& b):XNode(b),BaseTextFile(b)
@@ -157,4 +161,14 @@ XNodes XMLFile::findAllNode(XNode *node, const TCHAR * nodeName)
 		}
 	}
 	return nodelist;
+}
+
+void XMLFile::SetEncodingType(FileEncodingType encodingType)
+{
+	LockObj lock(m_baseTextLock);
+	m_encodingType=encodingType;
+	if(m_encodingType==FILE_ENCODING_TYPE_UTF16LE)
+		m_xmlInfo.m_xmlEncoding=_T("UTF-16");
+	else
+		m_xmlInfo.m_xmlEncoding=_T("UTF-8");
 }

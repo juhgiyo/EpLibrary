@@ -138,6 +138,16 @@ void BaseTextFile::writeToFile(const TCHAR *toFileString)
 #endif //defined(_UNICODE) || defined(UNICODE)
 	}
 }
+FileEncodingType BaseTextFile::GetEncodingType()
+{
+	LockObj lock(m_baseTextLock);
+	return m_encodingType;
+}
+void BaseTextFile::SetEncodingType(FileEncodingType encodingType)
+{
+	LockObj lock(m_baseTextLock);
+	m_encodingType=encodingType;
+}
 
 bool BaseTextFile::SaveToFile(const TCHAR *filename)
 {

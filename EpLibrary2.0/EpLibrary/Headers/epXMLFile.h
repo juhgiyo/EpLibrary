@@ -143,6 +143,12 @@ namespace epl
 		*/
 		void Clear();
 
+		/*!
+		Set the encoding type as given type
+		@param[in] encodingType the encoding type for this file
+		*/
+		virtual void SetEncodingType(FileEncodingType encodingType);
+
 	protected:
 		/*!
 		Loop Function that writes to the file.

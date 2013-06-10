@@ -79,7 +79,18 @@ namespace epl{
 		*/
 		virtual ~BaseTextFile();
 
-	
+		/*!
+		Return the current encoding type.
+		@return the current encoding type
+		*/
+		FileEncodingType GetEncodingType();
+
+		/*!
+		Set the encoding type as given type
+		@param[in] encodingType the encoding type for this file
+		*/
+		virtual void SetEncodingType(FileEncodingType encodingType);
+
 		/*!
 		Save the list of the properties from the given file
 		@param[in] filename the name of the file to save the list of properties
