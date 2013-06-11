@@ -138,6 +138,61 @@ void XMLFile::loadFromFile(const EpTString &lines)
 
 }
 
+XNodes XMLFile::FindAllNode(const TCHAR *  nodeName)
+{
+	LockObj lock(m_baseTextLock);
+	return findAllNode(this,nodeName);
+}
+
+XNodes XMLFile::FindAllNode(XNode *node, const TCHAR *  nodeName)
+{
+	LockObj lock(m_baseTextLock);
+	return findAllNode(node,nodeName);
+}
+
+XAttrs XMLFile::FindAllAttr(const TCHAR *  attrName)
+{
+	LockObj lock(m_baseTextLock);
+	return findAllAttr(this,attrName);
+}
+
+XAttrs XMLFile::FindAllAttr(XNode *node, const TCHAR *  attrName)
+{
+	LockObj lock(m_baseTextLock);
+	return findAllAttr(node,attrName);
+}
+
+XAttrs XMLFile::findAllAttr(XNode *node, const TCHAR * attrName)
+{
+	XAttrs attrlist;
+	std::queue<XNode*> recurseQueue;
+	if(node==NULL)
+		return attrlist;
+	recurseQueue.push(node);
+
+	while(!recurseQueue.empty())
+	{
+		XNode *procNode = recurseQueue.front();
+		recurseQueue.pop();
+		
+		for(XAttrs::iterator it=procNode->m_attrs.begin();it!=procNode->m_attrs.end();it++)
+		{
+			if((*it)->m_name.Compare(attrName)==0)
+			{
+				attrlist.push_back(*it);
+			}
+		}
+
+		for(XNodes::iterator it=procNode->GetChilds().begin();it!= procNode->GetChilds().end();it++)
+		{
+			XNode * child = *it;
+			recurseQueue.push(child);
+		}
+	}
+	return attrlist;
+}
+
+
 XNodes XMLFile::findAllNode(XNode *node, const TCHAR * nodeName)
 {
 	XNodes nodelist;

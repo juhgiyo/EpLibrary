@@ -126,6 +126,36 @@ namespace epl
 		vector<const TCHAR *> GetAttrValue(const TCHAR *nodeName, const TCHAR *attrName);
 		
 		/*!
+		Recursively find all nodes with the given node name
+		@param[in] node the root of the xml
+		@param[in] nodeName the node name to find the nodes
+		@return the list of the nodes with the given node name
+		*/
+		XNodes FindAllNode(XNode *node, const TCHAR *  nodeName);
+
+		/*!
+		Recursively find all nodes with the given node name
+		@param[in] node the root of the xml
+		@param[in] nodeName the node name to find the nodes
+		@return the list of the nodes with the given node name
+		*/
+		XAttrs FindAllAttr(XNode *node, const TCHAR *  attrName);
+
+		/*!
+		Recursively find all nodes with the given node name
+		@param[in] nodeName the node name to find the nodes
+		@return the list of the nodes with the given node name
+		*/
+		XNodes FindAllNode(const TCHAR *  nodeName);
+
+		/*!
+		Recursively find all nodes with the given node name
+		@param[in] nodeName the node name to find the nodes
+		@return the list of the nodes with the given node name
+		*/
+		XAttrs FindAllAttr(const TCHAR *  attrName);
+
+		/*!
 		Set XML info.
 		@param[in] info the XML info to set.
 		*/
@@ -165,11 +195,19 @@ namespace epl
 
 		/*!
 		Recursively find all nodes with the given node name
-		@param[in] node the root of the xml
+		@param[in] node the root node
 		@param[in] nodeName the node name to find the nodes
 		@return the list of the nodes with the given node name
 		*/
 		XNodes findAllNode(XNode *node, const TCHAR *  nodeName);
+
+		/*!
+		Recursively find all attributes with the given attribute name
+		@param[in] node the root node
+		@param[in] attrName the attribute name to find the attributes
+		@return the list of the attributes with the given attribute name
+		*/
+		XAttrs findAllAttr(XNode *node, const TCHAR * attrName);
 
 		XMLInfo m_xmlInfo;
 
