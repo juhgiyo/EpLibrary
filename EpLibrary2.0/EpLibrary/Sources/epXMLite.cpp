@@ -316,14 +316,20 @@ void _SetString( LPTSTR psz, LPTSTR end, CString* ps, bool trim = FALSE, int esc
 	if( escape )
 	{
 		len = _tcselen( escape, psz, end );
-		LPTSTR pss = ps->GetBufferSetLength( len );
+		LPTSTR pss = EP_NEW TCHAR[len];
+		System::Memset(pss,0,sizeof(TCHAR)*len);
 		_tcsecpy( pss, escape, psz, end );
+		*ps=pss;
+		EP_DELETE[] pss;
 	}
 	else
 	{
-		LPTSTR pss = ps->GetBufferSetLength(len + 1 );
-		 memcpy( pss, psz, len * sizeof(TCHAR) );
+		LPTSTR pss = EP_NEW TCHAR[len+1];
+		System::Memset(pss,0,sizeof(TCHAR)*(len+1));
+		memcpy( pss, psz, len * sizeof(TCHAR) );
 		pss[len] = _T('\0');
+		*ps=pss;
+		EP_DELETE[] pss;
 	}
 }
 
@@ -1844,9 +1850,12 @@ CString _tagXMLEntitys::Ref2Entity( const TCHAR * estr )
 	if( estr )
 	{
 		int len =static_cast<int>(_tcslen(estr));
-		LPTSTR esbuf = es.GetBufferSetLength( len+1 );
+		LPTSTR esbuf = EP_NEW TCHAR[len+1];
+		System::Memset(esbuf,0,sizeof(TCHAR)*(len+1));
 		if( esbuf )
 			Ref2Entity( estr, esbuf, len );
+		es=esbuf;
+		EP_DELETE[] esbuf;
 	}
 	return es;
 }
@@ -1860,9 +1869,11 @@ CString _tagXMLEntitys::Entity2Ref( const TCHAR * str )
 		if( nEntityCount == 0 )
 			return CString(str);
 		int len = static_cast<int>(_tcslen(str)) + nEntityCount*10 ;
-		LPTSTR sbuf = s.GetBufferSetLength( len+1 );
+		LPTSTR sbuf = EP_NEW TCHAR[len+1];
+		System::Memset(sbuf,0,sizeof(TCHAR)*(len+1));
 		if( sbuf )
 			Entity2Ref( str, sbuf, len );
+		EP_DELETE[] sbuf;
 	}
 	return s;
 }
