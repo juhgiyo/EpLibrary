@@ -280,7 +280,14 @@ bool BaseTextFile::LoadFromFile(const TCHAR *filename)
 		size_t read=System::FRead(wFileBuf,sizeof(wchar_t),length,m_file);
 		System::Memset(wFileBuf+read,0,(length+1-read)*sizeof(wchar_t));
 		System::FClose(m_file);
-		rest=wFileBuf;
+		int stringSize=length+1;
+		int stringTrav=0;
+		for(;stringTrav<stringSize;stringTrav++)
+		{
+			if(wFileBuf[stringTrav]!=0xFEFF) // BOM
+				break;
+		}
+		rest=wFileBuf+stringTrav;
 		EP_DELETE[] wFileBuf;
 
 	}
@@ -291,10 +298,15 @@ bool BaseTextFile::LoadFromFile(const TCHAR *filename)
 		size_t read=System::FRead(wFileBuf,sizeof(wchar_t),length/sizeof(wchar_t),m_file);
 		System::Memset(wFileBuf+read,0,((length/sizeof(wchar_t)+1)-read)*sizeof(wchar_t));
 		System::FClose(m_file);
-		if(wFileBuf[0]==0xFEFF) // BOM
-			rest=wFileBuf+1;
-		else
-			rest=wFileBuf;
+		int stringSize=length/sizeof(wchar_t)+1;
+		int stringTrav=0;
+		for(;stringTrav<stringSize;stringTrav++)
+		{
+			if(wFileBuf[stringTrav]!=0xFEFF) // BOM
+				break;
+		}
+		rest=wFileBuf+stringTrav;
+		
 		EP_DELETE[] wFileBuf;
 	}
 	
@@ -320,7 +332,17 @@ bool BaseTextFile::LoadFromFile(const TCHAR *filename)
 		size_t read=System::FRead(wFileBuf,sizeof(wchar_t),length,m_file);
 		System::Memset(wFileBuf+read,0,(length+1-read)*sizeof(wchar_t));
 		System::FClose(m_file);
-		rest=System::WideCharToMultiByte(wFileBuf);;
+
+
+		int stringSize=length+1;
+		int stringTrav=0;
+		for(;stringTrav<stringSize;stringTrav++)
+		{
+			if(wFileBuf[stringTrav]!=0xFEFF) // BOM
+				break;
+		}
+
+		rest=System::WideCharToMultiByte(wFileBuf+stringTrav);
 		EP_DELETE[] wFileBuf;
 	}
 	else
@@ -330,10 +352,16 @@ bool BaseTextFile::LoadFromFile(const TCHAR *filename)
 		size_t read=System::FRead(wFileBuf,sizeof(wchar_t),length/sizeof(wchar_t),m_file);
 		System::Memset(wFileBuf+read,0,((length/sizeof(wchar_t)+1)-read)*sizeof(wchar_t));
 		System::FClose(m_file);
-		if(wFileBuf[0]==0xFEFF) // BOM
-			rest=System::WideCharToMultiByte(wFileBuf+1);
-		else
-			rest=System::WideCharToMultiByte(wFileBuf);
+
+		int stringSize=length/sizeof(wchar_t)+1;
+		int stringTrav=0;
+		for(;stringTrav<stringSize;stringTrav++)
+		{
+			if(wFileBuf[stringTrav]!=0xFEFF) // BOM
+				break;
+		}
+		rest=System::WideCharToMultiByte(wFileBuf+stringTrav);
+
 		EP_DELETE[] wFileBuf;
 		
 	}
