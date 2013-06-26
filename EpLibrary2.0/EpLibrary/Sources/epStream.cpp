@@ -148,7 +148,7 @@ bool Stream::read(void *value,size_t byteSize)
 	if(m_stream.empty() || !value)
 		return false;
 
-	if(m_stream.size()>m_offset+byteSize)
+	if(m_stream.size()>=m_offset+byteSize)
 	{
 		System::Memcpy(value,&m_stream.at(m_offset) , byteSize);
 		m_offset+=byteSize;
