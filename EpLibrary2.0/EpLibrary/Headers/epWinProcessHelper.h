@@ -187,6 +187,12 @@ namespace epl
 		@return true if successfully set otherwise false
 		*/
 		static bool SetPriority(HANDLE processHandle, ProcessPriority priority);
+
+		/*!
+		Return whether current process is running under 64bit Windows
+		@return true if running under 64bit Windows otherwise false
+		*/
+		static bool IsWow64();
 	};
 }
 #endif //__EP_WIN_PROCESS_HELPER_H__
