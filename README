@@ -59,7 +59,7 @@ FEATURES
 * Lock Framework
   1. Mutex
   2. Semaphore
-  3. CiriticalSectionEx
+  3. CriticalSectionEx
   4. NoLock
   5. InterlockedEx
 
