@@ -3,7 +3,7 @@ DESCRIPTION
 EpLibrary is a Visual C++ utility library that supports to develop an application easier under a GPL3.0 license. 
 You will no longer have to create the basic functionalities over and over again. 
 EpLibrary supports Visual C++ 2005/2008/2010/2012.
-Source can be downloaded at <http://github.com/juhgiyo/eplibrary>
+Source can be downloaded at [EpLibrary](http://github.com/juhgiyo/eplibrary)
 
 
 FEATURES
@@ -70,7 +70,7 @@ FEATURES
 
 DOCUMENTATION
 
-For detailed documentation, please download the full document (EPLibrary Documentation.chm) at <https://s3.amazonaws.com/elasticbeanstalk-us-east-1-052504677345/Downloads/EpLibrary/EpLibrary+Documentation.chm>.
+For detailed documentation, please download the full document [EPLibrary Documentation.chm](https://s3.amazonaws.com/elasticbeanstalk-us-east-1-052504677345/Downloads/EpLibrary/EpLibrary+Documentation.chm).
 
 If the documentation file is not visible after finishing download,
 * Solution 1.
@@ -85,7 +85,7 @@ If the documentation file is not visible after finishing download,
 
 USAGE
 
-To find the usage examples, please see the wiki page at <https://github.com/juhgiyo/EpLibrary/wiki>
+To find the usage examples, please see the [wiki page](https://github.com/juhgiyo/EpLibrary/wiki).
 
 
 LICENSE
