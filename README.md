@@ -1,4 +1,10 @@
+EpLibrary
+=======================
+#### Visual C++ Utility Library ####
+
+
 DESCRIPTION
+-----------
 
 EpLibrary is a Visual C++ utility library that supports to develop an application easier under a MIT license. 
 You will no longer have to create the basic functionalities over and over again. 
@@ -7,6 +13,7 @@ Source can be downloaded at [EpLibrary](http://github.com/juhgiyo/eplibrary)
 
 
 FEATURES
+--------
 
 * Math Framework
   1. Enhanced Log Approximation
@@ -69,6 +76,7 @@ FEATURES
 
 
 DOCUMENTATION
+-------------
 
 For detailed documentation, please download the full document [EPLibrary Documentation.chm](https://s3.amazonaws.com/elasticbeanstalk-us-east-1-052504677345/Downloads/EpLibrary/EpLibrary+Documentation.chm).
 
@@ -84,11 +92,13 @@ If the documentation file is not visible after finishing download,
 
 
 USAGE
+-----
 
 To find the usage examples, please see the [wiki page](https://github.com/juhgiyo/EpLibrary/wiki).
 
 
 LICENSE
+-------
 
 [The MIT License](http://opensource.org/licenses/mit-license.php)
 
