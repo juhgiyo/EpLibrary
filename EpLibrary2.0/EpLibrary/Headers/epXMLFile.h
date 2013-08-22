@@ -10,7 +10,7 @@
 
 The MIT License (MIT)
 
-Copyright (c) 2012-2013 Woong Gyu La <juhgiyo@gmail.com>
+Copyright (c) 2008-2013 Woong Gyu La <juhgiyo@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -143,7 +143,7 @@ namespace epl
 		/*!
 		Recursively find all nodes with the given node name
 		@param[in] node the root of the xml
-		@param[in] nodeName the node name to find the nodes
+		@param[in] attrName the node name to find the nodes
 		@return the list of the nodes with the given node name
 		*/
 		XAttrs FindAllAttr(XNode *node, const TCHAR *  attrName);
@@ -157,7 +157,7 @@ namespace epl
 
 		/*!
 		Recursively find all nodes with the given node name
-		@param[in] nodeName the node name to find the nodes
+		@param[in] attrName the node name to find the nodes
 		@return the list of the nodes with the given node name
 		*/
 		XAttrs FindAllAttr(const TCHAR *  attrName);

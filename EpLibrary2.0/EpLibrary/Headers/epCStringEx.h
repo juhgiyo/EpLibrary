@@ -10,7 +10,7 @@
 
 The MIT License (MIT)
 
-Copyright (c) 2012-2013 Woong Gyu La <juhgiyo@gmail.com>
+Copyright (c) 2008-2013 Woong Gyu La <juhgiyo@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
