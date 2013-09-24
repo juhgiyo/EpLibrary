@@ -136,6 +136,12 @@ namespace epl
 		static unsigned int GetTickCount();
 
 		/*!
+		Return the current value of the high-resolution performance counter
+		@return the current value of the high-resolution performance counter.
+		*/
+		static LARGE_INTEGER GetQueryPerformanceCounter();
+
+		/*!
 		Copy the source buffer to destination buffer.
 		@param[in] dest The destination for copying.
 		@param[in] dstSizeInByte the maximum destination size.

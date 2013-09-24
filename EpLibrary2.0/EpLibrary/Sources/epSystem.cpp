@@ -98,6 +98,14 @@ unsigned int System::GetTickCount()
 	return ::GetTickCount();
 }
 
+LARGE_INTEGER System::GetQueryPerformanceCounter()
+{
+	LARGE_INTEGER retVal;
+	if(QueryPerformanceCounter(&retVal))
+		return retVal;
+	retVal.QuadPart=0.0;
+	return retVal;
+}
 
 void* System::Memcpy (void* dest, size_t dstSizeInByte, const void* source, size_t srcSizeInByte)
 {

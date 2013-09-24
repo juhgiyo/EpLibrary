@@ -336,6 +336,27 @@ namespace epl
 		*/
 		static __int64 InSec(const FILETIME &fileTime);
 
+		/*!
+		Translate SYSTEMTIME in (1/(10000000)) second or 100-nano second
+		@param[in] systemTime the file time to translate
+		@return the translated time in (1/(10000000)) second or 100-nano second.
+		*/
+		static __int64 In100NanoSec(const SYSTEMTIME &systemTime);
+
+		/*!
+		Translate SYSTEMTIME in milli-second
+		@param[in] systemTime the file time to translate
+		@return the translated time in milli-second.
+		*/
+		static __int64 InMilliSec(const SYSTEMTIME &systemTime);
+
+		/*!
+		Translate SYSTEMTIME in second
+		@param[in] systemTime the file time to translate
+		@return the translated time in second.
+		*/
+		static __int64 InSec(const SYSTEMTIME &systemTime);
+
 	};
 }
 

@@ -451,3 +451,17 @@ __int64 DateTimeHelper::InSec(const FILETIME &fileTime)
 	ft1.fileTime=fileTime;
 	return ft1.ul.QuadPart/10000000.0;
 }
+
+
+__int64 DateTimeHelper::In100NanoSec(const SYSTEMTIME &systemTime)
+{
+	return In100NanoSec(SystemTimeToFileTime(systemTime));
+}
+__int64 DateTimeHelper::InMilliSec(const SYSTEMTIME &systemTime)
+{
+	return InMilliSec(SystemTimeToFileTime(systemTime));
+}
+__int64 DateTimeHelper::InSec(const SYSTEMTIME &systemTime)
+{
+	return InSec(SystemTimeToFileTime(systemTime));
+}
