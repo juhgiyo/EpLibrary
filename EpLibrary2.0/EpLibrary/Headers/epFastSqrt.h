@@ -1,7 +1,8 @@
 /*! 
 @file epFastSqrt.h
-@author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
-		<http://github.com/juhgiyo/eplibrary>
+@author Maxim Shemanarev (http://www.antigrain.com)
+    edited by Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
+		      <http://github.com/juhgiyo/eplibrary>
 @date April 17, 2011
 @brief Fast Square Root Function Interface
 @version 2.0
@@ -29,6 +30,28 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+
+----------------------------------------------------------------------------
+
+Part of this software is
+
+Anti-Grain Geometry - Version 2.4
+Copyright (C) 2002-2005 Maxim Shemanarev (http://www.antigrain.com)
+
+Permission to copy, use, modify, sell and distribute this software 
+is granted provided this copyright notice appears in all copies. 
+This software is provided "as is" without express or implied
+warranty, and with no claim as to its suitability for any purpose.
+
+----------------------------------------------------------------------
+Contact: mcseem@antigrain.com
+         mcseemagg@yahoo.com
+         http://www.antigrain.com
+----------------------------------------------------------------------
+Bessel function (besj) was adapted for use in AGG library by Andy Wilk 
+Contact: castor.vulgaris@gmail.com
+
+----------------------------------------------------------------------
 
 @section DESCRIPTION
 
