@@ -1,4 +1,4 @@
-/*
+/*!
 @file epWinResizer.h
 @author Mizan Rahman - 25 Jan 2013
     edited by Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com> - June 07, 2013
