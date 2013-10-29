@@ -62,6 +62,10 @@ m_resizer.SetShowResizeGrip(TRUE);
 bOk = m_resizer.InvokeOnResized();
 ASSERT( bOk);
 
+@section DESCRIPTION
+
+An Interface for Coroutine Class.
+
 */
 
 #ifndef __EP_WIN_RESIZER_H__

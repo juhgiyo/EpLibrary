@@ -31,10 +31,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
-@section DESCRIPTION
-
-An Interface for Coroutine Class.
-
 ------------------------------------------------------------------------------
 
 Part of this software is
@@ -43,11 +39,11 @@ Lyn's blog
 
 Please refer to <http://lunapiece.net/Article/101670> for the license.
 
+------------------------------------------------------------------------------
+
 @section DESCRIPTION
 
 An Interface for Coroutine Class.
-
--------------------------------------------------------------------------------
 
 
 */

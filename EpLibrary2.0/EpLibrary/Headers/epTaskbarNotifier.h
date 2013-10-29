@@ -38,10 +38,6 @@ Copyright (c) 2002 John O'Byrne
 
 Please refer to <http://www.codeproject.com/Articles/2562/Taskbar-Notification-dialog> for the license.
 
-@section DESCRIPTION
-
-An Interface for TaskbarNotifier Class.
-
 -------------------------------------------------------------------------------
 
 @section USAGE
@@ -55,6 +51,11 @@ m_notifyWin.SetTextColor(RGB(0,0,0),RGB(0,0,200));
 m_notifyWin.SetTextRect(CRect(10,40,m_notifyWin.m_nSkinWidth-10,m_notifyWin.m_nSkinHeight-25));
 ...
 m_notifyWin.Show(_T("Message."),TN_POP_UP_TIME_TO_SHOW,TN_POP_UP_TIME_TO_STAY,TN_POP_UP_TIME_TO_HIDE);
+
+@section DESCRIPTION
+
+An Interface for TaskbarNotifier Class.
+
 */
 #ifndef __EP_TASKBAR_NOTIFIER_H__
 #define __EP_TASKBAR_NOTIFIER_H__
