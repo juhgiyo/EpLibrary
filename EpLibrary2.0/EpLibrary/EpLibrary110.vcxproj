@@ -467,6 +467,7 @@
     <ClInclude Include="Headers\epBaseTextFile.h" />
     <ClInclude Include="Headers\epBinaryFile.h" />
     <ClInclude Include="Headers\epCmdLineOptions.h" />
+    <ClInclude Include="Headers\epCoroutine.h" />
     <ClInclude Include="Headers\epEventEx.h" />
     <ClInclude Include="Headers\epIpcClient.h" />
     <ClInclude Include="Headers\epIpcClientInterfaces.h" />

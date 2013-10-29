@@ -1,6 +1,6 @@
 /*! 
 @file epTaskbarNotifier.h
-@author John O'Byrne - 05 July 2002
+@author John O'Byrne - July 05, 2002
 	edited by Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com> - October 01, 2011
 			  <http://github.com/juhgiyo/eplibrary>
 @date July 05, 2002

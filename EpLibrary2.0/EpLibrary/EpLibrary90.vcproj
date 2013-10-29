@@ -918,6 +918,10 @@
 				Name="Containers"
 				>
 				<File
+					RelativePath=".\Headers\epCoroutine.h"
+					>
+				</File>
+				<File
 					RelativePath=".\Headers\epCStringEx.h"
 					>
 				</File>

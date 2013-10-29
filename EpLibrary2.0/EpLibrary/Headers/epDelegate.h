@@ -192,7 +192,7 @@ namespace epl
 
 		/*!
 		Check if the delegate is empty.
-		@returns Returns true if the delegate is empty, otherwise false.
+		@return true if the delegate is empty, otherwise false.
 		*/
 		bool IsEmpty() const
 		{
