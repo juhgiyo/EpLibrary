@@ -109,11 +109,12 @@ namespace epl
 
 		/*!
 		Pause the execution and be resume the owner execution
+		@param[in] returnValue the return value of the coroutine
 		@returns the return value of the coroutine.
 		*/
-		void __yield_return(RETURN_TYPE& ReturnValue)
+		void __yield_return(RETURN_TYPE& returnValue)
 		{
-			m_result = ReturnValue;
+			m_result = returnValue;
 			SwitchToFiber(m_owner);
 		}
 
@@ -127,18 +128,19 @@ namespace epl
 		/*!
 		Actual coroutine execution function
 		*/
-		void CoroutineMethod()
+		void executeCoroutineMethod()
 		{
 			Execute();
 		}
 
 		/*!
 		Method to interface the fiber and class to execute the coroutine on the fiber.
+		@param[in] __this the instance of coroutine class
 		*/
 		static void __stdcall CoroutineFunc(LPVOID __this)
 		{
 			Coroutine* _this = (Coroutine*)__this;
-			_this->CoroutineMethod();
+			_this->executeCoroutineMethod();
 		}
 
 	private:
@@ -206,18 +208,19 @@ namespace epl
 		/*!
 		Actual coroutine execution function
 		*/
-		void CoroutineMethod()
+		void executeCoroutineMethod()
 		{
 			Execute();
 		}
 
 		/*!
 		Method to interface the fiber and class to execute the coroutine on the fiber.
+		@param[in] __this the instance of coroutine class
 		*/
 		static void __stdcall CoroutineFunc(LPVOID __this)
 		{
 			Coroutine* _this = (Coroutine*)__this;
-			_this->CoroutineMethod();
+			_this->executeCoroutineMethod();
 		}
 
 	private:
