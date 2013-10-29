@@ -60,6 +60,7 @@ An Interface for EpLibrary Pre-compiled header
 #include "epThreadSafePQueue.h"
 #include "epThreadSafeQueue.h"
 
+#include "epCoroutine.h"
 #include "epCStringEx.h"
 #include "epDelegate.h"
 #include "epDynamicArray.h"
