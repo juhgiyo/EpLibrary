@@ -93,7 +93,7 @@ namespace epl
 		*/
 		RETURN_TYPE StartCoroutine()
 		{
-			ConvertThreadToFiber((LPVOID)GetCurrentThreadId());
+			ConvertThreadToFiber(reinterpret_cast<LPVOID>(GetCurrentThreadId()));
 			m_owner = GetCurrentFiber();
 			SwitchToFiber(m_fiber);
 			return m_result;
@@ -185,7 +185,7 @@ namespace epl
 		*/
 		void StartCoroutine()
 		{
-			ConvertThreadToFiber((LPVOID)GetCurrentThreadId());
+			ConvertThreadToFiber(reinterpret_cast<LPVOID>(GetCurrentThreadId()));
 			m_owner = GetCurrentFiber();
 			SwitchToFiber(m_fiber);
 		}
