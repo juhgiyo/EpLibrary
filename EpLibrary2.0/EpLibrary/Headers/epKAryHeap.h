@@ -892,14 +892,15 @@ namespace epl
 	template <typename KeyType,typename DataType,size_t k, CompResultType (__cdecl *KeyCompareFunc)(const void *,const void *) >  
 	int KAryHeap<KeyType,DataType,k,KeyCompareFunc>::getParentIdx(int childIdx) const
 	{
-		if(childIdx%k ==0)
-		{
-			return childIdx/k-1;
-		}
-		else
-		{
-			return childIdx/k;
-		}
+// 		if(childIdx%k ==0)
+// 		{
+// 			return childIdx/k-1;
+// 		}
+// 		else
+// 		{
+// 			return childIdx/k;
+// 		}
+		return (childIdx-1)/k;
 	}
 }
 #endif //__EP_KARYHEAP_H__
