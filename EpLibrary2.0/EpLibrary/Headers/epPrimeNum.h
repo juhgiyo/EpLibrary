@@ -54,14 +54,14 @@ namespace epl
 		@param[in] x the value to check if it is a prime number.
 		@return true if x is a prime number, false otherwise
 		*/
-		bool IsPrime(unsigned int x);
+		static bool IsPrime(unsigned int x);
 
 		/*!
 		Find the first prime number larger than given number.
 		@param[in] x the value to find a first prime number larger than x.
 		@return first prime number larger than x
 		*/
-		unsigned int NextPrime(unsigned int x);
+		static unsigned int NextPrime(unsigned int x);
 	};
 }
 #endif //__EP_PRIME_NUM_H__

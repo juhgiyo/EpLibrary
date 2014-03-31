@@ -83,13 +83,13 @@ EventEx::EventEx(bool isInitialRaised, bool isManualReset,const TCHAR *eventName
 
 EventEx::EventEx(const EventEx& b)
 {
-	m_isManualReset=false;
 	m_lpsaAttributes=NULL;
 	if(b.m_lpsaAttributes)
 	{
 		m_lpsaAttributes=EP_NEW SECURITY_ATTRIBUTES();
 		*m_lpsaAttributes=*b.m_lpsaAttributes;
 	}
+	m_isManualReset=b.m_isManualReset;
 	m_isInitialRaised=b.m_isInitialRaised;
 	m_name=b.m_name;
 	if(m_name.size())
