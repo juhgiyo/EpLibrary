@@ -110,12 +110,12 @@ namespace epl{
 		Check if the server is started
 		@return true if the server is started otherwise false
 		*/
-		virtual bool IsServerStarted() const=0;
+		virtual bool IsServerStarted() const;
 
 		/*!
 		Terminate all clients' socket connected.
 		*/
-		virtual void ShutdownAllClient()=0;
+		virtual void ShutdownAllClient();
 
 		/*!
 		Get the maximum write data byte size

@@ -138,6 +138,13 @@ namespace epl
 		@return the maximum read data byte size
 		*/
 		virtual unsigned int GetMaxReadDataByteSize() const=0;
+
+		/*!
+		Write data to the pipe
+		@param[in] data the data to write
+		@param[in] dataByteSize byte size of the data
+		*/
+		virtual void Write(char *data,unsigned int dataByteSize)=0;
 		
 	};
 

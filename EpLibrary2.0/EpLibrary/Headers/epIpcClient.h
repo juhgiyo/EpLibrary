@@ -101,7 +101,7 @@ namespace epl{
 		Check if the server is started
 		@return true if the server is started otherwise false
 		*/
-		virtual bool IsConnected() const=0;
+		virtual bool IsConnected() const;
 
 		/*!
 		Get the maximum write data byte size
@@ -119,7 +119,7 @@ namespace epl{
 		@param[in] data the data to write
 		@param[in] dataByteSize byte size of the data
 		*/
-		virtual void Write(char *data,unsigned int dataByteSize)=0;
+		virtual void Write(char *data,unsigned int dataByteSize);
 	
 
 	private:
