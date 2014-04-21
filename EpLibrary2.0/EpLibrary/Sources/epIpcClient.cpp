@@ -94,7 +94,7 @@ ConnectStatus IpcClient::Connect(const IpcClientOps &ops, unsigned int waitTimeI
 	if(ops.numOfWriteBytes==0)
 		m_options.numOfWriteBytes=DEFAULT_WRITE_BUF_SIZE;
 	if(ops.numOfReadBytes==0)
-		m_options.numOfWriteBytes=DEFAULT_READ_BUF_SIZE;
+		m_options.numOfReadBytes=DEFAULT_READ_BUF_SIZE;
 
 	m_readBuffer=EP_NEW char[m_options.numOfReadBytes]; 
 	while(1)
