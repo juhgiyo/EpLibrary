@@ -94,7 +94,7 @@ bool IpcServer::StartServer(const IpcServerOps &ops)
 	if(ops.numOfWriteBytes==0)
 		m_options.numOfWriteBytes=DEFAULT_WRITE_BUF_SIZE;
 	if(ops.numOfReadBytes==0)
-		m_options.numOfWriteBytes=DEFAULT_READ_BUF_SIZE;
+		m_options.numOfReadBytes=DEFAULT_READ_BUF_SIZE;
 
 	
 
