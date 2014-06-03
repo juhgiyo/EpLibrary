@@ -61,6 +61,11 @@ bool PrimeNum::IsPrime(unsigned int x)
 
 unsigned int PrimeNum::NextPrime(unsigned int x)
 {
+	if(x<2)
+		return 2;
+	if(x==2)
+		return 3;
+
 	int multIdx=x/6;
 	unsigned int check1;
 	unsigned int check2;
