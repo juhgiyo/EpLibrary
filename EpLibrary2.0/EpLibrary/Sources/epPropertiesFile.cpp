@@ -259,19 +259,17 @@ bool PropertiesFile::getValueKeyFromLine(const EpTString &buf, EpTString &retKey
 	retKey=_T("");
 	retVal=_T("");
 
-	for(int testTrav=0; testTrav<buf.length();testTrav++)
+	EpTString trimmedBuf=Locale::Trim(buf);
+	if(trimmedBuf.at(0)==_T('#'))
+		return false;
+	
+	while(splitChar!=_T('=') && bufTrav<trimmedBuf.length())
 	{
-		if(buf.at(testTrav)==_T('#'))
-			return false;
-	}
-
-	while(splitChar!=_T('=') && bufTrav<buf.length())
-	{
-		splitChar=buf.at(bufTrav);
+		splitChar=trimmedBuf.at(bufTrav);
 		retKey.append(&splitChar,1);
 		bufTrav++;
 	}
-	retVal=buf;
+	retVal=trimmedBuf;
 	retVal.erase(0,bufTrav);
 	
 	return true;
