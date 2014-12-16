@@ -1,4 +1,4 @@
-<a href='https://pledgie.com/campaigns/27760'><img alt='Click here to lend your support to: EpLibrary and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/27760.png?skin_name=chrome' border='0' ></a>
+[![Gratipay][gratipay-image]][gratipay-url]
 EpLibrary
 =======================
 #### Visual C++ Utility Library ####
@@ -99,7 +99,9 @@ To find the usage examples, please see the [wiki page](https://github.com/juhgiy
 
 DONATION
 -----
+[![Gratipay][gratipay-image]][gratipay-url]
 
+or donation by Pledgie  
 <a href='https://pledgie.com/campaigns/27760'><img alt='Click here to lend your support to: EpLibrary and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/27760.png?skin_name=chrome' border='0' ></a>
 
 LICENSE
@@ -126,3 +128,5 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+[gratipay-image]: https://img.shields.io/gratipay/juhgiyo.svg?style=flat
+[gratipay-url]: https://gratipay.com/juhgiyo/
