@@ -74,6 +74,7 @@ FEATURES
   1. Singleton Holder
   2. Smart Object
 
+<a href='https://pledgie.com/campaigns/27760'><img alt='Click here to lend your support to: EpLibrary and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/27760.png?skin_name=chrome' border='0' ></a>
 
 DOCUMENTATION
 -------------
