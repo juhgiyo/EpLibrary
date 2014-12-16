@@ -1,4 +1,5 @@
-EpLibrary <a href='https://pledgie.com/campaigns/27760'><img alt='Click here to lend your support to: EpLibrary and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/27760.png?skin_name=chrome' border='0' ></a>
+<a href='https://pledgie.com/campaigns/27760'><img alt='Click here to lend your support to: EpLibrary and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/27760.png?skin_name=chrome' border='0' ></a>
+EpLibrary
 =======================
 #### Visual C++ Utility Library ####
 
