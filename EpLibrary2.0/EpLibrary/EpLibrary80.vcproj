@@ -690,6 +690,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\Sources\epLogWorker.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\Sources\epLogWriter.cpp"
 						>
 					</File>
@@ -1057,6 +1061,10 @@
 					</File>
 					<File
 						RelativePath=".\Headers\epFolderHelper.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Headers\epLogWorker.h"
 						>
 					</File>
 					<File
