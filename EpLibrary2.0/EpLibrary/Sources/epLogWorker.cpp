@@ -114,7 +114,7 @@ void LogWorker::execute()
 }
 void LogWorker::stop()
 {
-	if(GetStatus()!=ThreadStatus::THREAD_STATUS_TERMINATED)
+	if(GetStatus()!=THREAD_STATUS_TERMINATED)
 	{
 		m_threadLock->Lock();
 		m_shouldTerminate=true;
