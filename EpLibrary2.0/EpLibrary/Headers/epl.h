@@ -79,6 +79,7 @@ An Interface for EpLibrary Pre-compiled header
 #include "epXMLite.h"
 #include "epTextFile.h"
 #include "epLogWriter.h"
+#include "epLogWorker.h"
 
 //IPC
 #include "epIpcClient.h"

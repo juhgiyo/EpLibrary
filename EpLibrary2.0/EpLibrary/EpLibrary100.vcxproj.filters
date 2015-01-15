@@ -269,6 +269,9 @@
     <ClCompile Include="Sources\epWinResizer.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\epLogWorker.cpp">
+      <Filter>Source Files\Frameworks\File System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\epl.h">
@@ -489,6 +492,9 @@
     </ClInclude>
     <ClInclude Include="Headers\epCoroutine.h">
       <Filter>Header Files\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epLogWorker.h">
+      <Filter>Header Files\Frameworks\File System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

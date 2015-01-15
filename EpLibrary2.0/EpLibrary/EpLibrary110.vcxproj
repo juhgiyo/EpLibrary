@@ -422,6 +422,7 @@
     <ClCompile Include="Sources\epIpcConf.cpp" />
     <ClCompile Include="Sources\epIpcPipe.cpp" />
     <ClCompile Include="Sources\epIpcServer.cpp" />
+    <ClCompile Include="Sources\epLogWorker.cpp" />
     <ClCompile Include="Sources\epLogWriter.cpp" />
     <ClCompile Include="Sources\epNetworkStream.cpp" />
     <ClCompile Include="Sources\epStream.cpp" />
@@ -480,6 +481,7 @@
     <ClInclude Include="Headers\epAlgorithm.h" />
     <ClInclude Include="Headers\epBinarySearch.h" />
     <ClInclude Include="Headers\epInsertionSort.h" />
+    <ClInclude Include="Headers\epLogWorker.h" />
     <ClInclude Include="Headers\epLogWriter.h" />
     <ClInclude Include="Headers\epMergeSort.h" />
     <ClInclude Include="Headers\epQuickSort.h" />
