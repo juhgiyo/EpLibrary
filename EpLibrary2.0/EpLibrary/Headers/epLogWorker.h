@@ -49,7 +49,7 @@ namespace epl
 	@class LogWorker epLogWorker.h
 	@brief A thread class for Writing Log.
 	*/
-	class EP_LIBRARY LogWorker:public BaseTextFile, Thread
+	class EP_LIBRARY LogWorker:public BaseTextFile,protected Thread
 	{
 	public:
 				/*!

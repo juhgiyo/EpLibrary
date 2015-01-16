@@ -49,6 +49,7 @@ LogWorker::LogWorker(EpTString fileName,FileEncodingType encodingType,LockPolicy
 		break;
 	}
 	m_shouldTerminate=false;
+	Start();
 }
 
 LogWorker::~LogWorker()
@@ -82,6 +83,7 @@ LogWorker::LogWorker(const LogWorker& b):BaseTextFile(b),Thread(b)
 		m_threadLock=NULL;
 		break;
 	}
+	Start();
 }
 void LogWorker::execute()
 {
@@ -100,7 +102,7 @@ void LogWorker::execute()
 			m_logQueue.pop();
 			SYSTEMTIME oT;
 			::GetLocalTime(&oT);
-			m_logString.AppendFormat(_T("[%04d-%02d-%02d %02d:%02d:%02d -%04] : %s\n"),oT.wYear,oT.wMonth,oT.wDay,oT.wHour,oT.wMinute,oT.wSecond,oT.wMilliseconds,logString.GetString());
+			m_logString.AppendFormat(_T("[%04d-%02d-%02d %02d:%02d:%02d -%04] : %s\r\n"),oT.wYear,oT.wMonth,oT.wDay,oT.wHour,oT.wMinute,oT.wSecond,oT.wMilliseconds,logString.GetString());
 		}
 		m_logLock->Unlock();
 
