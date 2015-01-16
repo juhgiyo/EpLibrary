@@ -102,7 +102,7 @@ void LogWorker::execute()
 			m_logQueue.pop();
 			SYSTEMTIME oT;
 			::GetLocalTime(&oT);
-			m_logString.AppendFormat(_T("[%04d-%02d-%02d %02d:%02d:%02d -%04] : %s\r\n"),oT.wYear,oT.wMonth,oT.wDay,oT.wHour,oT.wMinute,oT.wSecond,oT.wMilliseconds,logString.GetString());
+			m_logString.AppendFormat(_T("[%04d-%02d-%02d %02d:%02d:%02d -%04d] : %s\r\n"),oT.wYear,oT.wMonth,oT.wDay,oT.wHour,oT.wMinute,oT.wSecond,oT.wMilliseconds,logString.GetString());
 		}
 		m_logLock->Unlock();
 
