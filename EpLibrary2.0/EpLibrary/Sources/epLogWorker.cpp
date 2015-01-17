@@ -91,7 +91,7 @@ void LogWorker::execute()
 	while(!m_shouldTerminate)
 	{
 		m_threadLock->Unlock();
-		Yield();
+		Sleep(1);
 		
 		m_logString=_T("");
 		

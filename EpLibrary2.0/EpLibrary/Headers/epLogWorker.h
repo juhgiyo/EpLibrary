@@ -136,7 +136,7 @@ namespace epl
 		/// Log Queue
 		queue<CString> m_logQueue;
 		/// Thread terminator
-		bool m_shouldTerminate;
+		volatile bool m_shouldTerminate;
 		/// Thread Lock
 		BaseLock *m_threadLock;
 		
