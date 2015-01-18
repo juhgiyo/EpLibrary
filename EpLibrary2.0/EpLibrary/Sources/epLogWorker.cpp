@@ -25,6 +25,13 @@ THE SOFTWARE.
 */
 #include "epLogWorker.h"
 #include "epFolderHelper.h"
+
+#if defined(_DEBUG) && defined(EP_ENABLE_CRTDBG)
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif // defined(_DEBUG) && defined(EP_ENABLE_CRTDBG)
+
 using namespace epl;
 LogWorker::LogWorker(EpTString fileName,FileEncodingType encodingType,LockPolicy lockPolicyType):BaseTextFile(encodingType,lockPolicyType),Thread(EP_THREAD_PRIORITY_ABOVE_NORMAL,lockPolicyType)
 {

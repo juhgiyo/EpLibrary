@@ -102,6 +102,7 @@ An Interface for EpLibrary Pre-compiled header
 #include "epSingletonHolder.h"
 #include "epSmartObject.h"
 #include "epThreadSafeClass.h"
+#include "epCrypt.h"
 
 //GUI
 #include "epTaskbarNotifier.h"

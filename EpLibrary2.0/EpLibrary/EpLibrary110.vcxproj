@@ -415,6 +415,7 @@
     <ClCompile Include="Sources\epBaseTextFile.cpp" />
     <ClCompile Include="Sources\epBinaryFile.cpp" />
     <ClCompile Include="Sources\epCmdLineOptions.cpp" />
+    <ClCompile Include="Sources\epCrypt.cpp" />
     <ClCompile Include="Sources\epCStringEx.cpp" />
     <ClCompile Include="Sources\epEventEx.cpp" />
     <ClCompile Include="Sources\epFileStream.cpp" />
@@ -469,6 +470,7 @@
     <ClInclude Include="Headers\epBinaryFile.h" />
     <ClInclude Include="Headers\epCmdLineOptions.h" />
     <ClInclude Include="Headers\epCoroutine.h" />
+    <ClInclude Include="Headers\epCrypt.h" />
     <ClInclude Include="Headers\epEventEx.h" />
     <ClInclude Include="Headers\epIpcClient.h" />
     <ClInclude Include="Headers\epIpcClientInterfaces.h" />

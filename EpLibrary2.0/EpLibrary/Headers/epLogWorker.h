@@ -1,7 +1,7 @@
 /*! 
 @file epLogWorker.h
 @author Woong Gyu La a.k.a Chris. <juhgiyo@gmail.com>
-		<http://github.com/juhgiyo/epWinService>
+			  <http://github.com/juhgiyo/eplibrary>
 @date January 16, 2013
 @brief Log Worker Interface
 @version 1.0
@@ -52,7 +52,7 @@ namespace epl
 	class EP_LIBRARY LogWorker:public BaseTextFile,protected Thread
 	{
 	public:
-				/*!
+		/*!
 		Default Constructor
 
 		Initializes the Log Worker

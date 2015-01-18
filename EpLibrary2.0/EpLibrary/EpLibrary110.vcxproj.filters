@@ -272,6 +272,9 @@
     <ClCompile Include="Sources\epLogWorker.cpp">
       <Filter>Source Files\Frameworks\File System</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\epCrypt.cpp">
+      <Filter>Source Files\Frameworks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\epl.h">
@@ -495,6 +498,9 @@
     </ClInclude>
     <ClInclude Include="Headers\epLogWorker.h">
       <Filter>Header Files\Frameworks\File System</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\epCrypt.h">
+      <Filter>Header Files\Frameworks</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

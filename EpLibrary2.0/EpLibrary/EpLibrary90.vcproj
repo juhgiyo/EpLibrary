@@ -616,6 +616,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Sources\epCrypt.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\Sources\epSmartObject.cpp"
 					>
 				</File>
@@ -979,6 +983,10 @@
 				>
 				<File
 					RelativePath=".\Headers\epCmdLineOptions.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Headers\epCrypt.h"
 					>
 				</File>
 				<File
