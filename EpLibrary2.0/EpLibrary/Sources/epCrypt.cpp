@@ -125,7 +125,7 @@ bool Crypt::setupCryptoClient()
 }
 
 
-bool Crypt::EncryptString(TCHAR* szPassword,TCHAR* szEncryptPwd,TCHAR *szKey)
+bool Crypt::EncryptString(const TCHAR* szPassword,TCHAR* szEncryptPwd,const TCHAR *szKey)
 {	
 
 	// was intialize OK?
@@ -205,7 +205,7 @@ bool Crypt::EncryptString(TCHAR* szPassword,TCHAR* szEncryptPwd,TCHAR *szKey)
 }
 
 
-bool Crypt::DecryptString(TCHAR* szEncryptPwd,TCHAR* szPassword,TCHAR *szKey) 
+bool Crypt::DecryptString(const TCHAR* szEncryptPwd,TCHAR* szPassword,const TCHAR *szKey) 
 {	
 	// was initalise OK?
 	if (!m_bInitOK)

@@ -79,7 +79,7 @@ namespace epl
 		@param[out] szPassword the decrypted password
 		@param[in] szKey the key to decrypt the password
 		*/
-		bool DecryptString(TCHAR* szEncryptPwd,TCHAR* szPassword,TCHAR *szKey);
+		bool DecryptString(const TCHAR* szEncryptPwd,TCHAR* szPassword,const TCHAR *szKey);
 
 		/*!
 		Encrypt the given password with given key
@@ -87,7 +87,7 @@ namespace epl
 		@param[out] szEncryptPwd the encrypted password
 		@param[in] szKey the key to encrypt the password
 		*/
-		bool EncryptString(TCHAR* szPassword,TCHAR* szEncryptPwd,TCHAR *szKey);
+		bool EncryptString(const TCHAR* szPassword,TCHAR* szEncryptPwd,const TCHAR *szKey);
 	private:
 		/*!
 		Setup the crypt
