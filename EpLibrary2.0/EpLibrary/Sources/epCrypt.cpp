@@ -166,7 +166,7 @@ bool Crypt::EncryptString(const TCHAR* szPassword,TCHAR* szEncryptPwd,const TCHA
 						{
 							// return encrypted string
 							memcpy(szEncryptPwd, pbBuffer, dwLength);
-							EpTString hexString=System::HexToString((unsigned char*)szEncryptPwd,strlen(szEncryptPwd));
+							EpTString hexString=System::HexToString((unsigned char*)szEncryptPwd,_tcslen(szEncryptPwd));
 							memcpy(szEncryptPwd,hexString.c_str(),hexString.length()*sizeof(TCHAR));
 						}	
 						else						
