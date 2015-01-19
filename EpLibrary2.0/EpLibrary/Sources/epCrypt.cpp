@@ -34,6 +34,7 @@ Please refer to <http://www.codeguru.com/cpp/misc/misc/cryptoapi/article.php/c38
 */
 
 #include "epCrypt.h"
+#include "epSystem.h"
 #include <wincrypt.h>
 #if defined(_DEBUG) && defined(EP_ENABLE_CRTDBG)
 #define new DEBUG_NEW
@@ -165,7 +166,8 @@ bool Crypt::EncryptString(const TCHAR* szPassword,TCHAR* szEncryptPwd,const TCHA
 						{
 							// return encrypted string
 							memcpy(szEncryptPwd, pbBuffer, dwLength);
-
+							EpTString hexString=System::HexToString((unsigned char*)szEncryptPwd,strlen(szEncryptPwd));
+							memcpy(szEncryptPwd,hexString.c_str(),hexString.length()*sizeof(TCHAR));
 						}	
 						else						
 						{							
@@ -233,16 +235,23 @@ bool Crypt::DecryptString(const TCHAR* szEncryptPwd,TCHAR* szPassword,const TCHA
 				if (CryptDeriveKey(
 					hProv, CALG_RC4, hHash, CRYPT_EXPORTABLE, &hKey))					
 				{
+					EpTString inputPwd=szEncryptPwd;
+					unsigned char *tempPwd=new unsigned char[inputPwd.length()/2+1];
+					memset(tempPwd,0,inputPwd.length()/2+1);
+					System::StringToHex(szEncryptPwd,tempPwd);
+					TCHAR *encryptPwd=(TCHAR*)tempPwd;
+
 					// we know the encrypted password and the length
-					dwLength = sizeof(TCHAR)*_tcslen(szEncryptPwd);						
+					dwLength = sizeof(TCHAR)*_tcslen(encryptPwd);						
 					// copy encrypted password to temporary TCHAR
-					_tcscpy(szPasswordTemp,szEncryptPwd);
+					_tcscpy(szPasswordTemp,encryptPwd);
 					if (!CryptDecrypt(
 						hKey, 0, TRUE, 0, (BYTE *)szPasswordTemp, &dwLength))
 						bResult = FALSE;						
 					CryptDestroyKey(hKey);  // Release provider handle.					
 					// copy decrypted password to outparameter
 					_tcscpy(szPassword,szPasswordTemp);
+					delete[] tempPwd;
 				}					
 				else					
 				{

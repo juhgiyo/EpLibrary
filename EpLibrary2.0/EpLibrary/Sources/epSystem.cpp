@@ -819,6 +819,18 @@ int System::NoticeBox(const TCHAR* fileName, const TCHAR* funcName, size_t lineN
 
 }
 
+bool System::StringToHex(const EpTString& input, unsigned char *retHex)
+{
+	if(input.length()%2!=0 || retHex==NULL)
+		return false;
+	const TCHAR *pos=input.c_str();
+	for(int count = 0; count < input.length()/2; count++) {
+		_stscanf(pos, _T("%2hhx"), &retHex[count]);
+		pos += 2 * sizeof(TCHAR);
+	}
+	return true;
+}
+
 EpTString System::HexToString(const unsigned char *buff, size_t len)
 {
 

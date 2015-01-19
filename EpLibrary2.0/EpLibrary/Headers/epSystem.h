@@ -878,6 +878,13 @@ namespace epl
 		static int NoticeBox(const TCHAR* fileName, const TCHAR* funcName,size_t lineNum,const TCHAR* format,...);
 
 		/*!
+		Convert hexadecimal string to hexadecimal value.
+		@param[in] input hexadecimal string.
+		@param[in] retHex hexadecimal array.
+		@return true if successfully converted otherwise false.
+		*/
+		static bool StringToHex(const EpTString& input, unsigned char *retHex);
+		/*!
 		Convert hexadecimal value of given array to EpTString.
 		@param[in] buff pointer to array.
 		@param[in] len length of given array.
