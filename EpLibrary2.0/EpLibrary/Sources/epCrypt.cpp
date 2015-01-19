@@ -236,8 +236,8 @@ bool Crypt::DecryptString(const TCHAR* szEncryptPwd,TCHAR* szPassword,const TCHA
 					hProv, CALG_RC4, hHash, CRYPT_EXPORTABLE, &hKey))					
 				{
 					EpTString inputPwd=szEncryptPwd;
-					unsigned char *tempPwd=new unsigned char[inputPwd.length()/2+1];
-					memset(tempPwd,0,inputPwd.length()/2+1);
+					unsigned char *tempPwd=new unsigned char[inputPwd.length()+sizeof(TCHAR)];
+					memset(tempPwd,0,inputPwd.length()+sizeof(TCHAR));
 					System::StringToHex(szEncryptPwd,tempPwd);
 					TCHAR *encryptPwd=(TCHAR*)tempPwd;
 
