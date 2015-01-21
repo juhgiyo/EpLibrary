@@ -157,7 +157,8 @@ bool Crypt::EncryptString(const TCHAR* szPassword,TCHAR* szEncryptPwd,const TCHA
 					// Determine number of bytes to encrypt at a time.
 					dwLength = sizeof(TCHAR)*_tcslen(szPassword);					
 					// Allocate memory.
-					BYTE *pbBuffer = (BYTE *)malloc(dwLength);					
+					BYTE *pbBuffer = (BYTE *)malloc(dwLength*2+1);	
+					memset(pbBuffer,0,dwLength*2+1);
 					if (pbBuffer != NULL)					
 					{
 						memcpy(pbBuffer, szPassword, dwLength);						
@@ -166,7 +167,7 @@ bool Crypt::EncryptString(const TCHAR* szPassword,TCHAR* szEncryptPwd,const TCHA
 						{
 							// return encrypted string
 							memcpy(szEncryptPwd, pbBuffer, dwLength);
-							EpTString hexString=System::HexToString((unsigned char*)szEncryptPwd,_tcslen(szEncryptPwd));
+							EpTString hexString=System::HexToString((unsigned char*)szEncryptPwd,dwLength);
 							memcpy(szEncryptPwd,hexString.c_str(),hexString.length()*sizeof(TCHAR));
 						}	
 						else						
@@ -218,7 +219,9 @@ bool Crypt::DecryptString(const TCHAR* szEncryptPwd,TCHAR* szPassword,const TCHA
 	HCRYPTKEY hKey = NULL;		
 	HCRYPTKEY hXchgKey = NULL;
 	HCRYPTHASH hHash = NULL;
-	TCHAR szPasswordTemp[32] = _T("");
+	EpTString inputPwd=szEncryptPwd;
+	TCHAR *szPasswordTemp =new TCHAR[1+inputPwd.length()/(sizeof(TCHAR)*2)];
+	memset(szPasswordTemp, 0,sizeof(TCHAR)+((inputPwd.length()/(sizeof(TCHAR)*2))*sizeof(TCHAR)));
 	DWORD dwLength;
 
 	// Get handle to user default provider.
@@ -235,16 +238,16 @@ bool Crypt::DecryptString(const TCHAR* szEncryptPwd,TCHAR* szPassword,const TCHA
 				if (CryptDeriveKey(
 					hProv, CALG_RC4, hHash, CRYPT_EXPORTABLE, &hKey))					
 				{
-					EpTString inputPwd=szEncryptPwd;
-					unsigned char *tempPwd=new unsigned char[inputPwd.length()+sizeof(TCHAR)];
-					memset(tempPwd,0,inputPwd.length()+sizeof(TCHAR));
+
+					unsigned char *tempPwd=new unsigned char[(inputPwd.length()*sizeof(TCHAR))+sizeof(TCHAR)];
+					memset(tempPwd,0,(inputPwd.length()*sizeof(TCHAR))+sizeof(TCHAR));
 					System::StringToHex(szEncryptPwd,tempPwd);
 					TCHAR *encryptPwd=(TCHAR*)tempPwd;
 
 					// we know the encrypted password and the length
-					dwLength = sizeof(TCHAR)*_tcslen(encryptPwd);						
+					dwLength = sizeof(TCHAR)*(inputPwd.length()/(sizeof(TCHAR)*2));						
 					// copy encrypted password to temporary TCHAR
-					_tcscpy(szPasswordTemp,encryptPwd);
+					memcpy(szPasswordTemp,encryptPwd,dwLength);
 					if (!CryptDecrypt(
 						hKey, 0, TRUE, 0, (BYTE *)szPasswordTemp, &dwLength))
 						bResult = FALSE;						
@@ -273,5 +276,6 @@ bool Crypt::DecryptString(const TCHAR* szEncryptPwd,TCHAR* szPassword,const TCHA
 		}
 		CryptReleaseContext(hProv, 0);		
 	}		
+	delete[] szPasswordTemp;
 	return bResult;
 }
