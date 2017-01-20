@@ -113,7 +113,7 @@ namespace epl
 		{
 			LockObj lock(m_refCounterLock);
 			m_refCount++;
-			LOG_THIS_MSG(_T("%s::%s(%d) Retained Object : %d (Current Reference Count = %d)"),fileName,funcName,lineNum,this, this->m_refCount);
+			//LOG_THIS_MSG(_T("%s::%s(%d) Retained Object : %d (Current Reference Count = %d)"),fileName,funcName,lineNum,this, this->m_refCount);
 		}
 
 		/*!
@@ -124,7 +124,7 @@ namespace epl
 		{
 			m_refCounterLock->Lock();
 			m_refCount--;
-			LOG_THIS_MSG(_T("%s::%s(%d) Released Object : %d (Current Reference Count = %d)"),fileName,funcName,lineNum,this, this->m_refCount);
+			//LOG_THIS_MSG(_T("%s::%s(%d) Released Object : %d (Current Reference Count = %d)"),fileName,funcName,lineNum,this, this->m_refCount);
 			if(m_refCount==0)
 			{
 				m_refCount++; // this increment is dummy addition to make pair with destructor.
@@ -145,7 +145,7 @@ namespace epl
 		SmartObject(TCHAR *fileName, TCHAR *funcName, unsigned int lineNum,LockPolicy lockPolicyType=EP_LOCK_POLICY)
 		{
 			m_refCount=1;
-			LOG_THIS_MSG(_T("%s::%s(%d) Allocated Object : %d (Current Reference Count = %d)"),fileName,funcName,lineNum,this, this->m_refCount);
+			//LOG_THIS_MSG(_T("%s::%s(%d) Allocated Object : %d (Current Reference Count = %d)"),fileName,funcName,lineNum,this, this->m_refCount);
 			m_lockPolicy=lockPolicyType;
 			switch(lockPolicyType)
 			{
@@ -171,7 +171,7 @@ namespace epl
 		SmartObject(TCHAR *fileName, TCHAR *funcName, unsigned int lineNum,const SmartObject& b)
 		{
 			m_refCount=1;
-			LOG_THIS_MSG(_T("%s::%s(%d) Allocated Object : %d (Current Reference Count = %d)"),fileName,funcName,lineNum,this, this->m_refCount);
+			//LOG_THIS_MSG(_T("%s::%s(%d) Allocated Object : %d (Current Reference Count = %d)"),fileName,funcName,lineNum,this, this->m_refCount);
 			m_lockPolicy=b.m_lockPolicy;
 			switch(m_lockPolicy)
 			{
@@ -198,7 +198,7 @@ namespace epl
 			m_refCounterLock->Lock();
 			m_refCount--;
 			m_refCounterLock->Unlock();
-			LOG_THIS_MSG(_T("Deleted Object : %d (Current Reference Count = %d)"),this, this->m_refCount);
+			//LOG_THIS_MSG(_T("Deleted Object : %d (Current Reference Count = %d)"),this, this->m_refCount);
 			EP_ASSERT_EXPR(m_refCount==0,_T("The Reference Count is not 0!! Reference Count : %d"),m_refCount);
 			if(m_refCounterLock)
 			{
