@@ -77,7 +77,7 @@ FEATURES
 DOCUMENTATION
 -------------
 
-For detailed documentation, please download the full document [EPLibrary Documentation.chm](https://s3.amazonaws.com/elasticbeanstalk-us-east-1-052504677345/Downloads/EpLibrary/EpLibrary+Documentation.chm).
+For detailed documentation, please download the full document [EPLibrary Documentation.chm](https://github.com/juhgiyo/EpLibrary/releases/download/1.0.0/EpLibrary.Documentation.chm).
 
 If the documentation file is not visible after finishing download,
 * Solution 1.
