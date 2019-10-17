@@ -1,0 +1,27 @@
+Header files for the C++ standard library and extensions, by category.
+
+Headers by category
+Category	Headers
+Algorithms	<algorithm>, <cstdlib>, <numeric>
+Atomic operations	<atomic>11
+C library wrappers	<cassert>, <ccomplex>11 a b, <cctype>, <cerrno>, <cfenv>11, <cfloat>, <cinttypes>11, <ciso646>b, <climits>, <clocale>, <cmath>, <csetjmp>, <csignal>, <cstdalign>11 a b, <cstdarg>, <cstdbool>11 a b, <cstddef>, <cstdint>11, <cstdio>, <cstdlib>, <cstring>, <ctgmath>11 a b, <ctime>, <cuchar>11, <cwchar>, <cwctype>
+Concepts	<concepts>20
+Containers	
+Sequence containers	<array>11, <deque>, <forward_list>11, <list>, <vector>
+Ordered associative containers	<map>, <set>
+Unordered associative containers	<unordered_map>11, <unordered_set>11
+Container adaptors	<queue>, <stack>
+Container views	<span>20
+Errors and exception handling	<cassert>, <exception>, <stdexcept>, <system_error>11
+General utilities	<any>17, <bitset>, <charconv>17, <cstdlib>, <execution>17, <functional>, <memory>, <memory_resource>17, <optional>17, <ratio>11, <scoped_allocator>11, <tuple>11, <type_traits>11, <typeindex>11, <utility>, <variant>17
+I/O and formatting	<cinttypes>11, <cstdio>, <filesystem>17, <fstream>, <iomanip>, <ios>, <iosfwd>, <iostream>, <istream>, <ostream>, <sstream>, <streambuf>, <strstream>c, <syncstream>20
+Iterators	<iterator>
+Language support	<cfloat>, <climits>, <codecvt>11 a, <compare>20, <contract>20, <coroutine>20, <csetjmp>, <csignal>, <cstdarg>, <cstddef>, <cstdint>11, <cstdlib>, <exception>, <initializer_list>11, <limits>, <new>, <typeinfo>, <version>20
+Localization	<clocale>, <codecvt>11 a, <cvt/wbuffer>, <cvt/wstring>, <locale>
+Math and numerics	<bit>20, <cfenv>11, <cmath>, <complex>, <cstdlib>, <limits>, <numeric>, <random>11, <ratio>11, <valarray>
+Memory management	<allocators>, <memory>, <memory_resource>17, <new>, <scoped_allocator>11
+Multithreading	<atomic>11, <condition_variable>11, <future>11, <mutex>11, <shared_mutex>14, <thread>11
+Ranges	<ranges>20
+Regular expressions	<regex>11
+Strings and character data	<cctype>, <cstdlib>, <cstring>, <cuchar>11, <cwchar>, <cwctype>, <regex>11, <string>, <string_view>17
+Time	<chrono>11, <ctime>
